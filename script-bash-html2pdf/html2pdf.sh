@@ -3,7 +3,7 @@
 #CC by SA 4.0 - http://creativecommons.org/licenses/by-sa/4.0/
 ##DATA: Thu Oct 22 21:34:05 CEST 2020
 ##Author:
-##Ricardo Feijoo Costa <ricardofc.sistema[at]gmail.com>
+##Ricardo Feijoo Costa <ricardofc.sistemas[at]gmail.com>
 
 # Estrutura:
 
