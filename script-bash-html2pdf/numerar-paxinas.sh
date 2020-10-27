@@ -44,7 +44,7 @@ f_help() {
   echo "bash $0 PDF/file.pdf 0     #Ficheiro PDF/file.pdf non posúe portada na páxina 1"
   echo "bash $0 PDF/file.pdf 1     #Ficheiro PDF/file.pdf posúe portada na páxina 1, a cal non se numera"
   echo "
-  ##Necesaria a existencia de Bbookmark/Bookmarking-file.tmp para crear o índice. Segue a plantilla:
+  ##Necesaria a existencia de bookmark/Bookmarking-file.tmp para crear o índice. Segue a plantilla:
     BookmarkBegin
     BookmarkTitle: Repaso Comandos GNU/Linux - Shell bash
     BookmarkLevel: 1
