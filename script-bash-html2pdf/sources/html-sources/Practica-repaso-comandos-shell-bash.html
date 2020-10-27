@@ -1,0 +1,446 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Repaso comandos shell bash</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/GNU-Linux' target='_blank'>Repaso comandos GNU/Linux - Shell bash</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-repaso-ssh-apache2-rede-interna_NAT.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> Conexión remota a través de cliente/servidor SSH</span>: Instalaremos na Máquina Virtual A o servidor SSH, de tal xeito que a maioría da práctica coa súa execución de comandos farase conectando co cliente SSH dende a Máquina Virtual B.</span></li>
+          <li class='colorblue'><span class='label'> usuarios.csv</span>: Ficheiro plantilla a empregar na práctica. Descargar da Aula Virtual no cartafol $HOME co usuario co que vas a realizar a práctica.</li>
+          <li class='colorblue'><span class='label'> cp -pv $HOME/usuarios.csv /tmp</span>: Copiar o ficheiro en /tmp en modo verbose (detallado) e preservando permisos e datas. Este comando pode ser necesario empregalo máis dunha vez, aínda que non se explique explicitamente na práctica, para voltar a ter copia do ficheiro orixinal en /tmp, por exemplo antes de executar as OPCIÓNS 2 que se amosan no contido desta práctica.</li>
+        </ul>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Debian amd64</p>
+        <li class='mtop mleft mbottom'>Cambiar contrasinais. Así na contorna gráfica (shell xfce) abrir un terminal e executar: 
+          <ul class='dashed-debian'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd <span class='explicacion'> #Crear (ou modificar non caso que tivera contrasinal) o contrasinal para o usuario de nome <i>user</i>, xa que a non pór nome de usuario logo do comando <i>passwd</i> interprétase que se quere cambiar o contrasinal do usuario que está a executar o comando. Débese escribir 2 veces e non se amosará ningún caracter namentras se escriba por seguridade. Pór como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-debian'>
+                <li>passwd <span class='explicacion'> #Crear (ou modificar non caso que tivera contrasinal) o contrasinal para o usuario de nome <i>root</i>, xa que a non pór nome de usuario logo do comando <i>passwd</i> interprétase que se quere cambiar o contrasinal do usuario que está a executar o comando. Débese escribir 2 veces e non se amosará ningún caracter namentras se escriba por seguridade. Pór como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Instalar Servidor SSH:  
+          <ul>
+            <ul class='hashtag-debian'>
+              <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+              <li>apt search ssh <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda openssh-server</li>
+              <li>apt -y install openssh-server <span class='explicacion'> #Instalar o paquete openssh-server, é dicir, instalar o servidor SSH openssh-server. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+            </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configuración da rede: 
+          <ul>
+            <ul class='hashtag-debian'>
+              <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+              <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(enps03) e interna(enps08)</span>.</li>
+              <li>ip addr add 192.168.120.100/24 dev enp0s3<span class='explicacion'> #Configurar a tarxeta de rede interna enp0s8, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(enps03) e interna(enps08)</span>.</li>
+             <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local enp0s8</span></li>
+            </ul>
+          </ul>
+        <li class='mtop mleft mbottom'>Usuario alumno para poder acceder dende Kali (Máquina virtual B). De momento, seguimos executando os comandos dende a Máquina Virtual A. Así: 
+          <ul>
+            <ul class='hashtag-debian'>
+              <li>useradd -m -d /home/alumno -s /bin/bash alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
+                </ul>
+                </span>
+              <li>id alumno <span class='explicacion'>#Amosa información de usuario e grupo do usuario de nome alumno</span></li>
+              <li>groups alumno <span class='explicacion'>#Amosa os grupos aos cales pertence o usuario de nome alumno</span></li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Debe amosar que existen entradas, pero como aínda non xeramos o contrasinal do usuario alumno non amosará en /etc/shadow un contrasinal cifrado, senón o caracter admiración final '!', o que significa que o usuario está bloqueado, non podendo acceder ao sistema.</span></li>
+              <li>passwd alumno<span class='explicacion'> #Crear (ou modificar non caso que tivera contrasinal) o contrasinal para o usuario de nome <i>alumno</i>. Débese escribir 2 veces e non se amosará ningún caracter namentras se escriba por seguridade. Pór como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Debe amosar que existen entradas, e agora como xa xeramos o contrasinal do usuario alumno amosará en /etc/shadow un contrasinal cifrado, podendo éste acceder ao sistema.</span></li>
+              <li>echo -e "abc123.\nabc123." | passwd alumno<span class='explicacion'> #Modificar o contrasinal para o usuario de nome <i>alumno</i>. O comando passwd recolle o contrasinal repetido <i>abc123.</i> a través do comando anterior <i>echo</i>, tal que mediante o parámetro -e interprétase \n como salto de liña. Ollo!: O contrasinal con este comando vai en texto claro e ademais o comando é recordado polo historial de comandos (~/.bash_history).
+              <li>userdel -r alumno<span class='explicacion'> #Eliminar o usuario alumno e coa opción -r eliminar tamén o seu cartafol de usuario (/home/alumno) e se existe o seu cartafol de correo (var/mail/alumno ou /var/spool/mail/alumno; depende da varialbe MAIL_DIR definida no ficheiro /etc/login.defs)
+              <li>id alumno <span class='explicacion'>#Amosa erro, porque quere amosar información de usuario e grupo do usuario de nome alumno, pero o usuario non existe.</span></li>
+              <li>groups alumno <span class='explicacion'>#Amosa erro, porque quere amosar os grupos aos cales pertence o usuario de nome alumno, pero o usuario non existe</span></li>
+              <li>useradd -m -d /home/alumno -s /bin/bash -p $(mkpasswd abc123.) alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> -p $(mkpasswd abc123.) &#10141; Establece como contrasinal o valor <i>abc123.</i> e mediante o comando <i>mkpasswd</i> cifra o texto anterior. Así o texto cifrado é o que se incorpora no ficheiro /etc/shadow</li>
+                  <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
+                  Ollo!: O contrasinal con este comando vai en texto claro e ademais o comando é recordado polo historial de comandos (~/.bash_history). 
+                </ul>
+              <li>id alumno <span class='explicacion'>#Amosa información de usuario e grupo do usuario de nome alumno</span></li>
+              <li>groups alumno <span class='explicacion'>#Amosa os grupos aos cales pertence o usuario de nome alumno</span></li>
+              <li>usermod -L alumno <span class='explicacion'>#Bloquea o acceso ao usuario alumno</span></li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Comprobar en /etc/shadow como aparece o caracter admiración final '!' antes do contrasinal cifrado, co cal o usuario está bloqueado e non pode acceder ao sistema.</span></li>
+              <li>usermod -U alumno <span class='explicacion'>#Desbloquea o acceso ao usuario alumno</span></li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Comprobar en /etc/shadow como non aparece o caracter admiración final '!' antes do contrasinal cifrado, co cal o usuario non está bloqueado e pode acceder ao sistema.</span></li>
+              <li>passwd -l alumno <span class='explicacion'>#Bloquea o acceso ao usuario alumno</span></li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Comprobar en /etc/shadow como aparece o caracter admiración final '!' antes do contrasinal cifrado, co cal o usuario está bloqueado e non pode acceder ao sistema.</span></li>
+              <li>passwd -u alumno <span class='explicacion'>#Desbloquea o acceso ao usuario alumno</span></li>
+              <li>grep alumno /etc/passwd /etc/shadow <span class='explicacion'>#Buscar o patrón de caracteres alumno dentro dos ficheiros /etc/passwd e /etc/shadow. Comprobar en /etc/shadow como non aparece o caracter admiración final '!' antes do contrasinal cifrado, co cal o usuario non está bloqueado e pode acceder ao sistema.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+        <div class='minindent'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'>Arrancar servidor SSH. Seguimos executando os comandos dende a Máquina Virtual A. Así: 
+          <ul>
+            <ul class='hashtag-debian'>
+              <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non debe estar arrancado.</span></li>
+              <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+              <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+              <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+              <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+              <li>apt -y install net-tools <span class='explicacion'> #Instalar o paquete net-tools, é dicir, instalar o paquete que integra os comandos ifconfig, route e netstat entre outros. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+              <li>ssh -v localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost. Como é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. Dá un erro porque o usuario <b>root</b> non pode acceder por ssh na configuración por defecto. Entón imos acceder como usuario <b>alumno</b> a través de ssh.</span></li>
+              <li>ssh -v alumno@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost. Agora accedemos como o usuario <b>alumno</b> a través da conexión cifrada SSH.</span></li>
+              <li>exit <span class='explicacion'> #Saír da consola do usuario root, para voltar á consola do usuario user sen permisos de root</span></li>
+            </ul>
+          </ul>
+          <ul class='dashed-debian'>
+            <li>exit <span class='explicacion'> #Saír da consola do usuario user, é dicir, pechar o terminal.</span></li>
+          </ul>
+
+        <li class='mtop mleft mbottom'>usuarios.csv: Ficheiro plantilla a empregar na práctica. Descargar da Aula Virtual no cartafol $HOME do usuario alumno (/home/alumno).</li>
+
+        <li class='mtop mleft mbottom'>Agora minimizamos a máquina virtual A xa que imos traballar de continuo coa máquina virtual B.</li>
+
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Así na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 debian' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome debian, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 debian <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Acceder mediante a SSH á máquina virtual A dende a máquina virtual B. A partir de agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <ul>
+            <ul class='hashtag-kali'>
+              <li>nc -vz 192.168.100.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz debian 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v alumno@192.168.100.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>alumno</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-debian-alumno'>
+                <li>exit <span class='explicacion'> #Saír da consola remota ssh, do usuario alumno, á que acabamos de acceder da máquina virtual A, para voltar á consola local de root da máquina virtual B.</span></li>
+              </ul>
+              <li>ssh -v alumno@debian<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>alumno</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-debian-alumno'>
+                <li></li>
+              </ul>
+           </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Instalar Servidor Web Apache: 
+          <ul class='dashed-debian-alumno'>
+            <li>sudo su - <span class='explicacion'> #Problema: Non se pode acceder co usuario alumno á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <li>su - user<span class='explicacion'> #Acceder como usuario user (como se fixera login nunha consola ttyX). Escribir o contrasinal de user: <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>
+            <ul class='dashed-debian'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-debian'>
+                  <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                  <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
+                  <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                  <li>nc -vz 192.168.100.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+                </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.100.100 ou a URL http://192.168.100.100</li>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'>Permisos apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-debian'>
+                <li>cp -pv /home/alumno/usuarios.csv /var/www/html/ <span class='explicacion'>#Copiar o ficheiro en /var/www/html (DocumentRoot Apache) en modo verbose (detallado) e preservando permisos e datas.</li>
+                <li>ls -l /home/alumno/usuarios.csv /var/www/html/usuarios.csv <span class='explicacion'>#Listar de forma extendida os ficheiros /home/alumno/usuarios.csv e /var/www/html/usuarios.csv</span></li>
+                <li>chown www-data. /var/www/html/usuarios.csv <span class='explicacion'>#Cambiar usuario propietario www-data  e grupo propietario www-data ao ficheiro usuarios.csv situado en /var/www/html</span></li>
+                <li>chmod 444 /var/www/html/usuarios.csv <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro usuarios.csv situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador, visitar a IP 192.168.100.100 ou a URL http://192.168.100.100/usuarios.csv e descargar o ficheiro usuarios.csv en $HOME do usuario kali, é dicir, descargar en /home/kali</li>
+
+        <li class='mtop mleft mbottom'>Estudar o arquivo. Así:
+          <ul type='circle'>
+            <li class='mtop' type='a'>Listar o arquivo.
+              <ul class='dashed-kali'>
+                <li>cp -pv $HOME/usuarios.csv /tmp<span class='explicacion'>: Copiar o ficheiro en /tmp en modo verbose (detallado) e preservando permisos e datas.</li>
+                <li>cat -n /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>cat -n /tmp/usuarios.csv | less</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv. Filtrar a saída anterior co comando <i>less</i> para poder subir, baixar, moverse a esquerda e dereita mediante as teclas frechas. Saír do comando <i>less</i> premendo a tecla <b>q</b></span></li>
+                <li>less /tmp/usuarios.csv</span> <span class='explicacion'>#Listar todas as liñas do ficheiro /tmp/usuarios.csv movéndose hacia abaixo, arriba, dereita, esquerda mediante as frechas do teclado grazas ao comando <i>less</i>. Saír do comando <i>less</i> premendo a tecla <b>q</b></span></li>
+              </ul>
+            <li class='mtop' type='a'>Listar as primeiras liñas.
+              <ul class='dashed-kali'>
+                <li>head /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as primeiras 10 liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>head -2 /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as primeiras 2 liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>head -n 2 /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as primeiras 2 liñas do ficheiro /tmp/usuarios.csv</span></li>
+              </ul>
+            <li class='mtop' type='a'>Listar as últimas liñas.
+              <ul class='dashed-kali'>
+                <li>tail /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as últimas 10 liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>tail -2 /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as últimas 2 liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>tail -n 2 /tmp/usuarios.csv</span> <span class='explicacion'>#Listar as últimas 2 liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>tail -n +2 /tmp/usuarios.csv</span> <span class='explicacion'>#Listar todas as liñas a partir da segunda liña do ficheiro /tmp/usuarios.csv, é dicir, non listar a cabeceira do ficheiro, pero si o resto de liñas.</span></li>
+              </ul>
+            <li class='mtop' type='a'>Buscar no arquivo.
+              <ul class='dashed-kali'>
+                <li>less /tmp/usuarios.csv  <span class='explicacion'> #Listar todas as liñas do ficheiro /tmp/usuarios.csv grazas ao comando <span class='label'>less</span> o que nos permite baixar, subir, moverse á esquerda e dereita do contido do ficheiro, a través das frechas do teclado, así como buscar o patrón que queiramos. Para buscar premer <span class='label'>Shift+7</span>, é dicir, a barra <span class='label'>/</span> e escribir o patrón a buscar.<br /> 
+                Imos buscar varios patróns. Así:
+                <ul>
+                  <li><span class='label'>;;</span> &#10141 Buscamos o patrón dos caracteres punto e coma. Se existe aparece o patrón buscado. Pode ser que teñamos máis dunha concurrencia do patrón buscado, polo que se queremos ver a seguinte referencia atopada premer a tecla <i>n</i> e para ver a anterior referencia buscada premer a tecla <i>N</i> <br />
+                  <li><span class='label'>^$</span> &#10141 Buscamos o patrón liñas en branco (^ &#10141 simboliza comezo de liña, $ &#10141 simboliza final de liña, como no medio non existe nada pois ^$ simboliza liñas en branco). Se existe aparece o patrón buscado. Pode ser que teñamos máis dunha concurrencia do patrón buscado, polo que se queremos ver a seguinte referencia atopada premer a tecla <i>n</i> e para ver a anterior referencia buscada premer a tecla <i>N</i> <br />
+                  <li><span class='label'>"</span> &#10141 Buscamos o patrón do caracter comiñas dobres. Se existe aparece o patrón buscado. Pode ser que teñamos máis dunha concurrencia do patrón buscado, polo que se queremos ver a seguinte referencia atopada premer a tecla <i>n</i> e para ver a anterior referencia buscada premer a tecla <i>N</i> <br />
+                  <li><span class='label'>'</span> &#10141 Buscamos o patrón do caracter comiña simple. Se existe aparece o patrón buscado. Pode ser que teñamos máis dunha concurrencia do patrón buscado, polo que se queremos ver a seguinte referencia atopada premer a tecla <i>n</i> e para ver a anterior referencia buscada premer a tecla <i>N</i> <br />
+                </ul>
+                    Para saír da pantalla capturada polo comando <span class='label'>less</span> premer a tecla <span class='label'>q<span></li>
+                <li>grep ';;' /tmp/usuarios.csv  <span class='explicacion'> #Buscar o patrón de caracteres 2 puntos e coma no ficheiro /tmp/usuarios.csv, é dicir, listar todas as liñas do ficheiro /tmp/usuarios.csv que posúen o patrón de búsqueda ';;'</span></li>
+                <li>grep -v ';;' /tmp/usuarios.csv </span> <span class='explicacion'>#Listar todas as liñas do ficheiro /tmp/usuarios.csv que non posúen o patrón de búsqueda ';;'.</span></li>
+                <li>cat -n /tmp/usuarios.csv | grep ';;' </span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv que posúan o patrón buscado ';;'. Para iso primeiro amósase todas as liñas numeradas mediante o comando <i>cat</i>; logo fíltrase esa saída e búscase o patrón ';;' co comando <i>grep</i>. Deste xeito averiguamos o/s número/s de liña/s onde existe o patrón buscado.</span></li>
+              </ul>
+            </li>  
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'>Depurar o arquivo. Así:
+          <ul type='circle'>
+            <li class='mtop' type='a'>Eliminar liñas en branco.
+              <ul class='dashed-kali'>
+                <span class='label'>OPCIÓN 1</span>
+                <li>cat -n /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>sed -i '/^$/d' /tmp/usuarios.csv</span> <span class='explicacion'>#Eliminar as liñas en branco do ficheiro /tmp/usuarios.csv</span></li>
+                <span class='label'>OPCIÓN 2</span>
+                <li>nl -b 'a' /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>nl /tmp/usuarios.csv > /tmp/usuarios2.csv</span> <span class='explicacion'>#Listar numeradas as liñas do ficheiro /tmp/usuarios.csv, pero non lista as liñas en branco. A saída redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv que non posúe ningunha liña en branco.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+              </ul>
+            <li class='mtop' type='a'>Eliminar liñas sen datos de usuario.
+              <ul class='dashed-kali'>
+                <span class='label'>OPCIÓN 1</span>
+                <li>cat -n /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>grep -v ';;;;' /tmp/usuarios.csv > /tmp/usuarios2.csv</span> <span class='explicacion'>#Listar todas as liñas do ficheiro /tmp/usuarios.csv que non posúen o patrón de búsqueda ';;;;'. A saída redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv que non posúe liñas sen datos de usuario.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                <span class='label'>OPCIÓN 2</span>
+                <li>cat -n /tmp/usuarios.csv | grep ';;;;' | awk '{print $1}' | sort -rn | xargs -I VAR sed -i ''VARd'' /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv que non posúan o patrón buscado ';;;;'. Para iso primeiro amósase todas as liñas numeradas mediante o comando <i>cat</i>; logo fíltrase esa saída e búscase o patrón ';;;;' co comando <i>grep</i>; logo fíltrase e quedamos coa primeira columna con datos mediante o comando <i>awk</i>, que son os números das liñas onde aparece o patrón anterior; logo fíltrase ordeando de forma numérica e inversa mediante o comando <i>sort</i>, para que aparezan as liñas numeradas de maior a menor; logo fíltrase e bórrase esa liña mediante o comando <i>sed</i> quedando o ficheiro /tmp/usuarios.csv sen as liñas que non posuían datos de usuario.</span></li>
+              </ul>
+
+            <li class='mtop' type='a'>Eliminar caracteres comiñas dobres.
+              <ul class='dashed-kali'>
+                <span class='label'>OPCIÓN 1</span>
+                <li>cat -n /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>sed -i 's|"||g" /tmp/usuarios.csv </span> <span class='explicacion'>#Eliminar todos os caracteres comiñas dobres do ficheiro /tmp/usuarios.csv</span></li>
+                <span class='label'>OPCIÓN 2</span>
+                <li>cat -n /tmp/usuarios.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv</span></li>
+                <li>cat /tmp/usuarios.csv | tr -d '"' > /tmp/usuarios2.csv</span> <span class='explicacion'>#Eliminar todos os caracteres comiñas dobres do ficheiro /tmp/usuarios.csv, redireccionando a saída non á consola senón ao ficheiro /tmp/usuarios2.csv, o cal créase se non existe e elimínase e créase se existe.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+              </ul>
+
+            <li class='mtop' type='a'>Sustituír varios espazos por soamente un espazo.
+              <ul class='dashed-kali'>
+                <span class='label'>OPCIÓN 1</span>
+                <li>cat -n /tmp/usuarios.csv | tr -s '&nbsp;&nbsp;' ' ' > /tmp/usuarios2.csv</span> <span class='explicacion'>#Listar numeradas todas as liñas do ficheiro /tmp/usuarios.csv e sustituír 2 espazos por 1, redireccionando a saída non á consola senón ao ficheiro /tmp/usuarios2.csv, o cal créase se non existe e elimínase e créase se existe.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                <span class='label'>OPCIÓN 2</span>
+                <li>tr -s '&nbsp;&nbsp;' ' ' < /tmp/usuarios.csv > /tmp/usuarios2.csv</span> <span class='explicacion'>#Sustituír no ficheiro /tmp/usuarios.csv 2 espazos por 1, redireccionando a saída non á consola senón ao ficheiro /tmp/usuarios2.csv, o cal créase se non existe e elimínase e créase se existe.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+              </ul>
+
+            <li class='mtop' type='a'>Sustituír caracteres '; ' por ';'
+              <ul class='dashed-kali'>
+                <span class='label'>OPCIÓN 1</span>
+                <li>tr -s '; ' ';' < /tmp/usuarios.csv > /tmp/usuarios2.csv</span> <span class='explicacion'>#Sustituír no ficheiro /tmp/usuarios.csv todos os caracteres punto e coma seguidos por un espazo, por soamente o caracter punto e coma, redireccionando a saída non á consola senón ao ficheiro /tmp/usuarios2.csv, o cal créase se non existe e elimínase e créase se existe.</span></li>
+                <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                <span class='label'>OPCIÓN 2</span>
+                <li>sed -i 's|; |;|g" /tmp/usuarios.csv </span> <span class='explicacion'>#Sustituir no ficheiro /tmp/usuarios.csv todos os caracteres punto e coma seguidos por un espazo por soamente o caracter punto e coma</span></li>
+              </ul>
+          </ul>
+
+        <div class='pagebreak'></div>
+          <li class='mtop mleft mbottom'>Ordear. Así:
+            <ul type='circle'>
+              <li class='mtop' type='a'>Ordear por Provincia.
+                <ul class='dashed-kali'>
+                  <span class='label'>OPCIÓN 1</span>
+                  <li>tail +2 /tmp/usuarios.csv | sort -t';' -k5 > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear a partir da liña 2 pola columna 5, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv</span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                  <span class='label'>OPCIÓN 2</span>
+                  <li>sort -t';' -k5 /tmp/usuarios.csv | grep -v Provincia > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear pola columna 5, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv que non posúe a cabeceira porque co comando grep evitamos que apareza a liña co patrón de carecteres 'Provincia' </span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                </ul>
+              <li class='mtop' type='a'>Ordear por Provincia e o primeiro Apelido.
+                <ul class='dashed-kali'>
+                  <span class='label'>OPCIÓN 1</span>
+                  <li>tail +2 /tmp/usuarios.csv | sort -t';' -k5,1 -k2,1 > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear a partir da liña 2 pola columna 5 e o seu primeiro caracter, e logo ordear pola columna 2 e o seu primeiro caracter, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv</span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                  <span class='label'>OPCIÓN 2</span>
+                  <li>sort -t';' -k5,1 -k2,1 /tmp/usuarios.csv | grep -v Provincia > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear pola columna 5 e o seu primeiro caracter, e logo ordear pola columna 2 e o seu primeiro caracter, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv que non posúe a cabeceira porque co comando grep evitamos que apareza a liña co patrón de carecteres 'Provincia' </span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                </ul>
+              <li class='mtop' type='a'>Ordear por Provincia Pontevedra, primeiro Apelido, segundo Apelido e Nome.
+                <ul class='dashed-kali'>
+                  <span class='label'>OPCIÓN 1</span>
+                  <li>tail +2 /tmp/usuarios.csv | grep -i Pontevedra | sort -t';' -k2,1 -k3,1 -k1,1 > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear a partir da liña 2 soamente onde se atope o texto pontevedra (sen ter en conta maiúsculas e minúsculas) pola columna 2 e o seu primeiro caracter, e logo ordear pola columna 3 e o seu primeiro caracter, e logo ordear pola columna 1 e o seu primeiro caracter, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv</span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                  <span class='label'>OPCIÓN 2</span>
+                  <li>sort -t';' -k2,1 -k3,1 -k1,1 /tmp/usuarios.csv | grep -v Provincia | grep -i pontevedra > /tmp/usuarios2.csv</span> <span class='explicacion'>#Ordear pola columna 2e o seu primeiro caracter, e logo ordear pola columna 3 e o seu primeiro caracter, e logo ordear pola columna 1 e o seu primeiro caracter, tendo en conta que as columnas son aquelas onde o campo separador é o caracter punto e coma. A saída é redireccionada non á consola senón a un novo ficheiro de nome /tmp/usuarios2.csv que non posúe a cabeceira porque co comando grep evitamos que apareza a liña co patrón de carecteres 'Provincia' e que soamente contén á provincia de pontevedra (sen ter en conta maiúsculas e minúsculas)</span></li>
+                  <li>mv /tmp/usuarios2.csv /tmp/usuarios.csv</span> <span class='explicacion'>#Mover o ficheiro /tmp/usuarios2.csv a /tmp/usuarios.csv</span></li>
+                </ul>
+              </li>
+            </ul>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'>Crear variables e usuarios. Así:
+          <ul type='circle'>
+            <li class='mtop' type='a'>Crear soamente os usuarios coa consola bash tendo en conta nome, apelidos e contrasinais, de tal xeito que o nome de usuario será creado con caracteres minúsculas combinando o nome e os 3 primeiros caracteres dos apelidos: 
+              <ul type='none'>
+                  <code>
+                  while read LINE<br />
+                  do<br />
+                    NOME=$(echo ${LINE} | grep -i bash | cut -d ';' -f1 | tr '[:upper:]' '[:lower:]')<br />
+                    APELIDO1=$(echo ${LINE} | grep -i bash | cut -d ';' -f2 | cut -c1-3 | tr '[:upper:]' '[:lower:]')<br />
+                    APELIDO2=$(echo ${LINE} | grep -i bash | cut -d ';' -f3 | cut -c1-3 | tr '[:upper:]' '[:lower:]')<br />
+                    CONTRASINAL=$(echo ${LINE} | grep -i bash | cut -d ';' -f6)<br />
+                    useradd -m -d /home/${NOME} -s /bin/bash ${NOME}${APELIDO1}${APELIDO2}<br />
+                    echo -e "${CONTRASINAL}\n${CONTRASINAL}" | passwd ${NOME}${APELIDO1}${APELIDO2} <br />
+                  done&#60/tmp/usuarios.csv<br />
+                  </code>
+                  <span class='explicacion'>#Percorrer a partir da liña 2 cada liña do ficheiro /tmp/usuarios.csv. Por cada liña créanse variables que logo empréganse para xerar os usuarios coas súas contrasinais. Así, por cada liña créanse as variables:
+                  <ul type='square'>
+                    <li> NOME &#10141; Filtrar a liña onde aparece bash independentemente de maiúsculas e minúsculas, quedarse coa columna 1 sendo o campo separador de columnas o caracter punto e coma, e transformar todos os caracteres en minúsculas.</li>
+                    <li> APELIDO1 &#10141; Filtrar a liña onde aparece bash independentemente de maiúsculas e minúsculas, quedarse coa columna 2 sendo o campo separador de columnas o caracter punto e coma, quedarse soamente cos 3 primeiros caracteres e transformar todos os caracteres en minúsculas.</li>
+                    <li> APELIDO2 &#10141; Filtrar a liña onde aparece bash independentemente de maiúsculas e minúsculas, quedarse coa columna 3 sendo o campo separador de columnas o caracter punto e coma, quedarse soamente cos 3 primeiros caracteres e transformar todos os caracteres en minúsculas.</li>
+                    <li> CONTRASINAL &#10141; Filtrar a liña onde aparece bash independentemente de maiúsculas e minúsculas, quedarse coa columna 6 sendo o campo separador de columnas o caracter punto e coma.</li>
+                    Por cada liña coas variables anteriores créase un usuario co comando <i>useradd</i>, onde:
+                    <li> -d /home/${NOME} &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/{NOME} </li>
+                    <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                    <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                    <li> ${NOME}${APELIDO1}${APELIDO2} &#10141; Establece como nome de autenticación de usuario o nome e os 3 primeros caracteres dos apelidos</li>
+                    Tamén por cada liña xérase o contrasinal do usuario anterior a través da variable ${CONTRASINAL}
+                  </ul>
+              </ul> 
+            </li>
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'>Enlaces duros/simbólicos. Así:
+          <ul type='circle'>
+            <li class='mtop' type='a'>Crear/eliminar enlaces simbólicos.
+              <ul class='dashed-kali'>
+                <li>mkdir /tmp/enlacesSimb ; cd /tmp/enlacesSimb</span> <span class='explicacion'>#Crear directorio /tmp/enlacesSimb e unha vez executado o comando <i>mkdir</i> independentemente que tivera éxito ou sexa errónea a execución, acceder ao directorio /tmp/enlacesSimb</span></li>
+                <li>ln -s /tmp/usuarios.csv</span> <span class='explicacion'>#Crear o enlace simbólico do ficheiro /tmp/usuarios.csv dentro de /tmp/enlacesSimb co nome usuarios.csv debido a que non escribimos explicitamente o nome do enlace.</span></li>
+                <li>ln -s /tmp/usuarios.csv linksimbolic1 </span> <span class='explicacion'>#Crear o enlace simbólico do ficheiro /tmp/usuarios.csv dentro de /tmp/enlacesSimb co nome linksimbolic1 debido a que escribimos explicitamente o nome do enlace.</span></li>
+                <li>ls -l</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesSimb</span></li>
+                <li>ls -li</span> <span class='explicacion'>#Listar de forma extendida amosando os inodos do contido do directorio onde estamos situados /tmp/enlacesDuros. Podemos observer o número 3 logo da máscara de permisos, o cal determina que existen 3 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>rm /tmp/enlacesSimb/linksimbolic1 </span> <span class='explicacion'>#Eliminar o enlace simbólico linksimbolic1 do cartafol /tmp/enlacesSimb</span></li>
+                <li>ls -l</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesSimb</span></li>
+                <li>rm /tmp/usuarios.csv </span> <span class='explicacion'>#Eliminar o ficheiro /tmp/usuarios.csv. Todos os enlaces simbólicos que existan deste ficheiro non se borran, e ao listalos de forma extendida pode que amosen en cores a perda de conexión do enlace simbólico co ficheiro ao que apuntan.</span></li>
+                <li>ls -l</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesSimb</span></li>
+              </ul>
+            </li>
+            <li class='mtop' type='a'>Crear/eliminar enlaces duros.
+              <ul class='dashed-kali'>
+                <li>mkdir /tmp/enlacesDuros && cd /tmp/enlacesDuros</span> <span class='explicacion'>#Crear directorio /tmp/enlacesDuros e unha vez executado o comando <i>mkdir</i> se soamente tivera éxito a execución, acceder ao directorio /tmp/enlacesDuros</span></li>
+                <li>ln /tmp/usuarios.csv</span> <span class='explicacion'>#Crear o enlace duro do ficheiro /tmp/usuarios.csv dentro de /tmp/enlacesDuros co nome usuarios.csv debido a que non escribimos explicitamente o nome do enlace.</span></li>
+                <li>ln /tmp/usuarios.csv linkDuro1 </span> <span class='explicacion'>#Crear o enlace duro do ficheiro /tmp/usuarios.csv dentro de /tmp/enlacesDuros co nome linkDuro1 debido a que escribimos explicitamente o nome do enlace.</span></li>
+                <li>ls -l</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesDuros. Podemos observer o número 3 logo da máscara de permisos, o cal determina que existen 3 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>ls -li</span> <span class='explicacion'>#Listar de forma extendida amosando os inodos do contido do directorio onde estamos situados /tmp/enlacesDuros. Podemos observer o número 3 logo da máscara de permisos, o cal determina que existen 3 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>ls -li . /tmp/usuarios.csv</span> <span class='explicacion'>#Listar de forma extendida amosando os inodos do contido do directorio actual, onde estamos situados /tmp/enlacesDuros e o ficheiro /tmp/usuarios.csv. Podemos observer o número 3 logo da máscara de permisos, o cal determina que existen 3 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>rm /tmp/enlacesDuros/usuarios.csv </span> <span class='explicacion'>#Eliminar o enlace duro usuarios.csv do cartafol /tmp/enlacesDuros</span></li>
+                <li>ls -li</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesDuros amosando os inodos. Podemos observar o número 2 logo da máscara de permisos, o cal determina que existen 2 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>rm /tmp/usuarios.csv </span> <span class='explicacion'>#Eliminar o ficheiro /tmp/usuarios.csv. Todos os enlaces duros que existan deste ficheiro non se borran, xa que non estamos a borrar o inodo senón o ficheiro que apunta ao inodo.</span></li>
+                <li>ls -li</span> <span class='explicacion'>#Listar de forma extendida o contido do directorio onde estamos situados /tmp/enlacesDuros amosando os inodos. Podemos observar o número 1 logo da máscara de permisos, o cal determina que existe soamente 1 ficheiro apuntando ao mesmo inodo.</span></li>
+              </ul>
+            </li>
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'>Buscar. Así:
+          <ul type='circle'>
+            <li class='mtop' type='a'>Buscar enlaces simbólicos.
+              <ul class='dashed-kali'>
+                <li>find /tmp/enlacesSimb -type l </span> <span class='explicacion'>#Buscar dentro da ruta /tmp/enlacesSimb calquer enlace simbólico</span></li>
+              </ul>
+            </li>
+            <li class='mtop' type='a'>Buscar enlaces duros.
+              <ul class='dashed-kali'>
+                <li>ls -li . /tmp/usuarios.csv</span> <span class='explicacion'>#Listar de forma extendida amosando os inodos do contido do directorio actual, onde estamos situados /tmp/enlacesDuros e o ficheiro /tmp/usuarios.csv. Podemos observer o número 3 logo da máscara de permisos, o cal determina que existen 3 ficheiros apuntando ao mesmo inodo.</span></li>
+                <li>find /tmp -inum $(ls -li /tmp/enlacesDuros/linkDuro1 | cut -d ' ' -f1) </span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera cousa dentro do sistema de arquivos que posúa o número de inodo que escribimos logo da opción <i>-inum</i>. Este número foi averiguado tras realizar o comando <i>ls -li /tmp/enlacesDuros/linkDuro1 | cut -d ' ' -f1</i>, o cal lista de forma extendida e sobre esa saída quédase co valor da primeira columna, sendo o campo separador de columnas empregado o caracter espazo.</span></li>
+                <li>find /tmp -links 3</span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera cousa dentro do sistema de arquivos que posúa 3 enlaces duros.</span></li>
+                <li>find /tmp -links 1</span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera cousa dentro do sistema de arquivos que posúa 1 enlace duro.</span></li>
+              </ul>
+            </li>
+            <li class='mtop' type='a'>Buscar ficheiros.
+              <ul class='dashed-kali'>
+                <li>find /tmp -type f -name usuarios.csv </span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera ficheiro que posúa exactamente o nome usuarios.csv, é dicir, todo en minúsculas</span></li>
+                <li>find /tmp -type f -iname usuarios.csv </span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera ficheiro que posúa o nome usuarios.csv, independentemente das maiúsculas e minúsculas</span></li>
+              </ul>
+            </li>
+            <li class='mtop' type='a'>Buscar dentro de ficheiros.
+              <ul class='dashed-kali'>
+                <li>find /tmp -type f -iname usuarios.csv -exec grep -Hi lugo {} \; </span> <span class='explicacion'>#Buscar dentro da ruta /tmp calquera ficheiro que posúa o nome usuarios.csv, independentemente das maiúsculas e minúsculas, e dentro dos ficheiros atopados buscar o patrón de caracteres lugo, independentemente das maiúsculas e minúsculas (opción -i). Ademais, amosa antes do patrón buscado o nome do ficheiro (opción -H)</span></li>
+              </ul>
+            </li>
+
+          </ul> 
+        </div>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
