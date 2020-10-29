@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Wireshark: ICMP/ARP</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/RL' target='_blank'>Wireshark: ICMP/ARP</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Wireshark-ICMP-ARP-rede-interna.png" />
+    </figure>
+  <div class='minindent'>&nbsp;</div>
+
+  <div class='nota w80 fright'>
+    <b>NOTAS</b>:
+    <div class='minindent'>&nbsp;</div>
+    (1) SMR_ALUXY -onde XY pode tomar os valores 01, 02, ..., 30 e corresponde ao número de PC que tes asignado.
+    <div class='minindent'>&nbsp;</div>
+    (2) Debes facer entrega desta exercicio mediante <b>un arquivo en formato PDF</b>, noutro formato non será corrixido. O arquivo debe conter respostas/imaxes coa solución dos apartados. O arquivo a entregar na aula virtual terá o nome: <b>Solucion-RL-Exercicio3_ALUXY.pdf</b>
+    <div class='minindent'>&nbsp;</div>
+  </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Exercicio 3 - Wireshark: ICMP/ARP</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali i386</p>
+        <li class='mtop mleft mbottom'>Configuración da rede: 
+          <ul class='dashed-kali'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-kali'>
+              <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(enps03) e interna(enps08)</span>.</li>
+              <li>ip addr add 10.10.10.10/8 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 10.10.10.10 e máscara de subrede: 255.0.0.0</span>.</li>
+              <li>ifconfig eth0 10.10.10.10/8<span class='explicacion'> #Comando equivalente ao anteriro, é dicir, configurar a tarxeta de rede interna eth0, coa IP: 10.10.10.10 e máscara de subrede: 255.0.0.0</span>.</li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de rede: loopback(lo) e interna(eth0)</span>.</li>
+            </ul>
+          </ul>
+        <li class='mtop mleft mbottom'>Táboa arp: 
+          <ul class='dashed-kali'>
+            <ul class='hashtag-kali'>
+              <li>arp<span class='explicacion'> #Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address).</span>
+              <li>exit <span class='explicacion'> #Saír da consola do usuario root, para voltar á consola do usuario kali sen permisos de root</span></li>
+            </ul>
+            <li>
+          </ul>
+        </li>
+        <li class='mtop mleft mbottom'>Arrancar Wireshark: 
+          <ul class='dashed-kali'>
+              <li>sudo wireshark &<span class='explicacion'> #Lanzar o programa wireshark (sniffer) para poder visualizar o que acontece na rede (protocolos, paquetes). O comando sudo permite executar o programa wireshark con permisos de root(administrador) e o caracter & serve para executar en segundo plano o programa e así devolver o prompt da consola para poder seguir traballando nela.</span></li>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Agora minimizamos a máquina virtual A (Kali i386) xa que imos traballar coa máquina virtual B (Microsoft Windows 10).</li>
+
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Microsoft Windows 10</p>
+        <li class='mtop mleft mbottom'>Configuración da rede: 
+          <ul>
+            <li type='a' class='mbottom'>Arrancar a consola de comandos con permisos de administrador(clic botón dereito icono cmd &#10141 clic botón dereito Símbolo del sistema &#10141 Ejecutar como administrador):<br />
+              <img class='contido bfigure pall' src="images/cmd1-administrador.png" />
+            </li>
+            <li type='a' class='mbottom'>Permitir cambios no dispositivo: Sí<br />
+              <img class='contido bfigure pall' src="images/cmd2-administrador.png" />
+              <img class='contido bfigure pall' src="images/cmd3-administrador.png" />
+            </li>
+              <li type='a' class='mbottom'>ipconfig<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede.</span>.<br />
+                <img class='contido bfigure pall' src="images/cmd4-administrador.png" />
+              </li>
+
+              <div class='pagebreak'></div>
+
+              <li type='a' class='mbottom'>Configurar a tarxeta de rede interna coa IP: 10.10.10.11 e máscara de subrede: 255.0.0.0</span>
+              </li>
+              <ul>
+                <li type='i' class='mbottom'>No cmd(consola de comandos): control &#10141 red &#10141 Ver conexiones de red<br />
+                  <img class='contido bfigure pall' src="images/cmd5-administrador.png" />
+                </li>
+                <li type='i' class='mbottom'>Ethernet &#10141 clic botón dereito rato &#10141 Propiedades<br />
+                  <img class='contido bfigure pall' src="images/cmd6-administrador.png" width='48%' />
+                </li>
+                <li type='i' class='mbottom'>Protocolo de internet versión 4 (TCP/IPv4) &#10141 dobre clic botón esquerdo rato &#10141 Usar la siguiente dirección IP: <br />
+                Dirección IP: 10.10.10.11<br />
+                Máscara de subred: 255.0.0.0<br />
+                  <img class='contido bfigure pall' src="images/cmd7-administrador.png" width='64%' /><br />
+                Aceptar &#10141 Aceptar
+                </li>
+                <li type='i' class='mbottom'>ipconfig<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede.</span>.<br />
+                  <img class='contido bfigure pall' src="images/cmd8-administrador.png" />
+                </li>
+              </ul>
+            </ul>
+          </ul>
+        <li class='mtop mleft mbottom'>Táboa arp: 
+          <ul>
+            <li type='a'>arp -a<span class='explicacion'> #Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address).</span><br />
+              <img class='contido bfigure pall' src="images/cmd9-administrador.png" />
+          </ul>
+        </li>
+        <li class='mtop mleft mbottom'>Agora minimizamos a máquina virtual B (Microsoft Windows 10) xa que imos traballar coa máquina virtual A (Kali i386).</li>
+  
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali i386</p>
+        <li class='mtop mleft mbottom'>Agora maximizamos a máquina virtual A (Kali i386).</li>
+        <li class='mtop mleft mbootom'>Play (icono azul aleta tiburón) en wireshark, é dicir, arrancamos o wireshark.</span><br />
+          <img class='contido bfigure pall' src="images/cmd10-administrador.png" width='60%' />
+        </li>
+
+        <li class='mtop mleft mbottom'>Facer ping á máquina virtual B(Microsoft Windows 10): 
+          <ul class='hashtag-kali'>
+            <li>ping -c4 10.10.10.11 <span class='explicacion'> #Envíar 4 paquetes ICMP dende a máquina Kali a Máquina Windows 10</span>
+              <img class='contido bfigure pall' src="images/cmd11-administrador.png" />
+            </li>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbootom'>Stop (icono vermello cadrado) en wireshark, é dicir, paramos o wireshark.</span><br />
+          <img class='contido bfigure pall' src="images/cmd12-administrador.png" /><br />
+          Podemos observar que como na táboa arp de Kali non estaba recoñecida a dirección física (MAC Address) de Windows 10, averiguase mediante o protocolo ARP. Así, envíase dende Kali unha mensaxe de broadcast(difusión) a todos os nodos da rede preguntando que host ten a dirección física correspondente á IP 10.10.10.11; e o host que posee esa IP, o de Windows 10, resposta indicando mediante un paquete ARP a súa dirección física. Deste xeito, agora xa se poden transmitir os paquetes ICMP, porque Kali sabe a que dirección física dirixilos para que poidan ser recibidos. Como podemos observar na imaxe, por cada paquete ICMP de Kali envíase unha pregunta (echo request), o cal ten a súa resposta correspondente da máquina Windows 10 con outro paquete ICMP (echo reply).
+        </li>
+
+        <li class='mtop mleft mbottom'>Comprobar a táboa arp: 
+          <ul class='dashed-kali'>
+            <ul class='hashtag-kali'>
+              <li>arp<span class='explicacion'> #Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address). Agora podemos observar como si existe unha entrada para o Windows 10, onde se asigna a IP 10.10.10.11 a súa dirección física (MAC Address ou HWaddress).</span><br />
+          <img class='contido bfigure pall' src="images/cmd13-administrador.png" />
+            </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Microsoft Windows 10</p>
+        <li class='mtop mleft mbottom'>Comprobar a táboa arp: 
+          <ul>
+            <li type='a'>arp -a<span class='explicacion'> #Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address). Agora podemos observar como si existe unha entrada para Kali, onde se asigna a IP 10.10.10.10 a súa dirección física.</span><br />
+              <img class='contido bfigure pall' src="images/cmd14-administrador.png" />
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+
+        <hr class='bfigure' />
+
+        <p class='mtop mbottom label'>Contesta e razoa brevemente:</p>
+          <ul>
+            <li class='mtop' type='1'>Que acontece se voltas a realizar de novo a práctica unha vez existen as entradas arp correspondentes, é dicir, se en Kali xa existe a entrada arp de Windows 10 e viceversa?
+            <li class='mtop' type='1'>Captura imaxes demostrando o que respostaches na cuestión 1.
+            <li class='mtop' type='1'>Executa na máquina Kali o comando: <span class='label'>arp -d 10.10.10.11</span><br />Executa na máquina Windows o comando: <span class='label'>arp -d *</span><br /> Captura imaxes coa execución e saída dos comandos anteriores. Que acontece se voltas a realizar de novo a práctica?
+            <li class='mtop' type='1'>Captura imaxes demostrando o que respostaches na cuestión 3.
+          </ul>
+        </li>
+	
+        </div>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
