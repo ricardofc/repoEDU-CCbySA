@@ -77,12 +77,13 @@
               <li>userdel -r alumno<span class='explicacion'> #Eliminar o usuario alumno e coa opción -r eliminar tamén o seu cartafol de usuario (/home/alumno) e se existe o seu cartafol de correo (var/mail/alumno ou /var/spool/mail/alumno; depende da varialbe MAIL_DIR definida no ficheiro /etc/login.defs)
               <li>id alumno <span class='explicacion'>#Amosa erro, porque quere amosar información de usuario e grupo do usuario de nome alumno, pero o usuario non existe.</span></li>
               <li>groups alumno <span class='explicacion'>#Amosa erro, porque quere amosar os grupos aos cales pertence o usuario de nome alumno, pero o usuario non existe</span></li>
-              <li>useradd -m -d /home/alumno -s /bin/bash -p $(mkpasswd abc123.) alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+              <li>apt -y install whois <span class='explicacion'> #Instalar o paquete whois, é dicir, instalar o paquete que integra o comando mkpasswd. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              <li>useradd -m -d /home/alumno -s /bin/bash -p $(mkpasswd -m sha-512 abc123.) alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
                 <ul type='none'>
                   <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
                   <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
                   <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
-                  <li> -p $(mkpasswd abc123.) &#10141; Establece como contrasinal o valor <i>abc123.</i> e mediante o comando <i>mkpasswd</i> cifra o texto anterior. Así o texto cifrado é o que se incorpora no ficheiro /etc/shadow</li>
+                  <li> -p $(mkpasswd -m sha-512 abc123.) &#10141; Establece como contrasinal o valor <i>abc123.</i> e mediante o comando <i>mkpasswd</i> cifra o texto anterior. Así o texto cifrado é o que se incorpora no ficheiro /etc/shadow</li>
                   <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
                   Ollo!: O contrasinal con este comando vai en texto claro e ademais o comando é recordado polo historial de comandos (~/.bash_history). 
                 </ul>
@@ -109,6 +110,7 @@
               <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non debe estar arrancado.</span></li>
               <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
               <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+              <li>apt -y install netcat <span class='explicacion'> #Instalar o paquete netcat, é dicir, instalar o paquete que integra o comando nc. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
               <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
               <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
               <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
@@ -152,9 +154,9 @@
         <li class='mtop mleft mbottom'>Acceder mediante a SSH á máquina virtual A dende a máquina virtual B. A partir de agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
           <ul>
             <ul class='hashtag-kali'>
-              <li>nc -vz 192.168.100.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
               <li>nc -vz debian 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
-              <li>ssh -v alumno@192.168.100.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>alumno</b> a través da conexión cifrada SSH.</span></li>
+              <li>ssh -v alumno@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>alumno</b> a través da conexión cifrada SSH.</span></li>
               <ul class='dashed-debian-alumno'>
                 <li>exit <span class='explicacion'> #Saír da consola remota ssh, do usuario alumno, á que acabamos de acceder da máquina virtual A, para voltar á consola local de root da máquina virtual B.</span></li>
               </ul>
@@ -176,13 +178,13 @@
                   <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
                   <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
                   <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
-                  <li>nc -vz 192.168.100.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+                  <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
                 </ul>
             </ul>
           </ul>
         </li>
 
-        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.100.100 ou a URL http://192.168.100.100</li>
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.120.100 ou a URL http://192.168.120.100</li>
 
         <div class='pagebreak'>&nbsp;</div>
 
@@ -203,7 +205,7 @@
         </li>
 
 
-        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador, visitar a IP 192.168.100.100 ou a URL http://192.168.100.100/usuarios.csv e descargar o ficheiro usuarios.csv en $HOME do usuario kali, é dicir, descargar en /home/kali</li>
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador, visitar a IP 192.168.120.100 ou a URL http://192.168.120.100/usuarios.csv e descargar o ficheiro usuarios.csv en $HOME do usuario kali, é dicir, descargar en /home/kali</li>
 
         <li class='mtop mleft mbottom'>Estudar o arquivo. Así:
           <ul type='circle'>
