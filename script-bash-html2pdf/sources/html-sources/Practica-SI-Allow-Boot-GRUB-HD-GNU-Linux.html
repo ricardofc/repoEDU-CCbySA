@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI Allow Boot GRUB disco duro - GNU/Linux</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot' target='_blank'>Práctica Seguridade Informática<br /> Allow Boot GRUB disco duro - GNU/Linux</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Allow-Boot-GRUB-HD-GNU-Linux.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> Instalación por defecto</span>: A instalación do sistema operativo GNU/Linux realizouse por defecto, é dicir, seguindo os pasos do instalador:
+            <ul>
+              <li>Táboa de particións msdos</li>
+              <li>Unha partición primaria e unha lóxica:
+                <ul type='circle'>
+                  <li>Raíz do sistema: /dev/sda1 (/). Formato: ext4
+                  <li>Swap: /dev/sda5 (swap). Formato: swap
+                </ul>
+              <li>Nome de usuario: usuario</li>
+              <li>Nome computador: usuario-pc</li>
+              <li>Contrasinal: abc123. (Ollo que o contrasinal ten un caracter punto final)</li>
+              <li>GRUB en /dev/sda sen contrasinal</li>
+            </ul>
+          </li>
+          <li class='colorblue'><span class='label'> Apagado normal do sistema operativo</span>: Para un correcto funcionamento da práctica o sistema operativo GNU/Linux debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros ext4.</span></li>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Arrancar co sistema operativo GNU/Linux instalado no disco duro</p>
+        <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'>O xestor de arranque: <a href='https://www.gnu.org/software/grub/' target='_blank'>GRUB versión 2 ou GRUB 2</a>
+         arranca por defecto na súa primeira opción en 5segundos. Entón, parar o arranque deste primeira opción premendo as teclas frechas abaixo &#x2193, arriba &#x2191.</li>
+        <li class='mtop mleft mbottom'>Seleccionar a primeira opción de arranque.</li>
+        <li class='mtop mleft mbottom'>Premer a tecla <span class='label'>e</span> (edit) para poder editar os parámetros de arranque do kernel.</li>
+        <li class='mtop mleft mbottom'>Moverse coa tecla frecha abaixo &#x2193 ata chegar á liña onde aparecen os parámetros <span class='label'>ro quiet splash</splash></li>
+        <li class='mtop mleft mbottom'>Sustituír os parámetros <span class='label'>ro quiet splash</span> polos parámetros <span class='label'>rw init=/bin/bash</span>. e premer as teclas <span class='label'>&lt;Ctrl&gt; + x</span>, é dicir,  &#x2303x, para arrancar a opción escollida con novos parámetros do kernel. Agora no arranque veremos que non chegamos a arrancar o sistema operativo porque o primeiro proceso a chamar (init ou systemd) está modificado a /bin/bash, co cal en vez de facer unha chamada ao arranque do sistema operativo facemos unha chamada a unha consola de comandos, polo que, accedemos a unha consola onde temos permisos de root (administrador). <span class='label'>Ollo!: Non está cargado completamente o sistema operativo, pero si está recoñecido o hardware.</span></li>
+        <li class='mtop mleft mbottom'>Executar:
+        <ul class='hashtag'><br />
+          <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+          <li >cat /proc/cmdline<span class='explicacion'> #Amosar o contido de /proc/cmdline que parámetros cos cales o kernel foi arrancado.</li>
+          <li >passwd usuario<span class='explicacion'> #Modificar o contrasinal do usuario de nome <i>usuario</i>. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+          <li >passwd root<span class='explicacion'> #Modificar o contrasinal do usuario <i>root</i>. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+          <li >reboot -f<span class='explicacion'> #Reiniciar de forma forzosa.</span></li>
+        </ul>
+
+        <div class='indent'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Deixar arrancar o sistema operativo GNU/Linux dende disco duro</p>
+        <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario de nome <span class='label'>usuario</span> foi modificada.</li>
+        <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario <span class='label'>root</span> foi modificada.</li>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
