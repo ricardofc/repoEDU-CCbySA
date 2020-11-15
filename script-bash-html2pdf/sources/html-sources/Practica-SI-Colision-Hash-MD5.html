@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI Colisión Hash MD5</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Práctica Seguridade Informática<br /> Colisión Hash MD5</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Colision-Hash-MD5.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent arriba'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Arrancar coa distro Live amd64 baseada en Debian</p>
+        <li class='mtop mleft mbottom'>Abrir un terminal e executar: 
+          <ul class='dashed mleftsubs'><br />
+            <li>git clone https://github.com/cr-marcstevens/hashclash <span class='explicacion'> #Descargar o repositorio hashclash de git de Marc Stevens</li>
+            <li>cd hashclash <span class='explicacion'> #Acceder ao directorio hashclash que contén o repositorio descargado</span></li>
+            <li>sudo apt -y install autoconf automake libtool zlib1g-dev libbz2-dev <span class='explicacion'> #Instalar os paquetes autoconf, automake, libtool, zlib1g-dev e libbz2-dev. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete. E mediante o comando sudo permitir a instalación a través da configuración deste comando (/etc/sudoers, visudo)</span></li>
+            <li>./build.sh <span class='explicacion'> #Executar o script build.sh</span></li>
+            <li>cd bin <span class='explicacion'> #Acceder ao directorio bin</span></li>
+            <li>./md5_fastcoll -o out1.bin out2.bin <span class='explicacion'> #Executar o script md5_fastcoll xerando dous arquivos binarios out1.bin e out2.bin, os cales son distintos pero posúen o mesmo hash md5, é dicir, executamos o comando que crea a colisión hash nos ficheiros out1.bin e out2.bin</span></li>
+            <li>file out1.bin out2.bin <span class='explicacion'> #Determinar o tipo de ficheiros que son out1.bin e out2.bin; neste caso ficheiros binarios (data).</span></li>
+            <li>md5sum out1.bin out2.bin <span class='explicacion'> #Crear hash MD5 dos ficheiros out1.bin e out2.bin </span></li>
+            <li>diff out1.bin out2.bin <span class='explicacion'> #Comprobar as diferencias entre os 2 ficheiros (out1.bin e out2.bin)</span></li>
+            <li>xxd out1.bin | tee 1.bin <span class='explicacion'> #Visualizar en hexadecimal o contido do ficheiro out1.bin e ademais mediante o comando tee crear con esa saída o ficheiro 1.bin </span></li>
+            <li>xxd out2.bin | tee 2.bin <span class='explicacion'> #Visualizar en hexadecimal o contido do ficheiro out2.bin e ademais mediante o comando tee crear con esa saída o ficheiro 2.bin</span></li>
+            <li>diff 1.bin 2.bin <span class='explicacion'> #Comprobar as diferencias entre os 2 ficheiros (1.bin e 2 .bin)</span></li>
+          </ul>
+        </ul>
+        <li class='mtop mleft mbottom'>Que acontece no comando executado <span class='label'>md5sum</span>? Por que? 
+        <li class='mtop mleft mbottom'>Que acontece nos comandos executados <span class='label'>xxd</span>? Por que? 
+        <li class='mtop mleft mbottom'>Que acontece nos comandos executados <span class='label'>diff</span>? Por que? 
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
