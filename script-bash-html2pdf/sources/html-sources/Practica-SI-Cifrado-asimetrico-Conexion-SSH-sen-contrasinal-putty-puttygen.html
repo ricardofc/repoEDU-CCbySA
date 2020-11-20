@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Cifrado asimétrico - Conexión Remota mediante SSH sen contrasinal</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Cifrado asimétrico <br /> Conexión Remota mediante SSH sen contrasinal</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-ssh-rede-interna-keys-and-putty.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'>Cliente ssh Microsoft Windows: <span class='label'> <a href='https://www.putty.org/' target='_blank'>putty</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'>Transferencia de arquivos mediante conexión cifrada ssh en Microsoft Windows: <span class='label'> <a href='https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html' target='_blank'>pscp</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'>Xeración/Carga/Conversión chaves pública/privada en Microsoft Windows: <span class='label'> <a href='https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html' target='_blank'>puttygen</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'>Documentación sobre <span class='label'> <a href='https://manuais.iessanclemente.net/index.php/Putty' target='_blank'>putty</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica Cifrado asimétrico <br /> Conexión Remota mediante SSH sen contrasinal dende Microsoft Windows</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Arrancar coa máquina Microsoft Windows</p>
+        
+        <li class='mtop mleft mbottom'>Descargar pscp, puttygen e  putty (Ver apartado NOTAS) 
+ 
+        <li class='mtop mleft mbottom'>Configurar a rede: 192.168.120.101/24
+      
+        <li class='mtop mleft mbottom'>pscp: Copiar a chave privada para poder acceder ao Servidor SSH: 
+          <ul class='CMD-Downloads'>
+            <div class='minindent'>&nbsp;</div>
+            <img class='cfigure mleftsubs' src="images/pscp.png" />
+            <li class='mleftsubs'>pscp.exe -P 22 kali@192.168.120.100:.ssh/id_rsa . <span class='explicacion'> #Copiar mediante conexión cifrada ssh (pscp.exe) o arquivo id_rsa (chave privada do usuario kali)</span></li>
+          </ul>
+        </li>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'>puttygen: Convertir a chave privada a formato ppk (formato entendible por putty): 
+          <ul type='lower-alpha'>
+          <div class='minindent'>&nbsp;</div>
+            <li>Executar puttygen.exe:
+              <div class='minindent'>&nbsp;</div>
+              <ul class='CMD-Downloads'>
+                <li class='mleftsubs'>puttygen.exe <span class='explicacion'> #Executar o aplicativo puttygen.exe e unha vez executado cargar a chave privada id_rsa</span>
+                  <img class='cfigure mbottom' src="images/puttygen.png" width='80%' />
+                </li>
+              </ul>
+            </li>
+            
+            <li class='mleftsubs'>Convertir esa chave privada ao formato entendible polo aplicativo putty gardándoa en formato PPK
+              <div class='minindent'>&nbsp;</div>
+              <img class='cfigure mbottom' src="images/puttygen2.png" />
+              <img class='cfigure mbottom' src="images/puttygen3.png" />
+            </li>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>putty: Acceder mediante conexión cifrada sen contrasinal ao Servidor SSH: 
+          <ul type='lower-alpha'>
+            <div class='minindent'>&nbsp;</div>
+            <li class='fleft'>Pór a IP. 
+            <div class='minindent'>&nbsp;</div>
+              <img class='cfigure mleftsubs ' src="images/putty1.png" width='96%' />
+            <div class='minindent'>&nbsp;</div>
+            <li class='fleft'>Pór o usuario a empregar na conexión: kali 
+            <div class='minindent'>&nbsp;</div>
+              <img class='cfigure mleftsubs ' src="images/putty2.png" width='96%' />
+            <div class='indent'>&nbsp;</div>
+            <li class='cboth'>Cargar a chave privada (formato PPK). 
+            <div class='minindent'>&nbsp;</div>
+              <img class='cfigure mleftsubs ' src="images/putty3.png" width='80%' />
+              <img class='cfigure mleftsubs ' src="images/putty4.png" width='48%' />
+            <div class='minindent'>&nbsp;</div>
+            <li>Conectar: Picar no botón Open para acceder sen contrasinal mediante conexión cifrada co usuario kali.
+            <div class='minindent'>&nbsp;</div>
+              <img class='cfigure mleftsubs ' src="images/putty5.png" />
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+
+
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>

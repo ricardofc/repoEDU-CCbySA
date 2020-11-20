@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Cifrado asimétrico - Conexión Remota mediante SSH sen contrasinal</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Cifrado asimétrico <br /> Conexión Remota mediante SSH sen contrasinal</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-ssh-rede-interna-keys-and-putty.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'>Cliente ssh GNU/Linux: <span class='label'> comando ssh (paquete openssh-client)</span></li>
+          <li class='colorblue'>Cliente ssh Microsoft Windows: <span class='label'> <a href='https://www.putty.org/' target='_blank'>putty</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <li class='colorblue'>Documentación sobre <span class='label'> <a href='https://manuais.iessanclemente.net/index.php/Putty' target='_blank'>putty</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica Cifrado asimétrico - Conexión Remota mediante SSH sen contrasinal</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Arrancar coa Kali Live amd64</p>
+        <li class='mtop mleft mbottom'>Pór contrasinal ao usuario, co que arranca a live, de nome: kali
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+          </ul>
+ 
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <ul class='dashed-kali'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kali'>
+              <ul class='hashtag-kali'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+               <li>ssh -v kali@localhost<span style='font-size:14px;color:#0F18A0;'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+               </li>
+              </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Configurar cifrado asimétrico: 
+          <ul class='dashed-kali'>
+            <li>ssh-keygen -t rsa <span class='explicacion'> #Crear un par de chaves: pública e privada. No comando emprégase o algoritmo de cifrado rsa (Rivest, Shamir y Adleman), que por defecto a non ser que o modifiquemos co parámetro -b nº_bits é de 2048bits. 
+               <div class='explicacion3 pall'>
+                 <ul type='square' class='mleftsubs'>
+                   <li>Debemos elixir o cartafol onde gardar as chaves e o nome destas. Pulsamos Enter para deixar por defecto o cartafol .ssh/ e o nome id_rsa dentro do HOME do usuario: /home/kali.
+                   <li>Passphrase nulo. Se aquí pomos un contrasinal, frase ou similar, cando queiramos conectarnos ao Servidor SSH en vez de pedir o contrasinal do usuario da conexión pedirá iste passphrase, mais como cando queremos conectarnos queremos facelo de forma directa sen petición de contrasinal ou passphrase, entón pulsamos 2 veces Enter para que a conexión se faga sen contrasinal.
+                   <li>Chave pública e privada creadas. Fingerprint. Creáronse no cartafol anteriormente indicado a chave privada id_rsa e a chave pública id_rsa.pub. Tamén creouse o fingerprint da chave pública, e dicir, a identificación inequívoca da chave pública correspondente ao usuario kali deste equipo.
+               </div>
+
+            <li>ls -lahtr $HOME/.ssh<span class='explicacion'> #Executar o comando ls dentro do cartafol de traballo do usuario ($HOME=/home/kali) coas opcións -l, -a, -h, -t e -r. A opción -l permite amosar de forma extendida o atopado (tipo de ficheiro, permisos, propietarios...), a opción -h engade unha letra indicativa de tamaño, tal como M para megabytes binarios (`mebibytes'), a cada tamaño. A opción -t clasifica polo tempo de modificación (o `mtime' no inodo) en vez de alfabeticamente, cos ficheros máis recientes en primeiro lugar. A opción -r clasifica en orde inversa. Polo tanto, o comando lista ficheiros e directorios do directorio /home/kali amosando de abaixo hacia arriba os máis recentes e en formato de lectura de tamaño máis amigable para as persoas (K, M, G...)
+               <div class='explicacion2 pall'>
+                 <span class='label'>De interese:</span> Comprobar os <span class='label'>permisos</span> dos ficheiros: <span class='label'>id_rsa</span>, <span class='label'>id_rsa.pub<span>, <span class='label'>authorized_keys</span>
+              </div>
+               
+        <div class='pagebreak'>&nbsp;</div>
+
+            <li>ssh-copy-id -i .ssh/id_rsa.pub kali@localhost <span class='explicacion'> #Copia da chave pública ao Servidor SSH. Para poder establecer a conexión sen contrasinal enviamos unha copia da chave pública ao Servidor SSH. Soamente será posible establecer unha conexión sen contrasinal se posuimos a parella desa chave pública, que non é outra que a chave privada, polo cal, nunca deberiamos desprendernos da chave privada, xa que sen ela a conexión non sería posible ou outro usuario podería suplantarnos no caso de facerse coa chave privada.</span></li>
+               <div class='explicacion3 pall'>
+                 <ul type='square' class='mleftsubs'>
+                   <li>Password usuario kali: Como aínda non temos copiada a chave pública nesta conexión pídese o contrasinal do usuario co cal queremos conectarnos ao Servidor SSH: root. A password do usuario kali é <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)
+                   <li>Agora a conexión sen contrasinal será posible por alumno na máquina aula11eq23 sendo unha vez establecida o usuario root, con todos os permisos deste usuario, na máquina Servidor SSH.
+              </div>
+
+            <li>ls -lahtr $HOME/.ssh<span class='explicacion'> #Executar o comando ls dentro do cartafol de traballo do usuario ($HOME=/home/kali) coas opcións -l, -a, -h, -t e -r. A opción -l permite amosar de forma extendida o atopado (tipo de ficheiro, permisos, propietarios...), a opción -h engade unha letra indicativa de tamaño, tal como M para megabytes binarios (`mebibytes'), a cada tamaño. A opción -t clasifica polo tempo de modificación (o `mtime' no inodo) en vez de alfabeticamente, cos ficheros máis recientes en primeiro lugar. A opción -r clasifica en orde inversa. Polo tanto, o comando lista ficheiros e directorios do directorio /home/kali amosando de abaixo hacia arriba os máis recentes e en formato de lectura de tamaño máis amigable para as persoas (K, M, G...)
+               <div class='explicacion2 pall'>
+                 <span class='label'>De interese:</span> Comprobar os <span class='label'>permisos</span> dos ficheiros: <span class='label'>id_rsa</span>, <span class='label'>id_rsa.pub<span>, <span class='label'>authorized_keys</span>
+              </div>
+
+            <li>ssh -v kali@localhost<span style='font-size:14px;color:#0F18A0;'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost sen contrasinal, a través de cifrado asimétrico. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+            </li>
+              <ul class='dashed-kali'>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+              </ul>
+            <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Comprobar acceso ssh sen contrasinal</p>
+        <li class='mtop mleft mbottom'>Comprobar o acceso ssh sen contrasinal dende a máquina B arrancada cunha distro Live GNU/Linux
+        <li class='mtop mleft mbottom'>Comprobar o acceso ssh sen contrasinal dende a  máquina B arrancada cun Sistema Operativo Microsoft Windows
+
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
