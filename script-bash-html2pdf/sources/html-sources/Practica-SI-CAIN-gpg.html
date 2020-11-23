@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI CAIN gpg</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Práctica Seguridade Informática<br /> CAIN - gpg</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/cain-license-ccbysa.jpg" />
+    </figure>
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-ssh-rede-interna-keys-and-gpg.bmp" />
+    </figure>
+
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> CAIN</span>: Confidencialidade, Autenticación, Integridade, Non repudio</li>
+          <li class='colorblue'><span class='label'> <a href='https://gnupg.org/' target='_blank'>gpg</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://www.openpgp.org/' target='_blank'>OpenPGP</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://philzimmermann.com/ES/background/index.html' target='_blank'>Philip Zimmermann</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label arriba'>Configurar cifrado asimétrico</p>
+        <li class='mtop mleft mbottom'>Arrancar coa distro Kali Live amd64. Abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>gpg --full-gen-key <span class='explicacion'> #Crear un par de chaves: pública e privada a través de diálogos nun menú. Escollemos: <br />
+            1 &#10141; Para poder cifrar e asinar<br />
+            4096 &#10141; Cifrado de 4096bits<br />
+            2y &#10141; Validez de 2 anos<br />
+            y &#10141; Confirmamos con y (yes) xa que estamos de acordo co elixido<br />
+            User Kali &#10141; Nome real do usuario<br />
+            kali@kali.local &#10141; Email do usuario<br />
+            live amd64 &#10141; Comentario<br />
+            O &#10141; Ok, estamos de acordo.<br />
+            <img class='cfigure mleft' src="images/gpg1.png" /><br />
+            Passphrase &#10141; Pomos como contrasinal: 1234 e repetimos o contrasinal. O sistema avisa que o contrasinal non é seguro, pero confirmamos que queremos ese contrasinal<br />
+            <img class='cfigure mleft' src="images/gpg2.png" />
+            <img class='cfigure mleft' src="images/gpg3.png" />
+            <img class='cfigure mleft' src="images/gpg4.png" />
+
+            <li>ls -lahtr $HOME/.gnupg<span class='explicacion'> #Executar o comando ls dentro do cartafol de traballo do usuario ($HOME=/home/kali) coas opcións -l, -a, -h, -t e -r. A opción -l permite amosar de forma extendida o atopado (tipo de ficheiro, permisos, propietarios...), a opción -h engade unha letra indicativa de tamaño, tal como M para megabytes binarios (`mebibytes'), a cada tamaño. A opción -t clasifica polo tempo de modificación (o `mtime' no inodo) en vez de alfabeticamente, cos ficheros máis recientes en primeiro lugar. A opción -r clasifica en orde inversa. Polo tanto, o comando lista ficheiros e directorios do directorio /home/kali/.gnupg (que garda o anel de chaves) amosando de abaixo hacia arriba os máis recentes e en formato de lectura de tamaño máis amigable para as persoas (K, M, G...)<br />
+            <img class='cfigure mleft' src="images/gpg5.png" />
+            <li>gpg -k <span class='explicacion'> #Listar as chaves públicas gardadas no anel de chaves </span>
+            <img class='cfigure mleft' src="images/gpg6.png" />
+            <li>gpg -K <span class='explicacion'> #Listar as chaves privadas gardadas no anel de chaves </span>
+            <img class='cfigure mleft' src="images/gpg7.png" />
+          </ul>
+        </li>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Cifrar un arquivo</p>
+        <li class='mtop mleft mbottom'>Cifrar un arquivo 
+          <ul class='dashed-kali mleftsubs'>
+            <li>echo 1234 > file.txt <span class='explicacion'> #Crear o ficheiro file.txt co contido 1234</li>
+            <li>cat file.txt <span class='explicacion'> #Ver o contido do ficheiro file.txt </span></li>
+            <li>gpg -e -o file.gpg -r kali@kali.local file.txt <span class='explicacion'> #Cifrar coa clave pública do usuario identificado co email kali@kali.local o ficheiro file.txt. O ficheiro cifrado terá o nome file.gpg </span></li>
+            <li>cat file.gpg <span class='explicacion'> #Ver o contido do ficheiro file.gpg </span></li>
+            <li>md5sum file.gpg <span class='explicacion'> #Crear hash MD5 do ficheiro file.gpg </span>
+            <img class='cfigure mleft' src="images/gpg8.png" />
+            </li>
+            <li>gpg -e -o file2.gpg -r kali@kali.local file.txt <span class='explicacion'> #Cifrar coa clave pública do usuario identificado co email kali@kali.local o ficheiro file.txt. O ficheiro cifrado terá o nome file2.gpg </span></li>
+            <li>cat file2.gpg <span class='explicacion'> #Ver o contido do ficheiro file2.gpg </span></li>
+            <li>md5sum file2.gpg <span class='explicacion'> #Crear hash MD5 do ficheiro file2.gpg. </span>
+            <img class='cfigure mleft' src="images/gpg9.png" />
+            </li>
+
+          </ul>
+        </li>
+        <li class='mtop mleft mbottom'>Compara os "hash" dos ficheiros file.gpg e file2.gpg anteriores. Que acontece? Por que? 
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Descifrar un arquivo</p>
+        <li class='mtop mleft mbottom'>Descifrar un arquivo 
+          <ul class='dashed-kali mleftsubs'>
+            <li>mkdir descifrados <span class='explicacion'> #Crear o directorio descifrados </span></li>
+            <li>gpg -d -o descifrados/file-descifrado.txt file.gpg <span class='explicacion'> #Descifrar coa chave privada do usuario co cal se cifrou o arquivo mediante a súa chave pública. Como este usuario tiña configurada o passphrase solicítase. O ficheiro descifrado será gardado en descifrados/file-descifrado.txt. </span><br />
+            <img class='cfigure mleft' src="images/gpg10.png" />
+            <img class='cfigure mleft' src="images/gpg11.png" />
+            </li>
+            <li>cat descifrados/file-descifrado.txt <span class='explicacion'> #Ver o contido do ficheiro descifrados/file-descifrado.txt </span><br />
+            <img class='cfigure mleft' src="images/gpg12.png" />
+            </li>
+          </ul>
+ 
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Asinar un arquivo</p>
+        <li class='mtop mleft mbottom'>Asinar un arquivo 
+          <ul class='dashed-kali mleftsubs'>
+            <li>mkdir asinados <span class='explicacion'> #Crear o directorio asinados </span></li>
+            <li>gpg -o asinados/file-asinado.sign --detach-sign --default-key kali@kali.local file.txt <span class='explicacion'> #Asinar coa chave privada do usuario kali. Como este usuario tiña configurada o passphrase solicítase, a non ser que xa fora solicitado durante os últimos 10 minutos. O ficheiro asinado será gardado en asinados/file-asinado.sign </span><br />
+            <img class='cfigure mleft' src="images/gpg13.png" />
+            </li>
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Verificar a sinatura dun arquivo</p>
+        <li class='mtop mleft mbottom'>Verificar a sinatura dun arquivo 
+          <ul class='dashed-kali mleftsubs'>
+            <li>gpg --verify asinados/file-asinado.sign file.txt <span class='explicacion'> #Verificar a sinatura do ficheiro file.txt mediante o ficheiro asinado file-asinado.sign </span><br />
+            <img class='cfigure mleft' src="images/gpg14.png" />
+            </li>
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Resolver</p>
+        <li class='mtop mleft mbottom'>Realiza o cifrado e descifrado dun ficheiro empregando 2 entidades usuarios: Ana e Brais. Para iso:
+          <ul type='square'>
+            <li>Crea os usuarios Ana e Brais<br />
+              <div class='explicacion2'>
+              root@192.168.120.100# useradd -m -d /home/ana -s /bin/bash -p $(mkpasswd -m sha-512 abc123.) ana<br />
+              root@192.168.120.100# useradd -m -d /home/brais -s /bin/bash -p $(mkpasswd -m sha-512 abc123.) brais<br />
+              root@192.168.120.101# useradd -m -d /home/brais -s /bin/bash -p $(mkpasswd -m sha-512 abc123.) brais
+              </div>
+            <li>Crea o par de chaves para o usuario Brais: kpubB e kprivB. 
+              <div class='explicacion2'>brais@192.168.120.101:~$ gpg --full-gen-key</div>
+            <li>Brais envía a súa chave pública (kpubB) ao usuario Ana mediante conexión SSH.
+              <div class='explicacion2'>brais@192.168.120.101:~$ gpg -o kpubB --export brais@brais.local<br />
+                brais@192.168.120.101:~$ scp -P 22 kpubB brais@192.168.120.100:/tmp</div>
+            <li>Ana crea un ficheiro e cifra ese ficheiro coa chave pública de Brais (kpubB).
+              <div class='explicacion2'>ana@192.168.120.100:~$ gpg --import /tmp/kpubB<br />
+                ana@192.168.120.100:~$ echo 'Serás capaz de ler isto...' > /tmp/file.txt<br />
+                ana@192.168.120.100:~$ gpg -e -o /tmp/file.gpg -r brais@brais.local /tmp/file.txt
+              </div>
+            <li>Ana fai chegar ese ficheiro cifrado a Brais. Por exemplo, Ana copia ese ficheiro cifrado en /tmp e Brais mediante conexión SSH recolle o ficheiro.
+              <div class='explicacion2'>brais@192.168.120.101:~$ scp -P 22 brais@192.168.120.100:/tmp/file.gpg .</div>
+            <li>Brais a través da súa chave privada (kprivB) descifra ese ficheiro.
+              <div class='explicacion2'>brais@192.168.120.101:~$ gpg -d -o ./file.txt ./file.gpg<br />
+                brais@192.168.120.101:~$ cat file.txt
+              </div>
+          </ul>
+            
+        <li class='mtop mleft mbottom'>Realiza o cifrado e descifrado dun ficheiro empregando 2 entidades usuarios: Ana e Brais. Ademais Ana debe asinar o arquivo cifrado. Para iso:
+          <ul type='square'>
+            <li>Realiza o apartado anterior.
+            <li>Crea o par de chaves para o usuario Ana: kpubA e kprivA. 
+              <div class='explicacion2'>ana@192.168.120.100:~$ gpg --full-gen-key</div>
+            <li>Ana asina o arquivo file.gpg
+              <div class='explicacion2'>ana@192.168.120.100:~$ gpg -o /tmp/file.sign --detach-sign --default-key ana@ana.local /tmp/file.gpg</div>
+            <li>Ana deixa a súa chave pública, xunto co ficheiro cifrado e o ficheiro cifrado asinado en /tmp para que Brais poida copialos mediante conexión SSH.
+              <div class='explicacion2'>ana@192.168.120.100:~$ gpg -o /tmp/kpubA --export ana@ana.local</div>
+            <li>Brais copia a chave pública de Ana (kpubA) e os ficheiros cifrado (file.gpg) e asinado (file.sign)  mediante conexión SSH.
+              <div class='explicacion2'>brais@192.168.120.101:~$ scp -P 22 brais@192.168.120.100:/tmp/kpubA .<br />
+              brais@192.168.120.101:~$ scp -P 22 brais@192.168.120.100:/tmp/file.gpg .<br />
+              brais@192.168.120.101:~$ scp -P 22 brais@192.168.120.100:/tmp/file.sign . 
+              </div>
+            <li>Brais importa a chave pública de Ana e comproba a sinatura do ficheiro file.gpg mediante file.sign.
+              <div class='explicacion2'>brais@192.168.120.101:~$ gpg --import kpubA<br />
+                brais@192.168.120.101:~$ gpg --verify file.sign file.gpg 
+              </div>
+            <li>Brais unha vez comprobada a sinatura descifra o ficheiro file.gpg a través da súa chave privada (kprivB).
+              <div class='explicacion2'>brais@192.168.120.101:~$ gpg -d -o ./file-ok.txt ./file.gpg<br />
+                brais@192.168.120.101:~$ cat file-ok.txt
+              </div>
+          </ul>
+ 
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
