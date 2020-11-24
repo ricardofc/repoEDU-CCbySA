@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI Verificar ISO Debian</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Práctica Seguridade Informática<br /> Verificar ISO Debian</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <div class='minindent'>&nbsp;</div>
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Allow-Boot-CD-USB-Windows-chntpw-anyone.png" />
+    </figure>
+
+    <div class='minindent'>&nbsp;</div>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> md5sum, sha1sum, sha256sum, sha512sum</span>: Para sistemas GNU/Linux, como Debian, podedes empregar comandos como md5sum e sha256sum para verificar os "hash" dos arquivos.</li>
+          <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'><span class='label'> certutil</span>: Para sistemas Microsoft Windows, coma Windows 10, podedes empregar o comando certutil para verificar os "hash" dos arquivos.</li>
+          <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'><span class='label'> <a href='https://gnupg.org/' target='_blank'>gpg</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://www.openpgp.org/' target='_blank'>OpenPGP</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://philzimmermann.com/ES/background/index.html' target='_blank'>Philip Zimmermann</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://www.debian.org/CD/verify.es.html' target='_blank'>Verificar la autenticidad de los CD de Debian</a></span>
+            <div class='minindent'>&nbsp;</div>
+          <li class='colorblue'><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Descargar ISO Debian</p>
+        <li class='mtop mleft mbottom'>Visitar <a href="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/" target='_blank'>https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/</a>
+        <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        <li class='mtop mleft mbottom'>Descargar unha imaxe, por exemplo: debian-10.6.0-amd64-netinst.iso
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed mleftsubs'>
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.6.0-amd64-netinst.iso <span class='explicacion'> #Descargar a ISO debian-10.6.0-amd64-netinst.iso <br />
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label arriba'>Comparar "hash"</p>
+        <li class='mtop mleft mbottom'>Comparar os "hash" da imaxe ISO anterior co que aparece dentro dos ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS:
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed mleftsubs'>
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/MD5SUMS<span class='explicacion'> #Descargar o ficheiro MD5SUMS que contén os "hash" das ISO debian <br />
+            <li class='mtop mleft mbottom'>diff $(md5sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1) $(grep debian-10.6.0-amd64-netinst.iso MD5SUMS | cut -d' ' -f1) <span class='explicacion'> #Comparar o hash MD5 do ficheiro descargado co gardado no ficheiro MD5SUMS <br />
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS<span class='explicacion'> #Descargar o ficheiro SHA256SUMS que contén os "hash" das ISO debian <br />
+            <li class='mtop mleft mbottom'>diff $(sha256sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1) $(grep debian-10.6.0-amd64-netinst.iso SHA256SUMS | cut -d' ' -f1) <span class='explicacion'> #Comparar o hash SHA-256 do ficheiro descargado co gardado no ficheiro SHA256SUMS <br />
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA512SUMS<span class='explicacion'> #Descargar o ficheiro SHA512SUMS que contén os "hash" das ISO debian <br />
+            <li class='mtop mleft mbottom'>diff $(sha512sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1) $(grep debian-10.6.0-amd64-netinst.iso SHA512SUMS | cut -d' ' -f1) <span class='explicacion'> #Comparar o hash SHA-512 do ficheiro descargado co gardado no ficheiro SHA512SUMS <br />
+          </ul>
+        <li class='mtop mleft mbottom'>Se os "hash" coinciden: a descarga foi corrupta? Por que?
+        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen os "hash" na páxina oficial de Debian (MD5SUMS, SHA256SUMS e SHA512SUMS)? Por que?
+
+          
+        <div class='indent'>&nbsp;</div>
+        
+        <p class='mtop mleft mbottom label arriba'>Importar clave pública de Debian</p>
+        <li class='mtop mleft mbottom'>Importar ao noso anel de claves a clave pública de Debian para logo poder verificar os ficheiros asinados coa clave privada de Debian (MD5SUMS.sign, SHA256SUMS.sign e SHA512SUMS.sign):
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed mleftsubs'>
+            <li class='mtop mleft mbottom'>gpg --keyserver keyring.debian.org --recv-keys 0x64E6EA7D<span class='explicacion'> #Importar ao noso anel a chave pública de Debian que se atopa no servidor keyring.debian.org <br />
+              <div class='explicacion2'><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
+                <img class='cfigure mleftsubs pall' src="images/mouse-pointer-mini-rotate-180.png" />
+              </div>
+            </li>
+          </ul>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label arriba'>Verificar sinaturas</p>
+        <li class='mtop mleft mbottom'>Verificar as sinaturas dos ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS:
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed mleftsubs'>
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/MD5SUMS.sign<span class='explicacion'> #Descargar o ficheiro MD5SUMS.sign, sinatura do ficheiro MD5SUMS <br />
+            <li class='mtop mleft mbottom'>gpg --verify MD5SUMS.sign MD5SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro MD5SUMS mediante o ficheiro asinado MD5SUMS.sign </span><br />
+
+            <li class='mtop mleft mbottom'>gpg --keyserver keyring.debian.org --recv-keys 0x6294BE9B<span class='explicacion'> #Importar ao noso anel outra chave pública de Debian que se atopa no servidor keyring.debian.org <br />
+              <div class='explicacion2'><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
+                <img class='cfigure mleftsubs pall' src="images/mouse-pointer-mini-rotate-180.png" />
+
+            <li class='mtop mleft mbottom'>gpg --verify MD5SUMS.sign MD5SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro MD5SUMS mediante o ficheiro asinado MD5SUMS.sign </span><br />
+
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA256SUMS.sign, sinatura do ficheiro SHA256SUMS <br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA256SUMS.sign SHA256SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA256SUMS mediante o ficheiro asinado SHA256SUMS.sign </span><br />
+
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA512SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA512SUMS.sign, sinatura do ficheiro SHA512SUMS <br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA512SUMS.sign SHA512SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA512SUMS mediante o ficheiro asinado SHA512SUMS.sign </span><br />
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'>Se as sinaturas verificadas son auténticas pódese deducir que os ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS son pertencentes a Debian? Por que?
+        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen as sinaturas na páxina oficial de Debian (MD5SUMS.sign, SHA256SUMS.sign e SHA512SUMS.sign)? Por que? Ten algo que ver o servidor keyring.debian.org
+       </ul>
+ 
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
