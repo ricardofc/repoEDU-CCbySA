@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Cifrado asimétrico - Certificado Apache</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Cifrado asimétrico: Certificado Apache</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario2-repaso-ssh-apache2-rede-interna.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'>Cliente ssh GNU/Linux: <span class='label'> comando ssh (paquete openssh-client)</span></li>
+          <li class='colorblue'>Documentación oficial sobre o Servidor web <span class='label'> <a href='https://httpd.apache.org/docs/2.4/es/' target='_blank'>Apache (v2.4)</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica Cifrado asimétrico: Certificado Apache</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span style='font-size:14px;color:#0F18A0;'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH á máquina virtual A dende a máquina virtual B. A partir de agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Web Apache: 
+          <ul>
+            <ul class='dashed-kaliA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA'>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 start <span class='explicacion'> #Iniciar o servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+
+                    <div class='pagebreak'>&nbsp;</div>
+
+                    <div class='explicacion3'> No caso da distribución Kali xa temos instalado o servidor web Apache, pero nunha distribución baseada en Debian poderiamos instalalo do seguinte xeito:<br />
+                      <ul class='hashtag'>
+                        <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                        <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
+                        <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                      </ul>
+                    </div>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.120.100 ou a URL http://192.168.120.100</li>
+
+        <li class='mtop mleft mbottom'>Permisos apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <li>chown -R www-data. /var/www/html/ <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio DocumentRoot de Apache: /var/www/html</span></li>
+                <li>chmod 444 /var/www/html/index.html <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro index.html situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (Kali) a páxina referente á URL http://192.168.120.100</li>
+
+        <li class='mtop mleft mbottom'>Lanzar no navegador da máquina virtual B (Kali) unha nova lapela coa URL <span class='label'>https://192.168.120.100</span> Que acontece? Por que?<br />E se visitamos a URL <span class='label'>https://kaliA</span> Que acontece? Por que?</li>
+
+        <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'>Activar configuración https (<a href='https://httpd.apache.org/docs/2.4/es/mod/mod_ssl.html' target='_blank'><span class='fweightnull'>módulo SSL</span></a>, porto TCP 443) en Apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <div class='explicacion3'> Revisar o contido dos directorios:
+                  <ul type='square'>
+                    <li>/etc/apache2/sites-available
+                    <li>/etc/apache2/sites-enabled
+                  </ul>
+                </div>
+                <li>nc -vz 192.168.120.100 443 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 443 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 443 é o porto TCP a escanear.</span></li>
+                <li>a2ensite default-ssl <span class='explicacion'>#Habilitar o VirtualHost default-ssl, que configura o acceso a través de https (porto TCP 443)</span></li>
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do servidor web Apache.</span></li>
+                <div class='explicacion3'> Revisar o contido dos directorios:
+                  <ul type='square'>
+                    <li>/etc/apache2/sites-available
+                    <li>/etc/apache2/sites-enabled
+                  </ul>
+                </div>
+                <li>nc -vz 192.168.120.100 443 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 443 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 443 é o porto TCP a escanear.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Lanzar de novo no navegador da máquina virtual B (Kali) unha nova lapela coa URL <span class='label'>https://192.168.120.100</span> Que acontece? Por que?<br />E se visitamos a URL <span class='label'>https://kaliA</span> Que acontece? Por que?</li>
+
+        <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'>Activar certificado https (<a href='https://httpd.apache.org/docs/2.4/es/mod/mod_ssl.html' target='_blank'><span class='fweightnull'>módulo SSL</span></a>, porto TCP 443) en Apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <li>nc -vz 192.168.120.100 443 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 443 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 443 é o porto TCP a escanear.</span></li>
+                <li>a2enmod ssl <span class='explicacion'>#Habilitar o módulo ssl que permite activar a configuración do VirtualHost default-ssl, que configura o acceso a través de https (porto TCP 443)</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar a configuración do servidor web Apache.</span></li>
+                <li>nc -vz 192.168.120.100 443 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 443 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 443 é o porto TCP a escanear.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Lanzar de novo no navegador da máquina virtual B (Kali) unha nova lapela coa URL <span class='label'>https://192.168.120.100</span> Que acontece? Por que?<br />E se visitamos a URL <span class='label'>https://kaliA</span> Que acontece? Por que?</li>
+
+
+        <li class='mtop mleft mbottom'>É a conexión segura? A transmisión da información realízase mediante cifrado (RSA, DSA...) (MD5, SHA1, SHA-256...)? O navegador empregado confía no certificado configurado no servidor Apache? Ese certificado está asinado por unha entidade certificadora? Podemos ver información sobre o certificado de Apache a través do navegador(Si/Non)? Se é posible como se pode revisar esa información?</li>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
