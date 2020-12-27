@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Servizo Web: Apache</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>HTTP-Basic: Apache</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario2-repaso-ssh-apache2-rede-interna-http-https.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li>Prerrequisitos:
+            <br />
+            <br />
+            <ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-Si-Apache.pdf' target='_blank'>Servizo Web: Apache</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-SI-Certificado-Apache.pdf' target='_blank'>Cifrado asimétrico: Certificado Apache</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+            </ul>
+          <div class='minindent'>&nbsp;</div>
+          <li type='square'>Servidor Web Apache: 
+            <ul>
+              <li>Paquete apache2 (# apt update && apt -y install apache2).</span><br />
+              <img class='cfigure mleftplus240' src="images/mouse-pointer-mini-rotate-180.png" />
+              <li><a href='https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/VERSIONING' target='_blank'>Nomenclatura versións: 2.X.revision</a>, onde:
+              <ul>
+                <li> X toma valor par &#10140; a versión é estable
+                <li> X toma valor impar &#10140; a versión é de desenvolvemento
+            </ul>
+          </li>
+          <li type='square'>Cliente ssh GNU/Linux: <span class='label'> comando ssh (paquete openssh-client)</span></li>
+          <li type='square'>Servidor SSH GNU/Linux: Paquete <span class='label'>openssh-server</span> (# apt update && apt -y install openssh-server).</span><br />
+          Ficheiro de configuración: <span class='label'>/etc/ssh/sshd_config (man sshd_config)</span>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos</div>
+    <div class='justify pall'>
+      <ul type='square'>
+        <li>
+          No <strong>Exemplo1. Control de acceso</strong> imos tratar o tipo de control de acceso: autentificación http basic e os arquivos tipo <a href='http://httpd.apache.org/docs/2.4/es/howto/htaccess.html' target='_blank'>.htaccess</a>
+          <img class='cfigure mleftsubs arriba' src="images/mouse-pointer-mini.png" />
+          <ul>
+            <p>
+            HTTP proporciona un método de autenticación básico de usuarios: basic. Este método ante unha petición do cliente(navegador web) ao servidor cando se solicita unha URL amosará un diálogo pedindo usuario e contrasinal. Unha vez autenticado o usuario, o cliente volverá facer a petición ao servidor pero agora enviando o usuario e contrasinal, en texto claro (sen cifrar) proporcionados no diálogo. É recomendable entón se se emprega este método que se faga combinado con conexión SSL (HTTPS).
+            </p>
+          </ul>
+        </li>
+        <li>
+          No <strong>Exemplo2. Sniffer tcpdump</strong> imos capturar os paquetes http tidos lugar entre ás máquinas cliente e servidor. Revisados estes paquetes poderemos comprobar que a comunicación HTTP ten lugar sen cifrar e o HTTP Basic envía a información do usuario/contrasinal codificada en base64. Deste xeito, descodificando o base64 podemos saber o usuario/contrasinal empregados na comunicación.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo3. Sniffer Wireshark</strong> imos realizar de novo o Exemplo2 pero agora co programa Wireshark. A diferencia do tcpdump seremos capaz de seguir a comunicación de forma gráfica mediante a opción Follow do paquete seleccionado e unha vez atopada a codificación base64 do usuario/contrasinal o propio wireshark xa amosa tamén esa información descodificada.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo4. HTTPS e Sniffer tcpdump</strong> imos comprobar que non seremos quen de visualizar en texto claro o usuario/contrasinal empregados na Autenticación HTTP Basic, debido ao emprego do procotolo <span class='label'>HTTPS</span>.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo5. HTTPS e Sniffer Wireshark</strong> imos comprobar que non seremos quen de visualizar en texto claro o usuario/contrasinal empregados na Autenticación HTTP Basic, debido ao emprego do procotolo <span class='label'>HTTPS</span>.
+        </li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Servizo Web - Apache</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Web Apache: 
+          <ul>
+            <ul class='dashed-kaliA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA'>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 start <span class='explicacion'> #Iniciar o servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+
+                    <div class='pagebreak'>&nbsp;</div>
+
+                    <div class='explicacion3'> No caso da distribución Kali xa temos instalado o servidor web Apache, pero nunha distribución baseada en Debian poderiamos instalalo do seguinte xeito:<br />
+                      <ul class='hashtag'>
+                        <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                        <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
+                        <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                      </ul>
+                    </div>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.120.100 ou a URL http://192.168.120.100</li>
+
+        <li class='mtop mleft mbottom'>Permisos apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <li>chown -R www-data. /var/www/html/ <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio DocumentRoot de Apache: /var/www/html</span></li>
+                <li>chmod 444 /var/www/html/index.html <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro index.html situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (Kali) a páxina referente á URL http://192.168.120.100</li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. Control de acceso por HTTP Basic.</span>
+            <p>Na autenticación HTTP Basic é moi típico utilizar <span class='label'>arquivos .htaccess</span> nos directorios que queremos controlar o acceso. Os arquivos .htaccess son ficheiros de configuración do propio directorio onde exista.
+            <p>
+            Para usar arquivos .htaccess, necesítase ter unha configuración no servidor que permita poñer directivas de autenticación nestes arquivos, mediante a directiva AllowOverride, tal como segue: AllowOverride AuthConfig
+            <div class='explicacion3'>
+              <p><strong>NOTA:</strong> Visitar o seguinte enlace para ver unha explicación, máis polo miúdo, sobre á autenticación http basic: <a href="http://httpd.apache.org/docs/2.4/es/howto/auth.html" title="Autenticación y autorización" target="_blank">Autenticación y autorización</a><br />
+                <img class='cfigure arriba' src="images/mouse-pointer-mini.png" />
+              </p>
+            </div>
+            <p class='label'>
+            Procedemento:
+            </p>
+            <ol>
+               <li>Modificar arquivo <b>/etc/apache2/conf-available/security.conf</b> e engadir o seguinte bloque:
+                 <br />
+                 <blockquote>
+                        &lt;Directory /var/www/html/auth-empresa&gt;<br />
+                        <b>AllowOverride Authconfig</b><br />
+                        &lt;/Directory&gt;
+                 </blockquote>
+               </li>
+               <li>Crear o contrasinal para o usuario ana no ficheiro de contrasinais /etc/apache2/web.htpasswd:
+                 <blockquote>
+                   <ul class='hashtag-kaliA mleftsubs'>
+                     <li class='mleftsubs'>htpasswd -c /etc/apache2/web.htpasswd ana <span class='explicacion'>#Pór <b>123456</b> como contrasinal do usuario <i>ana</i></span>
+                   </ul>
+                </blockquote>
+                </li>
+                <li>Crear o contrasinal para o usuario brais no ficheiro de contrasinais /etc/apache2/web.htpasswd:
+                 <blockquote>
+                   <ul class='hashtag-kaliA mleftsubs'>
+                     <li class='mleftsubs'>htpasswd /etc/apache2/web.htpasswd brais <span class='explicacion'>#Pór <b>654321</b> como contrasinal do usuario <i>brais</i></span>
+                   </ul>
+                </blockquote>
+
+                <li>Configuralo servidor para o acceso sexa permitido mediante autenticación: usuario/contrasinal empregando un arquivo .htaccess: <br />
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>cat /root/.htaccess <span class='explicacion'>#Amosar contido arquivo .htacesss</span>
+                      <blockquote>
+                        <p>
+                        AuthType Basic<br />
+                        AuthName &quot;Web con Autenticacion Basic&quot;<br />
+                        AuthBasicProvider file<br />
+                        AuthUserFile /etc/apache2/web.htpasswd<br />
+                        ##Require valid-user <br />
+                        Require user ana 
+                        </p>
+                      </blockquote>
+                    </li>
+                  </ul>
+
+                <div class='arriba minindent'>&nbsp;</div>
+
+                <li>Xerar o directorio /var/www/html/auth-empresa, o ficheiro secret.txt dentro deste e mover o arquivo .htaccess, onde establecemos os permisos, para que Apache poida acceder a ese ficheiro secret.txt
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>mkdir /var/www/html/auth-empresa <span class='explicacion'>#Crear o directorio /var/www/html/auth-empresa</span>
+                    <li>echo 'S3c3eT contido' &gt; /var/www/html/auth-empresa/secret.txt <span class='explicacion'> Crear o ficheiro /var/www/html/auth-empresa/secret.txt co contido: <i>S3cr3T contido</i></span>
+                    <li>mv /root/.htaccess /var/www/html/auth-empresa/ <span class='explicacion'> #Mover o arquivo /root/.htaccess ao directorio /var/www/html/auth-empresa/</span>
+                    <li>chown -R www-data. /var/www/html/auth-empresa <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio /var/www/html/auth-empresa</span></li>
+                    <li>chmod 400 /var/www/html/auth-empresa/.htaccess <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro .htaccess situado en /var/www/html/auth-empresa, é dicir, establecer os permisos r-------- (soamente lectura para o usuario propietario)</span></li>
+                  </ul>
+                </li>
+
+                <div class='minindent'>&nbsp;</div>
+
+                <li>Actualizar a configuración de Apache para ter en conta os novos cambios:<br />
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                  </ul>
+
+
+                <div class='minindent'>&nbsp;</div>
+                <li>Actualizar o arquivo /etc/hosts no cliente kaliB:
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA mleft'>
+                      <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                  </ul>
+                  <ul class='dashed-kaliA'>
+                    <li>exit <span class='explicacion'> #Saír da consola remota ssh na que estamos a traballar, para voltar á consola local do usuario <b>kali</b> na máquina kaliB.</span></li>
+                  </ul>
+                  <ul class='dashed-kaliB mleftsubs'>
+                    <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                    <ul class='hashtag-kaliB mleftsubs'>
+                      <li>echo '192.168.120.100 auth-empresa.local' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome auth-empresa.local para que atenda á IP 192.168.120.100</li> 
+                      <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                    </ul>
+                    <li>
+                  </ul>
+
+                <div class='indent'>&nbsp;</div>
+
+                <li>Acceder dende o equipo cliente kaliB ás seguintes direccións web:
+                  <blockquote>
+                    <p>
+                    http://auth-empresa.local<br />
+                    http://auth-empresa.local/auth-empresa
+                    </p>
+                  </blockquote>
+
+                  <div class='explicacion3 pall'>
+                    <p> <span class='label'> IMPORTANTE:</span> Como estamos a empregar o sitio por defecto de Apache<br />(DocumenRoot &#10140; /var/www/html), aínda que configuramos a autenticación, durante todo o proceso o arquivo secret.txt antes de recargar o servidor estivo visible e accesible. Mellor sería ter configurado isto mediante VirtualHost, tal que non se activaría o sitio ata que executaramos o comando a2ensite correspondente:
+                    <p class='label'>a2ensite + reload &#10140; Unha ver activado o sitio(a2ensite) e recargado(reload) o servidor a páxina(VirtualHost) carga.
+                    </p>
+                  </div>
+
+                <div class='indent'>&nbsp;</div>
+                <li>Introducir usuario e contrasinal no formulario HTTP Basic
+                <figure class='cfigure'>
+                  <img class='contido bfigure pall' src="images/HTTP-Basic-1.png" />
+                </figure>
+                <figure class='cfigure'>
+                  <img class='contido bfigure pall' src="images/HTTP-Basic-2.png" />
+                </figure>
+        </ol>
+
+          <div class='indent'>&nbsp;</div>
+          <div class='pagebreak'>&nbsp;</div>
+
+        <img class='cfigure arriba mleftplus240' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. Sniffer <a href='https://www.tcpdump.org/' target='_blank'>tcpdump</a>.</span>
+            <p>Imos realizar de novo o Exemplo1 pero agora empregaremos na máquina virtual KaliA(servidor Web) un sniffer para revisar a comunicación vía web que se establece entre as máquinas cliente e servidor.
+            <p class='label'>
+            Procedemento:
+            </p>
+            <ol>
+               <li>No Servidor Web(kaliA) capturar os paquetes que teñen lugar a través do porto TCP 80 nun ficheiro para posterior consulta:
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <li>ssh kali@192.168.120.100<span class='explicacion'> #Acceder como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+                   <ul class='dashed-kaliA'>
+                     <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                     <ul class='hashtag-kaliA'>
+                       <li>tcpdump 'tcp port 80' -vv -w file.pcap <span class='explicacion'>#Capturar no ficheiro file.pcap os paquetes que teñen lugar co porto TCP 80</span>
+                     </ul>
+                   </ul>
+                 </ul>
+               </li>
+
+                <div class='indent'>&nbsp;</div>
+
+               <li>Acceder ao navegador do equipo cliente kaliB e eliminar as cookies/historial:
+                  <blockquote>
+                    <p>
+                    Premer as teclas Shift+Ctrl+Supr<br />
+                    Escoller Everything<br />
+                    Premer en Clear Now                    
+                    </p>
+                  </blockquote>
+                <figure class='cfigure'>
+                  <img class='contido bfigure pall' src="images/HTTP-Basic-3.png" />
+                </figure>
+
+
+
+               <div class='indent'>&nbsp;</div>
+
+              <li>Acceder dende o equipo cliente kaliB á seguinte dirección web:
+                  <blockquote>
+                    <p>
+                    http://auth-empresa.local/auth-empresa
+                    </p>
+                  </blockquote>
+
+               <div class='indent'>&nbsp;</div>
+
+              <li>Introducir usuario/contrasinal no formulario de autenticación HTTP Basic solicitado e revisar como a consola onde temos lanzado o comando <b>tcpdump</b> está a capturar paquetes. 
+              
+               <div class='indent'>&nbsp;</div>
+
+              <li>Unha vez que accedamos á páxina tras a correcta autenticación paramos a execución do comando <b>tcpdump</b> premendo Ctrl+C
+                <figure class='cfigure'>
+                  <img class='contido bfigure pall' src="images/HTTP-Basic-4.png" />
+                </figure>
+
+                <div class='indent'>&nbsp;</div>
+                <li>Agora revisamos o ficheiro coa captura de paquetes
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <ul class='dashed-kaliA'>
+                     <ul class='hashtag-kaliA'>
+                       <li>tcpdump -vv -r file.pcap | less <span class='explicacion'>#Revisar o capturado  no ficheiro file.pcap cos paquetes que tiveron lugar co porto TCP 80</span>
+                     </ul>
+                  </ul>
+                 </ul>
+
+              <div class='indent'>&nbsp;</div>
+              <li>Buscar o bloque correspondente a introducir usuario/contrasinal. Podemos ver que temos unha cadea en base64 a cal podemos descodificar obtendo usuario/contrasinal en texto claro
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <ul class='dashed-kaliA'>
+                     <ul class='hashtag-kaliA'>
+                       <li>echo 'cadeaAtopada' | base64 -d <span class='explicacion'>#Descodificar cadea base64, é dicir, visualizar en texto claro o usuario e contrasinal empregados na Autenticación HTTP Basic.</span>
+                    </ul>
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-5.png" />
+                    </figure>
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-6.png" />
+                    </figure>
+                  </ul>
+                 </ul>
+        </ol>
+
+          <div class='indent'>&nbsp;</div>
+          <div class='pagebreak'>&nbsp;</div>
+
+        <img class='cfigure arriba mleftplus240' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. Sniffer <a href='https://www.wireshark.org/' target='_blank'>Wireshark</a>.</span>
+            <p>Imos realizar de novo o Exemplo2 pero agora empregaremos para a lectura do ficheiro capturado file.pcap o sniffer Wireshark, para revisar a comunicación vía web que se establece entre as máquinas cliente e servidor.
+            <p class='label'>
+            Procedemento:
+            </p>
+            <ol>
+               <li>No Servidor Web(kaliA) temos capturado o ficheiro <b>file.pcap</b> (ver Exemplo2), o cal imos copialo na casa do usuario <i>kali</i>:
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <ul class='dashed-kaliA'>
+                     <ul class='hashtag-kaliA'>
+                       <li>cp -pv file.pcap /home/kali<span class='explicacion'>#Copiar preservando permisos(-p) e en modo detallado(-v) o ficheiro file.pcap dentro do directorio /home/kali</span>
+                       <li>chown kali. /home/kali/file.pcap <span class='explicacion'>#Cambiar usuario propietario kali e grupo propietario kali ao ficheiro /home/kali/file.pcap</span></li>
+                       <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                     </ul>
+                     <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b> para voltar á consola local do usuario <b>kali</b> no host <b>kaliB</b>.</span></li>
+                     </ul>
+                   <li>
+                   </ul>
+                 </ul>
+               </li>
+
+               <div class='indent'>&nbsp;</div>
+               <li> Copiar o ficheiro file.pcap no host kaliB
+                 <div class='minindent'>&nbsp;</div>
+                   <ul class='dashed-kaliB mleftsubs'>
+                     <li>scp kali@192.168.120.100:file.pcap .<span class='explicacion'> #Estando situado no HostB, copiar de A a B o arquivo <span class='nome'>/home/kali/file.pcap</span>, é dicir, copiar en B o ficheiro file.pcap  existente no HostA no cartafol <span class='nome'> da casa do usuario, que é o que simboliza o caracter ':' </span>
+                   </ul>
+               </li>
+
+               <div class='indent'>&nbsp;</div>
+               <li>Arrancar Wireshark: 
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <li>wireshark &<span class='explicacion'> #Lanzar o programa wireshark (sniffer) para poder visualizar o que acontece na rede (protocolos, paquetes). O caracter & serve para executar en segundo plano o programa e así devolver o prompt da consola para poder seguir traballando nela.</span></li>
+                </ul>
+
+
+
+               <div class='indent'>&nbsp;</div>
+
+              <li>Abrir o arquivo file.pcap para o seu estudo:
+                  <blockquote>
+                    <p>
+                    File &#10140; Open &#10140; /home/kali/file.pcap
+                    </p>
+                  </blockquote>
+
+              <div class='indent'>&nbsp;</div>
+
+              <li>Podemos buscar o bloque correspondente a introducir usuario/contrasinal de forma análoga a como fixemos co tcpdump(Ver Exemplo2), ou podemos empregar a mellora de funcionalidade que nos permite a GUI de Wireshark. Así:
+              <p>Filtramos por http e imos seleccionando os paquetes HTTP de orixe 192.168.120.101 que atopemos &#10140; Na sección Hypertext Transfer Protocol atoparemos unha cadea en base64 a cal podemos descodificar obtendo usuario/contrasinal en texto claro:
+                 <div class='minindent'>&nbsp;</div>
+                 <ul class='dashed-kaliB mleftsubs'>
+                   <li>echo 'cadeaAtopada' | base64 -d <span class='explicacion'>#Descodificar cadea base64, é dicir, visualizar en texto claro o usuario e contrasinal empregados na Autenticación HTTP Basic.</span>
+                 </ul>
+                 <p> Tamén podemos facer clic no icono + que aparece á esquerda desa cadea e xa o Wireshark é quen de descodificala, amosando así o usuario e contrasinal empregados na Autenticación HTTP Basic.
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-8.png" />
+                    </figure>
+
+        </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <img class='cfigure arriba mleftplus280' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. HTTPS e sniffer <a href='https://www.tcpdump.org/' target='_blank'>tcpdump</a>.</span>
+          <p>Prerrequisito:
+            <ul>
+<li>
+                <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-SI-Certificado-Apache.pdf' target='_blank'>Cifrado asimétrico: Certificado Apache</a>
+                <img class='cfigure mleftsubs arriba' src="images/mouse-pointer-mini.png" />
+            </ul>
+
+          <p>Realizar de novo o Exemplo2 pero agora as peticións web faranse mediante o protocolo <b>HTTPS</b> e non HTTP.
+          <div class='explicacion3 pall'>
+            <p>Agora non seremos quen de visualizar en texto claro o usuario/contrasinal empregados na Autenticación HTTP Basic, debido ao emprego do procotolo <b>HTTPS</b>.
+          </div>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-9.png" />
+                    </figure>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-10.png" />
+                    </figure>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-11.png" />
+                    </figure>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-12.png" />
+                    </figure>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <img class='cfigure arriba mleftplus280' src="images/mouse-pointer-mini-rotate-180.png" />
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. HTTPS e Sniffer <a href='https://www.wireshark.org/' target='_blank'>Wireshark</a>.</span>
+            <p>Prerrequisito:
+            <ul>
+<li>
+                <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-SI-Certificado-Apache.pdf' target='_blank'>Cifrado asimétrico: Certificado Apache</a>
+                <img class='cfigure mleftsubs arriba' src="images/mouse-pointer-mini.png" />
+            </ul>
+
+          <p>Realizar de novo o Exemplo3 pero agora as peticións web faranse mediante o protocolo <b>HTTPS</b> e non HTTP. 
+          <div class='explicacion3 pall'>
+            <p>Agora non seremos quen de visualizar en texto claro o usuario/contrasinal empregados na Autenticación HTTP Basic, debido ao emprego do procotolo <b>HTTPS</b>.
+          </div>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/HTTP-Basic-13.png" />
+                    </figure>
+        </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>

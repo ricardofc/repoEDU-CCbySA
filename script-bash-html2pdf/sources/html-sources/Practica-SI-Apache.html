@@ -1,0 +1,920 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Servizo Web: Apache</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Servizo Web: Apache</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario2-repaso-ssh-apache2-rede-interna.png" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li type='square'>Cliente ssh GNU/Linux: <span class='label'> comando ssh (paquete openssh-client)</span></li>
+          <li type='square'>Servidor SSH GNU/Linux: Paquete <span class='label'>openssh-server</span> (# apt update && apt -y install openssh-server).</span><br />
+          Ficheiro de configuración: <span class='label'>/etc/ssh/sshd_config (man sshd_config)</span>
+          <li type='square'>Servidor Web Apache: 
+            <ul>
+              <li>Paquete apache2 (# apt update && apt -y install apache2).</span><br />
+              <img class='cfigure mleftplus240' src="images/mouse-pointer-mini-rotate-180.png" />
+              <li><a href='https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/VERSIONING' target='_blank'>Nomenclatura versións: 2.X.revision</a>, onde:
+              <ul>
+                <li> X toma valor par &#10140; a versión é estable
+                <li> X toma valor impar &#10140; a versión é de desenvolvemento
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='colorblue'>Documentación oficial sobre o Servidor web <span class='label'> <a href='https://httpd.apache.org/docs/2.4/es/' target='_blank'>Apache (v2.4)</a></span>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li type='square'>Paquete apache2 (# apt update && apt -y install apache2).</span>
+              <li type='square'>Configuración en: <span class='label'>/etc/apache2/ (man apache2)</span>
+                <p><span class='label'>apache2.conf</span> &#10140; Ficheiro de configuración principal. Non deberiase modificarse con novas directivas. Así:
+                  <ul>
+                    <li> Se se quere extender a configuración global de Apache deberianse incluír noutros ficheiros de configuración dentro do directorio /etc/apache2/conf-available e activalos en /etc/apache2/conf-enabled (a2enconf, a2disconf). 
+                    <li>No caso de cambiar os portos e socket de conexión deberiase modificar o ficheiro /etc/apache2/ports.conf
+                  </ul>
+                <p>Aparecen por liña pares de valores: directiva e argumento. As directivas non distinguen entre maiúsculas e minúsculas e os argumentos si poden distinguir.
+                <p><span class='label'>ports.conf</span> &#10140; Ficheiro de configuración que contén as directivas de configuración de portos TCP e direccións IP onde escoitar as conexións do servidor web Apache.
+                <p><span class='label'>envvars</span> &#10140; Ficheiro de configuración que contén as variables de entorno que poden ser empregadas na configuración polos ficheiros de configuración que o consideren. 
+                  <div class='explicacion3'>
+                    <ul>
+                       <li>APACHE_RUN_USER=www-data &#10140; usuario que executa o servizo web Apache
+                       <li>APACHE_RUN_GROUP=www-data &#10140; grupo que executa o servizo web Apache
+                       <li>APACHE_PID_FILE=/var/run/apache2$SUFFIX/apache2.pid &#10140; pid de execución do servizo web Apache
+                       <li>APACHE_ULIMIT_MAX_FILES='ulimit -n 65536' &#10140; ulimit determina o número máximo de ficheiros abertos permitidos para servizo web Apache
+                    </ul>
+                  </div>
+
+              <div class='indent'>&nbsp;</div>
+                <p><span class='label'>conf-available</span> &#10140; Os ficheiros engadidos neste directorio son invocados (include) polo ficheiro de configuración global /etc/conf/apache2.conf. Este directorio é un bo lugar para engadir directivas na configuración. Todos os arquivos neste directorio para ser tidos en conta deben rematar coa extensión <i>.conf</i><br />
+                Os ficheiros situados neste directorio poden ser habilitados e deshabilitados usando os comandos <span class='label'>a2enconf</span> e <span class='label'>a2disconf</span> respectivamente.
+                <p><span class='label'>conf-enabled</span> &#10140; Habilita a configuración dos ficheiros. Os ficheiros de configuración habilitados son aqueles que neste directorio conteñen ligazóns ao directorio /etc/apache2/conf-available/
+                <div class='explicacion3'>
+                  <ul>
+                    <li><span class='label'>a2enconf</span> &#10140; Comando que permite habilitar os ficheiros de configuración situados no directorio /etc/apache2/conf-available/ engadindo ligazóns dende /etc/apache2/conf-enabled a /etc/apache2/conf-available
+                    <li><span class='label'>a2disconf</span> &#10140; Comando que permite deshabilitar os ficheiros de configuración activados no directorio /etc/apache2/conf-enabled eliminando ligazóns existentes dende /etc/apache2/conf-enabled a /etc/apache2/conf-available
+                  </ul>
+                </div>
+
+              <div class='indent'>&nbsp;</div>
+                <p><span class='label'>mods-available</span> &#10140; Este directorio conten ficheiros que rematan coa extensión .load e .conf. Os ficheiros .load conteñen as directivas de configuración necesarias para cargar o módulo en cuestión. Os ficheiros .conf conteñen as directivas necesarias para empregar o módulo en cuestión.
+                Os módulos situados neste directorio poden ser habilitados e deshabilitados usando os comandos <span class='label'>a2enmod</span> e <span class='label'>a2dismod</span> respectivamente.
+                <p><span class='label'>mods-enabled</span> &#10140; Habilita os módulos. Os módulos habilitados son aqueles que neste directorio conteñen ligazóns ao directorio /etc/apache2/mods-available/
+                <div class='explicacion3'>
+                  <ul>
+                    <li><span class='label'>a2enmod</span> &#10140; Comando que permite habilitar os ficheiros dos módulos situados no directorio /etc/apache2/mods-available/ engadindo ligazóns dende /etc/apache2/mods-enabled a /etc/apache2/mods-available
+                    <li><span class='label'>a2dismod</span> &#10140; Comando que permite deshabilitar os ficheiros dos módulos activados no directorio /etc/apache2/mods-enabled eliminando ligazóns existentes dende /etc/apache2/mods-enabled a /etc/apache2/mods-available
+                  </ul>
+                </div>
+
+
+              <div class='indent'>&nbsp;</div>
+              <div class='indent'>&nbsp;</div>
+                <p><span class='label'>sites-available</span> &#10140; Similar ao directorio mods-available, agás que contén as directivas para diferentes VirtualHost. O hostname non ten porque corresponder exactamente co nome do ficheiro. Debian por defecto posúe 2 ficheiros neste directorio:
+                <ul>
+                  <li>000-default.conf &#10140; VirtualHost para o porto TCP 80(hhtp)(Ver arquivo /etc/services)
+                  <li>default-ssl.conf &#10140; VirtualHost para o porto TCP 443(https)(Ver arquivo /etc/services). Este sitio pode estar activado pero será funcional cando o modulo ssl tamén está activado.
+                </ul>
+                Os sitios(arquivos) situados neste directorio poden ser habilitados e deshabilitados usando os comandos <span class='label'>a2ensite</span> e <span class='label'>a2dissite</span> respectivamente.
+                <p><span class='label'>sites-enabled</span> &#10140; Habilita os VirtualHost(sitios). Os sitios(arquivos) habilitados son aqueles que neste directorio conteñen ligazóns ao directorio /etc/apache2/sites-available/
+                <div class='explicacion3'>
+                  <ul>
+                    <li><span class='label'>a2ensite</span> &#10140; Comando que permite habilitar os sitios(VirtualHost) situados no directorio /etc/apache2/sites-available/ engadindo ligazóns dende /etc/apache2/sites-enabled a /etc/apache2/sites-available
+                    <li><span class='label'>a2dissite</span> &#10140; Comando que permite deshabilitar os sitios(VirtualHost) activados no directorio /etc/apache2/sites-enabled eliminando ligazóns existentes dende /etc/apache2/sites-enabled a /etc/apache2/sites-available
+                  </ul>
+                </div>
+
+              <div class='indent'>&nbsp;</div>
+              <li type='square'><a href='https://httpd.apache.org/docs/current/es/mod/directives.html' target='_blank'>Directivas</a>:
+                <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+                <div class='minindent'>&nbsp;</div>
+                <p><span class='label'>Include</span> &#10140; Directiva que permite engadir ficheiros de configuración á configuración global. Esta directiva ignora ficheiros que non finalizan na extensión .conf.
+                <p><span class='label'>Require</span> &#10140; Directiva para permitir ou denegar acceso aos recursos.
+                <p><span class='label'>DocumentRoot</span> &#10140; Directiva que define a ruta do cartafol onde o servidor web Apache aloxa as páxinas. Por exemplo: /var/www/html
+                <p><span class='label'>Listen</span> &#10140; Directiva que define IP/Porto TCP/Protocolo onde escoita o servidor web Apache (Listen 192.168.120.100:8443 https)
+. 
+                <!--Poden existir múltiples liñas Port indicando diferentes portos de escoita do servizo SSH.-->
+                <p><span class='label'>VirtualHost</span> &#10140; Directiva que define a posibilidade de aloxar varios dominios no mesmo servidor Apache.
+                <p><span class='label'>ServerName</span> &#10140; Directiva que define o nome DNS do sitio(dominio) aloxado.
+                <p><span class='label'>ServerAlias</span> &#10140; Directiva que define outros nomes DNS para a mesma páxina.
+                <p><span class='label'>AllowOverride</span> &#10140; Directiva que especifica que outras directivas poden ser postas en cada ficheiro .htaccess (ficheiros de configuración por directorio).
+                <p><span class='label'>ServerSignature</span> &#10140; Directiva que permite a configuración dunha liña de pé de páxina baixo documentos xerados polo servidor (mensaxes de erro, versión...)
+                <p><span class='label'>Options &pm;argumento</span> &#10140; Directiva que controla que funcións do servidor están dispoñibles nun directorio particular. Por exemplo: Options +Indexes especifica que se non existe nun directorio o ficheiro index.html amose o contido do directorio.
+                <p><span class='label'>Timeout</span> &#10140; Directiva que especifica a cantidade de tempo que o servidor agardará por certos eventos antes de fallar unha solicitude.
+                <p><span class='label'>MaxKeepAliveRequests</span> &#10140; Directiva que especifica o número máximo de peticións permitidas por cada conexión persistente.
+                <p><span class='label'>KeepAliveTimeout</span> &#10140; Directiva que limita o número de solicitudes permitidas por conexión.
+                <p><span class='label'>ErrorLog</span> &#10140; Directiva que especifica o nome do ficheiro no que o servidor rexistrará os erros que atope. Se a ruta do ficheiro non é absoluta, suponse que é relativo ao ServerRoot.
+                <p><span class='label'>LogFormat</span> &#10140; Directiva que especifica o formato a empregar para un ficheiro de rexistro.
+                <!--<p><span class='label'>AccessFileName</span> &#10140; Directiva que especifica ...-->
+                <p><span class='label'>ServerRoot</span> &#10140; Directiva que especifica o directorio base da instalación do servidor.
+              </li>
+
+              <div class='indent'>&nbsp;</div>
+              <li type='square'><a href='https://httpd.apache.org/docs/2.4/sections.html' target='_blank'>Seccións</a>:
+                <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+                <div class='indent'>&nbsp;</div>
+                <table class='label mleftsubs'>
+                <tr><td colspan=3 class='tdP tdPHeader'>Prioridade/Alcance<td class='tdP tdPHeader'>Sección</td><td class='tdP tdPHeader'>Aplicación</td><td class='tdP tdPHeader'>Exemplo</td></tr>
+                <tr>
+                <td rowspan=4 class='tdP tdPHeader'>
+                  <div style='margin-top:-20px;'><span style='font-size:30px;margin-left:6px;'>-</span></div>
+                  <br />
+                  <div><span style='font-size:30px;margin-left:6px;'>+</span></div></td>
+                <td rowspan=4 class='tdP tdPHeader'><span style='font-size:84px'>&#8595;</span></td>
+                <td rowspan=4 class='tdP tdPHeader'>
+                  <div style='margin-top:-10px;'><span style='font-size:30px;margin-left:6px;'>+</span></div>
+                  <br />
+                  <div><span style='font-size:30px;margin-left:6px;'>-</span></div></td>
+                <td class='tdP tdPFileSystem'><div class='fleft bfigure code2'>Directory</div><div class='fright bfigure code2'>.htaccess<br /><span style='font-size:10px;'>(AllowOverride) <span style='font-size:20px;'> &#8593;</span>)</span></div></td><td rowspan='2' class='tdP tdPFileSystem code2'>FileSystem</td><td rowspan='2' class='tdP tdPFileSystem code2'>&lt;Directory /var/www/html/prioridade&gt;<br /><span class='fweightnull'><sup>(ruta absoluta do sistema de ficheiros <sup>&#8593;</sup>)</sup></span></td></tr>
+                <tr><td class='tdP tdPFileSystem code2'>Files</td></tr>
+                <tr><td class='tdP tdPDocumentRoot code2'>Location</td><td rowspan='2' class='tdP tdPDocumentRoot code2'>DocumentRoot</td><td rowspan='2' class='tdP tdPDocumentRoot code2'>&lt;Location /prioridade&gt;<br /><span class='fweightnull mleftsubsx2'><sup>(ruta relativa ao DocumentRoot <sup>&#8593;</sup>)</sup></span></td></tr>
+                <tr><td class='tdp tdPDocumentRoot code2'>VirtualHost</td></tr>
+                </table>
+                <figcaption>Táboa. Seccións</figcaption>
+
+                <div class='minindent'>&nbsp;</div>
+                <div class='bfigure fright bgy'><span class='label'>Estrutura dunha sección:</span>
+                  <blockquote>
+                    <b>&lt;SectionName [pathDirectorio | "pattern"]&gt;</b><br />
+                    <ul>Directiva1 valor1<br />
+                    Directiva2 valor2<br />
+                    Directiva3 valor3<br />
+                    ...<br />
+                    DirectivaN valorN<br />
+                    </ul>
+                    <b>&lt;/SectionName &gt;</b>
+                  </blockquote>
+                </div>    
+                <div class='bfigure fleft bgy'>
+                  <b><a href='https://httpd.apache.org/docs/current/mod/directive-dict.html#Context' target='_blank'>Contexto das directivas:</a></b><br />
+                  <img class='cfigure arriba' src="images/mouse-pointer-mini.png" />
+                </div>
+
+<div class='indent'>&nbsp;</div>
+                <p><span class='label'>Directory</span> &#10140; Sección que inclúe directivas que actúan sobre un directorio. O directorio en cuestión sempre debe ser especificado mediante unha ruta absoluta do sistema de ficheiros.
+                  <div class='explicacion3'>
+                    Xeralmente, so se deberían empregar ficheiros .htaccess cando non se ten acceso ao ficheiro principal de configuración do servidor, por exemplo en servidores compartidos onde non se ten acceso como root no servidor.
+                  </div>
+                <p><span class='label'>Files</span> &#10140; Sección que inclúe directivas que actúan sobre os ficheiros que se especifiquen.
+                <p><span class='label'>Location</span> &#10140; Sección similar á sección Directory. O directorio en cuestión sempre debe ser especificado mediante unha ruta relativa ao DocumentRoot.
+                <p><span class='label'>VirtualHost</span> &#10140; Sección que inclúe directivas que actúan soamente sobre un específico VirtualHost (hostname ou IP).
+              </li>
+            </ul>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos</div>
+    <div class='justify pall'>
+      <ul type='square'>
+        <li>No <strong>Exemplo1. Modificar Listen</strong>, veremos como poder escoitar en distintos portos e IPs o protocolo HTTP e o protocolo HTTPS.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>No <strong>Exemplo2. Aloxar  cartafoles</strong>, veremos como poder aloxar múltiples páxinas web no servidor web <strong>Apache</strong>, pero todas pertencentes ao mesmo sitio/dominio, é dicir, todas pertencentes a exemplo.local
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>No <strong>Exemplo3. Xerar virtualhost</strong> veremos como poder aloxar páxinas de distintos dominios no mesmo servidor web mediante a configuración de hosts virtuais ou virtualhosts.
+          <ul>
+            <p>Os virtualhosts basicamente o que fan é permitir que un mesmo servidor web poida aloxar múltiples dominios, así configurando hosts virtuais podemos aloxar: exemplo1.local, exemplo2.local..., exemploN.local no mesmo servidor web. Cada empresa terá o seu virtualhost único e independente das demais.
+            </p>
+            <p>Aínda que como se comentou anteriormente cada virtualhost é único e independente dos demais, todo aquilo que non estea incluído na definición de cada virtualhost herdarase da configuración principal: /etc/apache2/apache2.conf, así, se se quere definir unha directiva común en tódolos virtualhost non se debe modificar cada un dos virtualhost introducindo esa directiva senón que se debe definir esa directiva nun arquivo de configuración dentro de /etc/apache2/conf-available e empregar o comando a2enconf para habilitar esa configuración no servidor web Apache, de tal forma que todos os virtualhost herdarán esa directiva. Por exemplo en /etc/apache2/conf-available/security.conf pódese atopala directiva ServerSignature On, que engade unha liña contendo a versión do servidor e o nome do VirtualHost.
+            </p>
+            <p> 
+              Existe tres tipos de virtualhost: baseados en nome, baseados en IP e baseados en varios servidores principais. Imos centrarnos nos virtualhost baseados en nome.
+            </p>
+          </ul>
+        </li>
+        <li>
+          No <strong>Exemplo4. Control de acceso</strong> imos tratar distintos tipos de control de acceso (autentificación http basic, IP), os arquivos tipo <a href='http://httpd.apache.org/docs/2.4/es/howto/htaccess.html' target='_blank'>.htaccess</a> e seccións &lt;Directory&gt; e directivas Order, Allow, Deny (todavía funcionais pero desanconsellables) e Require (&lt;RequireAll&gt;)
+          <ul>
+            <p>
+            HTTP proporciona un método de autenticación básico de usuarios: basic. Este método ante unha petición do cliente(navegador web) ao servidor cando se solicita unha URL amosará un diálogo pedindo usuario e contrasinal. Unha vez autenticado o usuario, o cliente volverá facer a petición ao servidor pero agora enviando o usuario e contrasinal, en texto claro (sen cifrar) proporcionados no diálogo. É recomendable entón se se emprega este método que se faga combinado con conexión SSL (HTTPS).
+            </p>
+          </ul>
+        </li>
+        <li>
+          No <strong>Exemplo5. Prioridade seccións/directivas</strong> imos ver que sección prevalece cando unha mesma directiva é configurada en distintas seccións (Ver Táboa. Seccións)
+        </li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Servizo Web - Apache</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Web Apache: 
+          <ul>
+            <ul class='dashed-kaliA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA'>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 start <span class='explicacion'> #Iniciar o servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+
+                    <div class='pagebreak'>&nbsp;</div>
+
+                    <div class='explicacion3'> No caso da distribución Kali xa temos instalado o servidor web Apache, pero nunha distribución baseada en Debian poderiamos instalalo do seguinte xeito:<br />
+                      <ul class='hashtag'>
+                        <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                        <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
+                        <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                      </ul>
+                    </div>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.120.100 ou a URL http://192.168.120.100</li>
+
+        <li class='mtop mleft mbottom'>Permisos apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <li>chown -R www-data. /var/www/html/ <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio DocumentRoot de Apache: /var/www/html</span></li>
+                <li>chmod 444 /var/www/html/index.html <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro index.html situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (Kali) a páxina referente á URL http://192.168.120.100</li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. Modificar directiva <a href='https://httpd.apache.org/docs/current/es/mod/mpm_common.html#listen' target='_blank'>Listen</a>.</span>
+          <p>Na instalación defínese en ports.conf a directiva Listen nos portos TCP 80 e 443(ver /etc/services), atendendo a calquera IP do servidor. Imos configurar esta directiva para que atenda:
+          <ul>
+            <li type='a'><span class='label'>Listen 80 &#10140;</span> Todas as interfaces do servidor no porto TCP 80 (Configuración por defecto):
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA'>
+                 <li>grep Listen /etc/apache2/ports.conf <span class='explicacion'>#Buscar no ficheiro /etc/apache2/ports.conf mediante o comando <i>grep</i> o patrón de texto <i>'Listen</i></span>
+                 <li>nc -vz localhost 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen) na IP 192.168.120.100, esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+              </ul>
+           
+            <div class='indent'>&nbsp;</div>
+
+            <li type='a'><span class='label'>Listen 3800 &#10140;</span>Todas as interfaces do servidor a escoita no porto TCP 3800 ademais do porto TCP 80):
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA'>
+                <li>sed -i 's/^Listen 80/Listen 80\nListen 3800/' /etc/apache2/ports.conf <span class='explicacion'> #Pór debaixo da liña Listen 80, outra liña co contido Listen 3800 para indicar que agora o servidor web Apache tamén está a escoita no porto TCP 3800
+                 <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                 <li>nc -vz localhost 80 3800 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se os portos 80 e 3800 do servidor web Apache están en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. Os números 80 e 3800 son os portos TCP a escanear.</span></li>
+                 <li>nc -vz 192.168.120.100 80 3800 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se os portos 80 e 3800 do servidor web Apache están en estado escoita(listen) na IP 192.168.120.100, esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. Os números 80 e 3800 son os portos TCP a escanear.</span></li>
+              </ul>
+
+            <div class='indent'>&nbsp;</div>
+
+            <li type='a'><span class='label'>Listen IP:4300 &#10140;</span> IP escoita no porto TCP 4300
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA'>
+                <li>echo 'Listen 192.168.120.100:4300' >> /etc/apache2/ports.conf <span class='explicacion'> #Engadir a liña <i>Listen 192.168.120.100:4300</i> no ficheiro /etc/apache2/ports.conf para indicar que agora o servidor web Apache tamén está a escoita no porto TCP 4300 na IP 192.168.120.100
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                <li>nc -vz 192.168.120.100 4300 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o port 4300 do servidor web Apache está en estado escoita(listen) na IP 192.168.120.100, esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao porto solicitado. O número 4300 é o ports TCP a escanear.</span></li>
+              </ul>
+            <div class='indent'>&nbsp;</div>
+
+            <li type='a'><span class='label'>Listen IP:8443 http &#10140;</span> IP escoita no porto TCP 8443 atendendo o protocolo HTTP
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA'>
+                <li>echo 'Listen 192.168.120.100:8443 http' >> /etc/apache2/ports.conf <span class='explicacion'> #Engadir a liña <i>Listen 192.168.120.100:8443 http</i> no ficheiro /etc/apache2/ports.conf para indicar que agora o servidor web Apache tamén está a escoita no porto TCP 8443 na IP 192.168.120.100 o protocolo http
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                <li>nc -vz 192.168.120.100 8443 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o port 8443 do servidor web Apache está en estado escoita(listen) na IP 192.168.120.100, esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao porto solicitado. O número 8443 é o ports TCP a escanear.</span></li>
+              </ul>
+
+          </ul>
+
+         </p>
+          </ul>
+          </p>
+
+        <div class='indent'>&nbsp;</div>
+
+ 
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. Aloxar Cartafoles.</span>
+          <p>Na instalación defínese na directiva DocumentRoot o cartafol onde Apache aloxa as páxinas, sendo este: /var/www/html/, de tal xeito que incorporando ficheiros e cartafoles dentro desa ruta poderase acceder ao contido aloxado nos mesmos.
+          </p>
+          <p>
+          <ol>
+            <li>Acceder ao servidor web e crear/copiar varios ficheiros(cartafoles) en /var/www/html/<br />
+            <ul class='hashtag-kaliA'>
+              <li>cat &gt; /var/www/html/info.php &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a creari</span><br />
+              &lt;?php <span class='explicacion'>Comezo do código PHP</span><br />
+                &nbsp;&nbsp;phpinfo(); <span class='explicacion'>Función phpinfo(), a cal amosa información sobre a configuración de PHP</span><br />
+              ?&gt; <span class='explicacion'>Fin do código PHP</span><br />
+              EOF <span class='explicacion'>Fin do ficheiro a crear /var/www/html/info.php</span><br />
+              <li>cp -pv /var/www/html/index.html /var/www/html/index2.html <span class='explicacion'> #Copiar o ficheiro /var/www/html/index.html en /var/www/html/index2.html en modo verbose (detallado) e preservando permisos e datas.
+              <li>chown -R www-data. /var/www/html/ <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio DocumentRoot de Apache: /var/www/html</span></li>
+              <li>chmod 444 /var/www/html/info.php <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro info.php situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+            </ul>
+
+            <div class='indent'></div>
+
+            <li>Acceder dende calquer equipo cliente(kaliB) ás seguintes direccións web:
+              <blockquote>
+                <p>
+                http://192.168.120.100/index2.html
+                </p>
+                <p>
+                http://192.168.120.100/info.php
+                </p>
+              </blockquote>
+
+              <div class='explicacion3 pall'>
+                <p class='label'> IMPORTANTE: Como se pode observar as páxinas cargan sen ter que reniciar o servidor:
+                  <ul class='hashtag-kaliA'>
+                    <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                  </ul>
+                <p> Isto é debido a que o Servidor Web Apache está activo e sempre está a exportar o valor da directiva <span class='label'>DocumentRoot</span>. Polo tanto como <span class='label'>DocumentRoot</span> toma o valor <span class='label'>/var/www/html/</span> namentras o Servidor Web Apache estea activo todo o que aí se garda estará exposto polo servidor.
+                </p>
+              </div>
+            </li>
+
+          </ol>
+          </p>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. Xerar virtualhost: Virtualhost baseados en nome.</span>
+          <ol>
+            <li>Engadir no directorio /etc/apache2/sites-available/ os seguintes bloques de configuración de virtualhosts. Cada bloque pertence a un arquivo .conf:
+              <p class='mleft label'>Arquivo empresa1.conf</span>  
+              <blockquote>
+                      #Configuración virtualhost: empresa1<br />
+                      &lt;VirtualHost *:80&gt;<br />
+                      DocumentRoot /var/www/empresa1/<br />
+                      ServerName www.empresa1.com<br />
+                      ServerAlias empresa1.com empresa1.es www.empresa1.es<br />
+                      &lt;/VirtualHost&gt;
+              </blockquote>
+              
+              <p class='mleft label'>Arquivo empresa2.conf</span>  
+              <blockquote>
+                      #Configuración virtualhost: empresa2<br />
+                      &lt;VirtualHost *:80&gt;<br />
+                      DocumentRoot /var/www/empresa2/<br />
+                      ServerName www.empresa2.com<br />
+                      ServerAlias empresa2.com empresa2.es www.empresa2.es<br />
+                      &lt;/VirtualHost&gt;
+                        <br />
+              </blockquote>
+              <div class='explicacion3'>
+                <p><strong>Explicación bloques configuración virtualhost:</strong>
+                  <ul type='square'>
+                    <li>&lt;VirtualHost *:80&gt; &#10140; Inicio etiqueta virtualhost. 
+                    <li>DocumentRoot /var/www/empresa1/ &#10140; Definición da ruta onde está aloxada a páxina web no servidor, neste caso: /var/www/empresa1/ mediante a directiva DocumentRoot.
+                    <li>ServerName www.empresa1.com &#10140; Definición do nome DNS que buscará a páxina aloxada na ruta anterior do servidor mediante a directiva ServerName. É o nome que escribes no navegador para visitar a páxina.
+                    <li>ServerAlias empresa1.com &#10140; A directiva ServerAlias permite definir outros nomes DNS para a mesma páxina.
+                    <li>&lt;/VirtualHost&gt; &#10140; Fin da etiqueta VirtualHost: fin da definición deste virtualhost para empresa1. 
+                  </ul>
+                </p>
+              </div>
+            </li>
+
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Xerar os directorios /var/www/empresa1 e /var/www/empresa2, os ficheiros index.html dentro deles e establecer permisos para que Apache poida acceder a eses ficheiros index.html.
+              <ul class='hashtag-kaliA'>
+                <li>mkdir /var/www/empresa1 /var/www/empresa2 <span class='explicacion'>#Crear os directorios /var/www/empresa1 e /var/www/empresa2</span>
+                <li>echo 'empresa1 contido' &gt; /var/www/empresa1/index.html <span class='explicacion'> Crear o ficheiro /var/www/empresa1/index.html co contido: <i>empresa1 contido</i>
+                <li>echo 'empresa2 contido' &gt; /var/www/empresa2/index.html <span class='explicacion'> Crear o ficheiro /var/www/empresa2/index.html co contido: <i>empresa2 contido</i>
+                <li>chown -R www-data. /var/www/empresa1 /var/www/empresa2 <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan dos directorios /var/www/empresa1 e /var/www/empresa2</span></li>
+              </ul>
+            </li>
+
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Actualizar a configuración de Apache para ter en conta os novos cambios:<br />
+              <ul class='hashtag-kaliA'>
+                <li>a2ensite empresa1 <span class='explicacion'> Comando que permite habilitar a configuración do VirtualHost empresa1, é dicir, comando que permite habilitar o ficheiro do VirtualHost empresa1 situado no directorio /etc/apache2/sites-available/empresa1.conf engadindo a ligazón correspondente dende /etc/apache2/sites-enabled/empresa1.conf a /etc/apache2/sites-available/empresa1.conf</span>
+                <li>a2ensite empresa2 <span class='explicacion'> Comando que permite habilitar a configuración do VirtualHost empresa2, é dicir, comando que permite habilitar o ficheiro do VirtualHost empresa2 situado no directorio /etc/apache2/sites-available/empresa2.conf engadindo a ligazón correspondente dende /etc/apache2/sites-enabled/empresa2.conf a /etc/apache2/sites-available/empresa2.conf</span>
+              </ul>
+
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder dende o equipo cliente kaliB ás seguintes direccións web:
+              <blockquote>
+                <p>
+                http://192.168.120.100/empresa1/index.html<br />
+                http://192.168.120.100/empresa2/index.html
+                </p>
+              </blockquote>
+
+              <div class='explicacion3 pall'>
+                <p> NOTA: Como se pode observar agora as páxinas non cargan, porque o DocumentRoot non toma o valor /var/www/html senón os valores /var/www/empresa1 e /var/www/empresa2 para empresa1 e empresa2 respectivamente (configurados nos VirtualHost correspondentes en sites-available), e polo tanto, non están activos no servidor na raíz do VirtualHost por defecto (000-default.conf) 
+                </p>
+              </div>
+            </li>
+
+            <div class='indent'>&nbsp;</div>
+
+            <li>Actualizar o arquivo /etc/hosts no cliente kaliB:
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA mleft'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh na que estamos a traballar, para voltar á consola local do usuario <b>kali</b> na máquina kaliB.</span></li>
+              </ul>
+              <ul class='dashed-kaliB'>
+                <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliB mleftsubs'>
+                  <li>echo '192.168.120.100 www.empresa1.com empresa1.com empresa1.es www.empresa1.es' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) os nomes www.empresa1.com, empresa1.com, empresa1.es e www.empresa1.es para que atendan á IP 192.168.120.100</li> 
+                  <li>echo '192.168.120.100 www.empresa2.com empresa2.com empresa2.es www.empresa2.es' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) os nomes www.empresa2.com, empresa2.com, empresa2.es e www.empresa2.es para que atendan á IP 192.168.120.100</li> 
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <li>
+              </ul>
+
+            <div class='indent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB ás seguintes direccións web:
+              <blockquote>
+                <p>
+                http://www.empresa1.com/index.html<br />
+                http://empresa1.com/index.html<br />
+                http://empresa1.es/index.html<br />
+                http://www.empresa1.es/index.html
+                </p>
+                <p>
+                http://www.empresa2.com/index.html<br />
+                http://empresa2.com/index.html<br />
+                http://empresa2.es/index.html<br />
+                http://www.empresa2.es/index.html
+                </p>
+              </blockquote>
+
+              <div class='explicacion3 pall'>
+                <p class='label'> IMPORTANTE: Como se pode observar agora as páxinas non cargan, porque aínda que actualizamos a configuración dos sitios(VirtualHost) do  Servidor Web Apache, é necesario recargar o servidor para que se atenda á nova configuración realizada. Así, temos que recargar o servidor:
+                  <ul class='hashtag-kaliA'>
+                    <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                  </ul>
+                </p>
+              </div>
+            </li>
+
+            <div class='indent'>&nbsp;</div>
+
+            <li>Unha vez recargada a configuración do Servidor Web Apache acceder de novo dende o equipo cliente kaliB ás anteriores direccións web:
+              <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliA'>
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+              </ul>
+              <blockquote>
+                <p>
+                http://www.empresa1.com/index.html<br />
+                http://empresa1.com/index.html<br />
+                http://empresa1.es/index.html<br />
+                http://www.empresa1.es/index.html
+                </p>
+                <p>
+                http://www.empresa2.com/index.html<br />
+                http://empresa2.com/index.html<br />
+                http://empresa2.es/index.html<br />
+                http://www.empresa2.es/index.html
+                </p>
+              </blockquote>
+              <div class='explicacion3 pall'>
+                <p class='label'> IMPORTANTE: a2ensite + reload &#10140; Unha ver activado os sitios(a2ensite) e recargado(reload) o servidor as páxinas(VirtualHost) cargan.
+                </p>
+              </div>
+
+          </ol>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. Control de acceso.</span>
+        <div class='minindent'>&nbsp;</div>
+        <ol type='A'>
+          <li><span class='label'>Control de acceso por HTTP Basic</span>
+            <p>Na autenticación HTTP Basic é moi típico utilizar <span class='label'>arquivos .htaccess</span> nos directorios que queremos controlar o acceso. Os arquivos .htaccess son ficheiros de configuración do propio directorio onde exista.
+            <p>
+            Para usar arquivos .htaccess, necesítase ter unha configuración no servidor que permita poñer directivas de autenticación nestes arquivos, mediante a directiva AllowOverride, tal como segue: AllowOverride AuthConfig
+            <div class='explicacion3'>
+              <p><strong>NOTA:</strong> Visitar o seguinte enlace para ver unha explicación, máis polo miúdo, sobre á autenticación http basic: <a href="http://httpd.apache.org/docs/2.4/es/howto/auth.html" title="Autenticación y autorización" target="_blank">Autenticación y autorización</a><br />
+                <img class='cfigure arriba' src="images/mouse-pointer-mini.png" />
+              </p>
+            </div>
+            <p class='label'>
+            Procedemento:
+            </p>
+            <ol>
+               <li>Modificar arquivo <b>/etc/apache2/conf-available/security.conf</b> e engadir o seguinte bloque:
+                 <br />
+                 <blockquote>
+                        &lt;Directory /var/www/html/auth-empresa&gt;<br />
+                        <b>AllowOverride Authconfig</b><br />
+                        &lt;/Directory&gt;
+                 </blockquote>
+               </li>
+               <li>Crear o contrasinal para o usuario nome_usuario no ficheiro de contrasinais /etc/apache2/web.htpasswd:
+                 <blockquote>
+                   <ul class='hashtag-kaliA mleftsubs'>
+                     <li class='mleftsubs'>htpasswd -c /etc/apache2/web.htpasswd nome_usuario
+                   </ul>
+                </blockquote>
+                <li>Configuralo servidor para o acceso sexa permitido mediante autenticación: usuario/contrasinal empregando un arquivo .htaccess: <br />
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>cat /var/www/html/auth-empresa/.htaccess <span class='explicacion'>Amosar contido arquivo .htacesss</span>
+                      <blockquote>
+                        <p>
+                        AuthType Basic<br />
+                        AuthName &quot;Web con Autenticacion Basic&quot;<br />
+                        AuthBasicProvider file<br />
+                        AuthUserFile /etc/apache2/web.htpasswd<br />
+                        ##Require valid-user <br />
+                        Require user nome_usuario 
+                        </p>
+                      </blockquote>
+                    </li>
+                  </ul>
+
+                <div class='minindent'>&nbsp;</div>
+
+                <li>Xerar o directorio /var/www/html/auth-empresa, o ficheiro secret.txt dentro deste e establecer permisos para que Apache poida acceder a ese ficheiro secret.txt
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>mkdir /var/www/html/auth-empresa <span class='explicacion'>#Crear o directorio /var/www/html/auth-empresa</span>
+                    <li>echo 'S3c3eT contido' &gt; /var/www/html/auth-empresa/secret.txt <span class='explicacion'> Crear o ficheiro /var/www/html/auth-empresa/secret.txt co contido: <i>S3cr3T contido</i>
+                    <li>chown -R www-data. /var/www/html/auth-empresa <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio /var/www/html/auth-empresa</span></li>
+                    <li>chmod 400 /var/www/html/auth-empresa/.htaccess <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro .htaccess situado en /var/www/html/auth-empresa, é dicir, establecer os permisos r-------- (soamente lectura para o usuario propietario)</span></li>
+                  </ul>
+                </li>
+
+                <div class='minindent'>&nbsp;</div>
+
+                <li>Actualizar a configuración de Apache para ter en conta os novos cambios:<br />
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA'>
+                    <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+                    <!--<li>a2ensite auth-empresa <span class='explicacion'> Comando que permite habilitar a configuración do VirtualHost auth-empresa, é dicir, comando que permite habilitar o ficheiro do VirtualHost auth-empresa situado no directorio /etc/apache2/sites-available/auth-empresa.conf engadindo a ligazón correspondente dende /etc/apache2/sites-enabled/auth-empresa.conf a /etc/apache2/sites-available/auth-empresa.conf</span>-->
+                  </ul>
+
+                <div class='minindent'>&nbsp;</div>
+                <div class='pagebreak'></div>
+
+                <li>Actualizar o arquivo /etc/hosts no cliente kaliB:
+                  <div class='minindent'>&nbsp;</div>
+                  <ul class='hashtag-kaliA mleft'>
+                      <li>exit <span class='explicacion'> #Saír da consola remota ssh na que estamos a traballar, para voltar á consola local do usuario <b>kali</b> na máquina kaliB.</span></li>
+                  </ul>
+                  <ul class='dashed-kaliB'>
+                    <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                    <ul class='hashtag-kaliB mleftsubs'>
+                      <li>echo '192.168.120.100 auth-empresa.local' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome auth-empresa.local para que atenda á IP 192.168.120.100</li> 
+                      <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                    </ul>
+                    <li>
+                  </ul>
+
+                <div class='indent'>&nbsp;</div>
+
+                <li>Acceder de novo dende o equipo cliente kaliB á seguinte dirección web:
+                  <blockquote>
+                    <p>
+                    http://auth-empresa.local
+                    </p>
+                  </blockquote>
+
+                  <div class='explicacion3 pall'>
+                    <p> <span class='label'> IMPORTANTE:</span> Como estamos a empregar o sitio por defecto de Apache<br />(DocumenRoot &#10140; /var/www/html), aínda que configuramos a autenticación, durante todo o proceso o arquivo secret.txt antes de recargar o servidor estivo visible e accesible. Mellor sería ter configurado isto mediante VirtualHost, tal que non se activaría o sitio ata que executaramos o comando a2ensite correspondente:
+                    <p class='label'>a2ensite + reload &#10140; Unha ver activado o sitio(a2ensite) e recargado(reload) o servidor a páxina(VirtualHost) carga.
+                    </p>
+                  </div>
+          </ol>
+
+          <div class='indent'>&nbsp;</div>
+          <div class='pagebreak'>&nbsp;</div>
+
+          <li><span class='label'><a href='http://httpd.apache.org/docs/2.4/es/howto/auth.html#beyond' target='_blank'>Control de acceso por IP (Order, Deny, Allow)</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+            <ol>
+              <li><p>          
+              Tamén pódese controlar o acceso mediante IP. No seguinte exemplo IP_permiso_concedido define a IP que únicamente ten permiso de acceso. Copiamos este bloque ao arquivo <b>/etc/apache2/sites-available/controlIP.conf</b>
+              </p>
+              <blockquote>
+                    <p>
+                    &lt;VirtualHost *:80&gt;<br />
+                    Alias /cartafol-controlado &quot;/var/www/control/cartafol-controlado/&quot;<br />
+                    &lt;Directory &quot;/var/www/control/cartafol-controlado/&quot;&gt;<br />
+                    Order deny,allow<br />
+                    Deny from all<br />
+                    #Allow from IP_permiso_concedido<br />
+                    Allow from 192.168.120.101<br />
+                    &lt;/Directory&gt;<br />
+                    DocumentRoot /var/www/control/cartafol-controlado/<br />
+                    ServerName www.empresa.local<br />
+                    ServerAlias empresa.local<br />
+                    &lt;/VirtualHost&gt; 
+                    </p>
+              </blockquote>
+              <div class='explicacion3 pall'>
+                Actualmente as directivas: Order, Deny e Allow están en desuso e xa non son necesarias. Son sustituidas pola directiva Require e o contenedor &lt;RequireAll&gt;
+              </div>
+              </li>
+
+
+            <li>Crear o seguinte contido:
+              <br />
+              <ul class='hashtag-kaliA'>
+               <br />
+               <li>mkdir -p /var/www/control/cartafol-controlado <span class='explicacion'> #Crear a estrutura arbórea de directorios ata inclusive o directorio cartafol-compartido</span>
+               <li>echo 'Contido control' > /var/www/control/cartafol-controlado/control.txt <span class='explicacion'> #Crear o ficheiro control.txt no directorio anterior (/var/www/control/cartafol-controlado &#10140  DocumentRoot)
+              </ul>
+
+
+            <br />
+            <li>Actualizar a configuración de Apache para ter en conta os novos cambios:<br />
+              <br />
+              <ul class='hashtag-kaliA'>
+                <li>a2ensite controlIP <span class='explicacion'> Comando que permite habilitar a configuración do VirtualHost controlIP, é dicir, comando que permite habilitar o ficheiro do VirtualHost controlIP situado no directorio /etc/apache2/sites-available/controlIP.conf engadindo a ligazón correspondente dende /etc/apache2/sites-enabled/controlIP.conf a /etc/apache2/sites-available/controlIP.conf</span>
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+             
+              </ul>
+
+            <br />
+            <li class='mtop mbottom'>Lanzar no navegador da máquina virtual B (KaliB) unha nova lapela coa URL <span class='label'>http://192.168.120.100/control/cartafol-controlado/control.txt</span> Que acontece? Por que?<br />Pois obtemos erro porque agora non se espera na IP ese cartafol senón un nome DNS por medio do VirtualHost xerado. Así deberiamos crear en /etc/hosts unha entrada como a seguinte:<br />
+            <blockquote>
+            <code>192.168.120.100 empresa.local www.empresa.local</code><br />
+            </blockquote>
+ de tal xeito que se visitaramos http://empresa.local veriamos o esperado.</li>
+ 
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://kaliA/control/cartafol-controlado/control.txt</span>&nbsp;?
+            Pois máis do mesmo, porque o nome DNS non se corresponde e polo tanto visitaría o DocumentRoot de 000-default, e como  /var/www/html/control/cartafol-controlado non existe, obteriamos erro.</li>
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://empresa.local</span>&nbsp;?<br />
+            Pois agora si que visitariamos o esperado.</li>
+
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://empresa.local/cartafol-controlado</span>&nbsp;?<br />
+            Pois seguiriamos vendo o esperado, xa que existe un Alias definido no VirtualHost de xeito que somos redireccionados a /var/www/control/cartafol-controlado, visualizando o contido esperado.</li>
+        </ol>
+
+          <div class='indent'>&nbsp;</div>
+
+          <li><span class='label'><a href='http://httpd.apache.org/docs/2.4/es/howto/auth.html#beyond' target='_blank'>Control de acceso por IP (Require e &lt;RequireAll&gt;)</a></span>
+            <img class='cfigure mleftsubsx2 arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+            <ol>
+              <li><p>          
+              Imos facer de novo a opción B (controlar o acceso mediante IP) pero agora empregando a directiva aconsellada por Apache: <b>Require</b> (&lt;RequireAll&gt;). Así, modificamos o anterior bloque VirtualHost do arquivo <b>/etc/apache2/sites-available/controlIP.conf</b> tal como segue:
+              </p>
+              <blockquote>
+                    <p>
+                    &lt;VirtualHost *:80&gt;<br />
+                    Alias /cartafol-controlado &quot;/var/www/control/cartafol-controlado/&quot;<br />
+                    &lt;Directory &quot;/var/www/control/cartafol-controlado/&quot;&gt;<br />
+                    #Order deny,allow<br />
+                    #Deny from all<br />
+                    #Allow from 192.168.120.101<br />
+                    #Require ip IP_permiso_concedido<br />
+                    <b>Require ip 192.168.120.101</b><br />
+                    &lt;/Directory&gt;<br />
+                    DocumentRoot /var/www/control/cartafol-controlado/<br />
+                    ServerName www.empresa.local<br />
+                    ServerAlias empresa.local<br />
+                    &lt;/VirtualHost&gt; 
+                    </p>
+              </blockquote>
+              </li>
+
+
+              <br />
+              <li>Actualizar a configuración de Apache para ter en conta os novos cambios:<br />
+                <br />
+                <ul class='hashtag-kaliA'>
+                  <li>a2ensite controlIP <span class='explicacion'> Comando que permite habilitar a configuración do VirtualHost controlIP, é dicir, comando que permite habilitar o ficheiro do VirtualHost controlIP situado no directorio /etc/apache2/sites-available/controlIP.conf engadindo a ligazón correspondente dende /etc/apache2/sites-enabled/controlIP.conf a /etc/apache2/sites-available/controlIP.conf</span>
+                  <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+               
+                </ul>
+
+            <br />
+            <li class='mtop mbottom'>Lanzar no navegador da máquina virtual B (KaliB) unha nova lapela coa URL <span class='label'>http://192.168.120.100/control/cartafol-controlado/control.txt</span> Que acontece? Por que?<br />Pois obtemos erro porque agora non se espera na IP ese cartafol senón un nome DNS por medio do VirtualHost xerado. Así deberiamos ter en /etc/hosts unha entrada como a seguinte:<br />
+            <blockquote>
+            <code>192.168.120.100 empresa.local www.empresa.local</code><br />
+            </blockquote>
+ de tal xeito que se visitaramos http://empresa.local veriamos o esperado.</li>
+ 
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://kaliA/control/cartafol-controlado/control.txt</span>&nbsp;?
+            Pois máis do mesmo, porque o nome DNS non se corresponde e polo tanto visitaría o DocumentRoot de 000-default, e como  /var/www/html/control/cartafol-controlado non existe, obteriamos erro.</li>
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://empresa.local</span>&nbsp;?<br />
+            Pois agora si que visitariamos o esperado.</li>
+
+            <br />
+            <li class='mtop mbottom'>E se visitamos a URL <span class='label'>http://empresa.local/cartafol-controlado</span>&nbsp;?<br />
+            Pois seguiriamos vendo o esperado, xa que existe un Alias definido no VirtualHost de xeito que somos redireccionados a /var/www/control/cartafol-controlado, visualizando o contido esperado.</li>
+          </ol>
+
+        </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. Prioridade seccións/directivas:</span> 
+          <p>Á hora de configurar o servidor web Apache temos que ter en conta que é o que acontece cando unha mesma directiva pertence a distintas seccións. Cal é a directiva que se atende? Cal é a prioridade?
+          Imos revisar a prioridade empregado a directiva Options co argumento Indexes:
+          <ul type='square'>
+            <li>Options +Indexes &#10140; no caso de non existir un index.html permite ver o contido do cartafol visitado.
+            <li>Options -Indexes &#10140; no caso de non existir un index.html non permite ver o contido do cartafol visitado amosando o erro 403(Forbidden).
+          </ul>
+          <ul>
+            <li type='a'>
+              <p>Crear o seguinte contido:
+              <ul class='hashtag-kaliA'>
+               <li>mkdir /var/www/html/prioridade <span class='explicacion'> #Crear o directorio prioridade no DocumentRoot(/var/www/html) do sitio por defecto que configura Apache (000-default.conf)</span> 
+               <li>echo 'Contido f1.txt' > /var/www/html/prioridade/f1.txt <span class='explicacion'> #Crear o ficheiro f1.txt no directorio anterior (/var/www/html/prioridade &#10140  DocumentRoot)
+              </ul> 
+            <div class='minindent'>&nbsp;</div>
+
+            <li type='a'>Visitar http://localhost/prioridade
+
+            <div class='minindent'>&nbsp;</div>
+
+            <li type='a'>Modificar arquivo <b>/etc/apache2/conf-available/security.conf</b> e engadir o seguinte bloque:
+              <div class='minindent'>&nbsp;</div>
+              <ul>
+                <li type='none'><span class='label'>Sección Directory</span> 
+                  <blockquote>
+                  &lt;Directory /var/www/html/prioridade&gt;<br />
+                  Options -Indexes<br />
+                  &lt/Directory &gt;<br />
+              </ul>
+              <p>Recargar a configuración:
+              <ul class='hashtag-kaliA'>
+                <li>/etc/init.d/apache2 reload <span class='explicacion'> #Recargar a configuración do Servidor Web Apache</span>
+              </ul>
+              <div class='minindent'>&nbsp;</div>
+            <li type='a'>Visitar de novo http://localhost/prioridade<br />
+              Agora non se pode visualizar a páxina amosándose o erro 403 Forbidden
+              <div class='minindent'>&nbsp;</div>
+            <li type='a'>Modificar de novo o arquivo <b>/etc/apache2/conf-available/security.conf</b> e engadir o seguinte bloque:
+              <div class='minindent'>&nbsp;</div>
+              <ul>
+                <li type='none'><span class='label'>Sección Location</span> 
+                  <blockquote>
+                  &lt;Location /prioridade&gt;<br />
+                  Options +Indexes<br />
+                  &lt/Location &gt;<br />
+              </ul>
+              <div class='minindent'>&nbsp;</div>
+            <li type='a'>Visitar de novo http://localhost/prioridade<br />
+              Agora si se pode visualizar a páxina 
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
