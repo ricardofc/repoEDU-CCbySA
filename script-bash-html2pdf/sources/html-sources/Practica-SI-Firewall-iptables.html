@@ -1,0 +1,938 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Firewall: iptables</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Firewall' target='_blank'>Firewall: iptables</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Firewall-rede-interna+NAT.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li>Prerrequisitos:
+            <br />
+            <br />
+            <ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-SI-Apache.pdf' target='_blank'>Servizo Web: Apache</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia/Practica-SI-Certificado-Apache.pdf' target='_blank'>Cifrado asimétrico: Certificado Apache</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+            </ul>
+          <div class='minindent'>&nbsp;</div>
+          <li type='square'>Firewall GNU/Linux: Paquete <span class='label'>iptables</span> (# apt update && apt -y install iptables && man iptables).<br />
+          Proxecto: <a href='http://www.netfilter.org/' target='_blank'>netfilter</a>
+          <img class='cfigure mleftsubsx2 mtop mbottom abaixo' src="images/mouse-pointer-mini-rotate-180.png" /><br />
+          <div class='minindent'>&nbsp;</div>
+          Documentación de interese: 
+          <ul class='code3'>
+            <li><a href='https://github.com/frznlogic/iptables-tutorial' target='_blank'>https://github.com/frznlogic/iptables-tutorial</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+            <li><a href='https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES' target='_blank'>https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='explicacion3 pall'>
+              <ul class='dashed'>
+                <li>git clone https://github.com/frznlogic/iptables-tutorial.git && less README 
+              </ul>
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <li><a href='https://wiki.archlinux.org/index.php/Iptables_(Espa%C3%B1ol)#Conceptos_b%C3%A1sicos' target='_blank'>https://wiki.archlinux.org/index.php/Iptables_(Espa%C3%B1ol)#Conceptos_b%C3%A1sicos</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </ul>
+          <div class='minindent'>&nbsp;</div>
+          </li>
+          <li type='square'>Servidor Web Apache: Paquete <span class='label'>apache2</span> (# apt update && apt -y install apache2).</li>
+          <li type='square'>Cliente ssh GNU/Linux: Paquete <span class='label'>openssh-client (comando ssh)</span> (# apt update && apt -y install openssh-client).</li>
+          <li type='square'>Servidor SSH GNU/Linux: Paquete <span class='label'>openssh-server</span> (# apt update && apt -y install openssh-server).</span><br />
+          Ficheiro de configuración: <span class='label'>/etc/ssh/sshd_config (man sshd_config)</span>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='colorblue'><a href='http://www.netfilter.org/documentation/index.html' target='_blank'>Documentación oficial sobre netfilter/iptables</a></span>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <div class='minindent'>&nbsp;</div>
+          <li type='square'>Prerrequisito: É necesario un kernel &#8805;2.4 ($ uname -r)</span>
+          <div class='minindent'>&nbsp;</div>
+          <li type='square'>iptables: Funciona a través de táboas, cadeas e regras.
+            <div class='explicacion3 pall'>
+              <a href='https://debian-handbook.info/browse/es-ES/stable/sect.firewall-packet-filtering.html' target='_blank'>nftables &#10140; evolución de iptables</a>
+              <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li>Existen unhas táboas creadas predeterminadas.
+              <li>Pódense definir novas táboas, as cales tamén se poden eliminar.
+              <li>As táboas conteñen cadeas e posúen unha política por defecto, sendo esta <b>ACCEPT</b>, é dicir, aceptar todos os paquetes.
+              <li>As cadeas posúen as regras definidas no firewall, as cales permitirán por exemplo: aceptar(<b>ACCEPT</b>) e/ou impedir(<b>DROP</b>) paquetes.
+              <li>Os paquetes poden ser identificados polo seu estado de conexión, ip orixe, ip destino, rede, porto orixe, porto destino...
+              <li>Podemos aumentar as posibilidades de identificación de paquetes mediante a opción <b>-m</b> (iptables-extensions), por exemplo identificar paquetes por mac-address
+              <li>iptables está activo tal que calquera paquete con orixe, destino hacia o host que posúe iptables atenderá as regras existentes neste.
+              <li><span class='label'>IMPORTANTE:</span> As regras nas cadeas lense secuencialmente de arriba hacia abaixo. Unha vez un paquete coincida cunha regra afectaralle esta e deixará a cadea do firewall, non lle afectando ningunha regra máis de iptables nesa cadea.
+            </ul>
+            <table>
+              <tr>
+                <td width='52%' valign='top'>
+                  <div class='fleft mleftsubsx2'>
+                    <figure class='cfigure'>
+                      <img width='80%' class='contido bfigure pall' src='https://www.frozentux.net/iptables-tutorial/images/tables_traverse.jpg' alt='www.frozen.tux.net tables traverse' />
+                    <figcaption><a href='https://www.frozentux.net/iptables-tutorial/images/tables_traverse.jpg' target='_blank'>Fig. Tables Reverse - www.frozen.tux.net</a>
+                      <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+                    </figcaption>
+                    </figure>
+                  </div>
+                </td>
+                <td valign='bottom'>
+                  <div class='fright'>
+                    <figure class='cfigure'>
+                      <img width='100%' class='contido bfigure pall down' src='images/tables-iptables.png' />
+                      <div class='explicacion3 pall up'>
+                       <ul class='hashtag mleftsubs'>
+                         <li>iptables -L [-t tableName]
+                       </ul>
+                      </div>
+                      <figcaption>Fig. Táboas e cadeas
+                      </figcaption>
+                    </figure>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan='2'><div class='minindent'>&nbsp;</div></td>
+              </tr>
+              <tr>
+                <td colspan='2'>
+                  <div class='explicacion3 pall'>
+                    <ul class='hashtag'>
+                      <li>iptables -L [-t tableName] <span class='explicacion'>#Listar todas as regras das cadeas da táboa indicada. Se non se indica táboa por defecto amosa a táboa <b>filter</b>.</span>
+                      <li>iptables -L  <span class='explicacion'>#Listar todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                      <li>iptables -L -t nat <span class='explicacion'>#Listar todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          <div class='indent'>&nbsp;</div>
+          <div class='indent'>&nbsp;</div>
+          <li type='square'><span class='label'>Táboas/cadeas existentes:</span>
+            <ul class='mleftsubs'>
+              <br />
+              <li><span class='label'>filter</span>: Táboa principal para filtrar paquetes. Posúe 3 cadeas: 
+                <ul>
+                  <li><span class='nome'>INPUT</span>: Para filtrar paquetes destinados ao noso host local, independentemente da interface ou dirección orixe.
+                  <li><span class='nome'>FORWARD</span>: Para reenviar paquetes a outro host da rede.
+                  <li><span class='nome'>OUTPUT</span>: Para filtrar paquetes que saen do host local.
+                </ul>
+              <br />
+              <li><span class='label'>nat</span>: Soamente para traducir o campo orixe ou destino do paquete (redirección de portos, modificación ip orixe...). Posúe 4 cadeas:
+                <ul>
+                  <li><span class='nome'>PREROUTING</span>: Para alterar paquetes tan pronto como entran.
+                  <li><span class='nome'>INPUT</span>: Para alterar paquetes destinados ao noso host local.
+                  <li><span class='nome'>POSTROUTING</span>: Para alterar paquetes cando están a punto de saír do host local.
+                  <li><span class='nome'>OUTPUT</span>: Para alterar paquetes xerados localmente antes do enrutamento.
+                </ul>
+                <div class='explicacion3 pall'>
+                  NAT permite traducir direccións de rede da:
+                  <ul>
+                    <li><span class='tdPDocumentRoot'>Rede Interna &#10140; Rede Externa(-o)</span> Compartir unha dirección IP Pública (do router) por varios hosts para que poidan ter conexión a internet. Para isto imos empregar a cadea <span class='tdPDocumentRoot'>POSTROUTING</span> coa acción (jump=-j) <span class='tdPDocumentRoot'>SNAT</span>(se o router posúe IP estática) <span class='tdPDocumentRoot'>ou MASQUERADE</span>(se o router posúe IP dinámica). Débese empregar sempre a opción -o (tarxeta de rede de saída).
+                    <li><span class='bgsalmon'>Rede Externa(-i) &#10140; Rede Interna(-i)</span> Acceder a un servizo dun host da rede local a través de internet. Para isto imos empregar a cadea <span class='bgsalmon'>PREROUTING</span> coa acción (jump=-j) <span class='bgsalmon'>DNAT</span>(para indicar a IP:Porto do host da rede local que posúe o servizo) <span class='bgsalmon'>ou REDIRECT</span>(para indicar que a redirección ten lugar no propio localhost, é dicir, localhost:80). Así <span class='bgsalmon'>co PREROUTING podemos facer PAT</span>, é dicir, redireccionar portos do router ao host da rede local que nos interese. Débese sempre empregar a opción -i (tarxeta de rede de entrada).
+                  </ul>
+                </ul>
+              <br />
+              <li><span class='label'>mangle</span>: Para manipular paquetes (TOS, TTL...). Posúe 5 cadeas:
+                <ul>
+                  <li><span class='nome'>PREROUTING</span>: Para manipular os paquetes entrantes antes do enrutamento.
+                  <li><span class='nome'>INPUT</span>: Para manipular paquetes destinados ao noso host local.
+                  <li><span class='nome'>FORWARD</span>: Para manipular paquetes que se reenvían a outro host da rede.
+                  <li><span class='nome'>OUTPUT</span>: Para manipular paquetes xerados localmente antes do enrutamento.
+                  <li><span class='nome'>POSTROUTING</span>: Para manipular paquetes cando están a punto de saír do host local.
+                </ul> 
+              <br />
+              <li><span class='label'>raw</span>: Para marcar os paquetes que non deben ser manexados polo sistema de seguimento de conexións. Posúe 2 cadeas:
+                <ul>
+                  <li><span class='nome'>PREROUTING</span>: Para marcar os paquetes entrantes antes do enrutamento.
+                  <li><span class='nome'>OUTPUT</span>: Para marcar paquetes xerados localmente antes do enrutamento.
+                </ul>
+              <br />
+              <li><span class='label'>security</span>: Para regras MAC (Mandatory Access Control) (SELinux). Posúe 3 cadeas:
+                <ul>
+                  <li><span class='nome'>INPUT</span>: Regras MAC de paquetes destinados ao noso host local.
+                  <li><span class='nome'>FORWARD</span>: Regras MAC para reenviar paquetes a outro host da rede.
+                  <li><span class='nome'>OUTPUT</span>: Regras MAC de paquetes que saen do host local.
+                </ul>
+            </ul>
+          </li>
+
+        </ul>
+      </p>
+    </div>
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'>&nbsp;</div>
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li type='square'><span class='label'>Sintaxe (man iptables && man iptables-extensions):</span>
+            <ul class='hashtag'>
+              <p>Se no comando non se especifica a táboa este será executado sempre na táboa filter (táboa considerada predeterminada).
+              <li>iptables [-t table] {-A|-C|-D|-I} chain rule-specification 
+                  <div class='explicacion3 pall'>
+                    rule-specification = [matches...] [target]<br />
+                    match = -m matchname [per-match-options] <span class='explicacion'>#match=coincidencia</span><br />
+                    target = -j targetname [per-target-options] <span class='explicacion'>#targetname=destino, como: ACCEPT(aceptar) e DROP(impedir)<br />
+                    -A = engadir como última regra da cadea.<br />
+                    -I = insertar como primeira regra da cadea. Se empregamos -I número, insertarase a regra no número desexado.<br />
+                    -C = comprobar se existe unha regra que coincida coa descrita no comando empregado.<br />
+                    -D = eliminar a regra descrita no comando empregado. Podemos eliminar unha regra dunha cadea indicando o número desta.
+                  </div>
+               <li>iptables [-t table] -P chain target <span class='explicacion'>#Cambiar ou determinar a política dunha cadea.</span>
+               <li>iptables [-t table] {-F|-L|-Z} [chain [rulenum]] [options...]
+                  <div class='explicacion3 pall'>
+                    -F=borrar regras das cadeas.<br />
+                    -L=listar regras da táboa.<br />
+                    -Z=Pór a cero os contadores de paquetes e bytes en todas as cadeas ou na cadea dada.
+                  </div>
+               <li>iptables [-t table] -N chain <span class='explicacion'>#Crear unha nova cadea.</span>
+               <li>iptables [-t table] -X chain <span class='explicacion'>#Eliminar cadea.</span>
+               <li>iptables -L  <span class='explicacion'>#Listar todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+               <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+               <li>iptables -L --line-numbers -v<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b> de forma detallada(-v), é dicir, amosar todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b> de forma numerada e detallada(-v), de tal xeito que amosa: nome da interface, opcións da regra se existen, máscaras TOS, contadores de paquetes e bytes.
+               <div class='explicacion3 pall'>
+                 <span class='label'>IMPORTANTE</span>: A opción -v é moi útil para depurar iptables xa que informa sobre contadores de paquetes e bytes na que unha regra vese afectada, é dicir, se unha regra cúmprese no firewall vai recibindo información a cal pode ser revisada coa opción -v.
+               </div>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+ 
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos Táboa filter</div>
+    <div class='justify pall bfigure'>
+      <ul type='square'>
+        <li>
+          No <strong>Exemplo1. Filtrado porto TCP 80 (http)</strong> imos impedir o acceso ao porto TCP 80 (http), é dicir, cortamos o acceso ao servidor Web na máquina virtual A (kaliA).
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo2. Filtrado porto TCP 80 (http) e Prioridade das regras</strong> imos filtrar o acceso ao porto TCP 80 (http), impedindo e aceptando o acceso, según a orde das regras existentes na mesma cadea do firewall iptables.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo3. Filtrado porto TCP 80 (http) según IP de orixe</strong> imos filtrar o acceso ao porto TCP 80 (http) se a IP de orixe é 192.168.120.101(kaliB), é dicir, imos permitr/cortar o acceso o acceso ao servidor Web na máquina virtual A (kaliA) cando a conexión proveña da IP 192.168.120.101 (kaliB).
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo4. Evitar filtrado porto TCP 80 (http) según IP de orixe</strong> imos modificar a IP da máquina virtual B (kaliB) para poder saltar o firewall iptables.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo5. Filtrado porto TCP 80 (http) según IP de orixe e MAC-Address de orixe</strong> imos filtrar o acceso ao porto TCP 80 (http) se a IP de orixe e MAC Address corresponden a kaliB, é dicir, imos permitr/cortar o acceso o acceso ao servidor Web na máquina virtual A (kaliA) cando a conexión proveña da IP e MAC Address de kaliB.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo6. Evitar filtrado porto TCP 80 (http) según IP de orixe e MAC-Address de orixe</strong> imos modificar a IP e MAC Address da máquina virtual B (kaliB) para poder saltar o firewall iptables.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo7. Filtrado portos TCP 80 (http), 443(https) e 22(ssh)</strong> imos impedir o acceso ao portos TCP 80 (http), 443(https) e 22(ssh), é dicir, cortamos o acceso ao servidor Web e servidor SSH na máquina virtual A (kaliA).
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo8. Filtrado portos TCP 80 (http), 443(https) e 22(ssh) a un rango de IPs orixe</strong> imos impedir o acceso ao portos TCP 80 (http), 443(https) e 22(ssh) da máquina virtual A(kaliA) sempre e cando a conexión veña dun rango de IPs orixe determinado.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo9. Filtrado portos TCP 80 (http), 443(https) e 22(ssh) a unhas determinadas IPs orixe</strong> imos impedir o acceso ao portos TCP 80 (http), 443(https) e 22(ssh) da máquina virtual A(kaliA) sempre e cando a conexión veña dunhas IPs orixe determinadas.
+        </li>
+      </ul>
+    </div>
+    <div class='minindent'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos Táboa nat</div>
+    <div class='justify pall bfigure'>
+      <ul type='square'>
+        <li>
+          No <strong>Exemplo10. Acceso a Internet dende kaliB</strong> imos permitir o enrutamento entre interfaces en kaliA para que kaliB poida ter acceso a Internet, é dicir, imos facer que kaliA simula ser o router facendo NAT para kaliB. 
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo11. PAT na intranet</strong> imos redireccionar o porto TCP 8080 ao porto TCP 80 en kaliA se a petición de conectividade realízase dende a rede local 192.168.120.0/24 
+        </li>
+      </ul>
+    </div>
+
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Firewall - iptables</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Web Apache: 
+          <ul>
+            <ul class='dashed-kaliA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA'>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 start <span class='explicacion'> #Iniciar o servidor web Apache.</span></li>
+                  <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+                  <li>nc -vz 192.168.120.100 80 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 80 do servidor web Apache está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 80 é o porto TCP a escanear.</span></li>
+
+                    <div class='pagebreak'>&nbsp;</div>
+
+                    <div class='explicacion3'> No caso da distribución Kali xa temos instalado o servidor web Apache, pero nunha distribución baseada en Debian poderiamos instalalo do seguinte xeito:<br />
+                      <ul class='hashtag'>
+                        <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                        <li>apt search apache2 <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda apache2</li>
+                        <li>apt -y install apache2 <span class='explicacion'> #Instalar o paquete apache2, é dicir, instalar o servidor HTTP apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                      </ul>
+                    </div>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (Kali) un navegador e visitar a IP 192.168.120.100 ou a URL http://192.168.120.100</li>
+
+        <li class='mtop mleft mbottom'>Permisos apache: 
+          <ul>
+            <ul>
+              <ul class='hashtag-kaliA'>
+                <li>chown -R www-data. /var/www/html/ <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio DocumentRoot de Apache: /var/www/html</span></li>
+                <li>chmod 444 /var/www/html/index.html <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro index.html situado en /var/www/html, é dicir, establecer os permisos r--r--r-- (soamente lectura para o usuario propietario, o grupo propietario e o resto do mundo)</span></li>
+                <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+                <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor web Apache.</span></li>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (Kali) a páxina referente á URL http://192.168.120.100</li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. Filtrado porto TCP 80 (http)</span> 
+          <p>Imos engadir na táboa <span class='label'>filter</span>, na cadea <span class='label'>INPUT</span> unha regra que denegue <span class='label'>DROP</span> o acceso ao porto TCP 80 (http)
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Engadir a regra:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L  <span class='explicacion'>#Listar todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -I INPUT -p tcp --dport 80 -j DROP <span class='explicacion'>#Denegar acceso ao porto 80 (http)
+                <li>iptables -L  <span class='explicacion'>#Listar todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar a URL debido á regra iptables xerada.
+            </div>
+          </ol>
+
+          <div class='indent'>&nbsp;</div>
+          <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. Filtrado porto TCP 80 (http) e Prioridade das regras</span> 
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Realizar de novo o Exemplo1.
+            <div class='minindent'>&nbsp;</div>
+            <li>Engadir unha nova regra ao final da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -A INPUT -p tcp --dport 80 -j ACCEPT <span class='explicacion'>#Aceptar acceso ao porto 80 (http). Coa opción -A a regra engádese como última regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora seguiremos sen poder acceder á URL debido ao funcionamento do firewall. Así, percórrese a cadea INPUT e a primeira regra xa afecta á chamada ao acceso do porto TCP 80, polo que realízase o que a regra determina, neste caso impide o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -I INPUT -p tcp --dport 80 -j ACCEPT <span class='explicacion'>#Aceptar acceso ao porto 80 (http). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora SI seremos quen de visualizar a URL debido a que a regra iptables xerada foi insertada como primeira regra da cadea INPUT. Así, percórrese a cadea INPUT e a primeira regra xa afecta á chamada ao acceso do porto TCP 80, polo que realízase o que a regra determina, neste caso permite o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+          </ol>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. Filtrado porto TCP 80 (http) según IP de orixe</span>
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Realizar de novo o Exemplo2.
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -I INPUT -p tcp --dport 80 -s 192.168.120.101 -j DROP <span class='explicacion'>#Denegar acceso ao porto 80 (http). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar a URL debido a que a regra iptables xerada foi insertada como primeira regra da cadea INPUT. Así, percórrese a cadea INPUT e a primeira regra cúmprese, polo que realízase o que a regra determina, neste caso denega o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -I INPUT -p tcp --dport 80 -s 192.168.120.101 -j ACCEPT <span class='explicacion'>#Aceptar acceso ao porto 80 (http). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora SI seremos quen de visualizar a URL debido a que a regra iptables xerada foi insertada como primeira regra da cadea INPUT. Así, percórrese a cadea INPUT e a primeira regra cúmprese, polo que realízase o que a regra determina, neste caso denega o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+          </ol>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. Evitar filtrado porto TCP 80 (http) según IP de orixe</span> 
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Eliminar todas as regras de todas as cadeas da táboa filter.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -I INPUT -p tcp --dport 80 -s 192.168.120.101 -j DROP <span class='explicacion'>#Denegar acceso ao porto 80 (http). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar a URL debido a que a regra iptables xerada foi insertada como primeira regra da cadea INPUT. Así, percórrese a cadea INPUT e a primeira regra cúmprese, polo que realízase o que a regra determina, neste caso denega o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <li>Modificar a IP de kaliB:
+              <ul class='hashtag-kaliB'>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr del 192.168.120.101/24 dev eth0<span class='explicacion'> #Eliminar a configuración IP de kaliB, é dicir, eliminar da tarxeta de rede interna eth0 a IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.102/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.102 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface eth0 de kaliA </span></li>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora SI seremos quen de visualizar a URL debido a que ningunha regra iptables cúmprese, e a política por defecto é ACCEPT, co cal a conexión establécese.
+            </div>
+          </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. Filtrado porto TCP 80 (http) según IP de orixe e MAC-Address de orixe</span>
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <div class='minindent'>&nbsp;</div>
+            <li>Realizar de novo o Exemplo4.
+            <div class='minindent'>&nbsp;</div>
+            <li>Descubrir a MAC-Address da interface eth0 (192.168.100.102) de KaliB.
+              <ul class='hashtag-kaliA'>
+                <li>ping -c4 192.168.120.102 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface eth0 de kaliB</span></li>
+                <li>arp <span class='explicacion'>#Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address). Podemos observar si existe unha entrada para kaliB, onde se asigna a IP 192.168.120.102 a súa dirección física (MAC Address ou HWaddress).</span></li>
+                <li>MAC_kaliB=$(arp | grep 192.168.120.102 | awk 'print $3}')<span class='explicacion'>#Gardar a MAC-Address atopada na variable MAC_kaliB</span>
+                <div class='explicacion3 pall'>
+                  # dpkg -l | grep net-tools ; [ $(echo $?) -eq '1' ] && apt update && apt -y install net-tools <span class='explicacion'> #Verificar se o paquete net-tools está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. O paquete net-tools é necesario para poder empregar comandos coma: ifconfig, netstat, route e arp.</span>
+                </div>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Eliminar todas as regras de todas as cadeas da táboa filter.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -I INPUT -p tcp --dport 80 -s 192.168.120.102 -m mac --mac-source ${MAC_kaliB} -j DROP <span class='explicacion'>#Denegar acceso ao porto 80 (http). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar a URL debido a que a regra iptables xerada foi insertada como primeira regra da cadea INPUT. Así, percórrese a cadea INPUT e a primeira regra cúmprese, polo que realízase o que a regra determina, neste caso denega o acceso. Deste xeito, como xa unha regra no firewall executouse remátase o filtrado e non se lee ningunha regra mais.
+            </div>
+            </li>
+          </ol>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo6. Evitar filtrado porto TCP 80 (http) según IP de orixe e MAC-Address de orixe</span>
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <div class='minindent'>&nbsp;</div>
+            <li>Realizar de novo o Exemplo5.
+            <div class='minindent'>&nbsp;</div>
+            <li>Modificar a IP de kaliB:
+              <ul class='hashtag-kaliB'>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr del 192.168.120.102/24 dev eth0<span class='explicacion'> #Eliminar a configuración IP de kaliB, é dicir, eliminar da tarxeta de rede interna eth0 a IP: 192.168.120.102 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.103/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.103 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+            <li>Modificar a MAC-Address de kaliB:
+              <div class='explicacion3 pall'>
+                <span class='label'>IMPORTANTE:</span><br />
+                Como máquina virtual teremos un problema cando modifiquemos a mac-address, tal que perderemos a comunicación de rede, posto que as máquinas virtuais están configuradas cunha mac-address e non permiten a comunicación se cambiamos esta por software. Habería que apagar a máquina virtual e modificar a mac-address polo que queiramos.
+              </div>
+
+              <p class='label'>Opción 1</p>
+              <ul class='hashtag-kaliB'>
+                <li>macchanger -l <span class='explicacion'> #Listar posibles 3 primeiros octetos de MAC Address de coñecidos proveedores.
+                <li>ip link set dev eth0 down<span class='explicacion'> #Deshabilitar interface eth0</span>.</li>
+                <li>macchanger -m 08:00:46:44:55:66 eth0<span class='explicacion'> #Cambiar a MAC-Address da interface eth0 a 08:00:46:44:55:66</span>.</li>
+                <li>ip link set dev eth0 up<span class='explicacion'> #Habilitar interface eth0</span>.</li>
+                <li>ip addr show eth0<span class='explicacion'> #Amosar a configuración da tarxeta de rede eth0</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+              <div class='minindent'>&nbsp;</div>
+              <p class='label'>Opción 2</p>
+              <ul class='hashtag-kaliB'>
+                <li>ip link set dev eth0 down<span class='explicacion'> #Deshabilitar interface eth0</span>.</li>
+                <li>ip link set dev eth0 address 08:00:46:44:55:66 eth0<span class='explicacion'> #Cambiar a MAC-Address da interface eth0 a 08:00:46:44:55:66</span>.</li>
+                <li>ip link set dev eth0 up<span class='explicacion'> #Habilitar interface eth0</span>.</li>
+                <li>ip addr show eth0<span class='explicacion'> #Amosar a configuración da tarxeta de rede eth0</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+            </li>
+
+            <div class='minindent'>&nbsp;</div>
+            <li>Acceder de novo dende o equipo cliente kaliB á URL http://192.168.120.100
+            <div class='explicacion3 pall'>
+              <p>Agora SI seremos quen de visualizar a URL debido a que ningunha regra iptables cúmprese, e a política por defecto é ACCEPT, co cal a conexión establécese.
+            </div>
+          </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo7. Filtrado portos TCP 80 (http), 443(https) e 22(ssh)</span>
+          <p>Imos insertar na táboa <span class='label'>filter</span>, na cadea <span class='label'>INPUT</span> unha regra que denegue <span class='label'>DROP</span> o acceso aos portos TCP 80 (http), 443(https) e 22(ssh).
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Realizar de novo o Exemplo6.
+            <div class='minindent'>&nbsp;</div>
+            <li>Eliminar todas as regras de todas as cadeas da táboa filter.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -I INPUT -p tcp -m multiport --dports 80,443,22 -s 192.168.120.103 -j DROP <span class='explicacion'>#Denegar acceso aos portos 80 (http), 443 (https) e 22 (ssh). Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB:
+              <ul>
+                <li>Á URL http://192.168.120.100
+                <li>Á URL https://192.168.120.100
+                <li>Ao servidor ssh 192.168.120.100
+                  <ul class='dashed-kaliB'>
+                    <li>ssh kali@192.168.120.100
+                  </ul>
+              </ul>
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar as URLs nin acceder ao servidor SSH debido á regra iptables xerada.
+            </div>
+          </ol>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo8. Filtrado portos TCP 80 (http), 443(https) e 22(ssh) a un rango de IPs orixe</span>
+          <p>Imos insertar na táboa <span class='label'>filter</span>, na cadea <span class='label'>INPUT</span> unha regra que denegue <span class='label'>DROP</span> o acceso aos portos TCP 80 (http), 443(https) e 22(ssh) ás IPs orixe 192.168.120.101, 192.168.120.102 e 192.168.120.103.
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Eliminar todas as regras de todas as cadeas da táboa filter.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -I INPUT -p tcp -m multiport --dports 80,443,22 -m iprange --src-range 192.168.120.101-192.168.120.103 -j DROP <span class='explicacion'>#Denegar acceso aos portos 80 (http), 443 (https) e 22 (ssh) para o rango de IPs dende 192.168.120.101 ata 192.168.120.103. Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB:
+              <ul>
+                <li>Á URL http://192.168.120.100
+                <li>Á URL https://192.168.120.100
+                <li>Ao servidor ssh 192.168.120.100
+                  <ul class='dashed-kaliB'>
+                    <li>ssh kali@192.168.120.100
+                  </ul>
+              </ul>
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar as URLs nin acceder ao servidor SSH debido á regra iptables xerada.
+            </div>
+          </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo9. Filtrado portos TCP 80 (http), 443(https) e 22(ssh) a unhas determinadas IPs orixe</span>
+          <p>Imos insertar na táboa <span class='label'>filter</span>, na cadea <span class='label'>INPUT</span> unha regra que denegue <span class='label'>DROP</span> o acceso aos portos TCP 80 (http), 443(https) e 22(ssh) ás IPs orixe 192.168.120.101, 192.168.120.102 e 192.168.120.103.
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Eliminar todas as regras de todas as cadeas da táboa filter.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea INPUT:
+              <ul class='hashtag-kaliA'>
+                <li>iptables -I INPUT -p tcp -m multiport --dports 80,443,22 -s 192.168.120.101,192.168.120.102,192.168.120.103 -j DROP <span class='explicacion'>#Denegar acceso aos portos 80 (http), 443 (https) e 22 (ssh) para as IPs 192.168.120.101, 192.168.120.102 e 192.168.120.103. Coa opción -I a regra insértase como a primeira regra da cadea correspondente.
+                <li>iptables -L --line-numbers <span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>filter</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>INPUT</b>, <b>FORWARD</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+
+            <li>Acceder de novo dende o equipo cliente kaliB:
+              <ul>
+                <li>Á URL http://192.168.120.100
+                <li>Á URL https://192.168.120.100
+                <li>Ao servidor ssh 192.168.120.100
+                  <ul class='dashed-kaliB'>
+                    <li>ssh kali@192.168.120.100
+                  </ul>
+              </ul>
+            <div class='explicacion3 pall'>
+              <p>Agora NON seremos quen de visualizar as URLs nin acceder ao servidor SSH debido á regra iptables xerada.
+            </div>
+          </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo10. Acceso a Internet dende kaliB</span> 
+          <p>Imos permitir o enrutamento entre interfaces en kaliA para que kaliB poida ter acceso a Internet, é dicir, imos facer que kaliA simula ser o router facendo NAT para kaliB. 
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol>
+            <li>Permitir o enrutamento entre interfaces en kaliA.
+              <p class='label'>Opción 1: De forma temporal modificando /proc/sys/net/ipv4/ip_forward</p>
+              <ul class='hashtag-kaliA'>
+                <li>echo 1 > /proc/sys/net/ipv4/ip_forward <span class='explicacion'> #Activar enrutamento entre interfaces, é dicir, permitir que pasen paquetes entre eth0(rede interna) e eth1(saída a internet)
+              </ul>
+              <p class='label'>Opción 2: De forma permanente modificando /etc/sysctl.conf</p>
+              <ul class='hashtag-kaliA'>
+                <li>echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf <span class='explicacion'> #Activar enrutamento entre interfaces, é dicir, permitir que pasen paquetes entre eth0(rede interna) e eth1(saída a internet)
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio realizado en /etc/sysctl.conf sen ter que pechar sesión nin reiniciar</span></li>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Eliminar todas as regras de todas as cadeas das táboas filter e nat.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -F -t nat <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa nat.
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea POSTROUTING:
+              <p class='label'>Opción 1: Co salto SNAT xa que eth1 en VirtualBox imos considerar que posúe a IP estática 10.0.3.15</p>
+              <ul class='hashtag-kaliA'>
+                <li>iptables -t nat -I POSTROUTING -s 192.168.120.101,192.168.120.102,192.168.120.103 -o eth1 -j SNAT --to 10.0.3.15 <span class='explicacion'>#Permitir acceso a Internet facendo NAT aos hosts que posúan calquera das IPs 192.168.120.101, 192.168.120.102, 192.168.120.103. Para permitir o acceso créase esta regra nat que enruta todos os paquetes desas IPs á tarxeta eth1 que posúe a IP estática 10.0.3.15.
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+              <p class='label'>Opción 2: Co salto MASQUERADE xa que eth1 en VirtualBox imos considerar que posúe a IP dinámica 10.0.3.15</p>
+              <ul class='hashtag-kaliA'>
+                <li>iptables -t nat -I POSTROUTING -s 192.168.120.101,192.168.120.102,192.168.120.103 -o eth1 -j MASQUERADE <span class='explicacion'>#Permitir acceso a Internet facendo NAT aos hosts que posúan calquera das IPs 192.168.120.101, 192.168.120.102, 192.168.120.103. Para permitir o acceso créase esta regra nat que enruta todos os paquetes desas IPs á tarxeta eth1 que posúe a IP dinámica 10.0.3.15.
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+            <li>Configurar a rede en kaliB: táboa de enrutamento e configuración DNS
+              <ul class='hashtag-kaliA'>
+                <li>ip route add default via 192.168.120.100 dev eth0 <span class='explicacion'>#Pór a IP de kaliA como gateway por defecto na táboa de rutas de kaliB</span>
+                <li>echo 'nameserver 8.8.8.8' >> /etc/resolv.conf <span class='explicacion'>#Pór como servidor DNS primario 8.8.8.8 en kaliB</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Probar o acceso a Internet dende kaliB accedendo á URL www.debian.org:
+            <div class='explicacion3 pall'>
+              <p class='label'>kaliB accede a internet xa que temos unha regra nat en kaliA que lle permite o acceso.
+            </div>
+          </ol>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo11. PAT na intranet</span>
+          <p>Imos redireccionar o porto TCP 8080 ao porto TCP 80 en kaliA se a petición de conectividade realízase dende a rede local 192.168.120.0/24</p>
+          <p class='label'>
+          Procedemento:
+          </p>
+          <ol class='arriba'>
+            <li>Permitir o enrutamento entre interfaces en kaliA.
+              <p class='label'>Opción 1: De forma temporal modificando /proc/sys/net/ipv4/ip_forward</p>
+              <ul class='hashtag-kaliA'>
+                <li>echo 1 > /proc/sys/net/ipv4/ip_forward <span class='explicacion'> #Activar enrutamento entre interfaces, é dicir, permitir que pasen paquetes entre eth0(rede interna) e eth1(saída a internet)
+              </ul>
+              <p class='label'>Opción 2: De forma permanente modificando /etc/sysctl.conf</p>
+              <ul class='hashtag-kaliA'>
+                <li>echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf <span class='explicacion'> #Activar enrutamento entre interfaces, é dicir, permitir que pasen paquetes entre eth0(rede interna) e eth1(saída a internet)
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio realizado en /etc/sysctl.conf sen ter que pechar sesión nin reiniciar</span></li>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Eliminar todas as regras de todas as cadeas das táboas filter e nat.
+              <ul class='hashtag-kaliA'>
+                <li>iptables -F <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa filter.
+                <li>iptables -F -t nat <span class='explicacion'>#Eliminar todas as regras de todas as cadeas da táboa nat.
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Insertar unha nova regra no inicio da cadea PREROUTING:
+              <p class='label'>Opción 1: Co salto DNAT na interface eth0 para ter soamente en conta as peticións da rede 192.168.120.0/24</p>
+              <ul class='hashtag-kaliA'>
+                <li>iptables -t nat -I PREROUTING -s 192.168.120.0/24 -p tcp --dport 8080 -i eth0 -j DNAT --to 192.168.120.100:80 <span class='explicacion'>#Redireccionar en kaliA calquera chamada dende a rede 192.168.120.0/24 o porto TCP 8080 ao porto TCP 80 
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+              <p class='label'>Opción 2: Co salto REDIRECT xa que o PAT faise dentro do mesmo host(kaliA) na interface eth0 para ter soamente en conta as peticións da rede 192.168.120.0/24</p>
+              <ul class='hashtag-kaliA'>
+                <li>iptables -t nat -I PREROUTING -s 192.168.120.0/24 -p tcp --dport 8080 -i eth0 -j REDIRECT --to 80 <span class='explicacion'>#Redireccionar en kaliA calquera chamada dende a rede 192.168.120.0/24 o porto TCP 8080 ao porto TCP 80 
+                <li>iptables -L --line-numbers -t nat<span class='explicacion'>#Listar de forma numerada todas as regras das cadeas da táboa <b>nat</b>, é dicir, amosar de forma numerada todas as regras das cadeas <b>PREROUTING</b>, <b>INPUT</b>, <b>POSTROUTING</b> e <b>OUTPUT</b>.</span>
+              </ul>
+
+            </li>
+            <div class='minindent'>&nbsp;</div>
+            <li>Configurar a rede en kaliB: táboa de enrutamento e configuración DNS
+              <ul class='hashtag-kaliA'>
+                <li>ip route add default via 192.168.120.100 dev eth0 <span class='explicacion'>#Pór a IP de kaliA como gateway por defecto na táboa de rutas de kaliB</span>
+                <li>echo 'nameserver 8.8.8.8' >> /etc/resolv.conf <span class='explicacion'>#Pór como servidor DNS primario 8.8.8.8 en kaliB</span>
+              </ul>
+            <div class='minindent'>&nbsp;</div>
+            <li>Probar o acceso dende o equipo cliente kaliB á URL http://192.168.120.100:8080
+            <div class='explicacion3 pall'>
+              <p class='label'>kaliB accede á paxina web http://192.168.120.100:80 xa que realizouse a redirección do porto TCP 8080 ao porto TCP 80.
+            </div>
+          </ol>
+
+        </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
