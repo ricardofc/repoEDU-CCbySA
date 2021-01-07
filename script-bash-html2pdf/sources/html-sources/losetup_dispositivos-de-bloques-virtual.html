@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Comandos GNU/Linux</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado' class='arribaplus'>
+    <h1>losetup (dispositivos de bloques virtual loop)</h1>
+    <div class='mtop label'>Práctica</div>
+    <div class='contido'>
+      <ul class='hashtag mleftsubs'>
+        <li>mount -o loop file.iso /media/cdrom0 <span class='explicacion'> #Montar dispositivo iso en /media/cdrom0.</span></li><br />
+        <li>cd && umount /media/cdrom0<span class='explicacion'> #Desmontar /media/cdrom0.</span></li><br />
+        <li>dd if=/dev/zero of=file1.raw bs=1MiB count=100<span class='explicacion'> #Crear un ficheiro file1.raw que contén todos ceros no directorio actual cun tamaño de 100MiB.</span></li><br />
+        <li>dd if=/dev/zero of=file2.raw bs=100MiB count=2<span class='explicacion'> #Crear un ficheiro file2.raw que contén todos ceros no directorio actual cun tamaño de 200MiB.</span></li><br />
+        <li>losetup -f --show file1.raw<span class='explicacion'> #Enlazar a file1.raw o primeiro dispositivo loop libre (-f), e amosando cal é (--show).<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li><br />
+        <li>losetup -f --show file2.raw<span class='explicacion'> #Enlazar a file2.raw o primeiro dispositivo loop libre (-f), e amosando cal é (--show).<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li><br />
+        <li>DEVLOOP=$(losetup -a | grep file1.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOP</b> co valor do dispositivo enlazado a file1.raw.</span></li><br />
+        <li>parted --script ${DEVLOOP} mklabel msdos<span class='explicacion'> #Crear a etiqueta de disco ao dispositivo ${DEVLOOP} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOP} mkpart primary 0 50%<span class='explicacion'> #Crear unha partición primaria co primeiro 50% do dispositivo ${DEVLOOP} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOP} mkpart primary 50% 100%<span class='explicacion'> #Crear unha partición primaria co último 50% do dispositivo ${DEVLOOP} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>ls -lah ${DEVLOOP}*<span class='explicacion'> #Listar o dispositivo ${DEVLOOP} e as súas particións (xeradas anteriormente): ${DEVLOOP}p1, ${DEVLOOP}p2</span></li><br />
+        <li>mkfs.ext4 -L 'parte1loop' ${DEVLOOP}p1 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOP}p1 etiquetada como parte1loop.</span></li><br />
+        <li>mkfs.ext4 -L 'parte2loop' ${DEVLOOP}p2 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOP}p2 etiquetada como parte2loop.</span></li><br />
+        <li>mkdir -p /media/loop/loopp1 /media/loop/loopp2 <span class='explicacion'> #Crear cartafoles /media/loop/loopp1 e /media/loop/loopp2</span></li><br />
+        <li>mount ${DEVLOOP}p1 /media/loop/loopp1<span class='explicacion'> #Montar ${DEVLOOP}p1 en /media/loop/loopp1</span></li><br />
+        <li>mount ${DEVLOOP}p2 /media/loop/loopp2<span class='explicacion'> #Montar ${DEVLOOP}p2 en /media/loop/loopp2</span></li><br />
+        <li>mount | grep loop<span class='explicacion'> #Amosar dispositivos montados que concordan co patrón loop</span></li><br />
+        <li>cp -pv /etc/passwd /media/loop/loopp1<span class='explicacion'> #Copiar o ficheiro /etc/passwd en /media/loop/loopp1</span></li><br />
+        <li>umount /media/loop/loopp1 /media/loop/loopp2<span class='explicacion'> #Desmontar /media/loop/loopp1 e /media/loop/loopp2</span></li><br />
+        <li class='arriba'>losetup -d ${DEVLOOP}<span class='explicacion'> #Desmontar e desenlazar o dispositivo ${DEVLOOP}<span></li><br />
+        <div class='explicacion3 pall arribaplus'>
+          <ul class='hashtag mleftsubs'>
+            <li>losetup -D<span class='explicacion'> #Desmontar e desenlazar todos os dispositivo enlazados<span></li>
+          </ul>
+        </div>
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li>
+      </div>
+      <hr />
+<div id="footer" class='arribaplus'>
+  <div class="nome">Ricardo Feijoo Costa</div>
+  <div class='.imgccbysa'>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+  </div>
+</div>
+</body>
+</html>

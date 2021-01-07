@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Comandos GNU/Linux</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1><a href='https://debian-handbook.info/browse/es-ES/stable/advanced-administration.html#sect.lvm' target='_blank'>LVM: physical volume(pvX), volume group (vgX), logical volume(lvX)</a>
+      <img class='cfigure mleftsubsx2 arribaplus' src="images/mouse-pointer-mini.png" />
+    </h1>
+    <div class='indent'>&nbsp;</div>
+    <span class='label'>lvm2 (pvX, vgX, lvX)</span><br />
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>apt-cache show lvm2</li>
+        <li>apt-get install lvm2</li>  
+        <li>man 8 lvm</li>  
+        <div class='explicacion3 pall'>
+          <p>Para facer a práctica imos empregar dispositivos virtuais loop, ainda que poderiamos empregar comandos coma os seguintes con dispositivos reais: 
+          <ul class='hashtag'>
+            <li>mkfs.ext4 -L 'parte1' /dev/sde1 <span class='explicacion'> #Formatear en ext4 /dev/sde1 etiquetado como parte1.</span></li>
+            <li>mkfs.ext4 -L 'parte2' /dev/sdf4 <span class='explicacion'> #Formatear en ext4 /dev/sdf4 etiquetado como parte2.</span></li>
+            <li>mkfs.ext4 -L 'parte3' /dev/sdg <span class='explicacion'> #Formatear en ext4 /dev/sdg etiquetado como parte3.</span></li>
+            <li>pvcreate /dev/sde1 /dev/sdf4 /dev/sdg<span class='explicacion'> #Inicializar as particións /dev/sda1, /dev/sdf4 e o disco /dev/sdg para usar por LVM.</span></li>
+            <li>vgcreate primeiro_vg /dev/sde1 /dev/sdf4 /dev/sdg<span class='explicacion'> #Crea un grupo de volumes usando as particións /dev/sda1, /dev/sdf4 e o disco /dev/sdg.</span></li>
+
+            <li>lvcreate -L 20G -n primeiro_lv primeiro_vg<span class='explicacion'> #Crear un volume lóxico dentro do grupo de volumes primeiro_vg de 20G denominado primeiro_lv</li>
+            <li>mkfs.ext4 -L 'volumeOK' /dev/primeiro_vg/primeiro_lv <span class='explicacion'> #Formatear en ext4 o volume lóxico primeiro_lv etiquetado como volumeOK.</span></li>
+          </ul>
+        </div>
+      </ul>
+    </div>
+
+    <div class='minindent'>&nbsp;</div>
+    <h2><div class='label'>Práctica</div></h2>
+    <div class='label'>Preparación discos e particións</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>dd if=/dev/zero of=file1.raw bs=1MiB count=100<span class='explicacion'> #Crear un ficheiro file1.raw que contén todos ceros no directorio actual cun tamaño de 100MiB.</span></li><br />
+        <li>dd if=/dev/zero of=file2.raw bs=100MiB count=2<span class='explicacion'> #Crear un ficheiro file2.raw que contén todos ceros no directorio actual cun tamaño de 200MiB.</span></li><br />
+        <li>dd if=/dev/zero of=file3.raw bs=1MiB count=100<span class='explicacion'> #Crear un ficheiro file3.raw que contén todos ceros no directorio actual cun tamaño de 100MiB.</span></li><br />
+        <li>for i in 1 2 3; do losetup -f --show file${i}.raw;done<span class='explicacion'> #Enlazar file1.raw, file2.raw e file3.raw aos primeiros dispositivos loop libres (-f), amosando cales son (--show).<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li><br />
+        <li>DEVLOOPF1=$(losetup -a | grep file1.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF1</b> co valor do dispositivo enlazado a file1.raw.</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mklabel msdos<span class='explicacion'> #Crear a etiqueta de disco ao dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mkpart primary 0 50% 2&gt;/dev/null<span class='explicacion'> #Crear unha partición primaria co primeiro 50% do dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mkpart primary 50% 100% 2&gt;/dev/null<span class='explicacion'> #Crear unha partición primaria co último 50% do dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>ls -lah ${DEVLOOPF1}*<span class='explicacion'> #Listar o dispositivo ${DEVLOOPF1} e as súas particións (xeradas anteriormente): ${DEVLOOPF1}p1, ${DEVLOOPF1}p2</span></li><br />
+        <li>mkfs.ext4 -L 'parte1loopF1' ${DEVLOOPF1}p1 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOPF1}p1 etiquetada como parte1loopF1.</span></li><br />
+        <li>mkfs.ext4 -L 'parte2loopF1' ${DEVLOOPF1}p2 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOPF1}p2 etiquetada como parte2loopF1.</span></li><br />
+        <li>DEVLOOPF2=$(losetup -a | grep file2.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF2</b> co valor do dispositivo enlazado a file2.raw.</span></li><br />
+        <li>mkfs.ext4 -L 'fullloopF2' ${DEVLOOPF2} <span class='explicacion'> #Formatear en ext4 o dispositivo ${DEVLOOPF2}</span></li><br />
+        <li>DEVLOOPF3=$(losetup -a | grep file3.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF3</b> co valor do dispositivo enlazado a file3.raw.</span></li><br />
+        <li>mkfs.ext4 -L 'fullloopF3' ${DEVLOOPF3} <span class='explicacion'> #Formatear en ext4 o dispositivo ${DEVLOOPF3}</span></li>
+      </ul>
+    </div>
+
+    <div class='minindent'>&nbsp;</div>
+    <div class='label'>pvcreate, vgcreate, lvcreate: Creación de volumes lóxicos</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>pvcreate ${DEVLOOPF1}p1 ${DEVLOOPF2} ${DEVLOOPF3} <span class='explicacion'> #Inicializar a partición ${DEVLOOPF1}p1 e os dispositivos ${DEVLOOPF2}, ${DEVLOOPF3} para usar por LVM.</span></li><br />
+        <li>vgcreate segundo_vg ${DEVLOOPF1}p1 ${DEVLOOPF2} ${DEVLOOPF3}<span class='explicacion'> #Crea un grupo de volumes usando a partición ${DEVLOOPF1}p1 e os dispositivos ${DEVLOOPF2}, ${DEVLOOPF3}</span></li><br />
+        <li>lvcreate -L 200M -n segundo_lv segundo_vg<span class='explicacion'> #Crear un volume lóxico dentro do grupo de volumes segundo_vg de 200M denominado segundo_lv</li>
+      </ul>
+    </div>
+
+    <div class='minindent'>&nbsp;</div>
+    <div class='label'>Escanear e amosar información LVM</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>pvscan; vgscan; lvscan<span class='explicacion'> #Permiten escanear respectivamente: volumes físicos, grupos de volumes e volumes lóxicos existentes.</span></li><br />
+        <li>pvdisplay; vgdisplay; lvdisplay<span class='explicacion'> #Amosa respectivamente información das propiedades dos volumes físicos, grupos de volumes e volumes lóxicos.</span></li><br />
+        <li>pvs; vgs; lvs<span class='explicacion'> #Amosa respectivamente información resumida sobre volumes físicos, grupos de volumes e volumes lóxicos.</span></li>
+      </ul>
+    </div>
+
+    <div class='minindent'>&nbsp;</div>
+    <div class='label'>Activar/Desactivar LVM</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>vgchange -aay <span class='explicacion'> #Activa tódolos grupos de volúmes: escanea os dispositivos dispoñibles e inicialízaos.</span></li><br />
+        <li>vgchange -an segundo_vg <span class='explicacion'> #Desactiva o grupo de volume segundo_vg.</span></li><br />
+        <li>vgchange -ay segundo_vg <span class='explicacion'> #Activa o grupo de volume segundo_vg.</span></li>
+      </ul>
+    </div>
+
+    <div class='minindent'>&nbsp;</div>
+    <div class='label'>Extender/Reducir Grupo de Volumes</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>vgreduce segundo_vg ${DEVLOOPF2} <span class='explicacion'> #Quitar o dispositivo ${DEVLOOPF2} do grupo de volumes segundo_vg</span></li>
+        <div class='explicacion3 pall'>
+          Obteremos un problema xa que non se pode reducir dun grupo de volumes un volume físico que está sendo empregado. Primeiro temos que baleirar ese volume físico para podelo eliminar do grupo de volumes.
+          <ul class='hashtag'>
+            <li>lvremove /dev/segundo_vg/segundo_lv <span class='explicacion'> #Eliminar volume lóxico segundo_lv</span></li><br />
+          </ul>
+          No caso que o volume lóxico tivera datos, para non perdelos poderiamos empregar o comando <i>pvmove</i>, sempre e cando exista outro volume lóxico de igual ou maior tamaño que poida conter os datos que non queremos perder.
+        </div>
+        <li>lvremove /dev/segundo_vg/segundo_lv <span class='explicacion'> #Eliminar volume lóxico segundo_lv</span></li><br />
+        <li>pvdisplay</li><br />
+        <li>vgextend segundo_vg ${DEVLOOPF2} <span class='explicacion'> #Engadir o dispositivo ${DEVLOOPF2} ao grupo de volumes segundo_vg</span></li><br />
+        <li>pvdisplay</li><br />
+        <li>lvcreate -L 200M -n segundo_lv segundo_vg<span class='explicacion'> #Crear un volume lóxico dentro do grupo de volumes segundo_vg de 200M denominado segundo_lv</li>
+     </ul>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Formatear e redimensionar LVM</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mkfs.ext4 -L '2volumeOK' /dev/segundo_vg/segundo_lv <span class='explicacion'> #Formatear en ext4 o volume lóxico segundo_lv etiquetado como 2volumeOK.</span></li><br />
+
+        <li>lvresize -L 320M /dev/segundo_vg/segundo_lv <span class='explicacion'> #Redimensionar a 320M o volume lóxico segundo_lv</span></li><br />
+        <li>resize2fs /dev/segundo_vg/segundo_lv <span class='explicacion'> #Adaptar o sistema de ficheiros ao novo tamaño.</span></li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>Montar LVM</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mkdir -p /media/lvm2 <span class='explicacion'> #Crear cartafol /media/lvm2</span></li><br />
+
+        <li>mount /dev/segundo_vg/segundo_lv /media/lvm2<span class='explicacion'> #Montar /dev/segundo_vg/segundo_lv en /media/lvm2</span></li><br />
+        <li>mount | grep lvm<span class='explicacion'> #Amosar dispositivos montados que concordan co patrón lvm</span></li><br />
+
+
+        <li>cp -pv /etc/passwd /media/lvm2<span class='explicacion'> #Copiar o ficheiro /etc/passwd en /media/lvm2</span></li><br />
+        <li>df -h | grep segundo_lv<span class='explicacion'> #Ver a utilización do espazo en disco do volume lóxico segundo_lv</span></li><br />
+        <li>umount /media/lvm2<span class='explicacion'> #Desmontar /media/lvm2</span></li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>lvremove, vgremove, pvremove: Eliminación de volumes lóxicos</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>umount /media/lvm2<span class='explicacion'> #Asegurarse en desmontar /media/lvm2</span></li><br />
+        <li>lvremove /dev/segundo_vg/segundo_lv <span class='explicacion'> #Eliminar volume lóxico segundo_lv</span></li><br />
+        <li>vgremove segundo_vg <span class='explicacion'> #Eliminar o grupo de volumes segundo_vg</span></li><br />
+        <li>pvremove ${DEVLOOPF1}p1 ${DEVLOOPF2} ${DEVLOOPF3} <span class='explicacion'> #Eliminar a partición ${DEVLOOPF1}p1 e os dispositivos ${DEVLOOPF2}, ${DEVLOOPF3} para usar por LVM.</span></li>
+     </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>losetup -d : Desconectar dispositivos loop</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>losetup -a | grep raw | cut -d ':' -f1 | xargs -I VAR losetup -d VAR <span class='explicacion'> #Desmontar e desenlazar os dispositivos ${DEVLOOPF1}, ${DEVLOOPF2} e ${DEVLOOPF3}<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li>
+      </ul>
+    </div> 
+    <hr />
+    <div id="footer">
+      <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

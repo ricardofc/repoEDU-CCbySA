@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Comandos GNU/Linux</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1><a href='https://debian-handbook.info/browse/es-ES/stable/advanced-administration.html#sect.raid-soft' target='_blank'>RAID por Software: mdadm</a>
+      <img class='cfigure mleftsubsx2 arribaplus' src="images/mouse-pointer-mini.png" />
+    </h1>
+    <div class='minindent'>&nbsp;</div>
+    <span class='label'>mdadm</span><br />
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>apt-cache show mdadm</li>
+        <li>echo "mdadm mdadm/initrdstart string none" | debconf-set-selections</li>
+        <div class='explicacion3 pall'>
+          Este comando sobre <i>debconf-set-selections</i> non é preciso a partir da versión 10 (buster) de Debian. Así, a partir de buster non é preciso pór por defecto a opción none para a instalación do paquete mdadm.
+        </div>
+        <li>apt-get install mdadm</li>
+        <li>debconf-show mdadm<br />
+      mdadm/autocheck: true<br />
+      mdadm/initrdstart_msg_errconf:<br />
+      mdadm/mail_to: root<br />
+      mdadm/start_daemon: true<br />
+      mdadm/initrdstart_msg_errmd:<br />
+      mdadm/initrdstart_notinconf: false<br />
+    * mdadm/initrdstart: none<br />
+      mdadm/initrdstart_msg_errblock:<br />
+      mdadm/initrdstart_msg_intro:<br />
+      mdadm/initrdstart_msg_errexist:<br />
+        <li>man 8 mdadm</li>  
+        <li>cat /etc/mdadm/mdadm.conf</li>
+        <li>cat /proc/mdstat</li>
+        <span class='nome'>Para facer a práctica imos empregar dispositivos virtuais loop, ainda que poderiamos dispositivos reais, como: /dev/sde1, /dev/sdf4, etc.</span><br />
+      </ul>
+    </div>
+
+    <h2><div class='label'>Práctica</div></h2>
+    <div class='label'>Preparación discos e particións</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>dd if=/dev/zero of=file1.raw bs=1MiB count=100<span class='explicacion'> #Crear un ficheiro file1.raw que contén todos ceros no directorio actual cun tamaño de 100MiB.</span></li><br />
+        <li>dd if=/dev/zero of=file2.raw bs=100MiB count=2<span class='explicacion'> #Crear un ficheiro file2.raw que contén todos ceros no directorio actual cun tamaño de 200MiB.</span></li><br />
+        <li>dd if=/dev/zero of=file3.raw bs=1MiB count=100<span class='explicacion'> #Crear un ficheiro file3.raw que contén todos ceros no directorio actual cun tamaño de 100MiB.</span></li><br />
+        <li>for i in 1 2 3; do losetup -f --show file${i}.raw;done<span class='explicacion'> #Enlazar file1.raw, file2.raw e file3.raw aos primeiros dispositivos loop libres (-f), amosando cales son (--show).<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li><br />
+        <li>DEVLOOPF1=$(losetup -a | grep file1.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF1</b> co valor do dispositivo enlazado a file1.raw.</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mklabel msdos<span class='explicacion'> #Crear a etiqueta de disco ao dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mkpart primary 0 50% 2&gt;/dev/null<span class='explicacion'> #Crear unha partición primaria co primeiro 50% do dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>parted --script ${DEVLOOPF1} mkpart primary 50% 100% 2&gt;/dev/null<span class='explicacion'> #Crear unha partición primaria co último 50% do dispositivo ${DEVLOOPF1} sen ter que acceder ao prompt de parted</span></li><br />
+        <li>ls -lah ${DEVLOOPF1}*<span class='explicacion'> #Listar o dispositivo ${DEVLOOPF1} e as súas particións (xeradas anteriormente): ${DEVLOOPF1}p1, ${DEVLOOPF1}p2</span></li><br />
+        <li>mkfs.ext4 -L 'parte1loopF1' ${DEVLOOPF1}p1 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOPF1}p1 etiquetada como parte1loopF1.</span></li><br />
+        <li>mkfs.ext4 -L 'parte2loopF1' ${DEVLOOPF1}p2 <span class='explicacion'> #Formatear en ext4 a partición ${DEVLOOPF1}p2 etiquetada como parte2loopF1.</span></li><br />
+        <li>DEVLOOPF2=$(losetup -a | grep file2.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF2</b> co valor do dispositivo enlazado a file2.raw.</span></li><br />
+        <li>mkfs.ext4 -L 'fullloopF2' ${DEVLOOPF2} <span class='explicacion'> #Formatear en ext4 o dispositivo ${DEVLOOPF2}</span></li><br />
+        <li>DEVLOOPF3=$(losetup -a | grep file3.raw | cut -d ':' -f1)<span class='explicacion'> #Declara unha variable de nome <b>DEVLOOPF3</b> co valor do dispositivo enlazado a file3.raw.</span></li><br />
+        <li>mkfs.ext4 -L 'fullloopF3' ${DEVLOOPF3} <span class='explicacion'> #Formatear en ext4 o dispositivo ${DEVLOOPF3}</span></li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>--create: Creación de RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>yes | mdadm --create /dev/md0 --level=0 --raid-devices=2 ${DEVLOOPF1}p1 ${DEVLOOPF2} <span class='explicacion'> #Crear un volume RAID0 en /dev/md0 usando a partición ${DEVLOOPF1}p1 e o dispositivo ${DEVLOOPF2}.</span></li><br />
+        <li>yes | mdadm --create /dev/md1 --level=1 --raid-devices=2 ${DEVLOOPF1}p2 ${DEVLOOPF3} <span class='explicacion'> #Crear un volume RAID1 en /dev/md1 usando a partición ${DEVLOOPF1}p2 e o dispositivo ${DEVLOOPF3}.</span></li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>--query, --detail, /proc/mdstat: Escanear e amosar información RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mdadm --query /dev/md0<span class='explicacion'> #Amosa información reducida sobre o volume RAID /dev/md0</span></li><br />
+        <li>mdadm --detail /dev/md0<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md0</li><br />
+        <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do volume RAID</li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>(--fail, --remove)Quitar/Engadir(--add) discos ao RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mdadm --fail /dev/md1 ${DEVLOOPF3} <span class='explicacion'> #Para quitar o dispositivo ${DEVLOOPF3} do RAID, éste debe estar en estado fallido (fail), co cal provocamos este estado para poder quitalo</span></li><br />
+        <li>cat /proc/mdstat</li><br />
+        <li>mdadm --remove /dev/md1 ${DEVLOOPF3}<span class='explicacion'> #Quitamos o dispositivo fallido ${DEVLOOPF3} do RAID</span></li><br />
+        <li>cat /proc/mdstat</li><br />
+        <li>mdadm --add /dev/md1 ${DEVLOOPF3}<span class='explicacion'> #Engadir dispositivo ${DEVLOOPF3} ao RAID</span></li><br />
+        <li>cat /proc/mdstat</li>
+      </ul>
+    </div>
+
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>Formatear o RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mkfs.ext4 -L 'RAID0' /dev/md0 <span class='explicacion'> #Formatear en ext4 o volume RAID0 etiquetado como RAID0.</span></li><br />
+        <li>mkfs.ext4 -L 'RAID1' /dev/md1 <span class='explicacion'> #Formatear en ext4 o volume RAID1 etiquetado como RAID1.</span></li>
+      </ul>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Montar/Desmontar RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>mkdir -p /media/raid0 && mkdir -p /media/raid1<span class='explicacion'> #Crear os cartafoles /media/raid0 e /media/raid1</span></li><br />
+        <li>mount /dev/md0 /media/raid0<span class='explicacion'> #Montar o volume RAID0 en /media/raid0</span></li><br />
+        <li>mount /dev/md1 /media/raid1<span class='explicacion'> #Montar o volume RAID1 en /media/raid1</span></li><br />
+        <li>mount | grep raid<span class='explicacion'> #Amosar dispositivos montados que concordan co patrón raid</span></li><br />
+        <li>cp -pv /etc/passwd /media/raid0<span class='explicacion'> #Copiar o ficheiro /etc/passwd en /media/raid0</span></li><br />
+        <li>df -h | grep raid0<span class='explicacion'> #Ver a utilización do espazo en disco do volume RAID0</span></li><br />
+        <li>umount /media/raid0 /media/raid1<span class='explicacion'> #Desmontar /media/raid0 e /media/raid1</span></li>
+      </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>--stop, --remove, --zero-superblock: Eliminación de volumes RAID</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>umount /dev/md0 <span class='explicacion'> #Desmontar /dev/md0</span></li>
+        <li>mdadm --stop /dev/md0<span class='explicacion'> #Desactivar volume RAID0, liberando todos os recursos.</span></li>
+        <div class='explicacion3 pall'>
+          <p>Pode ser necesario realizar o seguinte comando para eliminar o volume RAID:
+          <ul class='hashtag mtop'>
+            <li>mdadm --remove /dev/md0<span class='explicacion'> #Eliminar volume RAID0 no caso que o volume esté en mal estado.</span></li><br />
+          </ul>
+          <p>Así tamén, se é o caso débese eliminar:
+          <ul>
+            <li>En /etc/fstab a liña correspondente ao array RAID0 /dev/md0
+            <li>En /etc/mdadm/mdadm.conf a liña correspondente ao array RAID0 /dev/md0
+          </ul>
+        </div>
+        <li>mdadm --zero-superblock ${DEVLOOPF1}p1 ${DEVLOOPF2}<span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID0</span></li>
+        <br />
+        <br />
+        <li>umount /dev/md1 <span class='explicacion'> #Desmontar /dev/md1</span></li>
+        <li>mdadm --stop /dev/md1<span class='explicacion'> #Desactivar volume RAID1, liberando todos os recursos.</span></li>
+        <div class='explicacion3 pall'>
+          <p>Pode ser necesario realiza o seguinte comando para eliminar o volume RAID:
+          <ul class='hashtag mtop'>
+            <li>mdadm --remove /dev/md1<span class='explicacion'> #Eliminar volume RAID1 no caso que o volume esté en mal estado.</span></li><br />
+          </ul>
+          <p>Así tamén, se é o caso débese eliminar:
+          <ul>
+            <li>En /etc/fstab a liña correspondente ao array RAID1 /dev/md1
+            <li>En /etc/mdadm/mdadm.conf a liña correspondente ao array RAID1 /dev/md1
+          </ul>
+        </div>
+        <li>mdadm --zero-superblock ${DEVLOOPF1}p2 ${DEVLOOPF3}<span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID1</span></li>
+     </ul>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='label'>losetup -d : Desconectar dispositivos loop</div>
+    <div class='contido'>
+      <ul class='hashtag'>
+        <li>losetup -a | grep raw | cut -d ':' -f1 | xargs -I VAR losetup -d VAR <span class='explicacion'> #Desmontar e desenlazar os dispositivos ${DEVLOOPF1}, ${DEVLOOPF2} e ${DEVLOOPF3}<span></li><br />
+        <li>losetup -a<span class='explicacion'> #Amosar tódolos dispositivos loop enlazados.<span></li>
+    </ul>
+  </div> 
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+  </div>
+  </div>
+</body>
+</html>

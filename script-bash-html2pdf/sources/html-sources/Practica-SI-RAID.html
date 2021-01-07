@@ -1,0 +1,1813 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica SI Seguridade - RAID por Software: mdadm</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM' target='_blank'>Práctica SI Seguridade - RAID por Software: mdadm</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-RAID-por-software-mdadm.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTA</b>:
+        <ul type='square'>
+          <li>Prerrequisitos:
+            <br />
+            <br />
+            <ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM/mdadm_RAID-por-software.pdf' target='_blank'>RAID por Software: mdadm</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+             <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot/Practica-SI-Allow-Boot-GRUB-HD-GNU-Linux.pdf' target='_blank'>Práctica Seguridade Informática - Allow Boot GRUB disco duro - GNU/Linux</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              </ul>
+          <li>Documentación de interese:
+            <br />
+            <br />
+            <ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://debian-handbook.info/browse/es-ES/stable/advanced-administration.html#sect.raid-soft' target='_blank'>RAID por Software (debian-handbook)</a>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>Paquete mdadm (# apt update && apt -y install mdadm).</span>
+                <ul class='dashed'>
+                  <li>man mdadm
+                  <li>man mdadm.conf (/etc/mdadm/mdadm.conf)
+                  <li>man md 
+                    <div class='explicacion3 pall'>
+                     md - Controlador de dispositivo múltiple tamén coñecido como RAID de software Linux:<br />
+                     <ul>
+                       <li type='square'>
+                       Proporciona dispositivos virtuais creados como:<br />
+                       <b>/dev/md</b>n<br />
+                       <b>/dev/md/</b>n<br />
+                       <b>/dev/md/</b>nome<br />
+                       <li>Admite os niveis: RAID 0, 1, 4, 5, 6 e 10.<br />
+                       <li>Se non é quen de identificar o dispositivo array creado comezará a dar os seguintes nomes para os arrays de disco: /dev/md127, /dev/md126, /dev/md125... <br /> 
+                       Podemos solucionar isto identificando no ficheiro /etc/fstab o dispositivo array por UUID e non por disco/partición /dev/sdXY. Unha vez realizado o cambio no /etc/fstab, hai que actualizar o arquivo initrd (# update-initramfs -u) para que o cambio sexa efectivo dende o arranque do sistema operativo.
+                     </ul>
+                  <li>cat /proc/mdstat
+                  <li>cat /etc/fstab
+                  <li>man update-initramfs
+                  <div class='minindent'>&nbsp;</div>
+                </ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SOM/GNU-Linux/Comandos_e_SHELL_bash_1_pageNumbers.pdf' target='_blank'>Comandos GNU/Linux e SHELL BASH (/bin/bash) (1)</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM/losetup_dispositivos-de-bloques-virtual.pdf' target='_blank'>losetup (dispositivos de bloques virtual)</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arribaplus links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM/LVM2.pdf' target='_blank'>LVM: physical volume(pvX), volume group (vgX), logical volume(lvX)</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+            </ul>
+        </ul>
+      </p>
+    </div>
+    <div class='pagebreak'></div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='nota w80 fright arribaplus'>
+      <p class='pall'><span class='label'>Niveis RAID</span>:
+        <table>
+          <tbody><tr><td class="tdP tdPHeader"><b>Array</b></td><td class="tdP tdPHeader"><b>Espazo útil</b></td><td class="tdP tdPHeader"><b>Redundancia</b></td><td class="tdP tdPHeader"><b>Tolerancia a fallos<br /><sub>(Datos dispoñibles)</sub></b></td></tr>
+          </tbody>
+          <tr>
+            <td class="tdP tdPFileSystem">
+              <br />
+              RAID0
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='minindent'>&nbsp;</div>
+              <sub class='summatory mleftsubsx3'>$$n\ge2, \sum_{i=1}^nsd_n$$</sub>
+              <div class='mtopplusx2'><sub>Mínimo 2 discos</sub></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='fleft'>&nbsp;</div><div class='infindent fright abaixo'>&nbsp;<img height='22' class='cfigure mleftsubsx2 arriba' src="images/mouse-pointer-mini-rotate-180.png" /></div>
+              <div class='fleft mtopplusx4 mleftplus'>NON</div><div class='fright'><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_0.svg"><img width="116" alt="RAID 0" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/RAID_0.svg/128px-RAID_0.svg.png"></a></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <br />
+              Non dispoñibles se falla 1 disco
+              <div class='minindent'>&nbsp;</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdP bglime">
+              <br />
+              RAID1
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='minindent'>&nbsp;</div>
+              <sub class='summatory mleftsubsx4'>$$\sum_{i=0}^n\frac{sd_{2n+1}+sd_{2n+2}}{2}$$</sub>
+              <div class='mtopplusx2'><sub>Mínimo 2 discos</sub></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='fleft'>&nbsp;</div><div class='infindent fright abaixo'>&nbsp;<img height='22' class='cfigure mleftsubsx2 arriba' src="images/mouse-pointer-mini-rotate-180.png" /></div>
+              <div class='fleft mtopplusx4 mleftplus'>SI<br />(Mirror)</div><div class='fright'><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_1.svg"><img width="116" alt="RAID 1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/RAID_1.svg/128px-RAID_1.svg.png"></a></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <br />
+              Datos dispoñibles se fallan<br />n-1 discos
+              <div class='minindent'>&nbsp;</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdP bggreen">
+              <br />
+              RAID4
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='minindent'>&nbsp;</div>
+              <sub class='summatory mleftsubsx4'>$$n\ge3, \sum_{i=1}^n \left(sd_n\right) - 1$$</sub> 
+              <div class='mtopplusx2'><sub>Mínimo 3 discos</sub></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div> SI<br />(1 disco para paridade)</div><div class='arribaplus'><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_4.svg"><img width="224" alt="RAID 4" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RAID_4.svg/256px-RAID_4.svg.png"></a></div>
+              <img height='22' class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <br />
+              Datos dispoñibles se falla 1 disco
+              <div class='minindent'>&nbsp;</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdP bglime">
+              <br />
+              RAID5
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='minindent'>&nbsp;</div>
+              <sub class='summatory mleftsubsx4'>$$n\ge3, \sum_{i=1}^n \left(sd_n\right) - 1$$</sub>
+              <div class='mtopplusx2'><sub>Mínimo 3 discos</sub></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div>SI<br />(redundancia de paridade repartida en todos os discos)</div><div class='arribaplus'><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_5.svg"><img width="224" alt="RAID 5" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/RAID_5.svg/256px-RAID_5.svg.png"></a></div>
+              <img height='22' class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <br />
+              Datos dispoñibles se falla 1 disco
+              <div class='minindent'>&nbsp;</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdP bggreen">
+              <br />
+              RAID6
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div class='minindent'>&nbsp;</div>
+              <sub class='summatory mleftsubsx4'>$$n\ge4, \sum_{i=1}^n \left(sd_n\right) - 2$$</sub>
+              <div class='mtopplusx2'><sub>Mínimo 4 discos</sub></div>
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <div>SI<br />(doble redundancia de paridade repartida en todos os discos)</div><div class='arribaplus'><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_6.svg"><img width="224" alt="RAID 6" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/RAID_6.svg/256px-RAID_6.svg.png"></a></div>
+              <img height='22' class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+              <div class='minindent'>&nbsp;</div>
+            </td>
+            <td class="tdP tdPDocumentRoot">
+              <br />
+              Datos dispoñibles se fallan 2 discos
+              <div class='minindent'>&nbsp;</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="tdP bglime up" width="10%">
+              RAID-1+0<br />
+              <sub>(RAID10)</sub>
+            </td>
+            <td class="tdP tdPDocumentRoot" width='38%'>
+              <sub class='summatoryRAID10'>$$\sum_{i=0}^n\left(\frac{\left(sd_{4n+1}+sd_{4n+2}\right)}{2}+\frac{\left(sd_{4n+3}+sd_{4n+4}\right)}{2}\right)$$</sub>
+              <div class='indent'>&nbsp;</div>
+              <div class='up arribaplusx7'><br /><sub>Mínimo 4 discos</sub></div>
+            </td>
+            <td class="tdP tdPDocumentRoot up">
+              <div> SI (Mirror)</div><div class='arribaplus'><a title="Wheart, based on image File:RAID 0.svg by Cburnett, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_10.svg"><img width="224" alt="RAID 10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/RAID_10.svg/256px-RAID_10.svg.png"></a></div>
+              <div class='arribaplusx7'><img height='22' class='cfigure mleft' src="images/mouse-pointer-mini.png" /></div>
+            </td>
+            <td class="tdP tdPDocumentRoot up">
+              <div class='mtopsubsx2 arribaplusx7'>
+              Datos dispoñibles se falla 1 disco en cada par de discos RAID1
+              </div>
+            </td>
+          </tr>
+        </table>
+      </p>
+    </div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos</div>
+    <div class='justify pall bfigure'>
+      <div class='minindent'>&nbsp;</div>
+      <p><span class='label'>RAID0
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo1. Crear RAID 0 </strong> imos crear un array de discos RAID0 con 4 discos: sdb, sdc, sdd e sde.
+          </li>
+          <li>
+            No <strong>Exemplo2. Degradar RAID 0 e Recuperar</strong> imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID0 con 4 discos: sdb, sdc, sdd e sde.
+          </li>
+          <li>
+            No <strong>Exemplo3. Eliminar e destruir o RAID 0</strong> imos eliminar e destruir o RAID0 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.
+          </li>
+        </ul>
+      </div>
+      <div class='indent'>&nbsp;</div>
+      <p><span class='label'>RAID1
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo4. Crear RAID 1 </strong> imos crear un array de discos RAID1 con 3 discos: 2 discos en espello (sdb e sdc) e un disco libre de respaldo (sdd).
+          </li>
+          <li>
+            No <strong>Exemplo5. Degradar RAID 1 e Recuperar</strong> imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID1 con 3 discos: 2 discos en espello (sdb e sdc) e un disco libre de respaldo (sdd).
+          </li>
+          <li>
+            No <strong>Exemplo6. Eliminar e destruir o RAID 1 </strong> imos eliminar e destruir o RAID1 para poder voltar a empregar os 3 discos SATA: sdb, sdc e sdd.
+          </li>
+        </ul>
+      </div>
+      <div class='indent'>&nbsp;</div>
+      <p><span class='label'>RAID5
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+          No <strong>Exemplo7. Crear RAID 5 </strong> imos crear un array de discos RAID5 con 4 discos: 3 discos RAID5 (sdb, sdc e sdd)  + 1 disco de respaldo (sde).
+          </li>
+          <li>
+          No <strong>Exemplo8. Degradar RAID 5 e Recuperar</strong> imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID5 con 4 discos: 3 discos RAID5 (sdb, sdc e sdd)  + 1 disco de respaldo (sde).
+          </li>
+          <li>
+          No <strong>Exemplo9. Eliminar e destruir o RAID 5 </strong> imos eliminar e destruir o RAID5 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.
+          </li>
+        </ul>
+      </div>
+      <div class='indent'>&nbsp;</div>
+      <p><span class='label'>RAID-1+0 (RAID10)
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo10. Crear RAID-1+0 </strong> imos crear un array de discos RAID10 con 4 discos: 2 discos RAID1 (sdb e sdc) + 2 discos RAID1 (sdd e sde) + 1 volume RAID0 de 4 discos (sdb, sdc, sdd e sde). Así, imos empregar os discos liberados: sdb, sdc, sdd e sde.
+          </li>
+          <li>
+            No <strong>Exemplo11. Degradar RAID-1+0 e Recuperar</strong> imos ver que acontece e como recuperar cando se degrada 1 dos discos dentro do array de discos RAID1 (sdb).
+          </li>
+          <li>
+          No <strong>Exemplo12. Eliminar e destruir o RAID-1+0 </strong> imos eliminar e destruir o RAID10 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.
+          </li>
+        </ul>
+      </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>RAID por Software: mdadm</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Debian amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debian-usuario mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd usuario <span class='explicacion'> #Cambiar o contrasinal do usuario usuario. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por debianA como hostname: 
+          <ul class='dashed-debian-usuario mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-debian mleftsubs'>
+                <li>echo 'debianA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=debianA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>usuario</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debianA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>systemctl disable avahi-daemon<span class='explicacion'> #Impide que o servizo avahi-daemon sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>systemctl disable network-manager<span class='explicacion'> #Impide que o servizo network-manager sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <div class='explicacion3 pall'>
+                    <ul class='dashed'>
+                      <li>man interfaces <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración de rede /etc/network/interfaces</span>
+                      <li>cat /etc/network/interfaces <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces</span>
+                      <li>ls -l /etc/network/interfaces.d <span class='explicacion'>#Listar de forma extendida o contido do directorio /etc/network/interfaces/setup</span>
+                      <li>cat /etc/network/interfaces.d/setup <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces/setup</span>
+                    </ul>
+                  </div>
+                  <li>cat > /etc/network/interfaces.d/setup &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  <span class='code3'>auto lo<br />
+                  iface lo inet loopback<br />
+                  <br />
+                  auto enp0s3<br />
+                  iface enp0s3 inet static<br />
+                  &nbsp;&nbsp;address 192.168.120.100/24<br />
+                  <br />
+                  auto enp0s8<br />
+                  iface enp0s8 inet dhcp</span><br />
+                  EOF <span class='explicacion'>#Fin do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  </li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking start <span class='explicacion'> #Arrancar o demo networking, é dicir, activar a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local enp0s3</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-debianA mleftsubs'>
+              <ul class='hashtag-debianA mleftsubs'>
+                <div class='explicacion3 pall'>
+                  <ul class='hashtag'>
+                    <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                    <li>apt -y install netcat <span class='explicacion'> #Instalar o paquete netcat, é dicir, instalar o paquete que integra o comando nc. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                    <li>dpkg -l net-tools ; [ $(echo $?) -eq '1' ] && apt update && apt -y install net-tools <span class='explicacion'> #Verificar se o paquete net-tools está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. O paquete net-tools é necesario para poder empregar comandos coma: ifconfig, netstat, route e arp.</span>
+                    <li>dpkg -l openssh-server ; [ $(echo $?) -eq '1' ] && apt update && apt -y install openssh-server <span class='explicacion'> #Verificar se o paquete openssh-server está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span>
+                  </ul>
+                </div>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v usuario@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario <b>usuario</b> e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-debianA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 debianA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome debianA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 debianA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  debianA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-debianA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <p class='mtop mleftsubs mbottom'><span class='label'>Xestionar arrays: Configurar no servidor</span>
+        <li class='mtop mleft mbottom'><span class='label'>Preparación discos duros: Particionamento/formateo</span> 
+          <p>Temos que agregar na máquina virtual A (debianA) 4 discos duros virtuais SATA de 10GB cada un: sdb, sdc, sdd e sde. Unha vez agregados:</p> 
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i>. Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i></span></li><br />
+              <li>apt -y install parted || apt-get -y install parted <span class='explicacion'> #Instalar o paquete parted. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</span></li><br />
+              <li>for i in sdb sdc sdd sde; do fdisk -l /dev/$i;done <span class='explicacion'> #Amosar a táboa de particións dos 4 discos agregados</span><br />
+              <pre class='code3 mleft'>
+Disco /dev/sdb: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+
+Disco /dev/sdc: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+
+Disco /dev/sdd: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+
+Disco /dev/sde: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+              </pre>
+              </li>
+
+              <li>for i in sdb sdc sdd sde; do parted --script /dev/${i} mklabel msdos;done<span class='explicacion'> #Crear a etiqueta de disco (táboa de particións) aos dispositivos /dev/sdb, /dev/sdc, /dev/sdd, /dev/sde sen ter que acceder ao prompt de parted</span></li><br />
+              <li>for i in sdb sdc sdd sde; do parted --script /dev/${i} mkpart primary 0 50% -a cylinder;done<span class='explicacion'> #Crear unha partición primaria en cada disco  cos primeiros 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li>for i in sdb sdc sdd sde; do parted --script /dev/${i} mkpart primary 50% 70% -a cylinder;done<span class='explicacion'> #Crear unha partición primaria en cada disco  de 2GB a continuación das particións de 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li>for i in sdb sdc sdd sde; do parted --script /dev/${i} mkpart primary 70% 100% -a cylinder;done<span class='explicacion'> #Crear unha partición primaria en cada disco  de 3GB a continuación das particións de 2GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <div class='minindent pagebreak'>&nbsp;</div>
+              <li>for i in sdb sdc sdd sde; do fdisk -l /dev/$i;done <span class='explicacion'> #Amosar a táboa de particións dos 4 discos agregados</span><br />
+              <pre class='code3 mleft'>
+Disco /dev/sdb: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0xc0f1200a
+
+Device     Boot    Start      End  Sectors Size Id Type
+/dev/sdb1             63 10490444 10490382   5G 83 Linux
+/dev/sdb2       10490445 14683409  4192965   2G 83 Linux
+/dev/sdb3       14683410 20964824  6281415   3G 83 Linux
+
+Disco /dev/sdc: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0x5df10001
+
+Device     Boot    Start      End  Sectors Size Id Type
+/dev/sdc1             63 10490444 10490382   5G 83 Linux
+/dev/sdc2       10490445 14683409  4192965   2G 83 Linux
+/dev/sdc3       14683410 20964824  6281415   3G 83 Linux
+
+Disco /dev/sdd: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0x9e0e7d9d
+
+Device     Boot    Start      End  Sectors Size Id Type
+/dev/sdd1             63 10490444 10490382   5G 83 Linux
+/dev/sdd2       10490445 14683409  4192965   2G 83 Linux
+/dev/sdd3       14683410 20964824  6281415   3G 83 Linux
+
+Disco /dev/sde: 10 GiB, 10737418240 bytes, 20971520 sectores
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0x5df10001
+
+Device     Boot    Start      End  Sectors Size Id Type
+/dev/sde1             63 10490444 10490382   5G 83 Linux
+/dev/sde2       10490445 14683409  4192965   2G 83 Linux
+/dev/sde3       14683410 20964824  6281415   3G 83 Linux
+              </pre>
+              </li>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Instalar mdadm</span> 
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i>. Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i></span></li><br />
+              <li>apt -y install mdadm || apt-get -y install mdadm <span class='explicacion'> #Instalar o paquete mdadm. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</span></li><br />
+              <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span></li><br />
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. Crear RAID 0 </span> 
+          <p>Imos crear un array de discos RAID0 con 4 discos: sdb, sdc, sdd e sde.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span></li><br />
+              <li>yes | mdadm --create /dev/md0 --level=0 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Xerar RAID 0 coas primeiras particións de cada disco</span></li><br />
+              <li>mdadm --examine --scan >> /etc/mdadm/mdadm.conf <span class='explicacion'> #Volcar información do estado actual do volume RAID e gardar esa información</span></li><br />
+              <li>mkdir /mnt/md0<span class='explicacion'> #Xerar o cartafol /mnt/md0</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID0' /dev/md0 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID0 o array /dev/md0</span></li><br />
+              <li>lsblk <span class='explicacion'>#Listar dispositivos de bloques. Consegue a información do sistema de ficheiros sysfs e a base de datos udev.</span></li><br />
+              <li>lsblk -o +UUID <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID.</span></li><br />
+              <li>lsblk -o +UUID | grep md0 <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID, e filtrar esa saída co patrón md0.</span></li><br />
+              <li>UUID_MD0=$(lsblk -o +UUID | grep md0 | awk '{print $NF}' | sort -u) <span class='explicacion'>#Declarar unha variable de nome <b>UUID_MD0</b> co valor do UUID correspondente ao dispositivo /dev/md0</span></li><br />
+              <li>echo "UUID=$̣{UUID_MD0} /mnt/md0 ext4 defaults 0 2" >> /etc/fstab <span class='explicacion'> #Montar automáticamente os array</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+              
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [raid0] 
+md0 : active raid0 sde1[3] sdd1[2] sdc1[1] sdb1[0]
+      20959232 blocks super 1.2 512k chunks
+              
+unused devices: &lt;none&gt;
+              </pre>
+              </li>
+
+              <li class='arriba'>mdadm --detail /dev/md0<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md0</span>
+              <pre class='code3 mleft'>
+/dev/md0:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid0
+        Array Size : 20959232 (19.99 GiB 21.46 GB)
+      Raid Devices : 4
+     Total Devices : 4
+       Persistence : Superblock is persistent
+               
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 4
+   Working Devices : 4
+    Failed Devices : 0
+     Spare Devices : 0
+                
+        Chunk Size : 512K
+                
+Consistency Policy : none
+                
+              Name : debianA:0  (local to host debianA)
+              UUID : 0987486c:c1d78b78:7a2e31ff:f67ecc46
+            Events : 0
+                
+    Number   Major   Minor   RaidDevice State
+       0       8       17        0      active sync   /dev/sdb1
+       1       8       33        1      active sync   /dev/sdc1
+       2       8       49        2      active sync   /dev/sdd1
+       3       8       65        3      active sync   /dev/sde1
+              </pre>
+              </li>
+
+              <li>update-initramfs -u <span class='explicacion'> #Actualizar a imaxe initrd</span></li><br />
+              <li>reboot <span class='explicacion'> #Reiniciar para montar xa no arranque os arrays de disco, os cambios de configuración de rede e a activación no arranque do servizo SSH do servidor</span></li>
+            </ul>
+
+            <div class='indent pagebreak'>&nbsp;</div>
+            <p><span class='label'>Unha vez que reinicie o servidor debianA:</span>
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el a través da IP configurada en /etc/network/interfaces.d/setup (192.168.120.100). Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+            <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [raid0] [linear] [multipath] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid0 sdb1[0] sde1[3] sdc1[1] sdd1[2]
+      20959232 blocks super 1.2 512k chunks
+                      
+unused devices: &lt;none&gt;
+              </pre>
+            </li>
+            <li>sudo cp -pv /etc/passwd /mnt/md0/<span class='explicacion'> #Copiar o ficheiro /etc/passwd en /mnt/md0 a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</span></li>
+            <br />
+          </ul>
+          <div class='explicacion3 pall'>
+            <span class='label'>IMPORTANTE</span>: Acabamos de comprobar que dende o arranque:
+              <ul>
+                <li type='1'>A IP de enps03 está configurada como 192.168.120.100
+                <li type='1'>Pódese acceder ao servidor SSH
+                <li type='1'>Está activo o array de discos RAID0 /dev/md0.
+              </ul>
+          </div>
+        </ul>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. Degradar RAID 0 e Recuperar</span> 
+          <p>Imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID0 con 4 discos: sdb, sdc, sdd e sde. Así, apagamos a máquina virtual A (debianA) e retiramos 1 disco duro virtual SATA de 10GB: sde.</p> 
+          <p class='arriba'>Unha vez retirado o disco sde e iniciado o servidor debianA, teremos un problema no arranque do sistema operativo:<br />
+            <img class='contido bfigure pall' src="images/RAID0-degradar-1.png" />
+          <p>Entón, temos que acceder a unha consola de <b>root</b> a través do xestor do arranque ou arrancando debianA cunha GNU/Linux Live amd64 para comentar a liña relativa ao RAID0 no ficheiro /etc/fstab e así poder arrancar o sistema operativo e intentar recuperar o array de discos, ou ben, xa na propia consola de root sen chegar a arrancar o sistema operativo por completo intentamos arranxar o array de discos. Entón, imos intentar arranxar o array de discos con esta segunda opción, polo que arrancamos co sistema operativo GNU/Linux instalado no disco duro:</p>
+          <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+          <ul>
+            <li type='i'  class='mtop mleft mbottom'>O xestor de arranque: <a href='https://www.gnu.org/software/grub/' target='_blank'>GRUB versión 2 ou GRUB 2</a>
+             arranca por defecto na súa primeira opción en 5segundos. Entón, parar o arranque deste primeira opción premendo as teclas frechas abaixo &#x2193, arriba &#x2191.</li>
+            <li type='i'  class='mtop mleft mbottom'>Seleccionar a primeira opción de arranque.</li>
+            <li type='i'  class='mtop mleft mbottom'>Premer a tecla <span class='label'>e</span> (edit) para poder editar os parámetros de arranque do kernel.</li>
+            <li type='i'  class='mtop mleft mbottom'>Moverse coa tecla frecha abaixo &#x2193 ata chegar á liña onde aparecen os parámetros <span class='label'>ro quiet splash</splash></li>
+            <li type='i'  class='mtop mleft arriba'>Sustituír os parámetros <span class='label'>ro quiet splash</span> polos parámetros <span class='label'>rw init=/bin/bash</span>. e premer as teclas <span class='label'>&lt;Ctrl&gt; + x</span>, é dicir,  &#x2303x, para arrancar a opción escollida con novos parámetros do kernel. Agora no arranque veremos que non chegamos a arrancar o sistema operativo porque o primeiro proceso a chamar (init ou systemd) está modificado a /bin/bash, co cal en vez de facer unha chamada ao arranque do sistema operativo facemos unha chamada a unha consola de comandos, polo que, accedemos a unha consola onde temos permisos de root (administrador). <span class='label'>Ollo!: Non está cargado completamente o sistema operativo, pero si está recoñecido o hardware.</span></li><br />
+            <img class='contido bfigure pall' src="images/GRUB-edit-init.png" />
+
+            <div class='minindent arriba'>&nbsp;</div>
+            <li type='i'  class='mtop mleft mbottom'>Executar:
+              <ul class='hashtag'><br />
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+                <br />
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+md0 : inactive sdc1[1](S) sdd1[2](S) sdb1[0](S)
+      15720213 blocks super 1.2
+                        
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+                <li>mdadm --detail /dev/md0<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md0</li>
+                <pre class='code3 mleft'>
+/dev/md0:
+           Version : 1.2
+        Raid Level : raid0
+     Total Devices : 3
+       Persistence : Superblock is persistent
+     
+             State : inactive 
+   Working Devices : 3
+     
+              Name : debianA:0  (local to host debianA)
+              UUID : 0987486c:c1d78b78:7a2e31ff:f67ecc46
+            Events : 0
+                  
+   Number   Major   Minor   RaidDevice 
+      -       8       49        -      /dev/sdd1
+      -       8       33        -      /dev/sdc1
+      -       8       17        -      /dev/sdb1
+                </pre>
+
+                <li >halt -f<span class='explicacion'> #Apagar de forma forzosa.</span></li>
+              </ul>
+
+            <li type='i'  class='mtop mleft mbottom'>Acabamos de comprobar que o RAID0 está inactivo e non ten presente a partición /dev/sde1. Polo tanto apagamos de novo debianA, insertamos de novo o disco sde e imos ver que acontece.
+              </p>
+              <img class='contido bfigure pall' src="images/RAID0-degradar-2.png" />
+
+            <li type='i'  class='mtop mleft mbottom'>Observamos que non podemos recuperar o arranque do sistema operativo, polo que procedemos como antes: editar GRUB e conseguir unha consola de root, na cal executamos os seguintes comandos:
+              <ul class='hashtag'><br />
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+                <br />
+                <li>mdadm --stop /dev/md0<span class='explicacion'> #Desactivar volume RAID0, liberando todos os recursos.</span></li>
+                <pre class='code3 mleft'>
+md: md0 stopped.<br />
+mdadm: stopped /dev/md0<br />
+                </pre>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span><br />
+                <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+unused devices: &lt;none&gt;
+                </pre>
+                </li>
+
+                <li>yes | mdadm --create /dev/md0 --level=0 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Xerar RAID 0 coas primeiras particións de cada disco</span></li><br />
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span><br />
+                <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+md0 : active raid0 sde1[3] sdd1[2] sdc1[1] sdb1[0]
+20959232 blocks super 1.2 512k chunks
+
+unused devices: &lt;none&gt;
+                </pre>
+
+                <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+                <br />
+                
+                <li>ls -l /mnt/md0/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md0/</span><br />
+                <pre class='code3 mleft'>
+total 20
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+-rw-r--r-- 1 root root  2225 Jan 2 16:50 passwd
+                </pre>
+                </li>
+
+                <li >reboot -f<span class='explicacion'> #Reiniciar de forma forzosa.</span></li>
+              </ul>
+            <li type='i' class='mtop mleft mbottom'>
+              <p class='label'>RAID0 recuperado e o sistema operativo arranca correctamente.</p>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. Eliminar e destruir o RAID 0</span> 
+          <p>Imos eliminar e destruir o RAID0 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'><br />
+              <li>umount /mnt/md0 <span class='explicacion'> #Desmontar /mnt/md0</span></li><br />
+              <li>mdadm --stop /dev/md0<span class='explicacion'> #Desactivar volume RAID0, liberando todos os recursos.</span></li><br />
+              <li>mdadm --zero-superblock /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID0</span></li><br />
+              <div class='explicacion3 pall'>
+                <p>Se voltamos a xerar o RAID0 cos dispositivos anteriores xa non teriamos os datos gardados nese array de discos posto que o RAID0 (ver niveis RAID) non posúe redundancia e polo tanto non ten tolerancia a fallos:</p>
+                <ul class='hashtag-kaliA'>
+                  <li>yes | mdadm --create /dev/md0 --level=0 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Xerar RAID 0 coas primeiras particións de cada disco</span></li><br />
+                  <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+                    <br />
+                  <li class='arriba'>ls -l /mnt/md0/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md0/</span>
+                  <pre class='mleft'>
+    total 0
+                  </pre>
+                  </li>
+                </ul>
+              </div><br />
+              <li>A=$(grep -n '/mnt/md0' /etc/fstab | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/mnt/md0) no ficheiro /etc/fstab e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/fstab <span class='explicacion'> #Eliminar a liña correspondente a /mnt/md0 en /etc/fstab. O número de liña onde aparece /mnt/md0 está gardado na variable A</li> <br />
+              <li>A=$(grep -n '/dev/md/0' /etc/mdadm/mdadm.conf | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/dev/md/0) no ficheiro /etc/mdadm/mdadm.conf e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/mdadm/mdadm.conf <span class='explicacion'> #Eliminar a liña correspondente a /dev/md/0 en /etc/mdadm/mdadm.conf. O número de liña onde aparece /dev/md/0 está gardado na variable A</li>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. Crear RAID 1 </span> 
+          <p>Realizado o Exemplo3 imos crear un array de discos RAID1 con 3 discos: 2 discos en espello (sdb e sdc) e un disco libre de respaldo (sdd). Así, imos empregar os discos liberados: sdb, sdc e sdd.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+                <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+unused devices: &lt;none&gt;
+                </pre>
+              </li>
+              <li>yes | mdadm --create /dev/md1 --level=1 --raid-devices=2 /dev/sdb2 /dev/sdc2 --spare-devices=1 /dev/sdd2<span class='explicacion'> #Xerar RAID 1 coas segundas particións dos discos sdb e sdc e un disco de reposto empregando como reposto a súa segunda partición /dev/sdd2 </span></li><br />
+              <li>mdadm --examine --scan >> /etc/mdadm/mdadm.conf <span class='explicacion'> #Volcar información do estado actual do volume RAID e gardar esa información</span></li><br />
+              <li>mkdir /mnt/md1<span class='explicacion'> #Xerar o cartafol /mnt/md1</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID1' /dev/md1 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID1 o array /dev/md1</span></li><br />
+              <li>lsblk <span class='explicacion'>#Listar dispositivos de bloques. Consegue a información do sistema de ficheiros sysfs e a base de datos udev.</span></li><br />
+              <li>lsblk -o +UUID <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID.</span></li><br />
+              <li>lsblk -o +UUID | grep md1 <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID, e filtrar esa saída co patrón md1.</span></li><br />
+              <li>UUID_MD1=$(lsblk -o +UUID | grep md1 | awk '{print $NF}' | sort -u) <span class='explicacion'>#Declarar unha variable de nome <b>UUID_MD1</b> co valor do UUID correspondente ao dispositivo /dev/md1</span></li><br />
+              <li>echo "UUID=$̣{UUID_MD1} /mnt/md1 ext4 defaults 0 2" >> /etc/fstab <span class='explicacion'> #Montar automáticamente os array</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+              
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+md1 : active raid1 sdd2[2](S) sdc2[1] sdb2[0]
+      2094400 blocks super 1.2 [2/2] [UU]
+              
+unused devices: &lt;none&gt;
+              </pre>
+              </li>
+
+              <div class='indent pagebreak'>&nbsp;</div>
+              <li class='arriba'>mdadm --detail /dev/md1<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md1</span>
+              <pre class='code3 mleft'>
+/dev/md1:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid1
+        Array Size : 2094400 (2045.31 MiB 2144.67 MB)
+     Used Dev Size : 2094400 (2045.31 MiB 2144.67 MB)
+      Raid Devices : 2
+     Total Devices : 3
+       Persistence : Superblock is persistent
+               
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 2
+   Working Devices : 3
+    Failed Devices : 0
+     Spare Devices : 1
+                
+Consistency Policy : resync
+                
+              Name : debianA:1  (local to host debianA)
+              UUID : 0b5d0644:8cd23c31:5ad1a9ee:aefc0264
+            Events : 17
+                
+    Number   Major   Minor   RaidDevice State
+       0       8       18        0      active sync   /dev/sdb2
+       1       8       34        1      active sync   /dev/sdc2
+
+       2       8       50        -      spare   /dev/sdd2
+              </pre>
+              </li>
+
+              <li>update-initramfs -u <span class='explicacion'> #Actualizar a imaxe initrd</span></li><br />
+              <li>reboot <span class='explicacion'> #Reiniciar para montar xa no arranque os arrays de disco.</span></li>
+            </ul>
+
+            <div class='indent'>&nbsp;</div>
+            <p><span class='label'>Unha vez que reinicie o servidor debianA:</span>
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el a través da IP configurada en /etc/network/interfaces.d/setup (192.168.120.100). Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+            <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [raid1] [linear] [multipath] [raid0] [raid6] [raid5] [raid4] [raid10] 
+md1 : active raid1 sdd2[2](S) sdc2[1] sdb2[0]
+      2094400 blocks super 1.2 [2/2] [UU]
+                      
+unused devices: &lt;none&gt;
+              </pre>
+            </li>
+            <li>sudo cp -pv /etc/group /mnt/md1/<span class='explicacion'> #Copiar o ficheiro /etc/group en /mnt/md1 a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</span></li>
+            <br />
+          </ul>
+          <div class='explicacion3 pall'>
+            <span class='label'>IMPORTANTE</span>: Acabamos de comprobar que dende o arranque:
+              <ul>
+                <li type='1'>A IP de enps03 está configurada como 192.168.120.100
+                <li type='1'>Pódese acceder ao servidor SSH
+                <li type='1'>Está activo o array de discos RAID1 /dev/md1.
+              </ul>
+          </div>
+        </ul>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. Degradar RAID 1 e Recuperar</span> 
+          <p>Imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID1 con 3 discos: 2 discos en espello (sdb e sdc) e un disco libre de respaldo (sdd).</p>
+          <p>Entón, imos provocar o fallo de /dev/sdb2, de tal xeito que como temos de respaldo /dev/sdd2 automaticamente este toma o lugar de /dev/sdb2 e o array de discos RAID1 /dev/md1 segue funcionando:
+          <ul>
+            <li type='i'  class='mtop mleft mbottom'>Executar:
+              <ul class='hashtag'><br />
+                <li>mdadm --fail /dev/md1 /dev/sdb2<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md1</span>
+                  <pre class='code3 mleft'>
+mdadm: set /dev/sdb2 faulty in /dev/md1
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso está sincronizando o RAID1 xa que entra como activo no array /dev/sdd2</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid1] [linear] [multipath] [raid0] [raid6] [raid5] [raid4] [raid10] 
+md1 : active raid1 sdd2[2] sdc2[1] sdb2[0](F)
+      2094400 blocks super 1.2 [2/1] [_U]
+      [===========>.........]  recovery = 57.7% (1209152/2094400) finish=0.0min speed=201525K/sec
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+                <li>mdadm --detail /dev/md1<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md1</li>
+                <pre class='code3 mleft'>
+/dev/md1:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid1
+        Array Size : 2094400 (2045.31 MiB 2144.67 MB)
+     Used Dev Size : 2094400 (2045.31 MiB 2144.67 MB)
+      Raid Devices : 2
+     Total Devices : 3
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 1
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              Name : debianA:1  (local to host debianA)
+              UUID : 0b5d0644:8cd23c31:5ad1a9ee:aefc0264
+            Events : 36
+
+    Number   Major   Minor   RaidDevice State
+       2       8       50        0      active sync   /dev/sdd2
+       1       8       34        1      active sync   /dev/sdc2
+
+       0       8       18        -      faulty   /dev/sdb2
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb2 está fallando no array RAID1, estando este agora formado por /dev/sdd2 e /dev/sdc2 
+                  </p>
+                </div>
+                <br />
+
+                <li>mdadm --remove /dev/md1 /dev/sdb2<span class='explicacion'> #Quitar o dispositivo fallido /dev/sdb2 do RAID</span>
+                  <pre class='code3 mleft'>
+mdadm: hot removed /dev/sdb2 from /dev/md1
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso amosa soamente 2 discos no array xa que acabamos de quitar 1 (/dev/sdb2)</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid1] [linear] [multipath] [raid0] [raid6] [raid5] [raid4] [raid10] 
+md1 : active raid1 sdc2[1] sdd2[2]
+      2094400 blocks super 1.2 [2/2] [UU]
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+
+                <div class='indent pagebreak'>&nbsp;</div>
+                <li>mdadm --detail /dev/md1<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md1</li>
+                <pre class='code3 mleft'>
+/dev/md1:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid1
+        Array Size : 2094400 (2045.31 MiB 2144.67 MB)
+     Used Dev Size : 2094400 (2045.31 MiB 2144.67 MB)
+      Raid Devices : 2
+     Total Devices : 2
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 2
+   Working Devices : 2
+    Failed Devices : 0
+     Spare Devices : 0
+
+Consistency Policy : resync
+
+              Name : debianA:1  (local to host debianA)
+              UUID : 0b5d0644:8cd23c31:5ad1a9ee:aefc0264
+            Events : 39
+
+    Number   Major   Minor   RaidDevice State
+       2       8       50        0      active sync   /dev/sdd2
+       1       8       34        1      active sync   /dev/sdc2
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb2 xa non forma parte do array RAID1, estando este agora formado por /dev/sdd2 e /dev/sdc2 
+                  </p>
+                </div>
+                <br />
+
+
+            <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+            <br />
+                
+            <li>ls -l /mnt/md1/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md1/</span><br />
+                <pre class='code3 mleft'>
+total 20
+-rw-r--r-- 1 root root  980  Jan 2 16:50 group
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+                </pre>
+                </li>
+              </ul>
+            <li type='i' class='mtop mleft mbottom'>
+              <p class='label'>RAID1 segue funcionando aínda que falle 1 dos discos que forma parte do array. E ademais como actúa o disco de respaldo este sincroniza co array e o RAID1 é recuperado de forma automática.</p>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo6. Eliminar e destruir o RAID 1 </span> 
+          <p>Imos eliminar e destruir o RAID1 para poder voltar a empregar os 3 discos SATA: sdb, sdc e sdd.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'><br />
+              <li>umount /mnt/md1 <span class='explicacion'> #Desmontar /mnt/md1</span></li><br />
+              <li>mdadm --stop /dev/md1<span class='explicacion'> #Desactivar volume RAID1, liberando todos os recursos.</span></li><br />
+              <li>mdadm --zero-superblock /dev/sdb2 /dev/sdc2 /dev/sdd2 <span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID1</span></li><br />
+              <li>A=$(grep -n '/mnt/md1' /etc/fstab | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/mnt/md1) no ficheiro /etc/fstab e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/fstab <span class='explicacion'> #Eliminar a liña correspondente a /mnt/md1 en /etc/fstab. O número de liña onde aparece /mnt/md1 está gardado na variable A</li> <br />
+              <li>A=$(grep -n '/dev/md/1' /etc/mdadm/mdadm.conf | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/dev/md/1) no ficheiro /etc/mdadm/mdadm.conf e gardalo na variable A</li> <br />
+              <li>sed -i "${A},$((${A}+1))d" /etc/mdadm/mdadm.conf <span class='explicacion'> #Eliminar as liñas correspondentes a /dev/md/1 en /etc/mdadm/mdadm.conf. O número de liña onde aparece /dev/md/1 está gardado na variable A</li>
+              <br />
+              <li>reboot <span class='explicacion'> #Reiniciar para comprobar que no próximo arranque xa non existen referencias aos arrays de disco.</span></li><br />
+              <div class='explicacion3 pall'>
+                <p>Se voltamos a xerar o RAID1 cos dispositivos anteriores segueriamos tendo os datos gardados nese array de discos aínda que empregamos o comando <b>--zero-superblock</b> e eliminamos o gardado do referente ao array nos ficheiros /etc/fstab e /etc/mdadm/mdadm.conf:</p>
+                <ul class='hashtag-kaliA'>
+                  <li>yes | mdadm --create /dev/md1 --level=1 --raid-devices=2 /dev/sdb2 /dev/sdc2 --spare-devices=1 /dev/sdd2<span class='explicacion'> #Xerar RAID 1 coas segundas particións dos discos sdb e sdc e un disco de reposto empregando como reposto a súa segunda partición /dev/sdd2 </span></li><br />
+                  <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo. Pero podemos observar que non se monta /dev/md1 xa que agora os dispositivos activos do array cambiaron.</span></li><br />
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado. Podemos observar que non se monta /dev/md1 xa que agora os dispositivos activos do array cambiaron.</span></li>
+                  <br />
+                  <li>mount /dev/md1 /mnt/md1<span class='explicacion'> #Montar o array de discos RAID1 /mnt/md1 no directorio /mnt/md1. Podemos observar que non se monta /dev/md1 xa que agora os dispositivos activos do array cambiaron.</span></li>
+                    <br />
+                  <li class='arriba'>ls -l /mnt/md1/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md1/</span>
+                  <pre class='mleft'>
+total 20
+-rw-r--r-- 1 root root  980  Jan 2 16:50 group
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+                  </pre>
+                  </li>
+                </ul>
+              </div><br />
+              <p>Entón, para poder destruir este array completamente temos que voltar a formatealo.</p><br />
+              <li>umount /mnt/md1 <span class='explicacion'> #Desmontar /mnt/md1</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID1' /dev/md1 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID1 o array /dev/md1</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo. Pero podemos observar que non se monta /dev/md1 xa que agora o UUID do array de discos /dev/md1 non é o mesmo.</span></li><br />
+              <pre class='code3 mleft'>
+mount: /mnt/md1: can't find UUID=75a85210-5599-4212-b124-80e0ca738ac0.
+              </pre>
+              <li>mount /dev/md1 /mnt/md1<span class='explicacion'> #Montar o array de discos RAID1 /mnt/md1 no directorio /mnt/md1.</span></li>
+              <br />
+              <li class='arriba'>ls -l /mnt/md1/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md1/</span>
+              <pre class='mleft'>
+total 20
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+              </pre>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo7. Crear RAID 5 </span>
+          <p>Realizado o Exemplo6 imos crear un array de discos RAID5 con 4 discos: 3 discos RAID5 (sdb, sdc e sdd)  + 1 disco de respaldo (sde). Así, imos empregar os discos liberados: sdb, sdc, sdd e sde.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+                <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+unused devices: &lt;none&gt;
+                </pre>
+              </li>
+              <li>yes | mdadm --create /dev/md5 --level=5 --raid-devices=3 /dev/sdb3 /dev/sdc3 /dev/sdd3 --spare-devices=1 /dev/sde3<span class='explicacion'> #Xerar RAID 5  coas últimas particións dos discos sdb, sdc e sdd e un disco de reposto empregando como reposto a súa terceira partición /dev/sde3 </span></li><br />
+              <li>mdadm --examine --scan >> /etc/mdadm/mdadm.conf <span class='explicacion'> #Volcar información do estado actual do volume RAID e gardar esa información</span></li><br />
+              <li>mkdir /mnt/md5<span class='explicacion'> #Xerar o cartafol /mnt/md5</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID5' /dev/md5 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID5 o array /dev/md5</span></li><br />
+              <li>lsblk <span class='explicacion'>#Listar dispositivos de bloques. Consegue a información do sistema de ficheiros sysfs e a base de datos udev.</span></li><br />
+              <li>lsblk -o +UUID <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID.</span></li><br />
+              <li>lsblk -o +UUID | grep md5 <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID, e filtrar esa saída co patrón md5.</span></li><br />
+              <li>UUID_MD5=$(lsblk -o +UUID | grep md5 | awk '{print $NF}' | sort -u) <span class='explicacion'>#Declarar unha variable de nome <b>UUID_MD5</b> co valor do UUID correspondente ao dispositivo /dev/md5</span></li><br />
+              <li>echo "UUID=$̣{UUID_MD5} /mnt/md5 ext4 defaults 0 2" >> /etc/fstab <span class='explicacion'> #Montar automáticamente os array</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+              
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md5 : active raid5 sdd3[4] sde3[3](S) sdc3[1] sdb3[0]
+      6275072 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
+      
+unused devices: &lt;none&gt;
+              </pre>
+              </li>
+
+              <div class='indent pagebreak'>&nbsp;</div>
+              <li class='arriba'>mdadm --detail /dev/md5<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md5</span>
+              <pre class='code3 mleft'>
+/dev/md5:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid5
+        Array Size : 6275072 (5.98 GiB 6.43 GB)
+     Used Dev Size : 3137536 (2.99 GiB 3.21 GB)
+      Raid Devices : 3
+     Total Devices : 4
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 3
+   Working Devices : 4
+    Failed Devices : 0
+     Spare Devices : 1
+
+            Layout : left-symmetric
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : debianA:5  (local to host debianA)
+              UUID : c01f4a3b:f9b45d17:1d29d28a:6cf64a11
+            Events : 18
+
+    Number   Major   Minor   RaidDevice State
+       0       8       19        0      active sync   /dev/sdb3
+       1       8       35        1      active sync   /dev/sdc3
+       4       8       51        2      active sync   /dev/sdd3
+
+       3       8       67        -      spare   /dev/sde3
+              </pre>
+              </li>
+
+              <li>update-initramfs -u <span class='explicacion'> #Actualizar a imaxe initrd</span></li><br />
+              <li>reboot <span class='explicacion'> #Reiniciar para montar xa no arranque os arrays de disco.</span></li>
+            </ul>
+
+            <div class='indent'>&nbsp;</div>
+            <p><span class='label'>Unha vez que reinicie o servidor debianA:</span>
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el a través da IP configurada en /etc/network/interfaces.d/setup (192.168.120.100). Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+            <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [raid6] [raid5] [raid4] [linear] [multipath] [raid0] [raid1] [raid10] 
+md5 : active raid5 sdb3[0] sdd3[4] sdc3[1] sde3[3](S)
+      6275072 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
+      
+unused devices: &lt;none&gt;
+              </pre>
+            </li>
+            <li>sudo cp -pv /etc/shadow /mnt/md5/<span class='explicacion'> #Copiar o ficheiro /etc/shadow en /mnt/md5 a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</span></li>
+            <br />
+          </ul>
+          <div class='explicacion3 pall'>
+            <span class='label'>IMPORTANTE</span>: Acabamos de comprobar que dende o arranque:
+              <ul>
+                <li type='1'>A IP de enps03 está configurada como 192.168.120.100
+                <li type='1'>Pódese acceder ao servidor SSH
+                <li type='1'>Está activo o array de discos RAID1 /dev/md5.
+              </ul>
+          </div>
+        </ul>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo8. Degradar RAID 5 e Recuperar</span> 
+          <p>Imos ver que acontece e como recuperar cando se degrada 1 dos discos do array de discos RAID5 con 4 discos: 3 discos RAID5 (sdb, sdc e sdd)  e 1 disco de respaldo (sde).</p>
+          <p>Entón, imos provocar o fallo de /dev/sdb3, de tal xeito que como temos de respaldo /dev/sde3 automaticamente este toma o lugar de /dev/sdb3 e o array de discos RAID1 /dev/md5 segue funcionando:
+          <ul>
+            <li type='i'  class='mtop mleft mbottom'>Executar:
+              <ul class='hashtag'><br />
+                <li>mdadm --fail /dev/md5 /dev/sdb3<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md5</span>
+                  <pre class='code3 mleft'>
+mdadm: set /dev/sdb3 faulty in /dev/md5
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso está sincronizando o RAID5 xa que entra como activo no array /dev/sde3</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid6] [raid5] [raid4] [linear] [multipath] [raid0] [raid1] [raid10] 
+md5 : active raid5 sdb3[0](F) sde3[3] sdd3[4] sdc3[1]
+      6275072 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/2] [_UU]
+      [==>..................]  recovery = 12.8% (402748/3137536) finish=0.5min speed=80549K/sec
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+                <li>mdadm --detail /dev/md5<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md5</li>
+                <pre class='code3 mleft arriba'>
+/dev/md5:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid5
+        Array Size : 6275072 (5.98 GiB 6.43 GB)
+     Used Dev Size : 3137536 (2.99 GiB 3.21 GB)
+      Raid Devices : 3
+     Total Devices : 4
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean, degraded, recovering 
+    Active Devices : 2
+   Working Devices : 3
+    Failed Devices : 1
+     Spare Devices : 1
+
+            Layout : left-symmetric
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+    Rebuild Status : 41% complete
+
+              Name : debianA:5  (local to host debianA)
+              UUID : c01f4a3b:f9b45d17:1d29d28a:6cf64a11
+            Events : 34
+
+    Number   Major   Minor   RaidDevice State
+       3       8       67        0      spare rebuilding   /dev/sde3
+       1       8       35        1      active sync   /dev/sdc3
+       4       8       51        2      active sync   /dev/sdd3
+
+       0       8       19        -      faulty   /dev/sdb3
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb3 está fallando no array RAID5, estando este agora formado por /dev/sde3, /dev/sdd3 e /dev/sdc3 
+                  </p>
+                </div>
+                <br />
+
+                <li>mdadm --remove /dev/md5 /dev/sdb3<span class='explicacion'> #Quitar o dispositivo fallido /dev/sdb3 do RAID</span>
+                  <pre class='code3 mleft'>
+mdadm: hot removed /dev/sdb3 from /dev/md5
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso amosa soamente 2 discos no array xa que acabamos de quitar 1 (/dev/sdb3)</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid6] [raid5] [raid4] [linear] [multipath] [raid0] [raid1] [raid10] 
+md5 : active raid5 sde3[3] sdd3[4] sdc3[1]
+      6275072 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+
+                <div class='indent pagebreak'>&nbsp;</div>
+                <li>mdadm --detail /dev/md5<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md5</li>
+                <pre class='code3 mleft'>
+/dev/md5:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid5
+        Array Size : 6275072 (5.98 GiB 6.43 GB)
+     Used Dev Size : 3137536 (2.99 GiB 3.21 GB)
+      Raid Devices : 3
+     Total Devices : 3
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 3
+   Working Devices : 3
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : left-symmetric
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : debianA:5  (local to host debianA)
+              UUID : c01f4a3b:f9b45d17:1d29d28a:6cf64a11
+            Events : 46
+
+    Number   Major   Minor   RaidDevice State
+       3       8       67        0      active sync   /dev/sde3
+       1       8       35        1      active sync   /dev/sdc3
+       4       8       51        2      active sync   /dev/sdd3
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb3 xa non forma parte do array RAID5, estando este agora formado por /dev/sde3, /dev/sdd3 e /dev/sdc3 
+                  </p>
+                </div>
+                <br />
+
+
+            <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+            <br />
+                
+            <li>ls -l /mnt/md5/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md5/</span><br />
+                <pre class='code3 mleft'>
+total 20
+drwx------ 2 root root   16384 Xan  4 23:18 lost+found
+-rw-r----- 1 root shadow  1216 Xan  2 16:50 shadow
+                </pre>
+                </li>
+              </ul>
+            <li type='i' class='mtop mleft mbottom'>
+              <p class='label'>RAID5 recuperado. O RADI5 segue funcionando grazas ao disco de respaldo.</p>
+              <p class='label'>RAID5 segue funcionando aínda que falle 1 dos discos que forma parte do array. E ademais como actúa o disco de respaldo este sincroniza co array e o RAID5 é recuperado de forma automática.</p>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo9. Eliminar e destruir o RAID 5 </span>
+          <p>Imos eliminar e destruir o RAID5 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'><br />
+              <li>umount /mnt/md5 <span class='explicacion'> #Desmontar /mnt/md5</span></li><br />
+              <li>mdadm --stop /dev/md5<span class='explicacion'> #Desactivar volume RAID5, liberando todos os recursos.</span></li><br />
+              <li>mdadm --zero-superblock /dev/sdb3 /dev/sdc3 /dev/sdd3 /dev/sde3 <span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID5</span></li><br />
+              <li>A=$(grep -n '/mnt/md5' /etc/fstab | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/mnt/md5) no ficheiro /etc/fstab e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/fstab <span class='explicacion'> #Eliminar a liña correspondente a /mnt/md5 en /etc/fstab. O número de liña onde aparece /mnt/md5 está gardado na variable A</li> <br />
+              <li>A=$(grep -n '/dev/md/5' /etc/mdadm/mdadm.conf | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/dev/md/5) no ficheiro /etc/mdadm/mdadm.conf e gardalo na variable A</li> <br />
+              <li>sed -i "${A},$((${A}+1))d" /etc/mdadm/mdadm.conf <span class='explicacion'> #Eliminar as liñas correspondentes a /dev/md/5 en /etc/mdadm/mdadm.conf. Os números de liña onde aparece /dev/md/5 está gardado na variable A</li>
+              <br />
+              <li>reboot <span class='explicacion'> #Reiniciar para comprobar que no próximo arranque xa non existen referencias aos arrays de disco.</span></li><br />
+              <div class='explicacion3 pall'>
+                <p>Se voltamos a xerar o RAID5 cos dispositivos anteriores segueriamos tendo os datos gardados nese array de discos aínda que empregamos o comando <b>--zero-superblock</b> e eliminamos o gardado do referente ao array nos ficheiros /etc/fstab e /etc/mdadm/mdadm.conf:</p>
+                <ul class='hashtag-kaliA'>
+                  <li>yes | mdadm --create /dev/md5 --level=5 --raid-devices=3 /dev/sdb3 /dev/sdc3 /dev/sdd3 --spare-devices=1 /dev/sde3<span class='explicacion'> #Xerar RAID 5  coas últimas particións dos discos sdb, sdc e sdd e un disco de reposto empregando como reposto a súa terceira partición /dev/sde3 </span></li><br />
+                  <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo. Pero podemos observar que non se monta /dev/md5 xa que agora os dispositivos activos do array cambiaron.</span></li><br />
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado. Podemos observar que non se monta /dev/md5 xa que agora os dispositivos activos do array cambiaron.</span></li>
+                  <br />
+                  <li>mount /dev/md5 /mnt/md5<span class='explicacion'> #Montar o array de discos RAID5 /mnt/md5 no directorio /mnt/md5. Podemos observar que non se monta /dev/md5 xa que agora os dispositivos activos do array cambiaron.</span></li>
+                    <br />
+                  <li class='arriba'>ls -l /mnt/md5/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md5/</span>
+                  <pre class='mleft'>
+
+                  </pre>
+                  </li>
+                </ul>
+              </div><br />
+              <p>Entón, para poder destruir este array completamente temos que voltar a formatealo.</p><br />
+              <li>umount /mnt/md5 <span class='explicacion'> #Desmontar /mnt/md5</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID5' /dev/md5 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID5 o array /dev/md5</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo. Pero podemos observar que non se monta /dev/md5 xa que agora o UUID do array de discos /dev/md5 non é o mesmo.</span></li><br />
+              <pre class='code3 mleft'>
+mount: /mnt/md5: can't find UUID=75a85210-5599-4212-b124-80e0ca738ac0.
+              </pre>
+              <li>mount /dev/md5 /mnt/md5<span class='explicacion'> #Montar o array de discos RAID5 /mnt/md5 no directorio /mnt/md5.</span></li>
+              <br />
+              <li class='arriba'>ls -l /mnt/md5/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md5/</span>
+              <pre class='mleft'>
+total 20
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+              </pre>
+            </ul>
+          </ul>
+        </li>
+
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo10. Crear RAID-1+0 </span>
+          <p>Realizado o Exemplo9 imos crear un array de discos RAID10 con 4 discos: 2 discos RAID1 (sdb e sdc) + 2 discos RAID1 (sdd e sde) + 1 volume RAID0 de 4 discos (sdb, sdc, sdd e sde). Así, imos empregar os discos liberados: sdb, sdc, sdd e sde.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'>
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+                <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10]
+unused devices: &lt;none&gt;
+                </pre>
+              </li>
+              <li>yes | mdadm --create /dev/md10 --level=10 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Xerar RAID 10  coas primeiras particións dos discos sdb, sdc, sdd  e sde </span></li><br />
+              <li>mdadm --examine --scan >> /etc/mdadm/mdadm.conf <span class='explicacion'> #Volcar información do estado actual do volume RAID e gardar esa información</span></li><br />
+              <li>mkdir /mnt/md10<span class='explicacion'> #Xerar o cartafol /mnt/md10</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID10' /dev/md10 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID10 o array /dev/md10</span></li><br />
+              <li>lsblk <span class='explicacion'>#Listar dispositivos de bloques. Consegue a información do sistema de ficheiros sysfs e a base de datos udev.</span></li><br />
+              <li>lsblk -o +UUID <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID.</span></li><br />
+              <li>lsblk -o +UUID | grep md10 <span class='explicacion'>#Listar dispositivos de bloques cos seus correspondentes UUID, e filtrar esa saída co patrón md10.</span></li><br />
+              <li>UUID_MD10=$(lsblk -o +UUID | grep md10 | awk '{print $NF}' | sort -u) <span class='explicacion'>#Declarar unha variable de nome <b>UUID_MD10</b> co valor do UUID correspondente ao dispositivo /dev/md10</span></li><br />
+              <li>echo "UUID=$̣{UUID_MD10} /mnt/md10 ext4 defaults 0 2" >> /etc/fstab <span class='explicacion'> #Montar automáticamente os array</span></li><br />
+              <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo</span></li><br />
+              
+              <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md10 : active raid10 sde1[3] sdd1[2] sdc1[1] sdb1[0]
+      10479616 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]
+      
+unused devices: &lt;none&gt;
+              </pre>
+              </li>
+
+              <div class='indent pagebreak'>&nbsp;</div>
+              <li class='arriba'>mdadm --detail /dev/md10<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md10</span>
+              <pre class='code3 mleft'>
+/dev/md10:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid10
+        Array Size : 10479616 (9.99 GiB 10.73 GB)
+     Used Dev Size : 5239808 (5.00 GiB 5.37 GB)
+      Raid Devices : 4
+     Total Devices : 4
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean 
+    Active Devices : 4
+   Working Devices : 4
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : debianA:10  (local to host debianA)
+              UUID : c0295f50:10a93c58:c37c1c36:bca7297d
+            Events : 19
+
+    Number   Major   Minor   RaidDevice State
+       0       8       17        0      active sync set-A   /dev/sdb1
+       1       8       33        1      active sync set-B   /dev/sdc1
+       2       8       49        2      active sync set-A   /dev/sdd1
+       3       8       65        3      active sync set-B   /dev/sde1
+              </pre>
+              </li>
+
+              <li>update-initramfs -u <span class='explicacion'> #Actualizar a imaxe initrd</span></li><br />
+              <li>reboot <span class='explicacion'> #Reiniciar para montar xa no arranque os arrays de disco.</span></li>
+            </ul>
+
+            <div class='indent'>&nbsp;</div>
+            <p><span class='label'>Unha vez que reinicie o servidor debianA:</span>
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el a través da IP configurada en /etc/network/interfaces.d/setup (192.168.120.100). Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+            <li class='arriba'>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID</span>
+              <pre class='code3 mleft'>
+Personalities : [raid10] [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] 
+md10 : active raid10 sdd1[2] sdb1[0] sdc1[1] sde1[3]
+      10479616 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]
+      
+unused devices: &lt;none&gt;
+              </pre>
+            </li>
+            <li>sudo cp -pv /etc/passwd /etc/group /etc/shadow /mnt/md10/<span class='explicacion'> #Copiar os ficheiros /etc/passwd, /etc/group e /etc/shadow en /mnt/md10 a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</span></li>
+            <br />
+          </ul>
+          <div class='explicacion3 pall'>
+            <span class='label'>IMPORTANTE</span>: Acabamos de comprobar que dende o arranque:
+              <ul>
+                <li type='1'>A IP de enps03 está configurada como 192.168.120.100
+                <li type='1'>Pódese acceder ao servidor SSH
+                <li type='1'>Está activo o array de discos RAID10 /dev/md10.
+              </ul>
+          </div>
+        </ul>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo11. Degradar RAID-1+0 e Recuperar</span> 
+          <p>Imos ver que acontece e como recuperar cando se degrada 1 dos discos dentro do array de discos RAID1 (sdb).
+          <p>Entón, imos provocar o fallo de /dev/sdb1, de tal xeito quevo array de discos RAID1 dentro de /dev/md10 segue funcionando:
+          <ul>
+            <li type='i'  class='mtop mleft mbottom'>Executar:
+              <ul class='hashtag'><br />
+                <li>mdadm --fail /dev/md10 /dev/sdb1<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md10</span>
+                  <pre class='code3 mleft'>
+mdadm: set /dev/sdb1 faulty in /dev/md10
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso está sincronizando o RAID10 xa que fallou o dispositivo /dev/sdb1</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid10] [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] 
+md10 : active raid10 sdd1[2] sdb1[0](F) sdc1[1] sde1[3]
+      10479616 blocks super 1.2 512K chunks 2 near-copies [4/3] [_UUU]
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+                <li>mdadm --detail /dev/md10<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md10</li>
+                <pre class='code3 mleft arriba'>
+/dev/md10:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid10
+        Array Size : 10479616 (9.99 GiB 10.73 GB)
+     Used Dev Size : 5239808 (5.00 GiB 5.37 GB)
+      Raid Devices : 4
+     Total Devices : 4
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean, degraded 
+    Active Devices : 3
+   Working Devices : 3
+    Failed Devices : 1
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : debianA:10  (local to host debianA)
+              UUID : c0295f50:10a93c58:c37c1c36:bca7297d
+            Events : 23
+
+    Number   Major   Minor   RaidDevice State
+       -       0        0        0      removed
+       1       8       33        1      active sync set-B   /dev/sdc1
+       2       8       49        2      active sync set-A   /dev/sdd1
+       3       8       65        3      active sync set-B   /dev/sde1
+
+       0       8       17        -      faulty   /dev/sdb1
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb1 está fallando no array RAID10, estando este agora formado por /dev/sde1, /dev/sdd1 e /dev/sdc1 
+                  </p>
+                </div>
+                <br />
+
+                <li>mdadm --remove /dev/md10 /dev/sdb1<span class='explicacion'> #Quitar o dispositivo fallido /dev/sdb1 do RAID</span>
+                  <pre class='code3 mleft'>
+mdadm: hot removed /dev/sdb1 from /dev/md10
+                  </pre>
+                </li>
+
+                <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Nesta caso amosa soamente 2 discos no array xa que acabamos de quitar 1 (/dev/sdb1)</span><br />
+                  <pre class='code3 mleft'>
+Personalities : [raid10] [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] 
+md10 : active raid10 sdd1[2] sdc1[1] sde1[3]
+      10479616 blocks super 1.2 512K chunks 2 near-copies [4/3] [_UUU]
+      
+unused devices: &lt;none&gt;
+                  </pre>
+                </li>
+
+                <div class='indent pagebreak'>&nbsp;</div>
+                <li>mdadm --detail /dev/md10<span class='explicacion'> #Amosa información extendida sobre o volume RAID /dev/md10</li>
+                <pre class='code3 mleft'>
+/dev/md10:
+           Version : 1.2
+     Creation Time : Sat Jan  2 17:08:24 2021
+        Raid Level : raid10
+        Array Size : 10479616 (9.99 GiB 10.73 GB)
+     Used Dev Size : 5239808 (5.00 GiB 5.37 GB)
+      Raid Devices : 4
+     Total Devices : 3
+       Persistence : Superblock is persistent
+
+       Update Time : Sat Jan  2 17:08:24 2021
+             State : clean, degraded 
+    Active Devices : 3
+   Working Devices : 3
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : resync
+
+              Name : debianA:10  (local to host debianA)
+              UUID : c0295f50:10a93c58:c37c1c36:bca7297d
+            Events : 24
+
+    Number   Major   Minor   RaidDevice State
+       -       0        0        0      removed
+       1       8       33        1      active sync set-B   /dev/sdc1
+       2       8       49        2      active sync set-A   /dev/sdd1
+       3       8       65        3      active sync set-B   /dev/sde1
+                </pre>
+
+                <div class='explicacion3 pall'>
+                  <p>Como podemos observar agora /dev/sdb1 xa non forma parte do array RAID10, estando este agora formado por /dev/sde1, /dev/sdd1 e /dev/sdc1
+                  </p>
+                </div>
+                <br />
+
+
+            <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+            <br />
+                
+            <li>ls -l /mnt/md10/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md10/</span><br />
+                <pre class='code3 mleft'>
+total 28
+-rw-r--r-- 1 root root     980 Xan  2 16:50 group
+drwx------ 2 root root   16384 Xan  5 02:07 lost+found
+-rw-r--r-- 1 root root    2225 Xan  2 16:50 passwd
+-rw-r----- 1 root shadow  1216 Xan  2 16:50 shadow
+                </pre>
+                </li>
+              </ul>
+            <li type='i' class='mtop mleft mbottom'>
+              <p class='label'>RAID10 segue funcionando aínda que falle 1 dos discos que forma parte do array.</p>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo12. Eliminar e destruir o RAID-1+0 </span> 
+          <p>Imos eliminar e destruir o RAID10 para poder voltar a empregar os 4 discos SATA: sdb, sdc, sdd e sde.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-debianA'><br />
+              <li>umount /mnt/md10 <span class='explicacion'> #Desmontar /mnt/md10</span></li><br />
+              <li>mdadm --stop /dev/md10<span class='explicacion'> #Desactivar volume RAID10, liberando todos os recursos.</span></li><br />
+              <li>mdadm --zero-superblock /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1 <span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID10</span></li><br />
+              <li>A=$(grep -n '/mnt/md10' /etc/fstab | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/mnt/md10) no ficheiro /etc/fstab e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/fstab <span class='explicacion'> #Eliminar a liña correspondente a /mnt/md10 en /etc/fstab. O número de liña onde aparece /mnt/md10 está gardado na variable A</li> <br />
+              <li>A=$(grep -n '/dev/md/10' /etc/mdadm/mdadm.conf | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (/dev/md/10) no ficheiro /etc/mdadm/mdadm.conf e gardalo na variable A</li> <br />
+              <li>sed -i "${A}d" /etc/mdadm/mdadm.conf <span class='explicacion'> #Eliminar a liña correspondente a /dev/md/10 en /etc/mdadm/mdadm.conf. O número de liña onde aparece /dev/md/10 está gardado na variable A</li><br />
+              <li>reboot <span class='explicacion'> #Reiniciar para comprobar que no próximo arranque xa non existen referencias aos arrays de disco.</span></li>
+              <div class='explicacion3 pall'>
+                <p>Se voltamos a xerar o RAID10 cos dispositivos anteriores segueriamos tendo os datos gardados nese array de discos aínda que empregamos o comando <b>--zero-superblock</b> e eliminamos o gardado do referente ao array nos ficheiros /etc/fstab e /etc/mdadm/mdadm.conf:</p>
+                <ul class='hashtag-kaliA'>
+                  <li>cat /proc/mdstat<span class='explicacion'> #Amosa información sobre o estado actual do/s volume/s RAID. Neste caso non amosa ningunha referencia.</span></li><br />
+                  <li>yes | mdadm --create /dev/md10 --level=10 --raid-devices=4 /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1<span class='explicacion'> #Xerar RAID 10  coas primeiras particións dos discos sdb, sdc, sdd  e sde </span></li><br />
+                  <li>mount -a <span class='explicacion'> #Provocar a montaxe dos arrays sen ter que reiniciar o equipo. Pero podemos observar que non se monta /dev/md10 xa que agora non existe referencia en /etc/fstab sobre o dispositivo /dev/md10</span></li><br />
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado. Podemos observar que non se monta /dev/md10</span></li>
+                  <br />
+                  <li>mount /dev/md10 /mnt/md10<span class='explicacion'> #Montar o array de discos RAID10 /mnt/md10 no directorio /mnt/md10.</span></li>
+                    <br />
+                  <li class='arriba'>ls -l /mnt/md10/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md10/</span>
+                  <pre class='mleft'>
+total 16
+-rw-r--r-- 1 root root       0 Xan  2 16:50 group
+drwx------ 2 root root   16384 Xan  6 23:00 lost+found
+-rw-r--r-- 1 root root       0 Xan  2 16:50 passwd
+-rw-r----- 1 root shadow     0 Xan  2 16:50 shadow
+                  </pre>
+                  </li>
+                </ul>
+              </div>
+              <p>Entón, para poder destruir este array completamente temos que voltar a formatealo.</p>
+              <li>umount /mnt/md10 <span class='explicacion'> #Desmontar /mnt/md10</span></li><br />
+              <li>mkfs.ext4 -F -L 'RAID10' /dev/md10 <span class='explicacion'> #Formatear en ext4 coa etiqueta RAID10 o array /dev/md10</span></li><br />
+              <li>mount /dev/md10 /mnt/md10<span class='explicacion'> #Montar o array de discos RAID10 /mnt/md10 no directorio /mnt/md10.</span></li>
+              <br />
+              <li class='arriba'>ls -l /mnt/md10/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /mnt/md10/</span>
+              <pre class='mleft'>
+total 20
+drwx------ 2 root root 16384 Jan 2 20:39 lost+found
+              </pre>
+              <li>umount /mnt/md10 <span class='explicacion'> #Desmontar /mnt/md10</span></li><br />
+              <li>mdadm --stop /dev/md10<span class='explicacion'> #Desactivar volume RAID10, liberando todos os recursos.</span></li><br />
+              <li class='arriba'>mdadm --zero-superblock /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1 <span class='explicacion'> #Liberar a asociación de dispositivos ao volume RAID10</span></li>
+            </ul>
+          </ul>
+        </li>
+        </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+
+<div class='indent pagebreak'>&nbsp;</div>
+<div class='infindent'>
+  <table>
+    <tbody><tr><td class="tdP tdPHeader"><b>Imaxe Wikimedia Commons</b></td><td class="tdP tdPHeader"><b>Licenza</b></td></tr>
+    </tbody>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_0.svg"><img width="128" alt="RAID 0" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/RAID_0.svg/128px-RAID_0.svg.png"></a></div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        en:User:Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+      </td>
+    </tr>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_1.svg"><img width="128" alt="RAID 1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/RAID_1.svg/128px-RAID_1.svg.png"></a></div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        en:User:Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+      </td>
+    </tr>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_4.svg"><img width="256" alt="RAID 4" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RAID_4.svg/256px-RAID_4.svg.png"></a></div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        en:User:Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+      </td>
+    </tr>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_5.svg"><img width="256" alt="RAID 5" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/RAID_5.svg/256px-RAID_5.svg.png"></a></div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        en:User:Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+      </td>
+    </tr>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="en:User:Cburnett, CC BY-SA 3.0 &lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_6.svg"><img width="256" alt="RAID 6" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/RAID_6.svg/256px-RAID_6.svg.png"></a></div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        en:User:Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+      </td>
+    </tr>
+    <tr>
+      <td class="tdP tdPDocumentRoot up">
+        <div class='minindent'>&nbsp;</div>
+        <div><a title="Wheart, based on image File:RAID 0.svg by Cburnett, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_10.svg"><img width="256" alt="RAID 10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/RAID_10.svg/256px-RAID_10.svg.png"></a></div>
+      </td>
+      <td class="tdP tdPDocumentRoot up">
+        <div>
+        Wheart, based on image File:RAID 0.svg by Cburnett, CC BY-SA 3.0 <a href='http://creativecommons.org/licenses/by-sa/3.0/' target='blank'>&lt;http://creativecommons.org/licenses/by-sa/3.0/&gt;</a>, via Wikimedia Commons
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class='indent pagebreak'>&nbsp;</div>
+<div>
+<table>
+    <tbody><tr><td class="tdP tdPHeader"><b>Mathjax</b></td><td class="tdP tdPHeader"><b>Licenza</b></td></tr>
+    </tbody>
+    <tr>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div class='pall'><a href='https://www.mathjax.org/' target='_blank'>https://www.mathjax.org/</a>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        </div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+      <td class="tdP tdPDocumentRoot">
+        <div class='minindent'>&nbsp;</div>
+        <div class='pall'><a href='https://github.com/mathjax/MathJax/blob/master/LICENSE' target='_blank'>https://github.com/mathjax/MathJax/blob/master/LICENSE</a>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        </div>
+        <div class='pall'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/script-bash-html2pdf/sources/other-licenses/Apache-License-2.0/LICENSE' target='_blank'>Apache License 2.0</a>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        </div>
+        <div class='minindent'>&nbsp;</div>
+      </td>
+    </tr>
+</table>
+</body>
+</html>
