@@ -1,0 +1,903 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica Seguridade Informática: Backup</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Backup' target='_blank'>Práctica Seguridade Informática: Backup</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-backup.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTA</b>:
+        <ul type='square'>
+          <li>Documentación de interese:
+            <br />
+            <br />
+            <ul>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://debian-handbook.info/browse/es-ES/stable/sect.backup.html' target='_blank'>Respaldo (debian-handbook)</a>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SI/RAID_e_LVM/Practica-SI-RAID_pageNumbers.pdf' target='_blank'>Práctica SI RAID</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='http://www.amanda.org/' target='_blank'>Amanda</a>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://www.bacula.org/' target='_blank'>Bacula</a>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SOM/GNU-Linux/Comandos_e_SHELL_bash_1_pageNumbers.pdf' target='_blank'>Comandos GNU/Linux e SHELL BASH (/bin/bash) (1)</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SI/Criptografia/Practica-SI-Cifrado-asimetrico-Conexion-SSH-sen-contrasinal.pdf' target='_blank'>Cifrado asimétrico: Conexión Remota mediante SSH sen contrasinal</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+
+              <li>Paquete tar (# apt update && apt -y install tar).</span>
+                <ul class='dashed'>
+                  <li>man tar 
+                  <li>tar cvfj ruta_destino/file.tar.bz2 ruta_orixe  
+                  <li>ssh user@host tar cvfj - ruta_orixe > ruta_destino/file.tar.bz2   
+	          <div class='explicacion3 pall'>
+                    <ul type='square'>
+                      <li>tar cvf : Empaquetar
+                      <li>tar tvf: Ver contido do empaquetado
+                      <li>tar xvf: Desempaquetar
+                      <li>tar cvfz : Comprimir en tar.gz
+                      <li>tar tvfz: Ver contido do comprimido en tar.gz
+                      <li>tar xvfz: Descomprimir en tar.gz
+                      <li>tar cvfj : Comprimir en tar.bz2
+                      <li>tar tvfj: Ver contido do comprimido en tar.bz2
+                      <li>tar xvfj: Descomprimir en tar.bz2
+                    </ul>					
+                  </div>
+                </ul>
+                <div class='indent'>&nbsp;</div>
+
+              <li>Paquete rsync (# apt update && apt -y install rsync).</span>
+                <ul class='dashed'>
+                  <li>man rsync 
+                  <li>rsync -avz --progress ruta_orixe ruta_destino
+                  <li>rsync -avz --progress --rsh=ssh user@host:ruta_orixe ruta_destino
+                  <div class='explicacion3 pall'>
+                    Copiar a estrutura arbórea do contido do cartafol ruta_orixe dentro do cartafol ruta_destino, coas seguintes opcións:<br />
+                    <ul>
+                      <li> -a &#10140; modo arquivo. Equivale ás opcións -rlptgoD, onde:
+                        <ul>
+                          <li> -r &#10140; modo recursivo
+                          <li> -l &#10140; copiar ligazóns simbólicas como ligazóns simbólicas
+                          <li> -p &#10140; preservar permisos
+                          <li> -t &#10140; preservar mtime (tempos de modificación)
+                          <li> -g &#10140; preservar grupo propietario
+                          <li> -o &#10140; preservar usuario propietario
+                          <li> -D &#10140; equivale a --devices --specials, onde
+                            <ul>
+                              <li> --devices &#10140; preservar arquivos de dispositivos
+                              <li> --specials &#10140; preservar ficheiros especiais
+                            </ul>
+                        </ul>
+                      <li> -v &#10140; modo detallado
+                      <li> -z &#10140; modo comprimir
+                      <li> --progress &#10140;  amosar o progreso da copia durante a transferencia 
+                      </span></li><br />
+                  </div>
+                </ul>
+
+              <div class='minindent'>&nbsp;</div>
+              <li>cron: /etc/crontab (global) , /var/spool/cron/crontabs/username
+                <div class='minindent'>&nbsp;</div>
+                <div class='mleft'>
+                  <span class='label'>/etc/crontab (global)</span><br />
+                  <span class='labelmini'>minuto hora dia mes dia-semana usuario script(comando/s)</span>
+                  <img src="images/cron.png" alt="linux cron " title="linux cron " height="360" width="730" border="0">
+                  <div class='labelmini mtopsubs'><a rel="nofollow" target="_blank" href="http://www.linuxconfig.org/Linux_Cron_Guide">Imaxe</a> tomada de <a rel="nofollow" target="_blank" href="http://www.linuxconfig.org">http://www.linuxconfig.org</a></div>
+                  <img class='cfigure mleft' src="images/mouse-pointer-mini.png" />
+                </div>
+              
+              <div class='minindent'>&nbsp;</div>
+              <li>Paquete <a href='https://rdiff-backup.net/' target='_blank'>rdiff-backup</a> (# apt update && apt -y install rdiff-backup).</span>
+                <br />
+                <img class='cfigure mleftplusx4' src="images/mouse-pointer-mini.png" />
+                <ul class='dashed'>
+                  <li>man rdiff-backup
+                  <li>rdiff-backup ruta_orixe ruta_destino <span class='explicacion'>#Xerar en <i>ruta_destino</i> unha copia diferencial de <i>ruta_orixe</i>. Se <i>ruta_destino</i> non existe créase. Dentro de <i>ruta_destino</i> crearase o directorio <i>rdiff-backup-data</i> o cal permitirá restaurar estados anteriores mediante rdiff-backup</span>
+                  <li>rdiff-backup user@host::ruta_orixe ruta_destino <span class='explicacion'>#Xerar na ruta local <i>ruta_destino</i> unha copia diferencial de <i>ruta_orixe</i> dun host remoto . Se <i>ruta_destino</i> non existe créase. Dentro de <i>ruta_destino</i> crearase o directorio <i>rdiff-backup-data</i> o cal permitirá restaurar estados anteriores mediante rdiff-backup. A conexión remota con <i>ruta_orixe</i> establécese mediante unha conexión SSH (cifrada).</span>
+                  <li>rdiff-backup -l ruta_destino <span class='explicacion'>#Amosar listado con todas as copias xeradas en <i>ruta_destino</i>. Este comando ademais de ser útil para saber que copias temos realizadas danos as datas desas copias, polo que poderemos empregar esas datas no comando de restauración para volcar a copia en data que nos interese.</span>
+                  <li>rdiff-backup -r data ruta_destino ruta_orixe<span class='explicacion'>#Restaurar a copia según <i>data</i> que nos interese dentro de <i>ruta_destino</i> en <i>ruta_orixe</i>. Para indicar a <i>data</i> podemos empregar o comando anterior de rdiff-backup coa opción <i>-l</i></span>
+                  <div class='explicacion3 pall'>
+                    <a href='https://rdiff-backup.net/docs/examples.html' target='_blank'>doc-examples rdiff-backup</a><br />
+                    <img class='cfigure mleftplusx4' src="images/mouse-pointer-mini.png" />
+                    <table>
+                      <tr><td valign='top'>rdiff-backup-data</td><td valign='top'>&#10140; </td><td> directorio que almacena a información necesaria para o correcto funcionamento de rdiff-backup.</td></tr>
+                      <tr><td width='28%' valign='top'>rdiff-backup-data/increments</td><td valign='top'>&#10140; <td> directorio que almacena as copias das versions anteriores á última copia realizada.</td></tr>
+                    </table>
+                  </div>
+                </ul>
+            </ul>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='nota w80 fright mleftsubsx2 mtopsubs'>
+      <table class='mleftsubsx2'>
+        <tbody><tr><td class="tdP tdPHeader"><b>Tipos de Backup</b></td><td class="tdP tdPHeader"><b>Descrición</b></td></tr>
+        </tbody>
+        <tr>
+          <td rowspan='2' class="tdP tdPFileSystem">
+            <br />
+            Completo
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td width='50%' class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <img class='cfigure' src="images/backup-completo.bmp" />
+            <div class='explicacion3 title18imp pall'>Copiase todo, é dicir, cada día gárdase todo (existan ou non cambios)</div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td width='50%' class='tdP pall'>
+            <div class='minindent arriba pall'>&nbsp;</div>
+            <b>Restauración:</b> Para restaurar un respaldo completo, simplemente teremos que volcar a última copia completa.
+            <div class='minindent arriba'>&nbsp;</div>
+            <b>Restauración &#8658; Copia día7</b>
+            <div class='minindent arriba'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan='2' class="tdP bglime">
+            <br />
+            Incremental
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td width='50%' class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <img class='cfigure' src="images/backup-incremental.bmp" />
+            <div class='explicacion3 title18imp pall'>Copiase soamente o que cambia dunha copia a outra anterior partindo inicialmente dunha copia completa, é dicir, non se garda a copia completa soamente as diferencias existentes cada día.</div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td width='50%' class='tdP pall'>
+            <div class='minindent arriba pall'>&nbsp;</div>
+            <b>Restauración:</b> Para restaurar un respaldo incremental, temos que restaurar a última copia completa e logo ir volcando todas as copias incrementais dende esa copia completa ata chegar á última copia incremental.
+            <div class='minindent arriba'>&nbsp;</div>
+            <b>Restauración &#8658; Datos + Copia día1 + Copia día2 + Copia día3 + Copia día4 + Copia día5 + Copia día6 + Copia día7</b>
+            <div class='minindent arriba'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan='2' class="tdP bggreen">
+            <br />
+            Diferencial
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td width='50%' class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <img class='cfigure' src="images/backup-diferencial.bmp" />
+            <div class='explicacion3 title18imp pall'>Gárdase todo o que cambia dende a copia completa, é dicir, cada día gárdanse todas as diferencias incluindo ás dos días anteriores.</div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td width='50%' class='tdP pall'>
+            <div class='minindent arriba pall'>&nbsp;</div>
+            <b>Restauración:</b> Para restaurar un respaldo diferencial, temos que restaurar a última copia completa e logo volcar a última copia diferencial correspondente con esa copia completa.
+            <div class='minindent arriba'>&nbsp;</div>
+            <b>Restauración &#8658; Datos + Copia día7</b>
+            <div class='minindent arriba'>&nbsp;</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos</div>
+    <div class='justify pall bfigure'>
+      <div class='minindent'>&nbsp;</div>
+      <p><span class='label'>Restauración completa
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo1. tar - estrutura arbórea: copia local </strong> imos crear unha copia de respaldo completa de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo2. tar - estrutura arbórea: copia remota </strong> imos crear unha copia de respaldo completa de todo o que colga dun directorio. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo3. cron tar - estrutura arbórea: copia local todos os días </strong> mediante unha tarefa programada imos crear unha copia de respaldo completa cada día de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo4. tar - estrutura arbórea: recuperación dunha copia local</strong> imos recuperar todo o que colga dun directorio mediante o volcado da copia de respaldo completa realizada na tarefa programada do Exemplo3. A recuperación farase de forma local dende o propio host.
+          </li>
+        </ul>
+      </div>
+      <div class='indent'>&nbsp;</div>
+      <p><span class='label'>Restauración incremental
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo5. rsync - estrutura arbórea: copia local </strong> imos crear unha copia de respaldo de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo6. rsync - estrutura arbórea: copia remota </strong> imos crear unha copia de respaldo de todo o que colga dun directorio. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo7. cron rsync - estrutura arbórea: copia local todos os días </strong> mediante unha tarefa programada imos crear unha copia de respaldo incremental cada día de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo8. rsync - estrutura arbórea: recuperación dunha copia local</strong> imos recuperar todo o que colga dun directorio mediante o volcado da copia de respaldo completa e as sucesivas copias de respaldo incremental realizada na tarefa programada do Exemplo7. A recuperación farase de forma local dende o propio host.
+          </li>
+        </ul>
+      </div>
+      <div class='indent'>&nbsp;</div>
+      <p><span class='label'>Restauración diferencial
+      </span>
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo9. rdiff-backup - estrutura arbórea: copia local </strong> imos crear unha copia de respaldo de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo10. rdiff-backup - estrutura arbórea: copia remota </strong> imos crear unha copia de respaldo de todo o que colga dun directorio. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo11. cron rdiff-backup - estrutura arbórea: copia local todos os días </strong> mediante unha tarefa programada imos crear unha copia de respaldo diferencial cada día de todo o que colga dun directorio. A copia farase no propio host.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo12. rdiff-backup - estrutura arbórea: recuperación dunha copia local</strong> imos recuperar todo o que colga dun directorio mediante o volcado da copia de respaldo completa e a última copia diferencial realizada na tarefa programada do Exemplo11. A recuperación farase de forma local dende o propio host.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Backup: Copias de respaldo</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Debian amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debian-usuario mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd usuario <span class='explicacion'> #Cambiar o contrasinal do usuario usuario. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por debianA como hostname: 
+          <ul class='dashed-debian-usuario mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-debian mleftsubs'>
+                <li>echo 'debianA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=debianA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>usuario</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debianA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>systemctl disable avahi-daemon<span class='explicacion'> #Impide que o servizo avahi-daemon sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>systemctl disable network-manager<span class='explicacion'> #Impide que o servizo network-manager sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <div class='explicacion3 pall'>
+                    <ul class='dashed'>
+                      <li>man interfaces <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración de rede /etc/network/interfaces</span>
+                      <li>cat /etc/network/interfaces <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces</span>
+                      <li>ls -l /etc/network/interfaces.d <span class='explicacion'>#Listar de forma extendida o contido do directorio /etc/network/interfaces/setup</span>
+                      <li>cat /etc/network/interfaces.d/setup <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces/setup</span>
+                    </ul>
+                  </div>
+                  <li>cat > /etc/network/interfaces.d/setup &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  <span class='code3'>auto lo<br />
+                  iface lo inet loopback<br />
+                  <br />
+                  auto enp0s3<br />
+                  iface enp0s3 inet static<br />
+                  &nbsp;&nbsp;address 192.168.120.100/24<br />
+                  <br />
+                  auto enp0s8<br />
+                  iface enp0s8 inet dhcp</span><br />
+                  EOF <span class='explicacion'>#Fin do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  </li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking start <span class='explicacion'> #Arrancar o demo networking, é dicir, activar a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local enp0s3</span></li>
+                </ul>
+            </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-debianA mleftsubs'>
+              <ul class='hashtag-debianA mleftsubs'>
+                <div class='explicacion3 pall'>
+                  <ul class='hashtag'>
+                    <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                    <li>apt -y install netcat <span class='explicacion'> #Instalar o paquete netcat, é dicir, instalar o paquete que integra o comando nc. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                    <li>dpkg -l net-tools ; [ $(echo $?) -eq '1' ] && apt update && apt -y install net-tools <span class='explicacion'> #Verificar se o paquete net-tools está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. O paquete net-tools é necesario para poder empregar comandos coma: ifconfig, netstat, route e arp.</span>
+                    <li>dpkg -l openssh-server ; [ $(echo $?) -eq '1' ] && apt update && apt -y install openssh-server <span class='explicacion'> #Verificar se o paquete openssh-server está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span>
+                  </ul>
+                </div>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v usuario@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario <b>usuario</b> e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-debianA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 debianA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome debianA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 debianA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  debianA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-debianA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. tar - estrutura arbórea: copia local </span> 
+          <p>Imos crear unha copia de respaldo completa de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home</span></li><br />
+            <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home</span></li><br />
+            <li>ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups, é dicir, listar os permisos do propio cartafol pero non os do seu contido.</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li>tar cvfj /var/backups/backupHOME.tar.bz2 /home <span class='explicacion'> #Crear un ficheiro comprimido mediante bzip2 do que foi empaquetado mediante tar, o cal contén o contido do directorio /home eliminando as barras iniciais '/' dos nomes, é dicir, empaqueta home e non /home. <b>Independentemente do número de veces que se execute este comando sempre farase unha copia de respaldo completa</b></li><br />
+              <li>tar cvfj /var/backups/backupHOME2.tar.bz2 /home/ <span class='explicacion'> #Equivalente ao comando tar executado anteriormente, cambiando soamente o nome do ficheiro destino da copia.</li><br />
+                <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Notar que non existe diferencia se empregamos como <i>ruta_orixe</i> o cartafol <b>/home</b> ou <b>/home/</b> 
+                <div class='minindent'>&nbsp;</div>
+                <ul class='hashtag-debianA'>
+                  <li>md5sum /var/backups/backupHOME*.tar.bz2 <span class='explicacion'>#Crear hash MD5 dos ficheiros <i>backupHOME.tar.bz2</i> e <i>backupHOME2.tar.bz2</i>. Podemos comprobar que os hash son iguais.</span></li> 
+                </ul>
+              </div>
+              </li><br />
+
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>kali</b> en kaliB.</span></li><br />
+          </ul>
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. tar - estrutura arbórea: copia remota </span> 
+          <p> Imos crear unha copia de respaldo completa de todo o que colga do directorio /home. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          <ul class='dashed-kaliB'>
+            <li>ssh usuario@debianA ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home do host debianA. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>ssh usuario@debianA du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home do host debianA. Ocomando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</li><br />
+            <li>ssh usuario@debianA ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups do host debianA, é dicir, listar os permisos do propio cartafol pero non os do seu contido. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-kaliB'>
+              <li>ssh usuario@debianA tar cvfj - /home > /var/backups/backupHOME.tar.bz2 <span class='explicacion'> #Crear un ficheiro comprimido mediante bzip2 en kaliB, que foi empaquetado mediante tar, o cal contén o contido do directorio /home de debianA eliminando as barras iniciais '/' dos nomes, é dicir, empaqueta home e non /home. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Independentemente do número de veces que se execute este comando sempre farase unha copia de respaldo completa</b></li><br />
+              <li>ssh usuario@debianA tar cvfj - /home/ > /var/backups/backupHOME2.tar.bz2 <span class='explicacion'> #Equivalente ao comando tar executado anteriormente, cambiando soamente o nome do ficheiro destino da copia.</li><br />
+                <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Notar que non existe diferencia se empregamos como <i>ruta_orixe</i> o cartafol <b>/home</b> ou <b>/home/</b> 
+                <div class='minindent'>&nbsp;</div>
+                <ul class='hashtag-kaliB'>
+                  <li>md5sum /var/backups/backupHOME*.tar.bz2 <span class='explicacion'>#Crear hash MD5 dos ficheiros <i>backupHOME.tar.bz2</i> e <i>backupHOME2.tar.bz2</i></span></li> 
+                </ul>
+              </div>
+              </li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/ do host kaliB</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups do host kaliB</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li><br />
+            </ul>
+          <li>
+        </ul>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. cron tar - estrutura arbórea: copia local todos os días </span>
+          <p>Mediante unha tarefa programada imos crear unha copia de respaldo completa cada día de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA mleftsubs'>
+              <li>echo '0 0 * * *   root    tar cvfj /var/backups/backupHOME.tar.bz2 /home' >> /etc/crontab <span class='explicacion'> #Crear un ficheiro comprimido mediante bzip2, que foi empaquetado mediante tar, o cal contén o contido do directorio /home eliminando as barras iniciais '/' dos nomes, é dicir, empaqueta home e non /home. <b>Independentemente do número de veces que se execute este comando sempre farase unha copia de respaldo completa</b>. Esta tarefa programada execútase como o usuario root tódolos días ás 00:00. <b>Equivale a @daily ou @midnight</b></span>
+              <div class='explicacion3 pall'>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>echo '@daily   root    tar cvfj /var/backups/backupHOME.tar.bz2 /home' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                  <li>echo '@midnight   root    tar cvfj /var/backups/backupHOME.tar.bz2 /home' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                </ul>
+              </div>
+              </li><br />
+              <li>grep crontab /var/log/syslog <span class='explicacion'>Buscar o patrón crontab dentro do ficheiro de rexistros /var/log/syslog. Podemos observar que existe 1 nova entrada, a referente á recarga do ficheiro /etc/crontab.</span>
+              <pre class='code3 mleft'>
+Jan 11 19:26:01 debianA cron[358]: (*system*) RELOAD (/etc/crontab)
+              </pre>
+              </li>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Co realizado en /etc/crontab cada día sobreescríbese o ficheiro /var/backups/backupHOME.tar.bz2, polo que soamente poderiamos recuperar a copia de respaldo completa do último día. Pero que pasa se quixeramos recuperar de mais días atrás? Ou que pasa se a copia queda corrupta? Entón, estaría ben mellorar a xestión de copias de respaldo: creando máis tarefas programadas ou modificando esta tarefa programada para que non execute soamente o comando tar, senón que execute un script o cal xa permite a xestión que necesitamos.
+              </div>
+              <div class='minindent'>&nbsp;</div>
+              <li>for i in $(seq 1 7); do echo "0 0 * * ${i}   root    tar cvfj /var/backups/backupHOME-${i}.tar.bz2 /home" >> /etc/crontab;done <span class='explicacion'> #Engadir 7 liñas ao ficheiro /etc/crontab, onde cada unha delas permite crear un ficheiro comprimido mediante bzip2, que foi empaquetado mediante tar, o cal posúe contén o contido do directorio /home eliminando as barras iniciais '/' dos nomes, é dicir, empaqueta home e non /home. Esta tarefa programada execútase como o usuario root tódolos días ás 00:00. Cada día de semana o ficheiro posúe un nome distinto, así: 
+              <ul>
+                <table>
+                  <tr><td>Día 1(luns)</td><td>&#10140;</td><td>backupHOME-1.tar.bz2</td></tr>
+                  <tr><td>Día 2(martes)</td><td>&#10140;</td><td>backupHOME-2.tar.bz2</td></tr>
+                  <tr><td>Día 3(mércores)</td><td>&#10140;</td><td>backupHOME-3.tar.bz2</td></tr>
+                  <tr><td>Día 4(xoves)</td><td>&#10140;</td><td>backupHOME-4.tar.bz2</td></tr>
+                  <tr><td>Día 5(venres)</td><td>&#10140;</td><td>backupHOME-5.tar.bz2</td></tr>
+                  <tr><td>Día 6(sábado)</td><td>&#10140;</td><td>backupHOME-6.tar.bz2</td></tr>
+                  <tr><td>Día 7(domingo)</td><td>&#10140;</td><td>backupHOME-7.tar.bz2</td></tr>
+                </table>
+              </ul> 
+              <b>Agora farase unha copia de respaldo completa por cada día da semana, de tal xeito que poderemos recuperar ata os últimos 7 días</b>. 
+              </span></li><br />
+              <li>grep crontab /var/log/syslog <span class='explicacion'>Buscar o patrón crontab dentro do ficheiro de rexistros /var/log/syslog. Podemos observar que existe 1 nova entrada, a referente á recarga do ficheiro /etc/crontab.</span>
+              <pre class='code3 mleft'>
+Jan 11 19:52:01 debianA cron[358]: (*system*) RELOAD (/etc/crontab)
+              </pre>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          </ul>
+          <ul class='dashed-debianA mleftsubsx2'>
+            <li>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. tar - estrutura arbórea: recuperación dunha copia local</span>
+          <p>Imos recuperar todo o que colga do directorio /home mediante o volcado da copia de respaldo completa realizada na tarefa programada do Exemplo3. A recuperación farase de forma local dende o propio host. Para isto imos provocar o desastre en /home, é dicir, imos eliminar /home en debianA para logo recuperalo mediante a restauración da copia de respaldo completa.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA mleftsubs'>
+              <li>rm -rf /home <span class='explicacion'> #Eliminar o directorio /home e todo o que colga(-r) deste sen pedir confirmación(-f).</span></li><br />
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>tar xvfj /var/backups/backupHOME-$(date +%u).tar.bz2 -C /' <span class='explicacion'> #Descomprimir o contido do ficheiro no directorio raíz (/), é dicir, restaurar a copia de respaldo completa do directorio /home. O ficheiro a descomprimir será o último realizado na tarefa programada. Para determinalo empregamos o comando date +%u o cal determina o número do día da semana. Así se hoxe é martes, será o día 2.</span>
+              <div class='explicacion3 pall'>
+              <b>Agora restauramos mediante a última copia de respaldo completa según o día no que estamos, é dicir, se estamos en luns sendo as 12:20h realizamos a copia completa do propio luns as 00:00h. Estamos a considerar que esta última copia non está corrupta, senón deberiamos intentar o respaldo con copias de respaldo completas de días anteriores</b>. 
+              </div>
+              </li><br />
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home</span></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          </ul>
+          <ul class='dashed-debianA mleftsubsx2'>
+            <li>
+          </ul>
+        </li>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. rsync - estrutura arbórea: copia local. </span>
+          <p>Imos crear unha copia de respaldo de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home</span></li><br />
+            <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home</span></li><br />
+            <li>ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups, é dicir, listar os permisos do propio cartafol pero non os do seu contido.</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li>dpkg -l rsync ; [ $(echo $?) -eq '1' ] && apt update && apt -y install rsync <span class='explicacion'> #Verificar se o paquete rsync está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span></li><br />
+              <li>rsync -avz --progress /home/ /var/backups<span class='explicacion'> #Copiar de forma incremental a estrutura arbórea do contido do cartafol /home dentro do cartafol /var/backups, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). <b>Como é a primeira que se empregan esas rutas (orixe e destino) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe</b>.</span></li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups</li><br />
+              <li>rsync -avz --progress /home/ /var/backups<span class='explicacion'> #Copiar de forma incremental a estrutura arbórea do contido do cartafol /home dentro do cartafol /var/backups, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). <b>Como é a segunda vez que se empregan esas rutas (orixe e destino) faise unha copia incremental da ruta orixe na ruta destino, xa que na ruta destino existe unha copia completa da ruta orixe. Neste caso como non existen cambios non se produce copia de arquivos/directorios.</b></span></li><br />
+              <li>rsync -avz --progress /home /var/backups<span class='explicacion'> #Copiar de forma incremental a estrutura arbórea /home dentro do cartafol /var/backups, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). <b>Como é a primeira que se emprega esa ruta orixe (/home != /home/) con esa ruta destino (/var/backups) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe.</b></span></li><br />
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Notar a diferencia co comando anterior. Agora estamos a pór como <i>ruta_orixe</i> o cartafol <b>/home</b> e non <i>/home/</i>. Así, como ruta_orixe:
+                <ul>
+                  <li>/home &#10140; indica o cartafol /home e todo o seu contido
+                  <li>/home/ &#10140; indica todo o contido do cartafol /home, pero non o propio cartafol /home
+                </ul>
+              </div>
+              </li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups</li><br />
+              <li>rm -rf /var/backups/home <span class='explicacion'> #Eliminar o directorio /var/backups/home e todo o que colga (-r) deste sen pedir confirmación (-f).</span></li><br />
+              <li>rm -rf /var/backups/usuario <span class='explicacion'> #Eliminar o directorio /var/backups/usuario e todo o que colga (-r) deste sen pedir confirmación (-f).</span></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo6. rsync - estrutura arbórea: copia remota.</span>
+          <p>Imos crear unha copia de respaldo de todo o que colga do directorio /home. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          <ul class='dashed-kaliB'>
+            <li>ssh usuario@debianA ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home do host debianA. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>ssh usuario@debianA du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home do host debianA. Ocomando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</li><br />
+            <li>ssh usuario@debianA ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups do host debianA, é dicir, listar os permisos do propio cartafol pero non os do seu contido. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) en kaliB a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-kaliB'>
+              <li>dpkg -l rsync ; [ $(echo $?) -eq '1' ] && apt update && apt -y install rsync <span class='explicacion'> #Verificar se o paquete rsync está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span></li><br />
+              <li>rsync -avz --progress --rsh="ssh" usuario@debianA:/home/ /var/backups<span class='explicacion'> #Copiar a estrutura arbórea do contido do cartafol /home de debianA dentro do cartafol /var/backups de kaliB, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Como é a primeira que se empregan esas rutas (orixe e destino) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe</b>.</span></li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/ do host kaliB</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups do host kaliB</li><br />
+              <li>rsync -avz --progress --rsh="ssh" usuario@debianA:/home/ /var/backups<span class='explicacion'> #Copiar a estrutura arbórea do contido do cartafol /home de debianA dentro do cartafol /var/backups de kaliB, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Como é a segunda vez que se empregan esas rutas (orixe e destino) faise unha copia incremental da ruta orixe na ruta destino, xa que na ruta destino existe unha copia completa da ruta orixe. Neste caso como non existen cambios non se produce copia de arquivos/directorios.</b></span></li><br />
+              <li>rsync -avz --progress --rsh="ssh" usuario@debianA:/home /var/backups<span class='explicacion'> #Copiar a estrutura arbórea /home de debianA dentro do cartafol /var/backups de kaliB, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Como é a primeira que se emprega esa ruta orixe (/home != /home/) con esa ruta destino (/var/backups) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe.</b></span></li><br />
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Notar a diferencia co comando anterior. Agora estamos a pór como <i>ruta_orixe</i> o cartafol <b>/home</b> e non <i>/home/</i>. Así, como ruta_orixe:
+                <ul>
+                  <li>/home &#10140; indica o cartafol /home e todo o seu contido
+                  <li>/home/ &#10140; indica todo o contido do cartafol /home, pero non o propio cartafol /home
+                </ul>
+              </div>
+              </li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/ do host kaliB</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups do host kaliB</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li><br />
+            </ul>
+          <li>
+        </ul>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtopsubsx2 mleft mbottom'><span class='label'>Exemplo7. cron rsync - estrutura arbórea: copia local todos os días </span>
+          <p>Mediante unha tarefa programada imos crear unha copia de respaldo incremental cada día de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li class='mtopsubsmini'>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA mleftsubs'>
+              <li>rm -rf /var/backups/home /var/backups/usuario<span class='explicacion'> #Eliminar os directorios /var/backups/home, /var/backups/usuario e todo o que colga (-r) destes sen pedir confirmación (-f).</span></li><br />
+              <li>echo '0 0 * * *   root    rsync -avz --progress /home/ /var/backups' >> /etc/crontab <span class='explicacion'> #Copiar de forma incremental a estrutura arbórea do contido do cartafol /home dentro do cartafol /var/backups, en modo arquivo (-a)(Ver NOTAS), de forma detallada (-v), comprimida (-z) e amosando o proceso de copia (--progress). <b>A primeira que se execute esta tarefa programada con esas rutas (orixe e destino) farase unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe. A partir da segunda vez que se execute esta tarefa programada (con esas rutas orixe e destino) farase unha copia incremental da ruta orixe na ruta destino, xa que na ruta destino existe unha copia completa da ruta orixe.</b> Esta tarefa programada execútase como o usuario root tódolos días ás 00:00. <b>Equivale a @daily ou @midnight</b></span>
+              <div class='explicacion3 pall'>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>echo '@daily   root    rsync -avz --progress /home/ /var/backups' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                  <li>echo '@midnight   root  rsync -avz --progress /home/ /var/backups' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                </ul>
+              </div>
+              </li>
+              <li>grep crontab /var/log/syslog <span class='explicacion'>Buscar o patrón crontab dentro do ficheiro de rexistros /var/log/syslog. Podemos observar que existe 1 nova entrada, a referente á recarga do ficheiro /etc/crontab.</span>
+              <pre class='code3 mleft arriba'>
+Jan 11 20:26:01 debianA cron[358]: (*system*) RELOAD (/etc/crontab)
+              </pre>
+              </li>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Co realizado en /etc/crontab o primeiro día farase unha copia de respaldo completa e a partir do segundo día(inclusive) farase unha copia de respaldo incremental, pero soamente poderiamos recuperar a copia de respaldo do último día xa que sempre se foi gardando a copia na mesma ruta. Pero que pasa se quixeramos recuperar de mais días atrás? Ou que pasa se a copia queda corrupta? Entón, estaría ben mellorar a xestión de copias de respaldo: creando máis tarefas programadas ou modificando esta tarefa programada para que non execute soamente o comando rsync, senón que execute un script o cal xa permite a xestión que necesitamos. Así, poderiamos gardar primeiro a copia completa e logo en distintas rutas as copias incrementais. 
+              </div>
+              <div class='minindent'>&nbsp;</div>
+              <li>cat > /root/backupHOME-incremental.sh &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear /root/backupHOME-incremental.sh</span><br />
+                <pre class='code3 mleft arriba'>
+#!/bin/bash
+ 
+#VARIABLES
+DATA=\$(date +%F)
+ 
+#main()
+rsync -avz --progress /home/ /var/backups/\${DATA}_backupHOME
+EOF <span class='explicacion'>#Fin do ficheiro a crear /root/backupHOME-incremental.sh</span>
+                </pre><br />
+              <li>echo '0 0 * * *   root    /bin/bash /root/backupHOME-incremental.sh' >> /etc/crontab <span class='explicacion'> #Engadir 1 liña ao ficheiro /etc/crontab, a cal permite executar como tarefa programada o script /root/backupHOME-incremental.sh como o usuario root tódolos días ás 00:00. Cada día de semana o ficheiro posúe un nome distinto, así, por exemplo: 
+              <ul>
+                <table>
+                  <tr><td>Día 1(luns 2021-01-11)</td><td>&#10140;</td><td>2021-01-11_backupHOME</td></tr>
+                  <tr><td>Día 2(martes 2021-01-12)</td><td>&#10140;</td><td>2021-01-12_backupHOME</td></tr>
+                  <tr><td>Día 3(mércores 2021-01-13)</td><td>&#10140;</td><td>2021-01-13_backupHOME</td></tr>
+                  <tr><td>Día 4(xoves 2021-01-14)</td><td>&#10140;</td><td>2021-01-14_backupHOME</td></tr>
+                  <tr><td>Día 5(venres 2021-01-15)</td><td>&#10140;</td><td>2021-01-15_backupHOME</td></tr>
+                  <tr><td>Día 6(sábado 2021-01-16)</td><td>&#10140;</td><td>2021-01-16_backupHOME</td></tr>
+                  <tr><td>Día 7(domingo 2021-01-17)</td><td>&#10140;</td><td>2021-01-17_backupHOME</td></tr>
+                  <tr><td colspan='3'>...</td></tr>
+                </table>
+              </ul> 
+              <b>Agora farase unha copia de respaldo completa o primeiro día(2021-01-11) que se execute o script, e copias de respaldo incrementais os seguintes días(>2021-01-11), de tal xeito que poderemos recuperar dende calquera día, tendo que restaurar primeiro a copia completa e logo todas as copias incrementais ata a que consideremos</b>. 
+              
+              </span></li><br />
+              <li class='mtopsubsmini'>grep crontab /var/log/syslog <span class='explicacion'>Buscar o patrón crontab dentro do ficheiro de rexistros /var/log/syslog. Podemos observar que existe 1 nova entrada, a referente á recarga do ficheiro /etc/crontab.</span>
+              <pre class='code3 mleft arriba'>
+Jan 11 20:52:01 debianA cron[358]: (*system*) RELOAD (/etc/crontab)
+              </pre><br />
+              <li class='mtopsubsmini'>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          <ul class='dashed-debianA mleftsubsx2 mtopsubsmini'>
+            <li>
+          </ul>
+        </ul>
+
+
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo8. rsync - estrutura arbórea: recuperación dunha copia local</span>
+          <p>Imos recuperar todo o que colga do directorio /home mediante o volcado da copia de respaldo completa e as sucesivas copias de respaldo incremental realizada na tarefa programada do Exemplo7. A recuperación farase de forma local dende o propio host. Para isto imos provocar o desastre en /home, é dicir, imos eliminar /home en debianA para logo recuperalo mediante a restauración da copia de respaldo completa e as sucesivas copias de respaldo incremental.
+          <p class='label'>Prerrequisito: Realizar o Exemplo7.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li>rm -rf /home <span class='explicacion'> #Eliminar o directorio /home e todo o que colga (-r) deste sen pedir confirmación (-f).</span></li><br />
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>mkdir /home <span class='explicacion'> #Crear o directorio /home.</span>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: É necesario crear o directorio /home posto que as copias de respaldo realizadas co script do Exemplo7 posúen o contido do directorio /home, pero non o propio directorio /home.
+              </div>
+              </li><br />
+              <li>for i in $(ls -d /var/backups/2021*); do rsync -avz --progress ${i}/ /home/ ; done<span class='explicacion'> #Restaurar a copia de respaldo completa e as sucesivas copias incrementais do directorio /home</span>
+              <div class='explicacion3 pall'>
+              <b>Agora restauramos mediante a copia de respaldo completa do primeiro día(2021-01-11) e as copias de respaldo incrementais dos seguintes días(>2021-01-11). Estamos a considerar que esta última copia non está corrupta, senón deberiamos intentar o respaldo con copias de respaldo completa e incrementais de días anteriores</b>. 
+              </div>
+              </li><br />
+
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home.</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home.</span></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li>
+          </ul>
+        </li>
+ 
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo9. rdiff-backup - estrutura arbórea: copia local </span>
+          <p>Imos crear unha copia de respaldo de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li class='mtopsubsmini'>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home</span></li><br />
+            <li class='mtopsubsmini'>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home</span></li><br />
+            <li class='mtopsubsmini'>ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups, é dicir, listar os permisos do propio cartafol pero non os do seu contido.</span></li><br />
+            <li class='mtopsubsmini'>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li class='mtopsubsmini'>dpkg -l rdiff-backup ; [ $(echo $?) -eq '1' ] && apt update && apt -y install rdiff-backup <span class='explicacion'> #Verificar se o paquete rdiff-backup está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span></li><br />
+              <li class='mtopsubsmini'>rdiff-backup /home /var/backups/backup-home-rdiff<span class='explicacion'> #Realizar a copia do contido do directorio /home dentro do directorio /var/backups/backup-home-rdiff. Se o directorio de destino non existe créase. <b>Como é a primeira que se empregan esas rutas (orixe e destino) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe</b>.</span></li><br />
+              <li class='mtopsubsmini'>rdiff-backup /home/ /var/backups/backup-home-rdiff-2<span class='explicacion'> #Equivale ao comando anterior empregando unha ruta_destino diferente. Se o directorio destino non existe créase. <b>Como é a primeira que se empregan esa ruta destino faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe</b>.
+              </li><br />
+              <li class='mtopsubsmini'>ls -l /var/backups/backup-home-rdiff <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/backup-home-rdiff</span></li><br />
+              <li class='mtopsubsmini'>ls -l /var/backups/backup-home-rdiff-2 <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/backup-home-rdiff-2</span>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Notar que non existe diferencia na <i>ruta_orixe</i> entre os 2 comandos anteriores, é dicir, para rdiff-backup as <i>rutas_orixe</i> <b>/home</b> e <b>/home/</b> son equivalentes, polo cal obtense o mesmo contido nas <i>rutas_destino</i> <i>/var/backups/backup-home-rdiff</i> e <i>/var/backups/backup-home-rdiff-2</i>. 
+              </div>
+              </span>
+              </li><br />
+              <li class='mtopsubsmini'>du -hs /var/backups/backup-home-rdiff* <span class='explicacion'> #Amosar en formato humano canto ocupan o cartafoles /var/backups/backup-home-rdiff e /var/backups/backup-home-rdiff-2</li><br />
+              <li class='mtopsubsmini'>rdiff-backup -l /var/backups/backup-home-rdiff <span class='explicacion'>#Amosar listado con todas as copias xeradas en <i>/var/backups/backup-home-rdiff</i>.</span>
+              <pre class='code3 mleft arriba'>
+Found 0 increments:
+Current mirror: Mon Jan 11 23:33:14 2021
+              </pre>
+              <div class='explicacion3 pall'>
+                Neste caso como soamente fixemos unha copia de respaldo, a copia é completa(mirror) e non temos ningunha copia incremental a maiores.
+              </div>
+              </li><br />
+              <li class='mtopsubsmini'>cp -pv /etc/passwd /home/usuario/<span class='explicacion'> #Copiar o ficheiro /etc/passwd en modo verbose (detallado) e preservando permisos e datas do ficheiro dentro do directorio /home/usuario/</span></li><br />
+              <li class='mtopsubsmini'>chown usuario. /home/usuario/passwd <span class='explicacion'> #Cambiar usuario propietario usuario e grupo propietario usuario ao ficheiro /home/usuario/passwd</span></li><br />
+              <li class='mtopsubsmini'>rdiff-backup /home /var/backups/backup-home-rdiff<span class='explicacion'> #Realizar de novo a copia do contido do directorio /home dentro do directorio /var/backups/backup-home-rdiff. <b>Como xa non é a primeira que se empregan esas rutas (orixe e destino) e existen cambios en /home/usuario respecto á primeira copia pois faise unha copia diferencial respecto á completa realizada anteriormente</b>.</span></li><br />
+              <li class='mtopsubsmini'>rdiff-backup -l /var/backups/backup-home-rdiff <span class='explicacion'>#Amosar listado con todas as copias xeradas en <i>/var/backups/backup-home-rdiff</i>.</span>
+              <pre class='code3 mleft arriba'>
+Found 1 increments:
+    increments.2021-01-11T23:33:14+01:00.dir   Mon Jan 11 23:33:14 2021
+Current mirror: Mon Jan 11 23:50:09 2021
+              </pre>
+              <div class='explicacion3 pall'>
+                Neste caso como existen cambios sobre a copia de respaldo realizada anteriormente teremos unha copia incremental sobre a anterior copia completa, obtendo unha copia de respaldo diferencial(mirror).
+              </div>
+              </li><br />
+
+              <li class='mtopsubsmini'>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li class='mtopsubsmini'>
+          </ul>
+        </li>
+ 
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtopsubsx2 mleft mbottom'><span class='label'>Exemplo10. rdiff-backup - estrutura arbórea: copia remota </span> 
+          <p>Imos crear unha copia de respaldo de todo o que colga do directorio /home. A copia farase remotamente de forma cifrada mediante conexión SSH.
+          <ul class='dashed-kaliB'>
+            <li>ssh usuario@debianA ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home do host debianA. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>ssh usuario@debianA du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home do host debianA. Ocomando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</li><br />
+            <li>ssh usuario@debianA ls -ld /var/backups/ <span class='explicacion'>#Listar soamente os permisos do cartafol /var/backups do host debianA, é dicir, listar os permisos do propio cartafol pero non os do seu contido. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) en kaliB a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-kaliB'>
+              <li>dpkg -l rdiff-backup ; [ $(echo $?) -eq '1' ] && apt update && apt -y install rdiff-backup <span class='explicacion'> #Verificar se o paquete rdiff-backup está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span></li><br />
+              <li>rdiff-backup usuario@debianA::/home/ /var/backups/backup-remoto-home-rdiff<span class='explicacion'> #Copiar a estrutura arbórea do contido do cartafol /home de debianA dentro do cartafol /var/backups/backup-remoto-home-rdiff de kaliB. Se o directorio de destino non existe créase. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Como é a primeira que se empregan esas rutas (orixe e destino) faise unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe</b>.</span></li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/ do host kaliB</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups do host kaliB</li><br />
+              <li>ls -l /var/backups/backup-remoto-home-rdiff <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/backup-remoto-home-rdiff do host kaliB</span></li><br />
+              <li>du -hs /var/backups/backup-remoto-home-rdiff <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups/backup-remoto-home-rdiff do host kaliB</li><br />
+              <li>rdiff-backup usuario@debianA::/home /var/backups/backup-remoto-home-rdiff<span class='explicacion'> #Copiar a estrutura arbórea do contido do cartafol /home de debianA dentro do cartafol /var/backups/backup-remoto-home-rdiff de kaliB. Se o directorio de destino non existe créase. O comando é executado en debianA accedendo co usuario de nome <i>usuario</i> nunha conexión cifrada SSH, e a súa saída é amosada en kaliB. <b>Como non existe diferencia entre as rutas orixe /home e /home/ é a segunda vez que se emmpregan esas rutas (orixe e destino), co cal faise unha copia diferencial da ruta orixe na ruta destino, xa que na ruta destino existe unha copia completa da ruta orixe.</b></span>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: Para rdiff-backup as <i>rutas_orixe</i> <b>/home</b> e <b>/home/</b> son equivalentes. 
+              </div>
+              </li><br />
+              <li>ls -l /var/backups/ <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/ do host kaliB</span></li><br />
+              <li>du -hs /var/backups <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups do host kaliB</li><br />
+              <li>ls -l /var/backups/backup-remoto-home-rdiff <span class='explicacion'>#Listar de forma extendida o contido do directorio /var/backups/backup-remoto-home-rdiff do host kaliB</span></li><br />
+              <li>du -hs /var/backups/backup-remoto-home-rdiff <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /var/backups/backup-remoto-home-rdiff do host kaliB</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li><br />
+            </ul>
+          <li>
+        </ul>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtopsubsx2 mleft mbottom'><span class='label'>Exemplo11. cron rdiff-backup - estrutura arbórea: copia local todos os días </span>
+          <p>Mediante unha tarefa programada imos crear unha copia de respaldo diferencial cada día de todo o que colga do directorio /home. A copia farase no propio host.
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA mleftsubs'>
+              <li>echo '0 0 * * *   root    rdiff-backup /home/ /var/backups/TP-backup-home-rdiff' >> /etc/crontab <span class='explicacion'> #Copiar de forma diferencial a estrutura arbórea do contido do cartafol /home dentro do cartafol /var/backups/TP-backup-home-rdiff. <b>A primeira que se execute esta tarefa programada con esas rutas (orixe e destino) farase unha copia completa da ruta orixe na ruta destino, xa que na ruta destino non existe ningunha copia da ruta orixe. A partir da segunda vez que se execute esta tarefa programada (con esas rutas orixe e destino) farase unha copia diferencial da ruta orixe na ruta destino, xa que na ruta destino existe unha copia completa da ruta orixe.</b> Esta tarefa programada execútase como o usuario root tódolos días ás 00:00. <b>Equivale a @daily ou @midnight</b></span>
+              <div class='explicacion3 pall'>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>echo '@daily   root    rdiff-backup /home/ /var/backups/TP-backup-home-rdiff' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                  <li>echo '@midnight   root  rdiff-backup /home/ /var/backups/TP-backup-home-rdiff' >> /etc/crontab <span class='explicacion'> #Equivale ao comando anterior.</span></li><br />
+                </ul>
+              </div>
+              </li><br />
+              <li>grep crontab /var/log/syslog <span class='explicacion'>Buscar o patrón crontab dentro do ficheiro de rexistros /var/log/syslog. Podemos observar que existe 1 nova entrada, a referente á recarga do ficheiro /etc/crontab.</span>
+              <pre class='code3 mleft arriba'>
+Jan 11 23:56:01 debianA cron[358]: (*system*) RELOAD (/etc/crontab)
+              </pre>
+              </li>
+              <div class='explicacion3 pall'>
+                <b>Co realizado en /etc/crontab farase unha copia de respaldo completa o primeiro día(2021-01-11) que se execute o script, e copias de respaldo diferenciais os seguintes días(>2021-01-11), de tal xeito que poderemos recuperar dende calquera día, soamente indicando no comando rdiff-backup un parámetro coa data a ter en conta para a restauración</b>. Por exemplo:
+                <div class='minindent'>&nbsp;</div>
+                <ul class='hashtag-debianA'>
+                  <li>rdiff-backup -r now /var/backups/TP-backup-home-rdiff /home/ <span class='explicacion'>#Permitir copiar a última copia de respaldo diferencial realizada, é dicir, recuperar a última copia mirror do cartafol /home realizada con rdiff-backup
+                </ul>
+              </div>
+              </span></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          <ul class='dashed-debianA mleftsubsx2'>
+            <li>
+          </ul>
+        </ul>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo12. rdiff-backup - estrutura arbórea: recuperación dunha copia local</span>
+          <p>Imos recuperar todo o que colga do directorio /home mediante o volcado da copia de respaldo completa e a última copia diferencial realizada na tarefa programada do Exemplo11. A recuperación farase de forma local dende o propio host.
+          <p class='label'>Prerrequisito: Realizar o Exemplo11.</p>
+          <ul class='dashed-debianA'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li>rm -rf /home <span class='explicacion'> #Eliminar o directorio /home e todo o que colga (-r) deste sen pedir confirmación (-f).</span></li><br />
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home. Neste caso obteremos un erro xa que acabamos de eliminar ese directorio.</span></li><br />
+              <li>mkdir /home <span class='explicacion'> #Crear o directorio /home.</span>
+              <div class='explicacion3 pall'>
+                <b>IMPORTANTE</b>: É necesario crear o directorio /home posto que as copias de respaldo realizadas posúen o contido do directorio /home, pero non o propio directorio /home.
+              </div>
+              </li><br />
+              <li>rdiff-backup -r now /var/backups/TP-backup-home-rdiff /home/ <span class='explicacion'>#Volcar a última copia de respaldo realizada, é dicir, recuperar a copia completa e a última diferencial de /home</span>
+              <div class='explicacion3 pall'>
+                <ul class='hashtag-debianA'>
+                  <li>rdiff-backup -r 2D /var/backups/TP-backup-home-rdiff /home/ <span class='explicacion'>#Volcar a copia de respaldo realizada fai 2días ou a máis próxima logo de 2 días, é dicir, recuperar a copia completa e a diferencial de /home de fai 2 días ou a máis próxima logo de 2 días.</span></li><br />
+                </ul>
+              </div>
+              </li><br />
+              <li>ls -l /home <span class='explicacion'>#Listar de forma extendida o contido do directorio /home.</span></li><br />
+              <li>du -hs /home <span class='explicacion'> #Amosar en formato humano canto ocupa o cartafol /home.</span></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li>
+          </ul>
+        </li>
+        </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+
+</body>
+</html>
