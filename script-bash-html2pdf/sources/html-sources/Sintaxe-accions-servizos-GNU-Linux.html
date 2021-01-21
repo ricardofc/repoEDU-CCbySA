@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title> Servizos GNU/Linux</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/GNU-Linux' target='_blank'>Servizos GNU/Linux</a>
+      <img class='cfigure mleftsubs arriba' src="images/mouse-pointer-mini.png" />
+    </h1>
+
+    <div class='minindent'>&nbsp;</div>
+
+    <div class='nota w80 fright'>
+      <ul>
+        <li> <span class='label'>Instalar servizo (como outro paquete calquera)</span>:
+          <ul class='hashtag'>
+            <li> apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i>
+            <li> apt search pattern || apt-cache search pattern<span class='explicacion'> #Buscar nas anteriores listas descargadas en <i>/var/lib/apt/lists</i> paquetes que coincidan co patrón de búsqueda <i>pattern</i>. A saída do/s comando/s amosan o nome do/s paquete/s e unha pequena descrición do/s mesmo/s. 
+              <div class='explicacion3'>
+                O comando non precisa ser lanzado con pemisos de <i>root</i> xa que o directorio <i>/var/lib/apt/lists</i> ten acceso de lectura e execución para calquera usuario do sisetema, e os ficheiros que aí se atopan tamén teñen permisos de lectura para calquera usuario do sistema. Polo tanto, unha vez realizada a actualización dos repositorios, un usuario sen permisos de <i>root</i> podería executar:<br />
+                <ul class='dashed'>
+                  <li>apt search pattern || apt-cache search pattern
+                </ul>
+              </div>
+            <li> apt -y install packageName || apt-get -y install packageName<span class='explicacion'> #Instalar un Servizo  mediante a instalación do paquete de nome <i>packageName</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <li><span class='label'>Accións(action) sobre o servizo</span>: 
+            As accións que normalmente se poden realizar cun servizo son:<br /> 
+            {start|stop|reload|force-reload|restart|try-restart|status}
+            <ul type='square'>
+              <li><span class='label'>start </span> &#10140; arrancar
+              <li><span class='label'>stop </span> &#10140; parar
+              <li><span class='label'>reload </span> &#10140; recargar o ficheiro de configuración
+              <li><span class='label'>force-reload </span> &#10140; recargar se o servizo o permite o ficheiro de configuración. Se non o permite reinicia o servizo para que teña lugar a nova configuración
+              <li><span class='label'>restart </span> &#10140; reiniciar, é dicir, paro o servizo no caso que esté arrancado, e arráncao. Se non está arrancado soamente o arranca.
+              <li><span class='label'>try-restart </span> &#10140; reiniciar, é dicir, reinicia o servizo se este xa está arrancado. No caso que non estea arrancado non fai nada.
+              <li><span class='label'>status </span> &#10140; revisar o estado
+            </ul>
+          <p>Estas accións poder executarse con diversa sintaxe según o comando empregado. Así, considerando o nome do servizo como <i><span class='nome'>serviceName</span></i> e a acción a realizar como <i><span class='nome'>action</i>, poderían executarse as accións como segue:
+          <ul>
+            <li class='mleft mtop mbottom'>Mediante a execución <strong><span class='label'>/etc/init.d</span></strong>:
+              <ul class='hashtag'>
+                <li class='mtop mbottom'> /etc/init.d/serviceName action  
+              </ul>
+            <li class='mleft mtop mbottom'>Mediante a execución <strong><span class='label'>service</span></strong>:
+              <ul class='hashtag'>
+                <li class='mtop mbottom'> service serviceName action  
+              </ul>
+            <li class='mleft mtop mbottom'>Mediante a execución <strong><span class='label'>invoke-rc.d</span></strong>:
+              <ul class='hashtag'>
+                <li class='mtop mbottom'> invoke-rc.d serviceName action  
+              </ul>
+            <li class='mleft mtop mbottom'>Mediante a execución <strong><span class='label'>systemctl</span></strong>:
+              <ul class='hashtag'>
+                <li class='mtop mbottom'> systemctl action serviceName  
+              </ul>
+            </li>
+          </ul>
+          </p>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+
+        <li> <span class='label'>Desinstalar servizo (como outro paquete calquera)</span>:
+          <ul class='hashtag'>
+            <li> apt -y remove packageName || apt-get -y remove packageName<span class='explicacion'> #Eliminar un Servizo mediante a desinstalación do paquete de nome <i>packageName</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na desinstalación do paquete. <span class='label'>IMPORTANTE:</span> Con <span class='label'>remove</span> <span class='label'>NON SE ELIMINAN os ficheiros de configuración</span> do paquete desinstalado.
+            <li> apt -y purge packageName || apt-get -y purge packageName<span class='explicacion'> #Eliminar un Servizo mediante a purga do paquete de nome <i>packageName</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na desinstalación do paquete. <span class='label'>IMPORTANTE:</span> Con <span class='label'>purge</span> <span class='label'>SI SE ELIMINAN os ficheiros de configuración</span> do paquete desinstalado.
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class='indent arriba'>&nbsp;</div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
