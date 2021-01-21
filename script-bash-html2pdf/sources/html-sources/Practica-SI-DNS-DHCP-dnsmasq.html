@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Servizos: DNS + DHCP </title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a  href='https://wiki.archlinux.org/index.php/Dnsmasq_(Espa%C3%B1ol)' target='_blank'>dnsmasq: Servizos DNS + DHCP</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall arriba' src="images/Escenario-dnsmasq-dns+dhcp-rede-interna+NAT.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='pall'><b>NOTAS</b>:
+        <ul type='square'>
+          <li><span class='label'>dnsmasq</span> integra un sinxelo servidor DNS e servidor DHCP/TFTP fáciles de implementar. Paquete dnsmasq (# apt update && apt -y install dnsmasq)
+          <div class='minindent'>&nbsp;</div>
+          <li>Ficheiros de configuración dnsmasq: 
+            <ul>
+              <li>Servidor DNS: <span class='label'>/etc/hosts</span>
+              <li>Servidor DHCP: <span class='label'>/etc/dnsmasq.conf</span>
+            </ul>
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>Ficheiro de configuración <span class='label'>/etc/resolv.conf</span>: Arquivo onde se configuran os servidores DNS que solucionan as peticións de nomes directa ou inversa.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>Cliente DHCP: Comando <span class='label'>dhclient</span>. Paquete isc-dhcp-client (# apt update && apt -y install isc-dhcp-client)</span>.</span> 
+          <div class='minindent'>&nbsp;</div>
+          <li>Clientes DNS: 
+            <ul>
+              <li>Comandos <span class='label'>nslookup</span> e <span class='label'>dig</span>. Paquete bind9-dnsutils (#apt update && apt -y install bind9-dnsutils)
+              <li>Comando <span class='label'>host</span>. Paquete bind9-host (#apt update && apt -y install bind9-host)
+            </ul>
+          <div class='minindent'>&nbsp;</div>
+          <li>Cliente SSH: Comando ssh. Paquete openssh-client (# apt update && apt -y install openssh-client)</span>.</span> 
+          <div class='minindent'>&nbsp;<br /></div>
+          <li>Servidor SSH: Paquete openssh-server (# apt update && apt -y install openssh-server).</span>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+        <p class='mtop mleftsubsx2 mbottom label'>Máquina virtual A: Kali amd64</p>
+        <li class='mtop mleft mbottom'><span class='label'>Instalar dnsmasq (DNS + DHCP)</span>: 
+          <ul>
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA'>
+                  <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                  <li>apt search dnsmasq <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda dnsmasq</li>
+                  <li>apt -y install dnsmasq <span class='explicacion'> #Instalar o paquete dnsmasq. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Habilitar servizo dnsmasq(DNS + DHCP)</span>: 
+          <ul>
+            <ul class='hashtag-kaliA mleft'>
+              <li>/etc/init.d/dnsmasq status <span class='explicacion'> #Comprobar o estado do servidor dnsmasq</span></li>
+              <li>/etc/init.d/dnsmasq start <span class='explicacion'> #Arrancar o servidor dnsmasq.</span></li>
+              <li>/etc/init.d/dnsmasq status <span class='explicacion'> #Comprobar o estado do servidor dnsmasq</span></li>
+            </ul>
+          </ul>
+        </li>
+
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>dnsmasq como servidor DNS</span>
+          <div class='minindent'>&nbsp;</div>
+          <ul>
+            <li type='a'><span class='label'>/etc/resolv.conf e /etc/hosts</span>: 
+              <p>Para que dnsmasq poida realizar a resolución directa ou inversa de hostnames/IPs simplemente temos que engadir/modificar entradas no ficheiro /etc/hosts e indicarlle ao arquivo /etc/resolv.conf cal é o noso servidor DNS a empregar.</p>
+              <ul>
+                <div class='explicacion3 pall'>
+                  <p><span class='label'>/etc/resolv.conf:</span> Arquivo onde se configuran os servidores DNS. Exemplo contido tipo:</p>
+                  <ul>
+                    <p>domain example.local <span class='explicacion'> #Dominio a engadir na procura de hostnames. Se o host a buscar é pepito, é a procura falla, intentariase de novo esta como pepito.example.local</span></li><br />
+                    <p>search example.local<span class='explicacion'> #Lista de dominios a engadir na procura de hostnames.</span></li>
+                    <p>nameserver 8.8.8.8 <span class='explicacion'> #Servidor DNS primario para resolución de nomes.</span></li><br />
+                    <p>nameserver 8.8.4.4<span class='explicacion'> #Agregar servidor DNS secundario para resolución de nomes.</span></li>
+                  </ul>
+                  <p class='label'>domain e search son excluintes, a última directiva que apareza no ficheiro prevalece.</p>
+                </div>
+                <div class='minindent'>&nbsp;</div>
+                <ul class='hashtag-kaliA mleft'>
+                  <li>echo -e 'nameserver 127.0.0.1\nnameserver 192.168.120.100' &gt; /etc/resolv.conf<span class='explicacion'> #Agregar servidor DNS para resolución de nomes.</span></li>
+                  
+                  <li>echo '192.168.120.100 kaliA.ies.local kaliA.ies.com kaliA.example.local kaliA.example.gl' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) varios nomes DNS que apuntan á IP 192.168.120.100</li> 
+                  <li>echo '192.168.120.101 kaliB.ies.local kaliB.ies.com kaliB.example.local kaliB.example.gl' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) varios nomes DNS que apuntan á IP 192.168.120.101</li> 
+                </ul>
+              </ul>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+            <li type='a' class='mtop mbottom'><span class='label'>Comprobación resolución DNS: DNS en /etc/hosts</span> 
+          <div class='explicacion3 pall'>
+             Á hora de saber se tes conectividade con algunha máquina na internet, ou en rede local, adóitase utilizar o comando  ping, o cal indica segundo a súa resposta se posúes conectividade coa máquina en cuestión. O comando  ping pódelo utilizar para consultar direccións IP ou nomes de dominios.
+
+
+              Por tanto o comando  ping debe ser capaz de consultar información sobre o sistema de nomes de dominio; é un  resolutor, un programa cliente capaz de consultar información sobre o sistema de nome de dominios. Normalmente, un  resolutor traballa discretamente en segundo plano e os usuarios non coñecen a súa presenza, é dicir, que toda consulta dun cliente  DNS ao seu servidor adoita realizala o programa que invocamos (ping,  ftp,  telnet,  mail, navegador web, etc.). Por exemplo, se solicitas unha conexión  ftp a  ftp. rediris.es, a aplicación  ftp que empregues chama a un programa  resolutor local que busca a dirección IP dese computador 130.206.13.2 sen que teñas conciencia diso, isto é, para ti o proceso é transparente. Ademais deste traballo en segundo plano, o usuario pode conectarse directamente ao programa  resolutor enviando consultas e resolvendo respostas. Comandos  resolutor típicos en sistemas operativos GNU/Linux son:  nslookup,  host e  dig.
+          </div>
+          <ul>
+            <div class='minindent'>&nbsp;</div>
+            <ul class='hashtag-kaliA mleft'>
+              <li>ping -c4 kaliA.ies.local <span class='explicacion'> #Comprobar mediante o localando ping a conectividade co host kaliA.ies.local que apunta á interface de rede da máquina virtual A</span></li>
+              <li>ping -c4 kaliA.ies.com <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co host kaliA.ies.com que apunta á interface de rede da máquina virtual A</span></li>
+              <li>ping -c4 kaliA.example.local <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co host kaliA.example.local que apunta á interface de rede da máquina virtual A</span></li>
+              <li>nslookup kaliA.example.gl <span class='explicacion'> #Resolución directa: Consultar a dirección IP do host kaliA.example.gl</span></li>
+              <li>host kaliA.ies.com <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+              <li>dig kaliA.ies.com <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+              <li>nslookup 192.168.120.100 <span class='explicacion'> #Resolución inversa: Consultar o nome do host que posúe a dirección IP 192.168.120.100</span></li>
+              <li>host 192.168.120.100 <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+              <li>dig -x 192.168.120.100 <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+            </ul>
+          </ul>
+        </li>
+      </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleftsubsx2 mbottom label'>Máquina virtual B: Kali amd64</p>
+
+        <li class='mtop mleft mbottom'><span class='label'>Apuntar ao DNS (dnsmasq en kaliA)</span>. Modificar <span class='label'>/etc/resolv.conf</span> e <span class='label'>/etc/hosts</span>: 
+        <div class='minindent'>&nbsp;</div>
+          <ul>
+            <li type='a'><span class='label'>/etc/resolv.conf e /etc/hosts</span>: 
+              <ul class='dashed-kaliA mleftsubs'>
+                <p>Para que poidamos empregar dnsmasq como servidor de nomes, e así poida realizar a resolución directa ou inversa de hostnames/IPs, simplemente temos que indicarlle ao arquivo /etc/resolv.conf de KaliB cal é o noso servidor DNS a empregar.</p>
+                <ul class='hashtag-kaliB'>
+                  <ul class='hashtag-kaliA mleft'>
+                    <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                  </ul>
+                  <ul class='dashed-kaliA'>
+                    <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+                  </ul>
+                  <ul class='dashed-kaliB'>
+                    <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                    <ul class='hashtag-kaliB'>
+                      <li>echo 'nameserver 192.168.120.100' &gt; /etc/resolv.conf<span class='explicacion'> #Agregar servidor DNS para resolución de nomes.</span></li>
+                    </ul>
+                  </ul>
+                </ul>
+              </ul>
+            </li>
+
+            <div class='minindent'>&nbsp;</div>
+            <li type='a' class='mtop mbottom'><span class='label'>Comprobación resolución DNS</span>: 
+              <ul>
+                <div class='minindent'>&nbsp;</div>
+                <ul class='hashtag-kaliB mleftsubs'>
+                  <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+
+                  <li>ping -c4 kaliA.ies.local <span class='explicacion'> #Comprobar mediante o localando ping a conectividade co host kaliA.ies.local que apunta á interface de rede da máquina virtual A</span></li>
+                  <li>ping -c4 kaliA.ies.com <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co host kaliA.ies.com que apunta á interface de rede da máquina virtual A</span></li>
+                  <li>ping -c4 kaliA.example.local <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co host kaliA.example.local que apunta á interface de rede da máquina virtual A</span></li>
+                  <li>nslookup kaliA.example.gl <span class='explicacion'> #Resolución directa: Consultar a dirección IP do host kaliA.example.gl</span></li>
+                  <li>host kaliA.ies.com <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+                  <li>dig kaliA.ies.com <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+                  <li>nslookup 192.168.120.100 <span class='explicacion'> #Resolución inversa: Consultar o nome do host que posúe a dirección IP 192.168.120.100</span></li>
+                  <li>host 192.168.120.100 <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+                  <li>dig -x 192.168.120.100 <span class='explicacion'> #Comando equivalente ao anterior</span></li>
+                </ul>
+              </ul>
+            </li>
+          </ul>
+
+        <div class='pagebreak'></div>
+        <p class='mtop mleftsubsx2 mbottom label'>Máquina virtual A: Kali amd64</p>
+        <li class='mtop mleft mbottom'><span class='label'>dnsmasq como servidor DHCP &#10140; /etc/dnsmasq.conf</span> 
+          <ul>
+              <p>Por defecto dnsmasq non activa o servidor DHCP. Entón para activalo debemos editar o arquivo de configuración /etc/dnsmasq.conf e configurar un pool de IPs a servir, isto é, configurar os rangos de IPs que queremos conceder para poder distribuir unha IP nunha solicitude dun cliente DHCP.</p>
+
+                <ul class='hashtag-kaliA mleft'>
+                  <li>echo 'dhcp-range=192.168.120.50,192.168.120.80,12h' &gt;&gt; /etc/dnsmasq.conf<span class='explicacion'> #Crear rango de IPs a distribuir [50-80]. A concesión durará 12 horas.</span></li>
+                  
+                <li>/etc/init.d/dnsmasq restart <span class='explicacion'> #Reiniciar o servidor dnsmasq.</span></li>
+                <li>/etc/init.d/dnsmasq status <span class='explicacion'> #Comprobar o estado do servidor dnsmasq</span></li>
+                </ul>
+              </ul>
+            </li>
+          </ul>
+        </li>
+  
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual B: Kali amd64</p>
+        <li class='mtop mleft mbottom'><span class='label'>dnsmasq como servidor DHCP &#10140;  Solicitar IP a dnsmasq</span>
+          <ul>
+            <div class='minindent'>&nbsp;</div>
+              <ul class='hashtag-kaliB mleft'>
+                <li>dhclient -v eth0<span style='font-size:14px;color:#0F18A0;'> #Configuración dinámica de rede da interface eth0 en modo verbose(detallado).</span></li>
+                <li>ip addr show eth0 <span style='font-size:14px;color:#0F18A0;'> #Amosara configuración da interface eth0</span></li>
+                <li>dhclient -s 192.168.120.100 -v eth0 <span style='font-size:14px;color:#0F18A0;'> #Configuración dinámica de rede da interface eth0 en modo verbose(detallado), procurando a configuración no servidor DHCP 192.168.120.100</span></li>
+                <li>ip addr show eth0 <span style='font-size:14px;color:#0F18A0;'> #Amosara configuración da interface eth0</span></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
+
