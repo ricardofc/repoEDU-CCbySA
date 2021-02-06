@@ -1,0 +1,1455 @@
+<!DOCTYPE HTML><br />
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica Seguridade Informática: PAM</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Autenticacion' target='_blank'>Práctica Seguridade Informática: PAM</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-PAM.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTA</b>:
+        <ul type='square'>
+          <li>Documentación de interese:
+            <br />
+            <br />
+            <ul type='none'>
+              <br />
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='http://www.linux-pam.org/' target='_blank'>Linux-PAM</a></td>
+                    <td width='15%'>&nbsp;</td>
+                    <td><a href='https://docs.fedoraproject.org/es-ES/Fedora/html-single/Security_Guide/index.html#sect-Security_Guide-Pluggable_Authentication_Modules_PAM' target='_blank'>Fedora - Guía de Seguridad: PAM</a></td>
+                    <td width='15%'>&nbsp;</td>
+                    <td><a href='http://sopa.dis.ulpgc.es/ii-aso/portal_aso/leclinux/seguridad/pam/pam_doc.pdf#section.3' target='_blank'>Arquitectura PAM</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              <div class='minindent'>&nbsp;</div>
+              </li>
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='http://sopa.dis.ulpgc.es/ii-aso/portal_aso/leclinux/seguridad/pam/pam_doc.pdf' target='_blank'>Pluggable Authentication Modules (PAM)</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+            </ul>
+          </li><br />
+          <li>Configuración: <span class='label'>/etc/pam.d/ (man pam.d)</span>. Antigamente: /etc/pam.conf
+            <div class='explicacion3 pall'>
+              <ul type='square'>
+                <li>Se non existe o directorio /etc/pam.d/ o ficheiro /etc/pam.conf segue vixente. 
+                <li>Se existe o directorio /etc/pam.d/ o ficheiro /etc/pam.conf ignórase. 
+              </ul>
+            </div>
+            <p> Funcionan mediante regras.
+              <ul>
+                <li>/etc/pam.d/ contén ficheiros os cales son os servizos PAM
+                <li>/etc/pam.conf identifica en cada liña un servizo PAM
+                <li>Nos ficheiros dentro de <span class='nome'>/etc/pam.d/</span> e en <span class='nome'>/etc/pam.conf</span>:
+                  <ul>
+                    <li>Comentarios: Liñas en branco e liñas que comezan co caracter # 
+                    <li>Se non é comentario &#10140; Cada liña é unha regra:
+                    <ul>
+                      <li>As regras dentro de cada ficheiro /etc/pam.d non inclúen o nome do servizo, xa que este e considerado co propio nome do ficheiro (servizo).<br />
+                      <li>As regras dentro de /etc/pam.conf deben incluír o nome do servizo para identificar a que servizo se lle aplica cada regra.<br />
+                      <li>Calquera erro nunha regra pode provocar calquera cousa inesperada na autenticación do usuario: problema de acceso, acceso indebido...
+                      <li>As regras vanse lendo de forma secuencial de arriba a abaixo. Así, se por exemplo nun ficheiro temos 2 liñas e en cada liña unha regra, primeiro lese a regra da liña 1 e logo, se é o caso (por non ser suficiente coa regra da liña 1), lese a regra da liña 2.
+                    </ul>
+                  </ul>
+                </li>
+              </ul>
+            </p>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='nota w80 fright mleftsubsx2 mtopsubs'>
+      <table class='mleftsubsx2'>
+        <tbody><tr><td class="tdP tdPHeader"><b>Configuración</b></td><td class="tdP tdPHeader"><b>Descrición</b></td></tr>
+        </tbody>
+        <tr>
+          <td width='2%' rowspan='2' class="tdP tdPFileSystem">
+            <br />
+            <span class='label'>/etc/pam.conf</span> 
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <b>Estrutura regra</b>
+            <div class='explicacion3 title18imp pall'>
+              service type control module-path module-argument
+            </div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td class='tdP pall'>
+            <div class='explicacion5 pall'>
+              <b>service</b> &#8658; Nome do servizo a configurar con PAM. O conxunto de regras dun servizo forman o que denomina pila. A pila lese de arriba a abaixo secuencialmente.
+              <br />
+              <br />
+              <b>tipo</b> &#8658; Indicar o tipo PAM que emprega o servizo. Existen 4 e cada un indica un aspecto no proceso de autorización.
+              <br />
+              <br />
+              <b>control</b> &#8658; Indicar que facer no caso de éxito ou fracaso na regra establecida
+              <br />
+              <br />
+              <b>module-path</b> &#8658; Indicar en que ruta existe o módulo no que ten efecto a regra establecida
+              <br />
+              <br />
+              <b>module-argument</b> &#8658; Indicar, se é o caso, opcións sobre a chamada ao módulo indicado no campo <i>module-path</i>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan='2' class="tdP bglime">
+            <br />
+            <span class='label'>/etc/pam.d/</span>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <b>Estrutura regra</b>
+            <div class='explicacion3 title18imp pall'>
+              type control module-path module-argument
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            O nome do ficheiro indica xa o nome do servizo.
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td width='50%' class='tdP pall'>
+            <div class='explicacion5  pall'>
+              <b>Campos equivalentes a /etc/pam.conf</b>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td width='2%' rowspan='2' class="tdP bgsalmon">
+            <br />
+            <span class='label'>Tipos</span> 
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <b>Existen catro tipos (asociados a módulos co mesmo nome)</b>
+            <div class='explicacion3 title18imp pall'>
+              auth<br />
+              account<br />
+              password<br />
+              session<br />
+            </div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+        </tr>
+        <tr>
+          <td class='tdP pall'>
+            <div class='explicacion5 pall'>
+              <b>auth</b> &#8658; Validar que o usuario é quen di ser (Non repudio) e unha ver verificado poder otorgar permisos. Exemplo: pedir/validar contrasinal
+              <br />
+              <br />
+              <b>account</b> &#8658; Verificar que o acceso está permitido. Exemplo: Usuario non ten a conta deshabilitada.
+              <br />
+              <br />
+              <b>password</b> &#8658; Actualizar token do usuario. Exemplo: validar ao modificar un contrasinal que posúa un número mínimo de caracteres.
+              <br />
+              <br />
+              <b>session</b> &#8658; Tarefas a facer antes/despois de conceder ao usuario acceso a un servizo. Exemplo: montaxe de directorios
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td width='2%' rowspan='2' class="tdP bgaqua">
+            <br />
+            <span class='label'>Control</span> 
+            <div class='minindent'>&nbsp;</div>
+          </td>
+          <td class="tdP bgwhite">
+            <div class='minindent'>&nbsp;</div>
+            <b>Sintaxe antiga: Bandeiras(flag) de control</b>
+            <div class='explicacion3 title18imp pall'>
+              required<br />
+              requisite<br />
+              sufficient<br />
+              optional<br />
+              include<br />
+              substack<br />
+            </div>
+            <div class='minindent'>&nbsp;</div>
+            <b>Sintaxe moderna: [value1=action1 value2=action2 ...]<br />
+            Existen pares de valores equivalentes a bandeiras de control da sintaxe antiga </b>
+            <div class='explicacion3 title18imp pall'>
+              required &#8660; [success=ok new_authtok_reqd=ok ignore=ignore default=bad]<br />
+              requisite &#8660; [success=ok new_authtok_reqd=ok ignore=ignore default=die]<br />
+              sufficient &#8660; [success=done new_authtok_reqd=done default=ignore]<br />
+              optional &#8660; [success=ok new_authtok_reqd=ok default=ignore]<br />
+            </div>
+            <div class='minindent'>&nbsp;</div>
+          </td>
+         <tr>
+          <td class='tdP pall'>
+            <div class='explicacion5 pall'>
+              <b>required</b> &#8658; Indicar que na regra que existe o módulo debe ter éxito. Se dá erro este non será visible ata que se executen o resto de módulos (regras) para este servizo e mesmo tipo, é dicir, se o erro prodúcese no tipo auth éste non será visible ata que se executen todos os tipos auth deste módulo (servizo). Importante dende o punto de vista de seguridade xa que ninguén pode prever de que módulo da pila ven este erro, o cal daría información valiosa sobre o funcionamento do aplicativo
+              <br />
+              <br />
+              <b>requisite</b> &#8658; Equivalente ao anterior pero se dá erro este será visible inmediatamente, sen esperar a que se executen o resto de módulos (regras), enviando o control directamente á aplicación que o chamou. Importante dende o punto de vista de seguridade xa ao amosara información inmediata do fallo dáse información valiosa sobre o funcionamento do aplicativo, pero polo contra pode interromper inmediatamente o acceso ao aplicativo.
+              <br />
+              <br />
+              <b>sufficient</b> &#8658; Se ten éxito e ningún módulo previo <i>required</i> tivo fallo xa é suficiente para devolver o éxito á aplicación e non seguir revisando módulos. Se ten fallo ignórase e séguese revisando a pila de módulos.
+              <br />
+              <br />
+              <b>optional</b> &#8658; O éxito ou fracaso deste módulo só é importante se é o único módulo na pila asociada a este servizo + tipo.
+              <br />
+              <br />
+              <b>include</b> &#8658; Incluír todas as liñas do ficheiro de configuración especificado como argumento na súa chamada.
+              <br />
+              <br />
+              <b>substack</b> &#8658; Similar a include:
+                <ul>
+                  <li>Include equivale a copiar o código no lugar da chamada.
+                  <li>Substack equivale a chamar dende ese punto a unha función e devolve a resposta ao lugar da chamada, o cal permite que se poida ignorar.
+            </div>
+          </td>
+        </tr>
+       </tr>
+      </table>
+    </div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Resumo Prácticas Exemplos</div>
+    <div class='justify pall bfigure'>
+      <p><span class='label'>Servizo login</span></p>
+      <ul class='dashed'>
+        <li> cat /etc/pam.d/login | sed '/^$/d' | grep -v '#' <span class='explicacion'>#Amosar do contido do ficheiro /etc/pam.d/login soamente as regras, evitando liñas en branco e comentarios.</span><br />
+          <code class='code3'>auth       optional   pam_faildelay.so  delay=3000000<br />
+            auth [success=ok new_authtok_reqd=ok ignore=ignore user_unknown=bad default=die] pam_securetty.so<br />
+            auth       requisite  pam_nologin.so<br />
+            session [success=ok ignore=ignore module_unknown=ignore default=bad] pam_selinux.so close<br />
+            session    required     pam_loginuid.so<br />
+            session [success=ok ignore=ignore module_unknown=ignore default=bad] pam_selinux.so open<br />
+            session       required   pam_env.so readenv=1<br />
+            session       required   pam_env.so readenv=1 envfile=/etc/default/locale<br />
+            @include common-auth<br />
+            auth       optional   pam_group.so<br />
+            session    required   pam_limits.so<br />
+            session    optional   pam_lastlog.so<br />
+            session    optional   pam_motd.so motd=/run/motd.dynamic<br />
+            session    optional   pam_motd.so noupdate<br />
+            session    optional   pam_mail.so standard<br />
+            session    optional   pam_keyinit.so force revoke<br />
+            @include common-account<br />
+            @include common-session<br />
+            @include common-password<br />
+        </code><br />
+        </li><br />
+      <div class='contido mtopsubs'>
+        <ul type='square'>
+          <li>
+            No <strong>Exemplo1. Módulo pam_nologin.so</strong> imos verificar o funcionamento da regra existente no servizo login correspondente ao módulo pam_nologin.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo2. Módulo pam_limits.so</strong> imos verificar o funcionamento da regra existente no servizo login correspondente ao módulo pam_limits.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo3. Módulo pam_lastlog.so</strong> imos verificar o funcionamento da regra existente no servizo login correspondente ao módulo pam_lastlog.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo4. Módulo pam_motd.so</strong> imos verificar o funcionamento da regra existente no servizo login correspondente ao módulo pam_motd.
+          </li>
+          <div class='minindent'>&nbsp;</div>
+          <li>
+            No <strong>Exemplo5. Módulo pam_unix.so</strong> imos verificar o funcionamento das regras existentes no servizo login correspondentes ao módulo pam_unix. Estas regras inclúense no servizo login mediante os ficheiros correspondentes:<br />
+            <code class='code3 nome'>
+              /etc/pam.d/login &#10140; @include common-auth &#10140; /etc/pam.d/common-auth &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-account &#10140; /etc/pam.d/common-account &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-session &#10140; /etc/pam.d/common-session &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-password &#10140; /etc/pam.d/common-password &#10140; regra pam_unix<br />
+            </code>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Debian amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debian-usuario mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd usuario <span class='explicacion'> #Cambiar o contrasinal do usuario usuario. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por debianA como hostname: 
+          <ul class='dashed-debian-usuario mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-debian mleftsubs'>
+                <li>echo 'debianA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=debianA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>usuario</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-debianA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-debianA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>systemctl disable avahi-daemon<span class='explicacion'> #Impide que o servizo avahi-daemon sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>systemctl disable network-manager<span class='explicacion'> #Impide que o servizo network-manager sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <div class='explicacion3 pall'>
+                    <ul class='dashed'>
+                      <li>man interfaces <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración de rede /etc/network/interfaces</span>
+                      <li>cat /etc/network/interfaces <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces</span>
+                      <li>ls -l /etc/network/interfaces.d <span class='explicacion'>#Listar de forma extendida o contido do directorio /etc/network/interfaces/setup</span>
+                      <li>cat /etc/network/interfaces.d/setup <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces/setup</span>
+                    </ul>
+                  </div>
+                  <li>cat > /etc/network/interfaces.d/setup &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  <span class='code3'>auto lo<br />
+                  iface lo inet loopback<br />
+                  <br />
+                  auto enp0s3<br />
+                  iface enp0s3 inet static<br />
+                  &nbsp;&nbsp;address 192.168.120.100/24<br />
+                  <br />
+                  auto enp0s8<br />
+                  iface enp0s8 inet dhcp</span><br />
+                  EOF <span class='explicacion'>#Fin do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  </li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking start <span class='explicacion'> #Arrancar o demo networking, é dicir, activar a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), interna(enp0s3) e NAT(enp0s8)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local enp0s3</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-debianA mleftsubs'>
+              <ul class='hashtag-debianA mleftsubs'>
+                <div class='explicacion3 pall'>
+                  <ul class='hashtag'>
+                    <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                    <li>apt -y install netcat <span class='explicacion'> #Instalar o paquete netcat, é dicir, instalar o paquete que integra o comando nc. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                    <li>dpkg -l net-tools ; [ $(echo $?) -eq '1' ] && apt update && apt -y install net-tools <span class='explicacion'> #Verificar se o paquete net-tools está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. O paquete net-tools é necesario para poder empregar comandos coma: ifconfig, netstat, route e arp.</span>
+                    <li>dpkg -l openssh-server ; [ $(echo $?) -eq '1' ] && apt update && apt -y install openssh-server <span class='explicacion'> #Verificar se o paquete openssh-server está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. </span>
+                  </ul>
+                </div>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v usuario@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario <b>usuario</b> e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-debianA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 debianA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome debianA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 debianA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  debianA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v usuario@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>usuario</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-debianA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo1. Módulo pam_nologin.so</span> 
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>regra</span> existente no <span class='label'>servizo login</span> correspondente ao <span class='label'>módulo pam_nologin</span>.</p>
+        <p class='justify pright'><span class='label'>pam_nologin</span> é un módulo PAM que impide aos usuarios iniciar sesión no sistema cando /var/run/nologin ou /etc/nologin existen (verificados nesa orde). O contido do ficheiro móstrase ao usuario, e no caso que existan os 2 ficheiros amósase o contido de /var/run/nologin. O módulo pam_nologin non ten efecto na capacidade do usuario root para iniciar sesión.<br />
+        <span class='label'>Está asociado aos tipos auth e session.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>ls -ld /var/run <span class='explicacion'>#Listar soamente os permisos do cartafol /var/run, é dicir, listar os permisos do propio cartafol pero non os do seu contido. Nesta caso como se pode observar é unha ligazón ao directorio /run</span><br />
+            <code class='code3 pall'>
+            lrwxrwxrwx 1 root root 4 Nov 16  2019 /var/run -> /run<br />
+            </code>
+            </li><br />
+            <li>grep pam_nologin /etc/pam.d/login <span class='explicacion'>#Buscar o patrón pam_nologin no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3 pall'>
+              auth       requisite  pam_nologin.so<br />
+              </code>
+              <div class='explicacion4 pall'>
+                Esta regra existe antes que a regra password (@include common-password) e como o flag é requisite o erro amosarase antes de poder introducir un contrasinal.
+              </div>
+              </li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA mleftsubs'>
+              <li>echo 'Acceso non autorizado para usuarios sen privilexios' > /etc/nologin <span class='explicacion'>#Xerar o ficheiro /etc/nologin con contido. Ese contido será amosado logo que o usuario intente acceder ao sistema.</span></li><br />
+            </ul>
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>usuario</i>, así como calquera usuario que non sexa <b>root</b> non pode acceder ao sistema amosando un erro (o contido do ficheiro /etc/nologin)
+              </div>
+            </li><br />
+          <li>En debianA acceder á consola gráfica mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>usuario</i>, así como calquera usuario que non sexa <b>root</b> non pode acceder ao sistema amosando un erro (que non é o contido do ficheiro /etc/nologin)
+              </div>
+            </li><br />
+          <li>En debianA acceder mediante ssh co usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>usuario</i>, así como calquera usuario que non sexa <b>root</b> non pode acceder ao sistema amosando un erro (o contido do ficheiro /etc/nologin)
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA mleftsubsx2'>
+              <ul class='hashtag-debianA'>
+                <li>echo '1-Acceso non autorizado para usuarios sen privilexios' > /var/run/nologin <span class='explicacion'>#Xerar o ficheiro /var/run/nologin con contido. Ese contido será amosado logo que o usuario intente acceder ao sistema.</span></li><br />
+              </ul>
+            </ul>
+          <li>En debianA acceder de novo á consola tty1, consola gráfica e ssh mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+            <div class='explicacion4 pall'>
+              Pois acontece o mesmo, é dicir, o usuario <i>usuario</i>, así como calquera usuario que non sexa <b>root</b> non pode acceder ao sistema amosando un erro (o contido do ficheiro /var/run/nologin ou no caso da consola gráfica outro erro)
+            </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA mleftsubsx2'>
+              <ul class='hashtag-debianA'>
+                <li>echo '2-Acceso non autorizado para usuarios sen privilexios' > /etc/nologin <span class='explicacion'>#Xerar o ficheiro /etc/nologin con contido. Ese contido será amosado logo que o usuario intente acceder ao sistema.</span></li><br />
+              </ul>
+            </ul>
+          <li class='mtopsubsmini'>En debianA acceder de novo á consola tty1, consola gráfica e ssh mediante o usuario <b>usuario</b>. Que é o que acontece?
+            <div class='explicacion4 pall'>
+              Pois acontece o mesmo, é dicir, o usuario <i>usuario</i>, así como calquera usuario que non sexa <b>root</b> non pode acceder ao sistema amosando un erro (o contido do ficheiro /var/run/nologin ou no caso da consola gráfica outro erro). Así, independentemente de cal sexa o último ficheiro xerado(/var/run/nologin e /etc/nologin) sempre prevalece o contido do ficheiro /var/run/nologin porque é o primeiro ficheiro a verificar a súa existencia.<br />
+            </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA mleftsubsx2'>
+              <ul class='hashtag-debianA'>
+                <li>reboot<span class='explicacion'> #Reiniciar o sistema operativo.</span>
+                <div class='explicacion4 pall'>
+                  <b>De interese</b>: Verificar o que acontece co comando <i>reboot</i> pois unha vez reiniciado o sistema os ficheiros /var/run/nologin e /etc/nologin elimínanse no caso de existir.<br />
+                  <b>man systemd-user-sessions</b>: systemd-user-sessions.service é un servizo que controla os inicios de sesión dos usuarios a través de pam_nologin (8). Despois de completar a inicialización básica do sistema, elimina /run/nologin, permitíndo así inicios de sesión. Antes do apagado do sistema, crea /run/nologin, prohibindo así máis inicios de sesión.
+                </div>
+                </li><br />
+              </ul>
+            </ul>
+          </ul>
+        </ol>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo2. Módulo pam_limits.so</span>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>regra</span> existente no <span class='label'>servizo login</span> correspondente ao <span class='label'>módulo pam_limits</span>.</p>
+        <p class='justify pright'><span class='label'>pam_limits</span> é un módulo PAM que establece límites nos recursos do sistema que se poden obter nunha sesión de usuario. Os usuarios de uid=0 (root) tamén se ven afectados por estes límites. Por defecto, os límites tómanse do ficheiro de configuración <span class='nome'>/etc/security/limits.conf</span> e logo de <span class='nome'>/etc/security/limits.d/*.conf</span>. Os ficheiros analízanse un despois doutro na orde de configuración local "C". O efecto dos ficheiros individuais é o mesmo que se todos os ficheiros concatenáronse xuntos na orde de análise. Se hai un ficheiro de configuración especificado explícitamente cunha opción de módulo, entón os ficheiros no directorio anterior non son analizados.<br />
+        <span class='label'>Só está asociado ao tipo session.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>man limits.conf <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración /etc/security/limits.conf. A sintaxe deste ficheiro aplícase tamén nos ficheiros /etc/security/limits.d/*.conf </span>
+            </li><br />
+            <li>help ulimit <span class='explicacion'>#Ver a axuda do comando ulimit, o cal permite modificar os límites de recursos dispoñibles para o shell e os procesos que crea.</span>
+            </li><br />
+            <li>grep pam_limits /etc/pam.d/login <span class='explicacion'>#Buscar o patrón pam_limits no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3 pall'>
+              session       required  pam_limits.so<br />
+              </code>
+              <div class='explicacion4 pall'>
+                Esta regra posúe o flag required polo que en caso de erro non se amosará ata que se executen o resto de módulos.
+              </div>
+              </li><br />
+            <li>ls -l /etc/security/limits.conf <span class='explicacion'>#Listar de forma extendida o ficheiro /etc/security/limits.conf</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+            <ul class='hashtag-debianA'>
+              <li>echo -e 'usuario\t\t -\t maxlogins\t 1' >> /etc/security/limits.conf <span class='explicacion'>#Engadir ao ficheiro /etc/security/limits.conf unha nova entrada, onde cada campo irá separado por un tabulado horizontal. Os campos indican:<br />
+              <ul type='square'>
+                <li>usuario &#10141; Nome do usuario a quen lle afecta o límite xerado.
+                <li>- &#10141; Sen límite de recurso soft ou hard.
+                <li>maxlogins &#10141; Limitar o número máximo de logins permitidos (neste caso para o usuario de nome <i>usuario</i>)
+                <li>1 &#10141; Número máximo de intentos permitidos.
+              </ul><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <li>w usuario<span class='explicacion'> #O comando <span class='label'>w</span> amosa información sobre que usuarios están conectados e que están a facer no momento de execución deste comando (w). Como estamos indicándolle o nome do usuario no comando pois soamente amosa información dese usuario (neste caso do usuario de nome <i>usuario</i>)</span></li><br />
+            <li>su - usuario<span class='explicacion'> #Acceder como usuario <i>usuario</i>. Unha vez insertado o contrasinal <i>abc123.</i> non é posible o acceso debido ao límite que acabamos de configurar, posto que soamente é permitido 1 login co usuario <i>usuario</i> e este xa ten acceso, pois é co usuario que estamos a traballar.</span><br />
+            <code class='code3'>
+              Password: <br />
+              Too many logins for 'usuario'.<br />
+              su: cannot open session: Permission denied<br />
+            </code>
+            </li><br />
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O mesmo que antes. Unha vez insertado o contrasinal <i>abc123.</i> non é posible o acceso debido ao límite que acabamos de configurar, posto que soamente é permitido 1 login co usuario <i>usuario</i> e este xa ten acceso, pois é co usuario que estamos a traballar.
+              </div>
+            </li><br />
+            <li>En debianA acceder mediante ssh co usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O mesmo que antes. Unha vez insertado o contrasinal <i>abc123.</i> non é posible o acceso debido ao límite que acabamos de configurar, posto que soamente é permitido 1 login co usuario <i>usuario</i> e este xa ten acceso, pois é co usuario que estamos a traballar.
+              </div>
+            </li>
+            <div class='minindent'>&nbsp;</div>
+          <li>En debianA voltar a realizar o procedemento anterior pero agora para o usuario <b>root</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O mesmo que antes, xa que <span class='label'>pam_limits tamén afecta ao uid=0</span>.
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA mleftsubs'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+              <ul class='hashtag-debianA'>
+                <li>sed -i 's/^usuario/#usuario/' /etc/security/limits.conf <span class='explicacion'>#Comentar no ficheiro /etc/security/limits.conf a entrada correspondente ao usuario <i>usuario</i>, de tal forma que agora o usuario poida iniciar máis de 1 vez sesión no sistema operativo.<br />
+              </ul>
+            </ul>
+          </ul>
+        </ol>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo3. Módulo pam_lastlog.so</span>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>regra</span> existente no <span class='label'>servizo login</span> correspondente ao <span class='label'>módulo pam_lastlog</span>.</p>
+        <p class='justify pright'><span class='label'>pam_lastlog</span> é un módulo PAM que amosa unha liña de información sobre o último inicio de sesión do usuario e permite bloquear contas según a súa inactividade de inicio de sesión. Ademais, o módulo mantén o ficheiro <span class='nome'>/var/log/lastlog</span>.<br />
+        <span class='label'>Está asociado aos tipos auth, account e session:
+          <ul type='square' class='mtopsubsmini'>
+           <li><span class='nome'>auth</span> e <span class='nome'>account</span>: Permiten bloquear as contas de usuarios (uid !=0) se a conta estivo inactiva(sen iniciar sesión) durante un número de días(por defecto 90). A comprobación non se realiza para a conta root polo que root nunca é bloqueado.
+           <li><span class='nome'>session</span>: Permite amosar unha liña de información sobre o último inicio de sesión do usuario.
+          </ul>
+        </span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep pam_lastlog /etc/pam.d/login <span class='explicacion'>#Buscar o patrón pam_lastlog no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3 pall'>
+              session       optional  pam_lastlog.so<br />
+              </code>
+              <div class='explicacion4 pall'>
+                Esta regra posúe o flag optional polo que en caso de acerto/erro non inflúe no resto dos módulos.
+              </div>
+              </li><br />
+            <li>su - usuario<span class='explicacion'> #Acceder como usuario <i>usuario</i>. Unha vez insertado o contrasinal <i>abc123.</i> e antes de aparecer o prompt tal e como comentamos debería amosarse unha liña con información sobre o último inicio de sesión, pero non se amosa. Por que? Porque o comando <span class='label'>su</span> ten o seu propio servizo en /etc/pam.d/su e polo tanto <span class='label'>su</span> non se rixe polo servizo /etc/pam.d/login</span>
+            <div class='explicacion3 pall'>
+              <ul class='dashed'>
+                <li>grep pam_lastlog /etc/pam.d/su <span class='explicacion'>#Non amosa resultados debido a que dentro do servizo /etc/pam.d/su non existe ningunha referencia ao módulo pam_lastlog</span>
+              </ul>
+            </div>
+            </li><br />
+            <li class='mleft'>exit <span class='explicacion'> #Saír da consola local de <b>usuario</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo). Unha vez insertado o contrasinal <i>abc123.</i> e antes de aparecer o prompt tal e como comentamos debería amosarse unha liña con información sobre o último inicio de sesión, pero non se amosa. Por que? Pois, polo mesmo que no comando <span class='label'>su</span>, o comando <span class='label'>sudo</span> ten o seu propio servizo en /etc/pam.d/sudo e polo tanto non se rixe polo servizo /etc/pam.d/login</span>
+            <div class='explicacion3 pall'>
+              <ul class='dashed'>
+                <li>grep pam_lastlog /etc/pam.d/sudo <span class='explicacion'>#Non amosa resultados debido a que dentro do servizo /etc/pam.d/sudo non existe ningunha referencia ao módulo pam_lastlog</span>
+              </ul>
+            </div>
+            </li><br />
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>usuario</i>, logo de insertar o contrasinal e antes de aparecer o prompt amósase unha liña con información sobre o último inicio de sesión.
+              </div>
+            </li><br />
+          <li>En debianA acceder mediante ssh co usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>usuario</i>, logo de insertar o contrasinal e antes de aparecer o prompt amósase unha liña con información sobre o último inicio de sesión.
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='hashtag-debianA'>
+              <li>A=$(grep -n 'pam_lastlog' /etc/pam.d/login | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (pam_lastlog) no ficheiro /etc/pam.d/login e gardalo na variable A</li> <br />
+              <li>sed -i "${A}s/^session/#session/" /etc/pam.d/login <span class='explicacion'>#Comentar no ficheiro /etc/pam.d/login a entrada correspondente á regra do módulo <i>pam_lastlog</i></li><br />
+            </ul>
+          <li>En debianA voltar a realizar o procedemento anterior, é dicir, voltar a acceder co usuario <i>usuario</i> dende tty1 e ssh. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login comentando o módulo pam_lastlog, en tty1 non se amosará ningunha liña informativa sobre o último inicio de sesión, pero no acceso por ssh SI, xa que ssh posúe o seu propio servizo en /etc/pam.d/sshd e polo tanto non se rixe polo servizo /etc/pam.d/login. Así, existe unha entrada no arquivo de configuración <span class='label'>/etc/ssh/sshd_config</span> que amosa unha liña informativa co último inicio de sesión: <br /><br />
+                <span class='label mleft'>PrintLastLog yes</span>
+                </span><br /><br />
+              </div>
+            </li><br />
+
+          <li>En debianA voltar a activar a regra pam_lastlog no servizo login:</li><br />
+            <ul class='hashtag-debianA'>
+              <li>A=$(grep -n 'pam_lastlog' /etc/pam.d/login | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (pam_lastlog) no ficheiro /etc/pam.d/login e gardalo na variable A</li> <br />
+              <li>sed -i "${A}s/^#session/session/" /etc/pam.d/login <span class='explicacion'>#Comentar no ficheiro /etc/pam.d/login a entrada correspondente á regra do módulo <i>pam_lastlog</i></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA mleftsubs'>
+              <li>
+            </ul>
+           </ul>
+          </ul>
+          </ol>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo4. Módulo pam_motd.so</span>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>regra</span> existente no <span class='label'>servizo login</span> correspondente ao <span class='label'>módulo pam_motd</span>.</p>
+        <p class='justify pright'><span class='label'>pam_motd</span> é un módulo PAM que amosa un ficheiro (mensaxe do día), por defecto <span class='nome'>/etc/motd</span>, e/ou un conxunto de ficheiros contidos nun directorio, por defecto <span class='nome'>/etc/motd.d/</span>. O tamaño da mensaxe está limitada a 64KB. A mensaxe é amosada antes do prompt do sistema unha vez iniciada a sesión.</span>.<br />
+        <span class='label'>Só está asociado ao tipo session.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep pam_motd /etc/pam.d/login <span class='explicacion'>#Buscar o patrón pam_motd no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3'>
+              session    optional   pam_motd.so motd=/run/motd.dynamic<br />
+              session    optional   pam_motd.so noupdate<br />
+              </code>
+              <div class='explicacion4 pall'>
+                Estas regras posúen o flag optional polo que en caso de acerto/erro non inflúen no resto dos módulos.
+                <ul type='square'>
+                 <li>A primeira regra amosa o contido do ficheiro <span class='label'>/run/motd.dynamic</span>, se éste existe.
+                 <li>A segunda regra como non especifica ficheiro amosa o contido do ficheiro <span class='label'>/etc/motd</span>, se éste existe, xa que é o ficheiro por defecto a amosar. A opción <span class='label'>noupdate</span> non executa os scripts existentes en <span class='label'>/etc/update-motd.d</span> para refrescar o ficheiro motd.
+                </ul>
+              </div>
+              </li><br />
+            <li>su - usuario<span class='explicacion'> #Acceder como usuario <i>usuario</i>. Unha vez insertado o contrasinal <i>abc123.</i> e antes de aparecer o prompt tal e como comentamos debería amosarse o contido da mensaxe do día, pero non se amosa. Por que? Porque o comando <span class='label'>su</span> ten o seu propio servizo en /etc/pam.d/su e polo tanto <span class='label'>su</span> non se rixe polo servizo /etc/pam.d/login</span>
+            <div class='explicacion3 pall'>
+              <ul class='dashed'>
+                <li>grep pam_motd /etc/pam.d/su <span class='explicacion'>#Non amosa resultados debido a que dentro do servizo /etc/pam.d/su non existe ningunha referencia ao módulo pam_motd</span>
+              </ul>
+            </div>
+            </li><br />
+            <li class='mleft'>exit <span class='explicacion'> #Saír da consola local de <b>usuario</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo). Unha vez insertado o contrasinal <i>abc123.</i> e antes de aparecer o prompt tal e como comentamos debería amosarse a mensaxe do día, pero non se amosa. Por que? Pois, polo mesmo que no comando <span class='label'>su</span>, o comando <span class='label'>sudo</span> ten o seu propio servizo en /etc/pam.d/sudo e polo tanto non se rixe polo servizo /etc/pam.d/login</span>
+            <div class='explicacion3 pall'>
+              <ul class='dashed'>
+                <li>grep pam_motd /etc/pam.d/sudo <span class='explicacion'>#Non amosa resultados debido a que dentro do servizo /etc/pam.d/sudo non existe ningunha referencia ao módulo pam_motd</span>
+              </ul>
+            </div>
+            </li><br />
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>usuario</i>, logo de insertar o contrasinal e antes de aparecer o prompt amósase unha liña coa mensaxe do día referenciada en /run/motd.dynamic e /etc/motd.
+              </div>
+            </li><br />
+            <li>En debianA acceder mediante ssh co usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>usuario</i>, logo de insertar o contrasinal e antes de aparecer o prompt amósase unha liña coa mensaxe do día referenciada en /run/motd.dynamic e /etc/motd.
+              </div>
+            </li><br />
+          <li class='mtopsubsmini'>Executar:
+            <ul class='hashtag-debianA'>
+              <li>A=$(grep -n 'pam_motd' /etc/pam.d/login | cut -d':' -f1 | xargs | tr ' ' ',') <span class='explicacion'> #Atopar as liñas onde aparece o patrón buscado (pam_motd) no ficheiro /etc/pam.d/login e gardalo na variable A, tal que o número de liñas atopadas estarán separadas por un caracter coma</li> <br />
+              <li class='mtopsubsmini'>sed -i "${A}s/^session/#session/" /etc/pam.d/login <span class='explicacion'>#Comentar no ficheiro /etc/pam.d/login as entradas correspondentes ás regras do módulo <i>pam_motd</i></li><br />
+            </ul>
+          <li class='mtopsubsmini'>En debianA voltar a realizar o procedemento anterior, é dicir, voltar a acceder co usuario <i>usuario</i> dende tty1 e ssh. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login comentando o módulo pam_motd, en tty1 non se amosará ningunha mensaxe do día, pero no acceso por ssh SI, xa que ssh posúe o seu propio servizo en /etc/pam.d/sshd e polo tanto non se rixe polo servizo /etc/pam.d/login 
+              <ul class='dashed'>
+                <li>grep pam_motd /etc/pam.d/sshd <span class='explicacion'>#Amosa resultados debido a que dentro do servizo /etc/pam.d/sshd si existen referencias ao módulo pam_motd</span><br />
+                  <code class='code3'>
+                  session    optional   pam_motd.so motd=/run/motd.dynamic<br />
+                  session    optional   pam_motd.so noupdate<br />
+                  </code>
+              </ul>
+              </div>
+            </li><br />
+
+          <li>En debianA editamos de novo as regras pam_motd no servizo login:</li><br />
+            <ul class='hashtag-debianA'>
+              <li>echo 'BENVIDO a '$(hostname)'!!!' > /etc/motd2 <span class='explicacion'> #Crear o ficheiro /etc/motd2 cunha liña que amose: BENVIDO a debianA!!!.</span></li><br />
+              <li>A=$(grep -n 'pam_motd' /etc/pam.d/login | grep noupdate | cut -d':' -f1) <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado (noupdate) no ficheiro /etc/pam.d/login e gardalo na variable A</li> <br />
+              <li>sed -i -e "${A}s/^#session/session/" -e "${A}s|noupdate|motd=/etc/motd2 noupdate|" /etc/pam.d/login <span class='explicacion'>#Descomentar no ficheiro /etc/pam.d/login a entrada correspondente a <i>noupdate</i> na regra do módulo <i>pam_motd</i> e activar que se amose como mensaxe do día o contido do ficheiro <i>/etc/motd2</i></li><br />
+            </ul>
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <li>En debianA voltar a realizar o procedemento anterior, é dicir, voltar a acceder co usuario <i>usuario</i> dende tty1 e ssh. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login cambiando no módulo pam_motd o ficheiro mensaxe do día, en tty1 amosarase o contido dese ficheiro (/etc/motd2), pero no acceso por ssh NON, xa que ssh posúe o seu propio servizo en /etc/pam.d/sshd e polo tanto non se rixe polo servizo /etc/pam.d/login 
+              </div><br />
+
+          <li>En debianA voltar a restaurar as regras pam_motd no servizo login:</li><br />
+            <ul class='hashtag-debianA'>
+              <li>A=$(grep -n 'pam_motd' /etc/pam.d/login | cut -d':' -f1 | xargs | tr ' ' ',') <span class='explicacion'> #Atopar as liñas onde aparece o patrón buscado (pam_motd) no ficheiro /etc/pam.d/login e gardalo na variable A, tal que o número de liñas atopadas estarán separadas por un caracter coma</li> <br />
+              <li>sed -i -e "${A}s/^#session/session/" -e "${A}s|motd=/etc/motd2 noupdate|noupdate|" /etc/pam.d/login <span class='explicacion'>#Descomentar no ficheiro /etc/pam.d/login as entradas correspondentes a pam_motd e modificar <i>noupdate</i> na regra do módulo <i>pam_motd</i> para deixar como mensaxe do día o contido do ficheiro por defecto <i>/etc/motd</i></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA mleftsubs'>
+              <li>
+            </ul>
+           </ul>
+          </ul>
+          </ol>
+        </li>
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Exemplo5. Módulo pam_unix.so</span>
+          <p class='justify pright'>Imos verificar o funcionamento das regras existentes no servizo login correspondentes ao módulo pam_unix. Estas regras inclúense no servizo login mediante os ficheiros correspondentes:<br />
+            <code class='code3 nome'>
+              /etc/pam.d/login &#10140; @include common-auth &#10140; /etc/pam.d/common-auth &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-account &#10140; /etc/pam.d/common-account &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-session &#10140; /etc/pam.d/common-session &#10140; regra pam_unix<br />
+              /etc/pam.d/login &#10140; @include common-password &#10140; /etc/pam.d/common-password &#10140; regra pam_unix<br />
+            </code>
+          <p class='justify pright'><span class='label'>pam_unix</span> é o módulo PAM de autenticación estándar Unix. Utiliza chamadas estándar das librarías do sistema para recuperar e configurar a información da conta, así como a autenticación. Normalmente isto é obtido a partir dos ficheiros <span class='label'>/etc/passwd</span> e <span class='label'>/etc/shadow</span></span>. A acción predeterminada do módulo pam_unix é non permitir ao usuario o acceso a un servizo (login neste caso) se é o seu contrasinal está en branco. 
+        <br />
+        <span class='label'>Está asociado a todos os tipos: account, auth, password e session.</span>
+        </p>
+
+        <div class='minindent'>&nbsp;</div>
+        <p class='label mleftsubsx2 bfigure'>@include common-auth &#10141; /etc/pam.d/common-auth</p>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>inclusión</span> do ficheiro <span class='label'>/etc/pam.d/common-auth</span> para o <span class='label'>servizo login</span> referente ao módulo <span class='label'>pam_unix</span>, é dicir, imos verificar a regra que se inclúe para pam_unix dende o ficheiro /etc/pam.d/common-auth no servizo login.
+        <p class='justify pright'><span class='label'>common-auth</span> é un arquivo existente en /etc/pam.d que incorpora regras de tipo auth ao servizo que o chama, neste caso o servizo login.</span><br />
+        <span class='label'>Só está asociado ao tipo auth.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep common-auth /etc/pam.d/login <span class='explicacion'>#Buscar o patrón common-auth no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3'>
+              @include common-auth<br />
+              </code>
+            </li><br />
+            <li> cat /etc/pam.d/common-auth | sed '/^$/d' | grep -v '#' <span class='explicacion'>#Amosar do contido do ficheiro /etc/pam.d/common-auth soamente as regras, evitando liñas en branco e comentarios.</span><br />
+              <code class='code3'>
+              auth	[success=1 default=ignore]	pam_unix.so nullok_secure<br />
+              auth	requisite			pam_deny.so<br />
+              auth	required			pam_permit.so<br />
+              </code>
+            </li><br />
+            <ul type='square'>
+               <li>A primeira regra reférese ao módulo pam_unix.
+               <li>A segunda regra reférese ao módulo pam_deny.
+               <li>A terceira regra reférese ao módulo pam_permit.
+            </ul>
+          </li><br />
+            <li>grep pam_unix /etc/pam.d/common-auth <span class='explicacion'>#Buscar o patrón pam_unix no ficheiro /etc/pam.d/common-auth</span><br />
+              <code class='code3'>
+              auth	[success=1 default=ignore]	pam_unix.so nullok_secure<br />
+              </code>
+              <div class='explicacion4 pall'>
+                <ul type='square'>
+                 <li>nullok_secure &#10141; Anula o valor predeterminado e permite a calquera usuario cun contrasinal en branco acceder ao servizo sempre que o valor de PAM_TTY sexa establecido nun dos valores atopados no ficheiro /etc/securetty.
+                </ul>
+              </div>
+              </li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span>
+            </li><br />
+            <ul class='hashtag-debianA'>
+              <li>useradd -m -d /home/alumno -s /bin/bash -p '' alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> -p '' &#10141; Establece como contrasinal un contrasinal en branco</li>
+                  <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
+                  </li><br />
+                </ul>
+              <li>exit <span class='explicacion'> #Saír da consola local de <b>usuario</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>alumno</i>, inicia sesión sen contrasinal, é dicir, unha vez introducido <i>alumno</i> o servizo login non pregunta polo contrasinal e xa aparece o prompt do sistema.
+              </div>
+            </li><br />
+          <li class='mtopplus'>En debianA acceder como alumno mediante o comando <b>su</b>. Que é o que acontece?<br />
+            <div class='explicacion4 pall'>
+              <ul class='dashed-debianA mleftsubsx2'>
+                <li>su - alumno<span class='explicacion'> #Acceder como usuario <i>alumno</i>. Este usuario inicia sesión sen contrasinal xa que o servizo <span class='label'>/etc/pam.d/su</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-auth</span></span><br /><br />
+                <ul class='dashed-alumnoA'>
+                  <li>exit <span class='explicacion'> #Saír da consola local de <b>alumno</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+                </ul>
+              </ul>
+            </div>
+          </li><br />
+          <div class='indent pagebreak'>&nbsp;</div>
+          <li>En debianA acceder mediante ssh co usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>alumno</i>, solicítaselle o contrasinal, xa que aínda que o servizo <span class='label'>/etc/pam.d/sshd</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-auth</span> resulta que existe unha entrada no arquivo de configuración <span class='label'>/etc/ssh/sshd_config</span> que evita o acceso con contrasinais en branco: <br /><br />
+                <span class='label mleft'>PermitEmptyPasswords no</span>
+                </span><br /><br />
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span></li><br />
+              <ul class='hashtag-debianA mleftsubs'>
+                <li>sed -i "s/nullok_secure//" /etc/pam.d/common-auth <span class='explicacion'>#Eliminar o parámetro <i>nullok_secure</i> na regra existente ao módulo pam_unix en /etc/pam.d/common-auth</li><br />
+              </ul>
+            </ul>
+          <li>En debianA voltar a realizar o procedemento anterior, é dicir, voltar a acceder co usuario <i>alumno</i> dende tty1, su  e ssh. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login cambiando na regra de pam_unix existente en /etc/pam.d/common-auth (eliminando nullok_secure) o usuario <i>alumno</i> non pode iniciar sesión xa que non se permite iniciar sesión con contrasinais baleiros (en branco).
+              </div>
+            </li><br />
+
+          <li>En debianA voltar a restaurar a regra modificada en pam_unix no arquivo /etc/pam.d/common-auth:</li><br />
+            <ul class='hashtag-debianA mleft'>
+              <li>sed -i "s|pam_unix|pam_unix.so nullok_secure|" /etc/pam.d/common-auth <span class='explicacion'>#Modificar o ficheiro /etc/pam.d/common-auth para engadir na regra do módulo pam_unix o parámetro <i>nullok_secure</i></li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+              <li>
+            </ul>
+           </ul>
+          </ul>
+        </ol>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <p class='label mleftsubsx2 bfigure'>@include common-account &#10141; /etc/pam.d/common-account</p>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>inclusión</span> do ficheiro <span class='label'>/etc/pam.d/common-account</span> para o <span class='label'>servizo login</span> referente ao módulo <span class='label'>pam_unix</span>, é dicir, imos verificar a regra que se inclúe para pam_unix dende o ficheiro /etc/pam.d/common-account no servizo login.
+        <p class='justify pright'><span class='label'>common-account</span> é un arquivo existente en /etc/pam.d que incorpora regras de tipo account ao servizo que o chama, neste caso o servizo login.</span><br />
+        <span class='label'>Só está asociado ao tipo account.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep common-account /etc/pam.d/login <span class='explicacion'>#Buscar o patrón common-account no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3'>
+              @include common-account<br />
+              </code>
+            </li><br />
+            <li> cat /etc/pam.d/common-account | sed '/^$/d' | grep -v '#' <span class='explicacion'>#Amosar do contido do ficheiro /etc/pam.d/common-account soamente as regras, evitando liñas en branco e comentarios.</span><br />
+              <code class='code3'>
+              account	[success=1 new_authtok_reqd=done default=ignore]	pam_unix.so<br />
+              account	requisite			pam_deny.so<br />
+              account	required			pam_permit.so<br />
+              </code>
+            </li><br />
+            <ul type='square'>
+               <li>A primeira regra reférese ao módulo pam_unix.
+               <li>A segunda regra reférese ao módulo pam_deny.
+               <li>A terceira regra reférese ao módulo pam_permit.
+            </ul>
+          </li><br />
+          <li>grep pam_unix /etc/pam.d/common-account <span class='explicacion'>#Buscar o patrón pam_unix no ficheiro /etc/pam.d/common-account</span><br />
+              <code class='code3'>
+              account	[success=1 new_authtok_reqd=done default=ignore]	pam_unix.so<br />
+              </code>
+              <div class='explicacion4 pall'>
+              O tipo account realiza a tarefa de establecer o estado da conta e contrasinal do usuario baseado nos seguintes elementos de /etc/shadow: expire(oitavo campo), last_change(terceiro campo), max_change(quinto campo), min_change(cuarto campo), warn_change(sexto campo). No caso deste último, pode ofrecer consellos ao usuario sobre o cambio do seu contrasinal ou, a través da devolución de PAM_AUTHTOKEN_REQD, demorar a prestación do servizo ao usuario ata que estableza un novo contrasinal. As entradas enumeradas anteriormente están documentadas na páxina manual de shadow(5). Se o rexistro do usuario non conten unha ou máis destas entradas, a correspondente comprobación de shadow non é realizada.
+              </div>
+            </li><br />
+
+          </ul>
+
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>man shadow <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración /etc/shadow</span></li><br />
+            <li>su - -c "grep usuario /etc/shadow" <span class='explicacion'> #Executar coma root o comando <i>grep usuario /etc/shadow</i>, é dicir, amosar a liña do ficheiro que ser refire ao usuario de nome <i>usuario</i></span><br />
+            <code class='code3'>
+usuario:$6$4IFjgmY/8C1.nOMQ$n2MJge3UTmxK5Mz1OJZa2vrZH9/syEupPQwAlSulQvruueEN89f4p/c3yfd
+<br />wq4awXt6wmidvW7SRJO.d8VomJ0:18659:0:99999:7:::
+            </code>
+          </ul>
+          <div class='explicacion4 pall title16'>
+          Cada liña do ficheiro <span class='label'>/etc/shadow</span> está formada por <span class='label'>9</span> campos separados pola caracter dous puntos ':', tal que:<br />
+          <ul type='square'>
+            <li><span class='label'>Primeiro campo &#10141;</span> identifica o nome do usuario, o que se emprega para facer login.
+            <li><span class='label'>Segundo campo &#10141;</span> identifica o contrasinal cifrado. Se este campo:
+              <ol>
+                <li>Posúe soamente o valor ! ou * o usuario estará bloqueado e non poderá iniciar unha sesión do sistema.
+                <li>Está en branco, o usuario poder iniciar sesión sen contrasinal.
+                <li>Comeza por ! e a continuación posúe o contrasinal cifrado indica que o usuario está bloqueado e non pode iniciar sesión no sistema.
+              </ol>
+            <li><span class='label'>Terceiro campo &#10141;</span> identifica a data do último cambio de contrasinal, expresado como o número de días dende o 1 de xaneiro de 1970.
+            <li><span class='label'>Cuarto campo &#10141;</span> identifica o número de días que o usuario ten que agardar antes que poida cambiar o contrasinal de novo. Se toma o valor 0 non existe esta condición.
+            <li><span class='label'>Quinto campo &#10141;</span> identifica o número de días despois dos cales o usuario terá que cambiar o seu contrasinal. Se este campo:
+              <ol>
+                <li>É un campo baleiro significa que non hai idade máxima do contrasinal, nin período de advertencia do contrasinal, e sen período de inactividade do contrasinal (ver máis abaixo).
+                <li>É inferior á idade mínima do contrasinal(cuarto campo), o usuario non pode cambiar o seu contrasinal.
+              </ol>
+            <li><span class='label'>Sexto campo &#10141;</span> identifica o número de días antes de que caduque un contrasinal (consulte a idade máxima do contrasinal arriba (quinto campo)) durante o cal se debe advertir ao usuario. Un campo baleiro e o valor 0 significan que non hai período de aviso de contrasinal.
+            <li><span class='label'>Sétimo campo &#10141;</span> identifica o número de días despois de que caducou un contrasinal (consulte a idade máxima do contrasinal máis arriba (quinto campo)) durante o cal aínda se debería aceptar o contrasinal (e o usuario debería actualizalo durante o seguinte inicio de sesión).<br />
+           Despois de caducar o contrasinal e transcorrido este período de caducidade, non hai inicio de sesión posible usando o contrasinal do usuario actual. O usuario debe poñerse en contacto co seu administrador.<br />
+           Un campo baleiro significa que non hai aplicación dun período de inactividade.
+            <li><span class='label'>Oitavo campo &#10141;</span> identifica a data de caducidade da conta, expresada como o número de días desde o 1 de xaneiro de 1970.<br />
+           Teña en conta que a caducidade da conta é diferente da caducidade do contrasinal. No caso da caducidade dunha conta, o usuario non poderá iniciar sesión. En caso de caducidade do contrasinal, non se permite ao usuario iniciar sesión usando o seu contrasinal.<br />
+         Un campo baleiro significa que a conta nunca caducará.<br />
+           Non se debe empregar o valor 0 xa que se interpreta como unha conta sen
+           caducidade ou como caducidade o 1 de xaneiro de 1970. 
+            <li><span class='label'>Noveno campo &#10141;</span> está reservado para un uso futuro.<br />
+          </ul>
+          </div>
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='mtopplus contido bfigure'>
+            Neste caso para o usuario <i>usuario</i> os campos indican:
+            <ul type='square'>
+             <li><span class='nome'>Primeiro campo:</span> Login &#10141; usuario
+             <li><span class='nome'>Segundo campo:</span> Contrasinal cifrado mediante algoritmo SHA-512
+             <li><span class='nome'>Terceiro campo:</span> O último cambio produciuse 18569 días despois do 1 de xañeiro de 1970.
+             <li><span class='nome'>Cuarto campo:</span> Valor 0, co cal o usuario non ten que agardar ningún número de días antes de cambiar o contrasinal.
+             <li><span class='nome'>Quinto campo:</span> 99999 son o número de días despois dos cales o usuario estará obrigado a cambiar o contrasinal.
+             <li><span class='nome'>Sexto campo:</span> avisarase ao usuario 7 días antes que vaia a caducar o contrasinal.
+             <li><span class='nome'>Sétimo campo:</span> Campo baleiro, entón non existe periodo de inactividade.
+             <li><span class='nome'>Oitavo campo:</span> Campo baleiro, a conta non caduca.
+             <li><span class='nome'>Noveno campo:</span> Reservado para un futuro.
+            </ul>
+          </div>
+            <div class='minindent'>&nbsp;</div>
+            Mediante o comando <span class='label'>chage</span> podemos de forma sinxela amosar esa información relativa a datas:
+            <ul class='dashed-debianA'>
+              <li>chage -l alumno <span class='explicacion'> #Amosar a información da idade da conta.</span><br />
+              <pre class='code3'>
+Último cambio de contrasinal					: Feb 01, 2021
+O contrasinal caduca				        	: nunca
+Contrasinal inactivo					        : nunca
+A conta caduca  						: nunca
+Número mínimo de días entre cambios de contrasinal		: 0
+Número máximo de días entre cambios de contrasinal		: 99999
+Número de días de aviso antes de que caduque o contrasinal	: 7
+              </pre>
+            </ul>
+        </li>
+        <li>Executar:
+          <ul class='dashed-debianA'>
+            <li>su - -c 'chage -E 2021-02-01 usuario' <span class='explicacion'> #Executar coma root o comando chage para pór como data de caducidade da conta (expire) o 1 de febreiro de 2021</span></li><br />
+            <li>chage -l alumno <span class='explicacion'> #Amosar a información da idade da conta.</span><br />
+              <pre class='code3'>
+Último cambio de contrasinal					: Feb 01, 2021
+O contrasinal caduca				        	: nunca
+Contrasinal inactivo					        : nunca
+A conta caduca  						: Feb 01, 2021
+Número mínimo de días entre cambios de contrasinal		: 0
+Número máximo de días entre cambios de contrasinal		: 99999
+Número de días de aviso antes de que caduque o contrasinal	: 7
+              </pre>
+            <li>date +%F <span class='explicacion'> #Amosar a data en formato YYYY-mm-dd (ano-mes-día)</span><br />
+            <pre class='code3'>
+2020-02-02
+            </pre>
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>usuario</i>, non pode iniciar sesión porque a conta caducou
+              </div>
+            </li><br />
+          <li>En debianA acceder como <i>usuario</i> mediante o comando <b>su</b>. Que é o que acontece?<br />
+            <div class='explicacion4 pall'>
+              <ul class='dashed-debianA mleftsubsx2'>
+                <li>su - usuario<span class='explicacion'> #Acceder como usuario <i>usuario</i>. Este usuario non poder iniciar sesión porque a conta caducou, xa que o servizo <span class='label'>/etc/pam.d/su</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-account</span><br />
+                <code class='code'>
+                  <ul class='dashed'>
+                    <li>grep common-account /etc/pam.d/su<br />
+                    @include common-account<br />
+                  </ul>
+                </code>
+              </ul>
+            </div>
+          </li><br />
+          <li>En debianA acceder mediante ssh co usuario <b>usuario</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>usuario</i>, non pode iniciar sesión porque a conta caducou, xa que o servizo <span class='label'>/etc/pam.d/sshd</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-account</span><br />
+                <code class='code'>
+                  <ul class='dashed'>
+                    <li>grep common-account /etc/pam.d/sshd<br />
+                    @include common-account<br />
+                  </ul>
+                </code>
+              </div>
+            </li><br />
+          <li>En debianA desactivar a data de caducidade da conta <i>usuario</i>:
+           <ul class='dashed-debianA'>
+            <li>su - -c 'chage -E -1 usuario' <span class='explicacion'> #Executar coma root o comando chage para desactivar a data de caducidade da conta (expire)</span></li><br />
+            <li>chage -l alumno <span class='explicacion'> #Amosar a información da idade da conta.</span><br />
+              <pre class='code3'>
+Último cambio de contrasinal					: Feb 01, 2021
+O contrasinal caduca				        	: nunca
+Contrasinal inactivo					        : nunca
+A conta caduca  						: nunca
+Número mínimo de días entre cambios de contrasinal		: 0
+Número máximo de días entre cambios de contrasinal		: 99999
+Número de días de aviso antes de que caduque o contrasinal	: 7
+              </pre>
+          </li><br />
+        </ol>
+        
+        <div class='indent pagebreak'>&nbsp;</div>
+        <p class='label mleftsubsx2 bfigure'>@include common-session &#10141; /etc/pam.d/common-session</p>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>inclusión</span> do ficheiro <span class='label'>/etc/pam.d/common-session</span> para o <span class='label'>servizo login</span> referente ao módulo <span class='label'>pam_unix</span>, é dicir, imos verificar a regra que se inclúe para pam_unix dende o ficheiro /etc/pam.d/common-session no servizo login.
+        <p class='justify pright'><span class='label'>common-session</span> é un arquivo existente en /etc/pam.d que incorpora regras de tipo session ao servizo que o chama, neste caso o servizo login.</span><br />
+        <span class='label'>Só está asociado ao tipo session.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep common-session /etc/pam.d/login <span class='explicacion'>#Buscar o patrón common-session no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3'>
+              @include common-session<br />
+              </code>
+            </li><br />
+            <li> cat /etc/pam.d/common-session | sed '/^$/d' | grep -v '#' <span class='explicacion'>#Amosar do contido do ficheiro /etc/pam.d/common-session soamente as regras, evitando liñas en branco e comentarios.</span><br />
+              <pre class='code3 arribasubsmini2'>
+session	[default=1]			pam_permit.so
+session	requisite			pam_deny.so
+session	required			pam_permit.so
+session	required	pam_unix.so
+session	optional	pam_systemd.so
+              </pre>
+            <ul type='square'>
+               <li>A primeira e terceira regra reférense ao módulo pam_permit.
+               <li>A segunda regra reférese ao módulo pam_deny.
+               <li>A cuarta regra reférese ao módulo pam_unix.
+               <li>A quinta regra reférese ao módulo pam_systemd.
+            </ul>
+          </li><br />
+            <li>grep pam_unix /etc/pam.d/common-session <span class='explicacion'>#Buscar o patrón pam_unix no ficheiro /etc/pam.d/common-session</span><br />
+              <code class='code3'>
+session	required	pam_unix.so
+              </code>
+              <div class='explicacion4 pall'>
+                O tipo session deste módulo rexistra cando un usuario inicia sesión ou sae do sistema.
+                <ul type='square'>
+                 <li>quiet &#10141; Desactivar as mensaxes referentes a session, é dicir, non se rexistran mensaxes a través de syslog(3).
+                </ul>
+              </div>
+              </li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span>
+            </li><br />
+            <ul class='hashtag-debianA'>
+              <li>userdel -r alumno<span class='explicacion'> #Eliminar o usuario alumno e coa opción -r eliminar tamén o seu cartafol de usuario (/home/alumno) e se existe o seu cartafol de correo (var/mail/alumno ou /var/spool/mail/alumno; depende da variable MAIL_DIR definida no ficheiro /etc/login.defs)</li><br />
+              <li>dpkg -l | grep whois; [ $(echo $?) -eq '1' ] && apt update && apt -y install whois <span class='explicacion'> #Verificar se o paquete whois está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase, é dicir, instálase o paquete que integra o comando mkpasswd.</span></li><br />
+
+              <li>useradd -m -d /home/alumno -s /bin/bash -p $(mkpasswd -m sha-512 '123') alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> -p '123' &#10141; Establece como contrasinal <i>123</i> cifrado mediante SHA-512.</li>
+                  <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
+                  </li><br />
+                </ul>
+              <li class='arriba'>id alumno <span class='explicacion'>#Amosa información de usuario e grupo do usuario de nome alumno</span>
+              <pre class='code3'>
+uid=1021(alumno) gid=1021(alumno) grupos=1021(alumno)
+              </pre>
+              </li>
+
+              <li>tail -n 2 -f /var/log/auth.log<span class='explicacion'> #Deixar aberto o ficheiro /var/log/auth.log para lectura, comenzando a ver polas 2 últimas liñas. Moi empregado na revisión de logs.</li><br />
+            </ul>
+          </ul>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall mrightnull'>
+                O usuario <i>alumno</i>, inicia sesión sen problema co contrasinal <i>123</i> e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao acceder co usuario <i>alumno</i> no inicio de sesión envíanse mensaxes rexistrados con syslog ao ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:31:00 debianA login[1121]: pam_unix(login:session): session opened for user alumno by LOGIN(uid=0)
+                </pre>
+              </div>
+              <br />
+            E que acontece se pechamos a sesión co usuario <i>alumno</i>?:
+              <div class='explicacion4 pall mrightnull'>
+                O usuario <i>alumno</i>, pecha a sesión e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao pechar a sesión do usuario <i>alumno</i> seguen enviándose mensaxes rexistrados con syslog no ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:31:15 debianA login[1121]: pam_unix(login:session): session closed for user alumno
+                </pre>
+            </li>
+          <div class='indent pagebreak'>&nbsp;</div>
+          <li>En debianA acceder como alumno mediante o comando <b>su</b>. Que é o que acontece?<br />
+            <div class='explicacion4 pall'>
+              <ul class='dashed-debianA mleftsubsx2'>
+                <li>su - alumno<span class='explicacion'> #Acceder como usuario <i>alumno</i>. Este usuario inicia sesión sen problema co contrasinal <i>123</i></span><br /><br />
+                O usuario <i>alumno</i>, inicia sesión sen problema co contrasinal <i>123</i> e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao acceder co usuario <i>alumno</i> no inicio de sesión envíanse mensaxes rexistrados con syslog ao ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:31:00 debianA login[1121]: pam_unix(login:session): session opened for user alumno by LOGIN(uid=0)
+Feb  1 17:33:51 debianA su: (to alumno) usuario on pts/2
+Feb  1 17:33:51 debianA su: pam_unix(su-l:session): session opened for user alumno by (uid=1000)
+                </pre>
+              </div>
+              <br />
+            E que acontece se pechamos a sesión co usuario <i>alumno</i>?:
+              <div class='explicacion4 pall'>
+                <ul class='dashed-alumnoA'>
+                  <li>exit <span class='explicacion'> #Saír da consola local de <b>alumno</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+                </ul>
+                O usuario <i>alumno</i>, pecha a sesión e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao pechar a sesión do usuario <i>alumno</i> seguen enviándose mensaxes rexistrados con syslog no ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:34:51 debianA su: pam_unix(su-l:session): session closed for user alumno
+                </pre>
+
+                              </ul>
+            </div>
+          </li><br />
+          <li>En debianA acceder mediante ssh co usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall mrightnull'>
+                Ao usuario <i>alumno</i>, rexístranselle as mensaxes de acceso, xa que o servizo <span class='label'>/etc/pam.d/sshd</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-session</span>, co cal accede sen problema co contrasinal <i>123</i><br />
+                <code class='code'>
+                  <ul class='dashed'>
+                    <li>grep common-session /etc/pam.d/sshd<br />
+                    @include common-session<br />
+                  </ul>
+                </code>
+                Así, o usuario <i>alumno</i>, inicia sesión sen problema co contrasinal <i>123</i> e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao acceder co usuario <i>alumno</i> no inicio de sesión envíanse mensaxes rexistrados con syslog ao ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:52:54 debianA sshd[9337]: Accepted password for alumno from 192.168.120.100 port 40824 ssh2
+Feb  1 17:52:54 debianA sshd[9337]: pam_unix(sshd:session): session opened for user alumno by (uid=0)
+                </pre>
+              </div>
+              <br />
+            E que acontece se pechamos a sesión co usuario <i>alumno</i>?:
+              <div class='explicacion4 pall mrightnull'>
+                Pois acontece o mesmo, o usuario <i>alumno</i>, pecha a sesión e observanse rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao pechar a sesión do usuario <i>alumno</i> seguen enviándose mensaxes rexistrados con syslog no ficheiro <i>/var/log/auth.log</i>:
+                <pre class='code3 arriba title16'>
+...
+Feb  1 17:57:15 debianA sshd[9343]: Received disconnect from 192.168.120.100 port 40824:11: disconnected by user
+Feb  1 17:57:15 debianA sshd[9343]: Disconnected from user alumno 192.168.120.100 port 40824
+Feb  1 17:57:15 debianA sshd[9337]: pam_unix(sshd:session): session closed for user alumno
+                </pre>
+
+
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA arriba'>
+              <li>^C <span class='explicacion'> #Abortar execución do comando anterior, é dicir, abortar a lectura do ficheiro /var/log/auth.log, enviando o sinal 2 (SIGNINT 2)(kill -l) ao sistema.</span></li><br />
+              <ul class='hashtag-debianA'>
+                <li>sed -i "s/pam_unix.so/pam_unix.so quiet/" /etc/pam.d/common-session <span class='explicacion'>#Engadir o parámetro <i>quiet</i> na regra existente ao módulo pam_unix en /etc/pam.d/common-session</li><br />
+              <li>tail -n 2 -f /var/log/auth.log<span class='explicacion'> #Deixar aberto o ficheiro /var/log/auth.log para lectura, comenzando a ver polas 2 últimas liñas. Moi empregado na revisión de logs.</li><br />
+              </ul>
+            </ul><br />
+          <li>En debianA acceder de novo co usuario <b>alumno</b> na consola tty1, mediante <b>su</b> e a través dunha sesión <b>ssh</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Pois, o usuario <i>alumno</i>, inicia sesión sen problema co contrasinal <i>123</i> e observanse que non se amosan rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao acceder co usuario <i>alumno</i> no inicio de sesión xa non se envían mensaxes con syslog ao ficheiro <i>/var/log/syslog</i>:
+              </div>
+              <br />
+            E que acontece se pechamos a sesión co usuario <i>alumno</i>, con calquera dos 3 accesos anteriores?:
+              <div class='explicacion4 pall'>
+                Pois o mesmo, o usuario <i>alumno</i>, pecha a sesión e non se observan rexistros no ficheiro <i>/var/log/auth.log</i>, é dicir ao pechar a sesión do usuario <i>alumno</i> non se envián mensaxes con syslog no ficheiro <i>/var/log/auth.log</i>:
+            </li><br />
+            </ul>
+          <br />
+          <li>En debianA voltar a restaurar a regra modificada en pam_unix no arquivo /etc/pam.d/common-session:</li><br />
+              <ul class='hashtag-debianA mleftsubs'>
+                <li>sed -i "s/pam_unix.so quiet/pam_unix.so/" /etc/pam.d/common-session <span class='explicacion'>#Modificar o ficheiro /etc/pam.d/common-session para restaurar a regra do módulo pam_unix</span></li><br />
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+              </ul>
+            <ul class='dashed-debianA mleftsubsx2'>
+              <li>
+            </ul>
+           </ul>
+          </ul>
+        </ol>
+
+
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <p class='label mleftsubsx2 bfigure'>@include common-password &#10141; /etc/pam.d/common-password</p>
+        <p class='justify pright'>Imos verificar o funcionamento da <span class='label'>inclusión</span> do ficheiro <span class='label'>/etc/pam.d/common-password</span> para o <span class='label'>servizo login</span> referente ao módulo <span class='label'>pam_unix</span>, é dicir, imos verificar a regra que se inclúe para pam_unix dende o ficheiro /etc/pam.d/common-password no servizo login.
+        <p class='justify pright'><span class='label'>common-password</span> é un arquivo existente en /etc/pam.d que incorpora regras de tipo password ao servizo que o chama, neste caso o servizo login.</span><br />
+        <span class='label'>Só está asociado ao tipo password.</span>
+        </p>
+        <ol type='A'>
+        <li>Executar:
+          <ul class='dashed-debianA mleftsubs'>
+            <li>grep common-password /etc/pam.d/login <span class='explicacion'>#Buscar o patrón common-password no ficheiro /etc/pam.d/login</span><br />
+              <code class='code3'>
+              @include common-password<br />
+              </code>
+            </li><br />
+            <li> cat /etc/pam.d/common-password | sed '/^$/d' | grep -v '#' <span class='explicacion'>#Amosar do contido do ficheiro /etc/pam.d/common-password soamente as regras, evitando liñas en branco e comentarios.</span><br />
+              <code class='code3'>
+              password	[success=1 default=ignore]	pam_unix.so obscure sha512<br />
+              password	requisite			pam_deny.so<br />
+              password	required			pam_permit.so<br />
+              password	optional	pam_gnome_keyring.so<br />
+              </code>
+            </li><br />
+            <ul type='square'>
+               <li>A primeira regra reférese ao módulo pam_unix.
+               <li>A segunda regra reférese ao módulo pam_deny.
+               <li>A terceira regra reférese ao módulo pam_permit.
+               <li>A cuarta regra reférese ao módulo pam_gnome_keyring.
+            </ul>
+          </li><br />
+            <li>grep pam_unix /etc/pam.d/common-password <span class='explicacion'>#Buscar o patrón pam_unix no ficheiro /etc/pam.d/common-password</span><br />
+              <code class='code3'>
+              password	[success=1 default=ignore]	pam_unix.so obscure sha512<br />
+              </code>
+              <div class='explicacion4 pall'>
+                O tipo password realiza a tarefa de actualizar o contrasinal do usuario. O hash de cifrado predeterminado tómase da variable ENCRYPT_METHOD de /etc/login.defs
+                <ul type='square'>
+                 <li>obscure &#10141; Activar algunhas comprobacións adicionais sobre a forza do contrasinal. Estes controis baséanse sobre o "obscure" comprobacións no paquete orixinal shadow (ver man pam_unix). Esta opción substitúe á antiga opción OBSCURE_CHECKS_ENAB en /etc/login.defs.
+
+
+                 <li>sha512 &#10141; Cando un usuario cambia o contrasinal farase un cifrado SHA512 para o novo contrasinal. Se a función crypt(3) non coñece o algoritmo SHA512 farase o cifrado mediante o algoritmo MD5. 
+                 <li>remember = n &#10141; Os últimos n contrasinais para cada usuario gárdanse en /etc /security/opasswd para forzar o cambio de contrasinal revisando o historial e evitar que o usuario alterne tamén entre o mesmo contrasinal con frecuencia. O algoritmo de hash de contrasinal MD5 úsase para almacenar os contrasinais antigos. No canto desta opción debería usarse o módulo pam_pwhistory.<br />
+                 <li>minlen = n &#10141; Establecer unha lonxitude mínima de contrasinal de n caracteres. O valor predeterminado é 6. O máximo para os contrasinais cifrados mediante DES son 8 caracteres.
+                </ul>
+              </div>
+              </li><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span>
+            </li><br />
+            <ul class='hashtag-debianA'>
+              <li>userdel -r alumno<span class='explicacion'> #Eliminar o usuario alumno e coa opción -r eliminar tamén o seu cartafol de usuario (/home/alumno) e se existe o seu cartafol de correo (var/mail/alumno ou /var/spool/mail/alumno; depende da variable MAIL_DIR definida no ficheiro /etc/login.defs)</li><br />
+              <li>dpkg -l | grep whois; [ $(echo $?) -eq '1' ] && apt update && apt -y install whois <span class='explicacion'> #Verificar se o paquete whois está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase, é dicir, instálase o paquete que integra o comando mkpasswd.</span></li><br />
+
+              <li>useradd -m -d /home/alumno -s /bin/bash -p $(mkpasswd -m sha-512 '123') alumno<span class='explicacion'> #Crear o usuario <i>alumno</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -d /home/alumno &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/alumno </li>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> -p '123' &#10141; Establece como contrasinal <i>123</i> cifrado mediante SHA-512.</li>
+                  <li> alumno &#10141; Establece como nome de autenticación de usuario o nome alumno</li>
+                  </li><br />
+                </ul>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+          </ul>
+          <div class='minindent'>&nbsp;</div>
+          <li>En debianA acceder á consola tty1 mediante o usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                O usuario <i>alumno</i>, inicia sesión sen problema co contrasinal <i>123</i>
+              </div>
+            </li><br />
+          <li>En debianA acceder como alumno mediante o comando <b>su</b>. Que é o que acontece?<br />
+            <div class='explicacion4 pall'>
+              <ul class='dashed-debianA mleftsubsx2'>
+                <li>su - alumno<span class='explicacion'> #Acceder como usuario <i>alumno</i>. Este usuario inicia sesión sen problema co contrasinal <i>123</i></span><br /><br />
+                <ul class='dashed-alumnoA'>
+                  <li>exit <span class='explicacion'> #Saír da consola local de <b>alumno</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+                </ul>
+              </ul>
+            </div>
+          </li><br />
+          <li>En debianA acceder mediante ssh co usuario <b>alumno</b>. Que é o que acontece?<br />
+              <div class='explicacion4 pall'>
+                Ao usuario <i>alumno</i>, solicítaselle o contrasinal, xa que que o servizo <span class='label'>/etc/pam.d/sshd</span> tamén fai unha chamada ao arquivo <span class='label'>/etc/pam.d/common-password</span>, co cal accede sen problema co contrasinal <i>123</i><br />
+                <code class='code'>
+                  <ul class='dashed'>
+                    <li>grep common-password /etc/pam.d/sshd<br />
+                    @include common-password<br />
+                  </ul>
+                </code>
+              </div>
+            </li><br />
+          <li>Executar:
+            <ul class='dashed-debianA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span></li><br />
+              <ul class='hashtag-debianA'>
+                <li>sed -i "s/pam_unix.so obscure sha512/pam_unix.so obscure sha512 minlen=12/" /etc/pam.d/common-password <span class='explicacion'>#Engadir o parámetro <i>minlen</i> co valor <i>12</i> na regra existente ao módulo pam_unix en /etc/pam.d/common-password</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+              </ul>
+              <li>su - alumno<span class='explicacion'> #Acceder como usuario <i>alumno</i>. Este usuario inicia sesión sen problema co contrasinal <i>123</i></span><br /><br />
+              <ul class='dashed-alumnoA'>
+                <li>passwd alumno || (echo -e '123\n123456789zx\n123456789zx' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario alumno. Por como contrasinal <b>123456789zx</b></span></li><br />
+              </ul>
+            </ul>
+            <p>Que é o que acontece?</p>
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login cambiando na regra de pam_unix existente en /etc/pam.d/common-password (engadindo minlen=12) o usuario <i>alumno</i> non pode cambiar o contrasinal a non ser que posúa como mínimo 12 caracteres, e resulta que <i>abc123456789zx</i> son 11 caracteres.
+                <code class='code'>
+                  <ul class='dashed-alumnoA'>
+                    <br />
+                    <li>echo -e '123\n123456789zx\n123456789zx' | passwd<br />
+  Changing password for alumno.<br />
+  Current password: New password: Retype new password: You must choose a longer password<br />
+  New password: Password change aborted.<br />
+  passwd: Authentication token manipulation error<br />
+  passwd: password unchanged<br />
+                  </ul>
+                </code>
+              </div>
+            </li><br />
+
+          <li>Executar:
+            <ul class='dashed-alumnoA'>
+              <li>passwd alumno || (echo -e '123\n123456789zxc\n123456789zxc' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario alumno. Por como contrasinal <b>123456789zxc</b></span></li><br />
+              <p>Que é o que acontece?</p>
+                <div class='explicacion4 pall'>
+                  Pois agora, debido ao cambio que efectuamos no servizo login cambiando na regra de pam_unix existente en /etc/pam.d/common-password (engadindo minlen=12) o usuario <i>alumno</i> si pode cambiar o contrasinal xa que <i>abc123456789zxc</i> son 12 caracteres.
+                  <code class='code'>
+                    <ul class='dashed-alumnoA'>
+                      <br />
+                      <li>echo -e '123\n123456789zx\n123456789zx' | passwd<br />
+                      echo -e '123\n123456789zxc\n123456789zxc' | passwd<br />
+Changing password for alumno.<br />
+Current password: New password: Retype new password: passwd: o contrasinal actualizouse con éxito<br />
+                    </ul>
+                  </code>
+                </div>
+            </li><br />
+            <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+
+          <li>Executar:
+            <ul class='dashed-debianA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo).</span></li><br />
+              <ul class='hashtag-debianA'>
+                <li>sed -i "s/pam_unix.so obscure sha512 minlen=12/pam_unix.so obscure sha512 minlen=12 remember=3/" /etc/pam.d/common-password <span class='explicacion'>#Engadir o parámetro <i>remember</i> co valor <i>3</i> na regra existente ao módulo pam_unix en /etc/pam.d/common-password</li><br />
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+              </ul>
+              <li>su - alumno<span class='explicacion'> #Acceder como usuario <i>alumno</i>. Este usuario inicia sesión sen problema co contrasinal <i>123456789zxc</i></span><br /><br />
+              <ul class='dashed-alumnoA'>
+                <li>ls -l /etc/security/opasswd <span class='explicacion'>#Listar de forma extendida o ficheiro /etc/security/opasswd, o cal contén os últimos contrasinais gardados (ver parámetro <i>remember</i> do módulo <i>pam_unix</i>)</span><br />
+                <code class='code3'>
+                -rw------- 1 root root 0 Nov 16  2019 /etc/security/opasswd
+                </code>
+                <div class='explicacion4 pall'>
+                  Podemos comprobar que non existe contido no ficheiro /etc/security/opasswd
+                </div>
+                </li><br />
+                <li>PASS=$(mktemp -u XXXXXXXXXXXXXXXX) && echo -e "123456789zxc\n${PASS}\n${PASS}" | passwd<span class='explicacion'> #Cambiar o contrasinal do usuario alumno. Por como contrasinal o valor contido dentro da variable <span class='label'>PASS</span>. A variable <span class='label'>PASS</span> contén un valor aleatorio de <span class='label'>16</span> caracteres.</span></li><br />
+                
+                <div class='indent pagebreak'>&nbsp;</div>
+                <li>ls -l /etc/security/opasswd <span class='explicacion'>#Listar de novo de forma extendida o ficheiro /etc/security/opasswd.</span><br />
+                <code class='code3'>
+                --rw------- 1 root root 49 Feb  1 19:39 /etc/security/opasswd
+                </code>
+                <div class='explicacion4 pall'>
+                  Podemos comprobar que agora SI existe contido no ficheiro /etc/security/opasswd
+                </div>
+                </li><br />
+                
+                <li>su - -c "cat /etc/security/opasswd" <span class='explicacion'> #Executar coma root o comando <i>cat /etc/security/opasswd</i>, é dicir, amosar o contido do ficheiro <i>/etc/security/opasswd</i></span><br />
+                <code class='code3'>
+                alumno:1021:1:$1$YJAPwpRU$4glGepbclE94Zjpte1h7w0
+                </code>
+                <div class='explicacion4 pall'>
+                  Temos gardado o último contrasinal.
+                </div>
+                </li><br />
+
+                <li>PASSOLD=${PASS} && PASS=$(mktemp -u XXXXXXXXXXXXXXXX) && echo -e "${PASSOLD}\n${PASS}\n${PASS}" | passwd<span class='explicacion'> #Cambiar o contrasinal do usuario alumno. Por como contrasinal o valor contido dentro da variable <span class='label'>PASS</span>. A variable <span class='label'>PASS</span> contén un valor aleatorio de <span class='label'>16</span> caracteres.</span></li><br />
+                <li>su - -c "cat /etc/security/opasswd" <span class='explicacion'> #Executar coma root o comando <i>cat /etc/security/opasswd</i>, é dicir, amosar o contido do ficheiro <i>/etc/security/opasswd</i></span><br />
+                <code class='code3'>
+                alumno:1021:2:$1$YJAPwpRU$4glGepbclE94Zjpte1h7w0,$1$R06ypTw/$BYkAwkUxolGj4inB/Wnpd1
+                </code>
+                <div class='explicacion4 pall'>
+                  Temos gardados os 2 últimos contrasinais. Os contrasinais están separados polo caracter coma ','
+                </div>
+                </li><br />
+
+                <li>for i in $(seq 1 10); do PASSOLD=${PASS} && PASS=$(mktemp -u XXXXXXXXXXXXXXXX) && echo -e "${PASSOLD}\n${PASS}\n${PASS}" | passwd;done <span class='explicacion'> #Equivale a executar o comando anterior 10 veces máis.</span></li><br />
+                </li><br />
+                </ul>
+            <p>Que é o que acontece?</p>
+              <div class='explicacion4 pall'>
+                Pois agora, debido ao cambio que efectuamos no servizo login cambiando na regra de pam_unix existente en /etc/pam.d/common-password (engadindo remember=3) soamente gárdanse os últimos 3 contrasinais</span><br />
+                <ul class='dashed-alumnoA'>
+                  <li>su - -c "cat /etc/security/opasswd" <span class='explicacion'> #Executar coma root o comando <i>cat /etc/security/opasswd</i>, é dicir, amosar o contido do ficheiro <i>/etc/security/opasswd</i></span><br />
+                  <code class='code'>
+                  alumno:1021:3:$1$d9/85RLS$7OU2mlTkmbgOFqUlgHOQ.1,$1$9/LPJFrq$CFvY/XJfpfzWQ79AS53XI0,<br />
+                  $1$iDa2Wo.d$XK3FKz7ytOLnRw79fcban/
+                  </code>
+                </ul>
+              </div>
+            </ul>
+          </li><br />
+
+          <div class='minindent'>&nbsp;</div>
+          <br />
+          <li>En debianA voltar a restaurar a regra modificada en pam_unix no arquivo /etc/pam.d/common-password:</li><br />
+            <ul class='mleft dashed-alumnoA'>
+              <li>exit <span class='explicacion'> #Saír da consola local de <b>alumno</b> á que acabamos de acceder para voltar á consola local de <b>usuario</b>.</span></li><br />
+            </ul>
+            <ul class='dashed-debianA'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li><br />
+              <ul class='hashtag-debianA mleftsubs'>
+                <li>sed -i "s/pam_unix.so obscure sha512 minlen=12 remember=3/pam_unix.so obscure sha512/" /etc/pam.d/common-password <span class='explicacion'>#Modificar o ficheiro /etc/pam.d/common-password para restaurar a regra do módulo pam_unix</span></li><br />
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>usuario</b>.</span></li><br />
+              </ul>
+            <ul class='dashed-debianA mleftsubsx2'>
+              <li>
+            </ul>
+           </ul>
+          </ul>
+        </ol>
+        </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+
+</body>
+</html>
