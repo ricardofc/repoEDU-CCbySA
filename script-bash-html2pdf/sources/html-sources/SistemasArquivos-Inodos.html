@@ -1,0 +1,1036 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Sistemas de arquivos: Inodos</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='Inodos arribasubs'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/GNU-Linux/SistemasArquivos' target='_blank'>Sistemas de arquivos: Inodos</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <div class='minindent'>&nbsp;</div>
+    <div class='codesubcontidolongo mtop'>
+      NOTA: Para verificar o que acontece na práctica crear unha máquina virtual en VirtualBox que arranque cunha ISO Live Debian 32bits, escritorio XFCE, 512MB de RAM e disco duro dinámico de 8GB. Imos supor que esta máquina virtual posúe o nome <span class='label'>Debian32-Inodos</span> e o disco duro posúe o nome <span class='label'>Debian32-Inodos.vdi</span>. Verificar que a primeira opción de arranque sexa o CD Virtual.
+    </div>
+    <div class='Inodos2'>
+      <div class='mtopplus2 fleft Inodos3'>
+        <p class='mleftsubsx2 arribasubsmini'><img class='cfigure mleftplus280x2 arribasubsmini' src="images/mouse-pointer-mini-rotate-180.png" /></p>
+        <p>Por cada ficheiro ou directorio no sistema, existe un <a target='_blank' href='https://manuais.iessanclemente.net/index.php/Sistemas_de_arquivos#Estrutura_dos_Sistemas_de_arquivos_Linux_-_i-nodos'>inodo</a>, unha estrutura de datos, que garda a información do ficheiro, como por exemplo o seu propietario, permisos, marcas de tempos e localización dos seus bloques de datos no disco. É similar aos rexistros do MFT en NTFS.</p>
+        <div class='minindent'>&nbsp;</div>
+        <center><p class='Inodoscenter1'><span class='label InodoscenterIn'>Sector</span> = <span class='label InodoscenterIn'>Bloque</span></p></center>
+        <center><p class='Inodoscenter2'><a href='https://www.seagate.com/es/es/tech-insights/advanced-format-4k-sector-hard-drives-master-ti/' target='_blank'><span class='label InodoscenterIn'>Sector lóxico</span> != <span class='label InodoscenterIn'>Sector físico</span></a></p>
+        <img class='mtopsubs cfigure' src="images/mouse-pointer-mini.png" /></center>
+
+        <div class='codesubcontidolongo mtop'>
+          <span class='label title16'>Comandos de interese sobre sistemas de ficheiros ext2/ext3/ext4</span>
+          <ul type='square'>
+            <li><b>ls</b> <span class='title14 nome'> #O comando ls lista os ficheiros e os contidos de directorios.</span></li>
+            <li><b>df</b> <span class='title14 nome'> #O comando df informa do emprego do espazo de disco en sistemas de ficheiros.</span></li>
+            <li><b>stat</b> <span class='title14 nome'> #O comando stat permite amosar información sobre ficheiros ou sistemas de ficheiros.</span></li>
+            <li><b>debugfs</b> <span class='title14 nome'> #O comando debugfs permite depurar sistemas de ficheiros ext2/ext3/ext4</li>
+            <li><b>dumpe2fs</b> <span class='title14 nome'> #O comando dumpe2fs permite listar información sobre sistemas de ficheiros ext2/ext3/ext4.</span></li>
+            <li><b>tune2fs</b> <span class='title14 nome'> #O comando tune2fs permite axustar os parámetros do sistema de ficheiros sobre sistemas de ficheiros ext2/ext3/ext4.</span></li>
+          </ul>
+        </div>
+
+        <div class='codesubcontidolongo mtop'>
+          <span class='label title16'>debugfs</span>
+          <ul class='hashtag'>
+            <li><b>debugfs /dev/sda1</b><span class='title16 nome'> #Executar o comando debugfs sobre a partición primaria /dev/sda1, a cal non pode estar montada no sistema operativo, é dicir, non se pode estar facendo uso da partición para non corromper a depuración da partición a través do comando debugfs.</span><br />
+            <ul type='none'>
+              <li><b>debugfs:  stat &lt;X&gt;</b><span class='title16 nome'> #Ver información sobre o inodo número X</span><br />
+              <li><b>debugfs:  blocks &lt;X&gt;</b><span class='title16 nome'> #Ver os bloques que apuntan ao contido do ficheiro que corresponde co inodo X</span><br />
+              <li><b>debugfs:  cat &lt;X&gt;</b><span class='title16 nome'> #Ver o contido do ficheiro que corresponde co inodo X</span><br />
+              <li><b>debugfs:  ncheck X</b><span class='title16 nome'> #Identificar a relación entre o inodo X e o nome do arquivo ao que pertence.</span><br />
+              <li><b>debugfs:  icheck Y</b><span class='title16 nome'> #Identificar a relación entre o bloque Y e o inodo ao que pertence.</span><br />
+              <li><b>debugfs:  block_dump Y</b><span class='title16 nome'> #Ver o contido do bloque Y. A información amósase en código hexadecimal e ASCII</span><br />
+            </ul>
+          </ul>
+        </div>
+      </div>
+      <div class='EstruturaDiscoWikipedia'>
+        <figure class='cfigure'>
+          <img style="cfigure mleft40" src="images/Estrutura-disco.png" />
+            <figcaption style='margin-top:-5px;'>
+              <a target='_blank' href='https://es.wikipedia.org/wiki/Sector_(inform%C3%A1tica)'><span class='title14 nome mleft40'>Wikipedia</span>
+              </a>
+            </figcaption>
+        </figure>
+        <img class='cfigure mleft80 mtopsubs' src="images/mouse-pointer-mini.png" />
+      </div>
+    </div>
+
+    <div class='pagebreak'>&nbsp;</div>
+    <div class='label'>Práctica contido/estrutura de Inodos</div>
+    <div class='contido w1080'>
+      <ol>
+        <li>Arrancar a máquina virtual creada en modo Inicio normal</li>
+          <span class='label'><pre>VBoxManage startvm Debian32-Inodos</pre></span>
+
+        <li>Na contorna gráfica (shell xfce) abrir un terminal e executar:
+        <ul class='dashed'>
+          <li  class='mleftsubsmini'>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.
+          <li  class='mleftsubsmini'>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Crear e formatear particións</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsmini'>parted --script /dev/sda mklabel msdos<span class='explicacion'> #Crear a etiqueta de disco (táboa de particións) ao dispositivo /dev/sda sen ter que acceder ao prompt de parted</span></li><br />
+              <li class='mleftsubsmini'>parted --script /dev/sda mkpart primary 0 50% -a cylinder<span class='explicacion'> #Crear unha partición primaria no disco /dev/sda cos primeiros 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li class='mleftsubsmini'>parted --script /dev/sda mkpart primary 50% 70% -a cylinder<span class='explicacion'> #Crear unha partición primaria no disco /dev/sda de 2GB a continuación da partición de 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li class='mleftsubsmini'>parted --script /dev/sda print<span class='explicacion'> #Amosa a táboa de particións do disco /dev/sda</span>
+                <pre>
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 8590MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start        End        Size       Type      File system  Flags
+ 1      32.3kB       4294MB     4294MB     primary  
+ 2      4294MB       6013MB     1719MB     primary  
+                </pre>
+              </li>
+              <li class='mleftsubsmini'>mkfs.ext4 -F -L 'PARTICION1' /dev/sda1 <span style='font-size:16px;color:#0F18A0;'> #Formatear en ext4 coa etiqueta PARTICION1 a partición primaria /dev/sda1</span>
+                <pre>
+mke2fs 1.43.4 (31-Jan-2017)
+/dev/sda1 contains a ext4 file system labelled 'PARTICION1'
+        last mounted on /mnt/part1 on Mon Oct 29 17:58:50 2018
+Creating filesystem with 1048233 4k blocks and 262144 inodes
+Filesystem UUID: 459fb916-7189-4b3f-83de-fd81b56973f8
+Superblock backups stored on blocks: 
+        32768, 98304, 163840, 229376, 294912, 819200, 884736
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done 
+                </pre>
+              </li>
+              <li class='mleftsubsmini'>mkfs.ext3 -F -L 'PARTICION2' /dev/sda2 <span style='font-size:16px;color:#0F18A0;'> #Formatear en ext3 coa etiqueta PARTICION2 a partición primaria /dev/sda2</span>
+                <pre>
+mke2fs 1.43.4 (31-Jan-2017)
+/dev/sda2 contains a ext3 file system labelled 'PARTICION2'
+        created on Mon Oct 29 17:58:29 2018
+Creating filesystem with 419698 4k blocks and 105040 inodes
+Filesystem UUID: d5c70817-fa3c-4734-8825-fa78463558cd
+Superblock backups stored on blocks: 
+        32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done 
+                </pre>
+              </li>
+            </ul>
+          </div>
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Montar particións e crear ficheiros e directorios</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsmini'>mkdir /mnt/part1 /mnt/part2<span class='explicacion'> #Crear os directorios /mnt/part1 e /mnt/part2</span></li><br />
+              <li class='mleftsubsmini'>mount /dev/sda1 /mnt/part1<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/part1</span></li><br />
+              <li class='mleftsubsmini'>cd /mnt/part1<span class='explicacion'> #Acceder ao directorio /mnt/part1</span></li><br />
+              <li class='mleftsubsmini'>echo 1 2 3 &gt; 1.txt<span class='explicacion'> #Crear o ficheiro /mnt/part1/1.txt co contido 1 2 3</span></li><br />
+              <li class='mleftsubsmini'>mkdir -p cartafol1/cartafol2/cartafol3/cartafol4<span class='explicacion'> #Crear a estrutura arbórea de directorios seguinte:<br />
+                <pre>
+/mnt/part1
+├── 1.txt
+├── cartafol1
+│   └── cartafol2
+│       └── cartafol3
+│           └── cartafol4
+└── lost+found
+
+5 directories, 1 file
+              </pre>A opción -p permite crear os directorios pais que falten para cada argumento directorio</span></li><br />
+            <li class='mleftsubsmini'>echo 4 5 6 &gt; cartafol1/a.txt<span class='explicacion'> #Crear o ficheiro /mnt/part1/cartafol1/a.txt co contido 4 5 6</span></li><br />
+            <li class='mleftsubsmini'>echo 7 8 9 &gt; cartafol1/cartafol2/b.txt<span class='explicacion'> #Crear o ficheiro /mnt/part1/cartafol1/cartafol2/b.txt co contido 7 8 9</span></li><br />
+          </ul>
+        </div>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+
+        <div class='contido mleftsubsx2 mrightmini'><span class='label'>Información sobre o emprego dos inodos nos sistemas de ficheiros</span>
+          <ul class='hashtag'> 
+            <li class='mleftsubsmini'>df -i <span class='explicacion'> #Lista información sobre o emprego de inodos en lugar da información sobre os bloques.</span></li>
+              <pre>
+                <table>
+                <tr><td>Filesystem</td><td>Inodes</td><td>IUsed</td><td>IFree</td><td>IUse%</td><td>Mounted on</td></tr>
+                <tr><td>udev</td><td>125786</td><td>358</td><td>125428</td><td>1%</td><td>/dev</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>487</td><td>128137</td><td>1%</td><td>/run</td></tr>
+                <tr><td>/dev/sr0</td><td>0</td><td>0</td><td>0</td><td>-</td><td>/lib/live/mount/medium</td></tr>
+                <tr><td>/dev/loop0</td><td>152322</td><td>152322</td><td>0</td><td>100%</td><td>/lib/live/mount/rootfs/filesystem.squashfs</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>1</td><td>128623</td><td>1%</td><td>/lib/live/mount/overlay</td></tr>
+                <tr><td>overlay</td><td>128624</td><td>649</td><td>127975</td><td>1%</td><td>/</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>1</td><td>128623</td><td>1%</td><td>/dev/shm</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>3</td><td>128621</td><td>1%</td><td>/run/lock</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>15</td><td>128609</td><td>1%</td><td>/sys/fs/cgroup</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>19</td><td>128605</td><td>1%</td><td>/tmp</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>19</td><td>128605</td><td>1%</td><td>/run/user/1000</td></tr>
+                <tr><td>/dev/sda1</td><td>262144</td><td>16</td><td>262128</td><td>1%</td><td>/mnt/part1</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>11</td><td>128613</td><td>1%</td><td>/run/user/0</td></tr>
+                <tr><td>tmpfs</td><td>128624</td><td>14</td><td>128610</td><td>1%</td><td>/run/user/112</td></tr>
+                </table>
+                </pre>
+                <li class='mleftsubsmini'>df -hi <span class='explicacion'> #Lista información sobre o emprego de inodos en lugar da información sobre os bloques. A opción -h engade unha letra indicativa de tamaño, como M para megabytes binarios (`mebibytes'), a cada tamaño.</span></li>
+                <pre>
+                <table>
+                <tr><td>Filesystem</td><td>Inodes</td><td>IUsed</td><td>IFree</td><td>IUse%</td><td>Mounted on</td></tr>
+                <tr><td>udev</td><td>123K</td><td>358</td><td>123K</td><td>1%</td><td>/dev</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>487</td><td>126K</td><td>1%</td><td>/run</td></tr>
+                <tr><td>/dev/sr0</td><td>0</td><td>0</td><td>0</td><td>-</td><td>/lib/live/mount/medium</td></tr>
+                <tr><td>/dev/loop0</td><td>149K</td><td>149K</td><td>0</td><td>100%</td><td>/lib/live/mount/rootfs/filesystem.squashfs</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>1</td><td>126K</td><td>1%</td><td>/lib/live/mount/overlay</td></tr>
+                <tr><td>overlay</td><td>126K</td><td>649</td><td>125K</td><td>1%</td><td>/</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>1</td><td>126K</td><td>1%</td><td>/dev/shm</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>3</td><td>126K</td><td>1%</td><td>/run/lock</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>15</td><td>126K</td><td>1%</td><td>/sys/fs/cgroup</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>19</td><td>126K</td><td>1%</td><td>/tmp</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>19</td><td>126K</td><td>1%</td><td>/run/user/1000</td></tr>
+                <tr><td>/dev/sda1</td><td>256K</td><td>16</td><td>256K</td><td>1%</td><td>/mnt/part1</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>11</td><td>126K</td><td>1%</td><td>/run/user/0</td></tr>
+                <tr><td>tmpfs</td><td>126K</td><td>14</td><td>126K</td><td>1%</td><td>/run/user/112</td></tr>
+                </table>
+              </pre>
+          </ul>
+        </div>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <div class='contido mleftsubsx2 mrightmini'><span class='label'>Listar/Ver información sobre inodos</span>
+          <ul class='hashtag'>
+            <li class='mleftsubsmini arribaplus'>ls -l 1.txt<span class='explicacion'> #Listar de forma extendida o ficheiro /mnt/part1/1.txt </span><br />
+              <pre>
+-rw-r--r-- 1 root root 6 Oct 29 19:57 1.txt
+              </pre></li>
+            <li class='mleftsubsmini arribaplus'>ls -li 1.txt<span class='explicacion'> #Listar de forma extendida e amosando o inodo do ficheiro /mnt/part1/1.txt </span><br />
+              <pre>
+12 -rw-r--r-- 1 root root 6 Oct 29 19:57 1.txt
+              </pre></li>
+            <li class='mleftsubsmini arribaplus'>stat 1.txt<span class='explicacion'> #Amosar a información do comando stat sobre o ficheiro /mnt/part1/1.txt </span><br />
+              <pre>
+  File: 1.txt
+  Size: 6         	Blocks: 8          IO Block: 4096   regular file
+Device: 801h/2049d	Inode: 12          Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2018-10-29 19:57:11.461449310 +0000
+Modify: 2018-10-29 19:57:11.461449310 +0000
+Change: 2018-10-29 19:57:11.461449310 +0000
+ Birth: -
+              </pre>
+            </li>
+
+            <li class='mleftsubsmini arribaplus'>ls -ld cartafol1<span class='explicacion'> #Listar de forma extendida o directorio /mnt/part1/cartafol1 </span><br />
+              <pre>
+drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol1
+              </pre></li>
+            <li class='mleftsubsmini arribaplus'>ls -ldi cartafol1<span class='explicacion'> #Listar de forma extendida e amosando o inodo do directorio /mnt/part1/cartafol1 </span><br />
+              <pre>
+131073 drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol1
+              </pre></li>
+            <li class='mleftsubsmini arribaplus'>ls -lR cartafol1<span class='explicacion'> #Listar de forma extendida e recursiva o contido do directorio /mnt/part1/cartafol1 </span><br />
+              <pre>
+cartafol1:
+total 8
+-rw-r--r-- 1 root root    6 Oct 29 20:17 a.txt
+drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol2
+
+cartafol1/cartafol2:
+total 8
+-rw-r--r-- 1 root root    6 Oct 29 20:17 b.txt
+drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol3
+
+cartafol1/cartafol2/cartafol3:
+total 4
+drwxr-xr-x 2 root root 4096 Oct 29 20:17 cartafol4
+
+cartafol1/cartafol2/cartafol3/cartafol4:
+total 0
+              </pre></li>
+            <li class='mleftsubsmini arribaplus'>ls -lRi cartafol1<span class='explicacion'> #Listar de forma extendida e recursiva, amosando os inodos, do contido do directorio /mnt/part1/cartafol1 </span><br />
+              <pre>
+cartafol1:
+total 8
+131077 -rw-r--r-- 1 root root    6 Oct 29 20:17 a.txt
+131074 drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol2
+
+cartafol1/cartafol2:
+total 8
+131078 -rw-r--r-- 1 root root    6 Oct 29 20:17 b.txt
+131075 drwxr-xr-x 3 root root 4096 Oct 29 20:17 cartafol3
+
+cartafol1/cartafol2/cartafol3:
+total 4
+131076 drwxr-xr-x 2 root root 4096 Oct 29 20:17 cartafol4
+
+cartafol1/cartafol2/cartafol3/cartafol4:
+total 0
+              </pre></li>
+
+            <li class='mleftsubsmini arribaplus'>stat cartafol1<span class='explicacion'> #Amosar a información do comando stat sobre o directorio /mnt/part1/cartafol1 </span><br />
+              <pre>
+  File: cartafol1
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: 801h/2049d	Inode: 131073      Links: 3
+Access: (0755/drwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2018-10-29 22:32:28.104085550 +0000
+Modify: 2018-10-29 20:17:39.900917734 +0000
+Change: 2018-10-29 20:17:39.900917734 +0000
+ Birth: -
+              </pre>
+            </li>
+          </ul>
+        </div>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <div class='contido mleftsubsx2 mrightmini'><span class='label'>Desmontar e ver información gardada nos inodos</span>
+          <ul class='hashtag'>
+            <li>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+            <li>umount /mnt/part1<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/part1</span></li><br />
+            <li>debugfs /dev/sda1<span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span><br />
+              <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs:  stat <12><span class='explicacion'> #Ver información sobre o inodo 12</span>
+Inode: 12   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 388472943    Version: 0x00000000:00000001
+User:     0   Group:     0   Project:     0   Size: 6
+File ACL: 0    Directory ACL: 0
+Links: 1   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd76617:6e04a178 -- Mon Oct 29 19:57:11 2018
+ atime: 0x5bd76617:6e04a178 -- Mon Oct 29 19:57:11 2018
+ mtime: 0x5bd76617:6e04a178 -- Mon Oct 29 19:57:11 2018
+crtime: 0x5bd76617:6e04a178 -- Mon Oct 29 19:57:11 2018
+Size of extra inode fields: 32
+Inode checksum: 0x6451e928
+EXTENTS:
+(0):33281
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs:  stat <131073><span class='explicacion'> #Ver información sobre o inodo 131073</span>
+Inode: 131073   Type: directory    Mode:  0755   Flags: 0x80000
+Generation: 1274141839    Version: 0x00000000:00000003
+User:     0   Group:     0   Project:     0   Size: 4096
+File ACL: 0    Directory ACL: 0
+Links: 3   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd76ae3:d6cba798 -- Mon Oct 29 20:17:39 2018
+ atime: 0x5bd78a7c:18d0e0b8 -- Mon Oct 29 22:32:28 2018
+ mtime: 0x5bd76ae3:d6cba798 -- Mon Oct 29 20:17:39 2018
+crtime: 0x5bd76ac7:ad264d1c -- Mon Oct 29 20:17:11 2018
+Size of extra inode fields: 32
+Inode checksum: 0x99381db4
+EXTENTS:
+(0):532512
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs: q <span class='label'>Premer de novo a tecla q para saír da consola debugfs</span><br />
+              </pre>
+            </li>
+          </ul>
+        </div>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <div class='contido mleftsubsx2 mrightmini'><span class='label'>Ver a información gardada nos inodos. Tamén os punteiros dos bloques de disco que almacenan o contido dos ficheiros e directorios</span>
+          <ul class='hashtag'>
+            <li>mount /dev/sda1 /mnt/part1<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/part1</span></li><br />
+            <li>cd /mnt/part1<span class='explicacion'> #Acceder ao directorio /mnt/part1</span></li><br />
+            <li>dd if=/dev/zero of=/mnt/part1/file0.txt bs=1MiB count=1<span style='font-size:16px;color:#0F18A0;'> #Crear un ficheiro /mnt/part1/file1.txt que contén todos ceros cun tamaño de 1MiB.</span>
+              <pre>
+1+0 records in
+1+0 records out
+1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.0111686 s, 93.9 MB/s
+              </pre>
+            </li>
+            <li>ls -li file0.txt<span class='explicacion'> #Listar de forma extendida e amosando o inodo do ficheiro /mnt/part1/file0.txt </span><br />
+              <pre>
+15 -rw-r--r-- 1 root root 1048576 Oct 30 17:19 file0.txt
+              </pre>
+            <li>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+            <li>umount /mnt/part1<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/part1</span></li><br />
+            <li>debugfs /dev/sda1<span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span><br />
+              <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs:  stat <15>
+Inode: 15   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 4057643325    Version: 0x00000000:00000001
+User:     0   Group:     0   Project:     0   Size: 1048576
+File ACL: 0    Directory ACL: 0
+Links: 1   Blockcount: 2048
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd892a4:8e297e28 -- Tue Oct 30 17:19:32 2018
+ atime: 0x5bd892a4:8d3559b4 -- Tue Oct 30 17:19:32 2018
+ mtime: 0x5bd892a4:8e297e28 -- Tue Oct 30 17:19:32 2018
+crtime: 0x5bd892a4:8d3559b4 -- Tue Oct 30 17:19:32 2018
+Size of extra inode fields: 32
+Inode checksum: 0x13ebaa75
+EXTENTS:
+(0-255):33536-33791
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs:  blocks <15><span class='explicacion'> #Ver os bloques que apuntan ao contido do ficheiro que corresponde co inodo 15</span>
+              </pre>
+33536 33537 33538 33539 33540 33541 33542 33543 33544 33545 33546 33547 33548 33549 33550 33551 33552 33553 33554 33555 33556 33557 33558 33559 33560 33561 33562 33563 33564 33565 33566 33567 33568 33569 33570 33571 33572 33573 33574 33575 33576 33577 33578 33579 33580 33581 33582 33583 33584 33585 33586 33587 33588 33589 33590 33591 33592 33593 33594 33595 33596 33597 33598 33599 33600 33601 33602 33603 33604 33605 33606 33607 33608 33609 33610 33611 33612 33613 33614 33615 33616 33617 33618 33619 33620 33621 33622 33623 33624 33625 33626 33627 33628 33629 33630 33631 33632 33633 33634 33635 33636 33637 33638 33639 33640 33641 33642 33643 33644 33645 33646 33647 33648 33649 33650 33651 33652 33653 33654 33655 33656 33657 33658 33659 33660 33661 33662 33663 33664 33665 33666 33667 33668 33669 33670 33671 33672 33673 33674 33675 33676 33677 33678 33679 33680 33681 33682 33683 33684 33685 33686 33687 33688 33689 33690 33691 33692 33693 33694 33695 33696 33697 33698 33699 33700 33701 33702 33703 33704 33705 33706 33707 33708 33709 33710 33711 33712 33713 33714 33715 33716 33717 33718 33719 33720 33721 33722 33723 33724 33725 33726 33727 33728 33729 33730 33731 33732 33733 33734 33735 33736 33737 33738 33739 33740 33741 33742 33743 33744 33745 33746 33747 33748 33749 33750 33751 33752 33753 33754 33755 33756 33757 33758 33759 33760 33761 33762 33763 33764 33765 33766 33767 33768 33769 33770 33771 33772 33773 33774 33775 33776 33777 33778 33779 33780 33781 33782 33783 33784 33785 33786 33787 33788 33789 33790 33791 
+              </pre>
+              <pre>
+debugfs: q <span class='label'>Premer de novo a tecla q para saír da consola debugfs</span>
+              </pre>
+            <li>mount /dev/sda1 /mnt/part1<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/part1</span></li><br />
+            <li>cd /mnt/part1<span class='explicacion'> #Acceder ao directorio /mnt/part1</span></li><br />
+            <li>dd if=/dev/zero of=/mnt/part1/file1.txt bs=1MiB count=10<span style='font-size:16px;color:#0F18A0;'> #Crear un ficheiro /mnt/part1/file1.txt que contén todos ceros cun tamaño de 10MiB.</span>
+              <pre>
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.0851866 s, 123 MB/s
+              </pre>
+            </li>
+            <li>ls -li file1.txt<span class='explicacion'> #Listar de forma extendida e amosando o inodo do ficheiro /mnt/part1/file1.txt </span><br />
+              <pre>
+14 -rw-r--r-- 1 root root 10485760 Oct 30 17:09 file1.txt
+              </pre>
+            <li>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+            <li>umount /mnt/part1<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/part1</span></li><br />
+            <li>debugfs /dev/sda1<span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span><br />
+              <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs:  stat <14><span class='explicacion'> #Ver información sobre o inodo 14</span>
+Inode: 14   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 2934060132    Version: 0x00000000:00000001
+User:     0   Group:     0   Project:     0   Size: 10485760
+File ACL: 0    Directory ACL: 0
+Links: 1   Blockcount: 20480
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd89063:c089d3a4 -- Tue Oct 30 17:09:55 2018
+ atime: 0x5bd88fa1:2c3b8298 -- Tue Oct 30 17:06:41 2018
+ mtime: 0x5bd89063:c089d3a4 -- Tue Oct 30 17:09:55 2018
+crtime: 0x5bd88fa1:2c3b8298 -- Tue Oct 30 17:06:41 2018
+Size of extra inode fields: 32
+Inode checksum: 0x35fa2d40
+EXTENTS:
+(0-2559):88064-90623
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs:  blocks <14><span class='explicacion'> #Ver os bloques que apuntan ao contido do ficheiro que corresponde co inodo 14</span>
+              </pre>
+88064 88065 88066 88067 88068 88069 88070 88071 88072 88073 88074 88075 88076 88077 88078 88079 88080 88081 88082 88083 88084 88085 88086 88087 88088 88089 88090 88091 88092 88093 88094 88095 88096 88097 88098 88099 88100 88101 88102 88103 88104 88105 88106 88107 88108 88109 88110 88111 88112 88113 88114 88115 88116 88117 88118 88119 88120 88121 88122 88123 88124 88125 88126 88127 88128 88129 88130 88131 88132 88133 88134 88135 88136 88137 88138 88139 88140 88141 88142 88143 88144 88145 88146 88147 88148 88149 88150 88151 88152 88153 88154 88155 88156 88157 88158 88159 88160 88161 88162 88163 88164 88165 88166 88167 88168 88169 88170 88171 88172 88173 88174 88175 88176 88177 88178 88179 88180 88181 88182 88183 88184 88185 88186 88187 88188 88189 88190 88191 88192 88193 88194 88195 88196 88197 88198 88199 88200 88201 88202 88203 88204 88205 88206 88207 88208 88209 88210 88211 88212 88213 88214 88215 88216 88217 88218 88219 88220 88221 88222 88223 88224 88225 88226 88227 88228 88229 88230 88231 88232 88233 88234 88235 88236 88237 88238 88239 88240 88241 88242 88243 88244 88245 88246 88247 88248 88249 88250 88251 88252 88253 88254 88255 88256 88257 88258 88259 88260 88261 88262 88263 88264 88265 88266 88267 88268 88269 88270 88271 88272 88273 88274 88275 88276 88277 88278 88279 88280 88281 88282 88283 88284 88285 88286 88287 88288 88289 88290 88291 88292 88293 88294 88295 88296 88297 88298 88299 88300 88301 88302 88303 88304 88305 88306 88307 88308 88309 88310 88311 88312 88313 88314 88315 88316 88317 88318 88319 88320 88321 88322 88323 88324 88325 88326 88327 88328 88329 88330 88331 88332 88333 88334 88335 88336 88337 88338 88339 88340 88341 88342 88343 88344 88345 88346 88347 88348 88349 88350 88351 88352 88353 88354 88355 88356 88357 88358 88359 88360 88361 88362 88363 88364 88365 88366 88367 88368 88369 88370 88371 88372 88373 88374 88375 88376 88377 88378 88379 88380 88381 88382 88383 88384 88385 88386 88387 88388 88389 88390 88391 88392 88393 88394 88395 88396 88397 88398 88399 88400 88401 88402 88403 88404 88405 88406 88407 88408 88409 88410 88411 88412 88413 88414 88415 88416 88417 88418 88419 88420 88421 88422 88423 88424 88425 88426 88427 88428 88429 88430 88431 88432 88433 88434 88435 88436 88437 88438 88439 88440 88441 88442 88443 88444 88445 88446 88447 88448 88449 88450 88451 88452 88453 88454 88455 88456 88457 88458 88459 88460 88461 88462 88463 88464 88465 88466 88467 88468 88469 88470 88471 88472 88473 88474 88475 88476 88477 88478 88479 88480 88481 88482 88483 88484 88485 88486 88487 88488 88489 88490 88491 88492 88493 88494 88495 88496 88497 88498 88499 88500 88501 88502 88503 88504 88505 88506 88507 88508 88509 88510 88511 88512 88513 88514 88515 88516 88517 88518 88519 88520 88521 88522 88523 88524 88525 88526 88527 88528 88529 88530 88531 88532 88533 88534 88535 88536 88537 88538 88539 88540 88541 88542 88543 88544 88545 88546 88547 88548 88549 88550 88551 88552 88553 88554 88555 88556 88557 88558 88559 88560 88561 88562 88563 88564 88565 88566 88567 88568 88569 88570 88571 88572 88573 88574 88575 88576 88577 88578 88579 88580 88581 88582 88583 88584 88585 88586 88587 88588 88589 88590 88591 88592 88593 88594 88595 88596 88597 88598 88599 88600 88601 88602 88603 88604 88605 88606 88607 88608 88609 88610 88611 88612 88613 88614 88615 88616 88617 88618 88619 88620 88621 88622 88623 88624 88625 88626 88627 88628 88629 88630 88631 88632 88633 88634 88635 88636 88637 88638 88639 88640 88641 88642 88643 88644 88645 88646 88647 88648 88649 88650 88651 88652 88653 88654 88655 88656 88657 88658 88659 88660 88661 88662 88663 88664 88665 88666 88667 88668 88669 88670 88671 88672 88673 88674 88675 88676 88677 88678 88679 88680 88681 88682 88683 88684 88685 88686 88687 88688 88689 88690 88691 88692 88693 88694 88695 88696 88697 88698 88699 88700 88701 88702 88703 88704 88705 88706 88707 88708 88709 88710 88711 88712 88713 88714 88715 88716 88717 88718 88719 88720 88721 88722 88723 88724 88725 88726 88727 88728 88729 88730 88731 88732 88733 88734 88735 88736 88737 88738 88739 88740 88741 88742 88743 88744 88745 88746 88747 88748 88749 88750 88751 88752 88753 88754 88755 88756 88757 88758 88759 88760 88761 88762 88763 88764 88765 88766 88767 88768 88769 88770 88771 88772 88773 88774 88775 88776 88777 88778 88779 88780 88781 88782 88783 88784 88785 88786 88787 88788 88789 88790 88791 88792 88793 88794 88795 88796 88797 88798 88799 88800 88801 88802 88803 88804 88805 88806 88807 88808 88809 88810 88811 88812 88813 88814 88815 88816 88817 88818 88819 88820 88821 88822 88823 88824 88825 88826 88827 88828 88829 88830 88831 88832 88833 88834 88835 88836 88837 88838 88839 88840 88841 88842 88843 88844 88845 88846 88847 88848 88849 88850 88851 88852 88853 88854 88855 88856 88857 88858 88859 88860 88861 88862 88863 88864 88865 88866 88867 88868 88869 88870 88871 88872 88873 88874 88875 88876 88877 88878 88879 88880 88881 88882 88883 88884 88885 88886 88887 88888 88889 88890 88891 88892 88893 88894 88895 88896 88897 88898 88899 88900 88901 88902 88903 88904 88905 88906 88907 88908 88909 88910 88911 88912 88913 88914 88915 88916 88917 88918 88919 88920 88921 88922 88923 88924 88925 88926 88927 88928 88929 88930 88931 88932 88933 88934 88935 88936 88937 88938 88939 88940 88941 88942 88943 88944 88945 88946 88947 88948 88949 88950 88951 88952 88953 88954 88955 88956 88957 88958 88959 88960 88961 88962 88963 88964 88965 88966 88967 88968 88969 88970 88971 88972 88973 88974 88975 88976 88977 88978 88979 88980 88981 88982 88983 88984 88985 88986 88987 88988 88989 88990 88991 88992 88993 88994 88995 88996 88997 88998 88999 89000 89001 89002 89003 89004 89005 89006 89007 89008 89009 89010 89011 89012 89013 89014 89015 89016 89017 89018 89019 89020 89021 89022 89023 89024 89025 89026 89027 89028 89029 89030 89031 89032 89033 89034 89035 89036 89037 89038 89039 89040 89041 89042 89043 89044 89045 89046 89047 89048 89049 89050 89051 89052 89053 89054 89055 89056 89057 89058 89059 89060 89061 89062 89063 89064 89065 89066 89067 89068 89069 89070 89071 89072 89073 89074 89075 89076 89077 89078 89079 89080 89081 89082 89083 89084 89085 89086 89087 89088 89089 89090 89091 89092 89093 89094 89095 89096 89097 89098 89099 89100 89101 89102 89103 89104 89105 89106 89107 89108 89109 89110 89111 89112 89113 89114 89115 89116 89117 89118 89119 89120 89121 89122 89123 89124 89125 89126 89127 89128 89129 89130 89131 89132 89133 89134 89135 89136 89137 89138 89139 89140 89141 89142 89143 89144 89145 89146 89147 89148 89149 89150 89151 89152 89153 89154 89155 89156 89157 89158 89159 89160 89161 89162 89163 89164 89165 89166 89167 89168 89169 89170 89171 89172 89173 89174 89175 89176 89177 89178 89179 89180 89181 89182 89183 89184 89185 89186 89187 89188 89189 89190 89191 89192 89193 89194 89195 89196 89197 89198 89199 89200 89201 89202 89203 89204 89205 89206 89207 89208 89209 89210 89211 89212 89213 89214 89215 89216 89217 89218 89219 89220 89221 89222 89223 89224 89225 89226 89227 89228 89229 89230 89231 89232 89233 89234 89235 89236 89237 89238 89239 89240 89241 89242 89243 89244 89245 89246 89247 89248 89249 89250 89251 89252 89253 89254 89255 89256 89257 89258 89259 89260 89261 89262 89263 89264 89265 89266 89267 89268 89269 89270 89271 89272 89273 89274 89275 89276 89277 89278 89279 89280 89281 89282 89283 89284 89285 89286 89287 89288 89289 89290 89291 89292 89293 89294 89295 89296 89297 89298 89299 89300 89301 89302 89303 89304 89305 89306 89307 89308 89309 89310 89311 89312 89313 89314 89315 89316 89317 89318 89319 89320 89321 89322 89323 89324 89325 89326 89327 89328 89329 89330 89331 89332 89333 89334 89335 89336 89337 89338 89339 89340 89341 89342 89343 89344 89345 89346 89347 89348 89349 89350 89351 89352 89353 89354 89355 89356 89357 89358 89359 89360 89361 89362 89363 89364 89365 89366 89367 89368 89369 89370 89371 89372 89373 89374 89375 89376 89377 89378 89379 89380 89381 89382 89383 89384 89385 89386 89387 89388 89389 89390 89391 89392 89393 89394 89395 89396 89397 89398 89399 89400 89401 89402 89403 89404 89405 89406 89407 89408 89409 89410 89411 89412 89413 89414 89415 89416 89417 89418 89419 89420 89421 89422 89423 89424 89425 89426 89427 89428 89429 89430 89431 89432 89433 89434 89435 89436 89437 89438 89439 89440 89441 89442 89443 89444 89445 89446 89447 89448 89449 89450 89451 89452 89453 89454 89455 89456 89457 89458 89459 89460 89461 89462 89463 89464 89465 89466 89467 89468 89469 89470 89471 89472 89473 89474 89475 89476 89477 89478 89479 89480 89481 89482 89483 89484 89485 89486 89487 89488 89489 89490 89491 89492 89493 89494 89495 89496 89497 89498 89499 89500 89501 89502 89503 89504 89505 89506 89507 89508 89509 89510 89511 89512 89513 89514 89515 89516 89517 89518 89519 89520 89521 89522 89523 89524 89525 89526 89527 89528 89529 89530 89531 89532 89533 89534 89535 89536 89537 89538 89539 89540 89541 89542 89543 89544 89545 89546 89547 89548 89549 89550 89551 89552 89553 89554 89555 89556 89557 89558 89559 89560 89561 89562 89563 89564 89565 89566 89567 89568 89569 89570 89571 89572 89573 89574 89575 89576 89577 89578 89579 89580 89581 89582 89583 89584 89585 89586 89587 89588 89589 89590 89591 89592 89593 89594 89595 89596 89597 89598 89599 89600 89601 89602 89603 89604 89605 89606 89607 89608 89609 89610 89611 89612 89613 89614 89615 89616 89617 89618 89619 89620 89621 89622 89623 89624 89625 89626 89627 89628 89629 89630 89631 89632 89633 89634 89635 89636 89637 89638 89639 89640 89641 89642 89643 89644 89645 89646 89647 89648 89649 89650 89651 89652 89653 89654 89655 89656 89657 89658 89659 89660 89661 89662 89663 89664 89665 89666 89667 89668 89669 89670 89671 89672 89673 89674 89675 89676 89677 89678 89679 89680 89681 89682 89683 89684 89685 89686 89687 89688 89689 89690 89691 89692 89693 89694 89695 89696 89697 89698 89699 89700 89701 89702 89703 89704 89705 89706 89707 89708 89709 89710 89711 89712 89713 89714 89715 89716 89717 89718 89719 89720 89721 89722 89723 89724 89725 89726 89727 89728 89729 89730 89731 89732 89733 89734 89735 89736 89737 89738 89739 89740 89741 89742 89743 89744 89745 89746 89747 89748 89749 89750 89751 89752 89753 89754 89755 89756 89757 89758 89759 89760 89761 89762 89763 89764 89765 89766 89767 89768 89769 89770 89771 89772 89773 89774 89775 89776 89777 89778 89779 89780 89781 89782 89783 89784 89785 89786 89787 89788 89789 89790 89791 89792 89793 89794 89795 89796 89797 89798 89799 89800 89801 89802 89803 89804 89805 89806 89807 89808 89809 89810 89811 89812 89813 89814 89815 89816 89817 89818 89819 89820 89821 89822 89823 89824 89825 89826 89827 89828 89829 89830 89831 89832 89833 89834 89835 89836 89837 89838 89839 89840 89841 89842 89843 89844 89845 89846 89847 89848 89849 89850 89851 89852 89853 89854 89855 89856 89857 89858 89859 89860 89861 89862 89863 89864 89865 89866 89867 89868 89869 89870 89871 89872 89873 89874 89875 89876 89877 89878 89879 89880 89881 89882 89883 89884 89885 89886 89887 89888 89889 89890 89891 89892 89893 89894 89895 89896 89897 89898 89899 89900 89901 89902 89903 89904 89905 89906 89907 89908 89909 89910 89911 89912 89913 89914 89915 89916 89917 89918 89919 89920 89921 89922 89923 89924 89925 89926 89927 89928 89929 89930 89931 89932 89933 89934 89935 89936 89937 89938 89939 89940 89941 89942 89943 89944 89945 89946 89947 89948 89949 89950 89951 89952 89953 89954 89955 89956 89957 89958 89959 89960 89961 89962 89963 89964 89965 89966 89967 89968 89969 89970 89971 89972 89973 89974 89975 89976 89977 89978 89979 89980 89981 89982 89983 89984 89985 89986 89987 89988 89989 89990 89991 89992 89993 89994 89995 89996 89997 89998 89999 90000 90001 90002 90003 90004 90005 90006 90007 90008 90009 90010 90011 90012 90013 90014 90015 90016 90017 90018 90019 90020 90021 90022 90023 90024 90025 90026 90027 90028 90029 90030 90031 90032 90033 90034 90035 90036 90037 90038 90039 90040 90041 90042 90043 90044 90045 90046 90047 90048 90049 90050 90051 90052 90053 90054 90055 90056 90057 90058 90059 90060 90061 90062 90063 90064 90065 90066 90067 90068 90069 90070 90071 90072 90073 90074 90075 90076 90077 90078 90079 90080 90081 90082 90083 90084 90085 90086 90087 90088 90089 90090 90091 90092 90093 90094 90095 90096 90097 90098 90099 90100 90101 90102 90103 90104 90105 90106 90107 90108 90109 90110 90111 90112 90113 90114 90115 90116 90117 90118 90119 90120 90121 90122 90123 90124 90125 90126 90127 90128 90129 90130 90131 90132 90133 90134 90135 90136 90137 90138 90139 90140 90141 90142 90143 90144 90145 90146 90147 90148 90149 90150 90151 90152 90153 90154 90155 90156 90157 90158 90159 90160 90161 90162 90163 90164 90165 90166 90167 90168 90169 90170 90171 90172 90173 90174 90175 90176 90177 90178 90179 90180 90181 90182 90183 90184 90185 90186 90187 90188 90189 90190 90191 90192 90193 90194 90195 90196 90197 90198 90199 90200 90201 90202 90203 90204 90205 90206 90207 90208 90209 90210 90211 90212 90213 90214 90215 90216 90217 90218 90219 90220 90221 90222 90223 90224 90225 90226 90227 90228 90229 90230 90231 90232 90233 90234 90235 90236 90237 90238 90239 90240 90241 90242 90243 90244 90245 90246 90247 90248 90249 90250 90251 90252 90253 90254 90255 90256 90257 90258 90259 90260 90261 90262 90263 90264 90265 90266 90267 90268 90269 90270 90271 90272 90273 90274 90275 90276 90277 90278 90279 90280 90281 90282 90283 90284 90285 90286 90287 90288 90289 90290 90291 90292 90293 90294 90295 90296 90297 90298 90299 90300 90301 90302 90303 90304 90305 90306 90307 90308 90309 90310 90311 90312 90313 90314 90315 90316 90317 90318 90319 90320 90321 90322 90323 90324 90325 90326 90327 90328 90329 90330 90331 90332 90333 90334 90335 90336 90337 90338 90339 90340 90341 90342 90343 90344 90345 90346 90347 90348 90349 90350 90351 90352 90353 90354 90355 90356 90357 90358 90359 90360 90361 90362 90363 90364 90365 90366 90367 90368 90369 90370 90371 90372 90373 90374 90375 90376 90377 90378 90379 90380 90381 90382 90383 90384 90385 90386 90387 90388 90389 90390 90391 90392 90393 90394 90395 90396 90397 90398 90399 90400 90401 90402 90403 90404 90405 90406 90407 90408 90409 90410 90411 90412 90413 90414 90415 90416 90417 90418 90419 90420 90421 90422 90423 90424 90425 90426 90427 90428 90429 90430 90431 90432 90433 90434 90435 90436 90437 90438 90439 90440 90441 90442 90443 90444 90445 90446 90447 90448 90449 90450 90451 90452 90453 90454 90455 90456 90457 90458 90459 90460 90461 90462 90463 90464 90465 90466 90467 90468 90469 90470 90471 90472 90473 90474 90475 90476 90477 90478 90479 90480 90481 90482 90483 90484 90485 90486 90487 90488 90489 90490 90491 90492 90493 90494 90495 90496 90497 90498 90499 90500 90501 90502 90503 90504 90505 90506 90507 90508 90509 90510 90511 90512 90513 90514 90515 90516 90517 90518 90519 90520 90521 90522 90523 90524 90525 90526 90527 90528 90529 90530 90531 90532 90533 90534 90535 90536 90537 90538 90539 90540 90541 90542 90543 90544 90545 90546 90547 90548 90549 90550 90551 90552 90553 90554 90555 90556 90557 90558 90559 90560 90561 90562 90563 90564 90565 90566 90567 90568 90569 90570 90571 90572 90573 90574 90575 90576 90577 90578 90579 90580 90581 90582 90583 90584 90585 90586 90587 90588 90589 90590 90591 90592 90593 90594 90595 90596 90597 90598 90599 90600 90601 90602 90603 90604 90605 90606 90607 90608 90609 90610 90611 90612 90613 90614 90615 90616 90617 90618 90619 90620 90621 90622 90623 
+              <pre>
+debugfs: q <span class='label'>Premer de novo a tecla q para saír da consola debugfs</span><br />
+              </pre>
+            </li>
+          </ul>
+        </div>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <div class='contido mleftsubsx2 mrightmini'><span class='label'>Listar/Ver información sobre inodos, bloques e os propios contidos dos ficheiros</span>
+          <ul class='hashtag'>
+            <li>mount /dev/sda1 /mnt/part1<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/part1</span></li><br />
+            <li>cd /mnt/part1<span class='explicacion'> #Acceder ao directorio /mnt/part1</span></li><br />
+            <li>echo 'Cada día sabemos máis e entendemos menos. Einstein' > proverbio1.txt<span style='font-size:16px;color:#0F18A0;'> #Crear un ficheiro /mnt/part1/proverbio1.txt que contén unha frase.</span><br />
+            </li>
+            <li>cat proverbio1.txt<span class='explicacion'> #Ver o contido do ficheiro /mnt/part1/proverbio1.txt </span><br     />
+              <pre>
+Cada día sabemos máis e entendemos menos. Einstein
+              </pre>
+            <li>ls -li proverbio1.txt<span class='explicacion'> #Listar de forma extendida e amosando o inodo do ficheiro /mnt/part1/proverbio1.txt </span><br />
+              <pre>
+16 -rw-r--r-- 1 root root 53 Oct 30 18:33 proverbio1.txt
+              </pre>
+            </li>
+            <li>stat proverbio1.txt<span class='explicacion'> #Amosar a información do comando stat sobre o ficheiro /mnt/part1/proverbio1.txt </span><br />
+              <pre>
+  File: proverbio1.txt
+  Size: 53        	Blocks: 8          IO Block: 4096   regular file
+Device: 801h/2049d	Inode: 16          Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2018-10-30 18:33:31.138550932 +0000
+Modify: 2018-10-30 18:33:31.138550932 +0000
+Change: 2018-10-30 18:33:31.138550932 +0000
+ Birth: -
+              </pre>
+            </li>
+            <li>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+            <li>umount /mnt/part1<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/part1</span></li><br />
+            <li>debugfs /dev/sda1<span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span><br />
+              <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs:  stat <16><span class='explicacion'> #Ver información sobre o inodo 16</span>
+Inode: 16   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 1746833275    Version: 0x00000000:00000001
+User:     0   Group:     0   Project:     0   Size: 53
+File ACL: 0    Directory ACL: 0
+Links: 1   Blockcount: 8
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd8a3fb:21087a50 -- Tue Oct 30 18:33:31 2018
+ atime: 0x5bd8a3fb:21087a50 -- Tue Oct 30 18:33:31 2018
+ mtime: 0x5bd8a3fb:21087a50 -- Tue Oct 30 18:33:31 2018
+crtime: 0x5bd8a3fb:21087a50 -- Tue Oct 30 18:33:31 2018
+Size of extra inode fields: 32
+Inode checksum: 0x1c9445dc
+EXTENTS:
+(0):33281
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs:  blocks <16><span class='explicacion'> #Ver os bloques que apuntan ao contido do ficheiro que corresponde co inodo 16</span>
+33281
+debugfs:  cat <16><span class='explicacion'> #Ver o contido do ficheiro que corresponde co inodo 16</span>
+Cada día sabemos máis e entendemos menos. Einstein
+debugfs:  ncheck 16<span class='explicacion'> #Identificar a relación entre o inodo 16 e o nome do arquivo ao que pertence.</span>
+Inode	Pathname
+16	//proverbio1.txt
+debugfs:  icheck 33281<span class='explicacion'> #Identificar a relación entre o bloque 33281 e o inodo ao que pertence.</span>
+Block	Inode number
+33281	16
+debugfs: q <span class='label'>Premer de novo a tecla q para saír da consola debugfs</span><br />
+              </pre>
+            </li>
+            <li>mount /dev/sda1 /mnt/part1<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/part1</span></li><br />
+            <li>cd /mnt/part1<span class='explicacion'> #Acceder ao directorio /mnt/part1</span></li><br />
+            <li>
+for i in $(seq 1 100);do echo 'Cada día sabemos máis e entendemos menos. Einstein' >> proverbio2.txt;done
+<span style='font-size:16px;color:#0F18A0;'> #Crear un ficheiro /mnt/part1/proverbio2.txt que contén 100 frases.</span><br />
+            </li>
+            <li>cat proverbio2.txt<span class='explicacion'> #Ver o contido do ficheiro /mnt/part1/proverbio2.txt </span><br />
+              <pre>
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+              </pre>
+            <li>ls -li proverbio2.txt<span class='explicacion'> #Listar de forma extendida e amosando o inodo do ficheiro /mnt/part1/proverbio2.txt </span><br />
+              <pre>
+17 -rw-r--r-- 1 root root 5300 Oct 30 19:05 proverbio2.txt
+              </pre>
+            </li>
+            <li>stat proverbio2.txt<span class='explicacion'> #Amosar a información do comando stat sobre o ficheiro /mnt/part1/proverbio2.txt </span><br />
+              <pre>
+  File: proverbio2.txt
+  Size: 5300      	Blocks: 16         IO Block: 4096   regular file
+Device: 801h/2049d	Inode: 17          Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2018-10-30 19:05:54.956425621 +0000
+Modify: 2018-10-30 19:05:51.416372922 +0000
+Change: 2018-10-30 19:05:51.416372922 +0000
+ Birth: -
+              </pre>
+            </li>
+            <li>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+            <li>umount /mnt/part1<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/part1</span></li><br />
+            <li>debugfs /dev/sda1<span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span><br />
+              <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs:  stat <17><span class='explicacion'> #Ver información sobre o inodo 17</span>
+Inode: 17   Type: regular    Mode:  0644   Flags: 0x80000
+Generation: 3166104506    Version: 0x00000000:00000001
+User:     0   Group:     0   Project:     0   Size: 5300
+File ACL: 0    Directory ACL: 0
+Links: 1   Blockcount: 16
+Fragment:  Address: 0    Number: 0    Size: 0
+ ctime: 0x5bd8ab8f:634562e8 -- Tue Oct 30 19:05:51 2018
+ atime: 0x5bd8ab92:e4079654 -- Tue Oct 30 19:05:54 2018
+ mtime: 0x5bd8ab8f:634562e8 -- Tue Oct 30 19:05:51 2018
+crtime: 0x5bd8ab8f:5f74cf2c -- Tue Oct 30 19:05:51 2018
+Size of extra inode fields: 32
+Inode checksum: 0xf40f62f9
+EXTENTS:
+(0-1):33794-33795
+(END)
+              </pre>
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs<br />
+              <pre>
+debugfs:  blocks <17><span class='explicacion'> #Ver os bloques que apuntan ao contido do ficheiro que corresponde co inodo 17</span>
+33794 33795
+debugfs:  cat <17><span class='explicacion'> #Ver o contido do ficheiro que corresponde co inodo 17</span>
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+Cada día sabemos máis e entendemos menos. Einstein
+debugfs:  ncheck 17<span class='explicacion'> #Identificar a relación entre o inodo 17 e o nome do arquivo ao que pertence.</span>
+Inode	Pathname
+17	//proverbio2.txt
+debugfs:  icheck 33794<span class='explicacion'> #Identificar a relación entre o bloque 33281 e o inodo ao que pertence.</span>
+Block	Inode number
+33794	17
+debugfs:  icheck 33795<span class='explicacion'> #Identificar a relación entre o bloque 33281 e o inodo ao que pertence.</span>
+Block	Inode number
+33795	17
+debugfs:  block_dump 33794<span class='explicacion'> #Ver o contido do bloque 33794. A información amósase en código hexadecimal e ASCII</span>
+              <pre>
+0000  4361 6461 2064 c3ad 6120 7361 6265 6d6f  Cada d..a sabemo
+0020  7320 6dc3 a169 7320 6520 656e 7465 6e64  s m..is e entend
+0040  656d 6f73 206d 656e 6f73 2e20 4569 6e73  emos menos. Eins
+0060  7465 696e 0a43 6164 6120 64c3 ad61 2073  tein.Cada d..a s
+0100  6162 656d 6f73 206d c3a1 6973 2065 2065  abemos m..is e e
+0120  6e74 656e 6465 6d6f 7320 6d65 6e6f 732e  ntendemos menos.
+0140  2045 696e 7374 6569 6e0a 4361 6461 2064   Einstein.Cada d
+0160  c3ad 6120 7361 6265 6d6f 7320 6dc3 a169  ..a sabemos m..i
+0200  7320 6520 656e 7465 6e64 656d 6f73 206d  s e entendemos m
+0220  656e 6f73 2e20 4569 6e73 7465 696e 0a43  enos. Einstein.C
+0240  6164 6120 64c3 ad61 2073 6162 656d 6f73  ada d..a sabemos
+0260  206d c3a1 6973 2065 2065 6e74 656e 6465   m..is e entende
+0300  6d6f 7320 6d65 6e6f 732e 2045 696e 7374  mos menos. Einst
+0320  6569 6e0a 4361 6461 2064 c3ad 6120 7361  ein.Cada d..a sa
+0340  6265 6d6f 7320 6dc3 a169 7320 6520 656e  bemos m..is e en
+0360  7465 6e64 656d 6f73 206d 656e 6f73 2e20  tendemos menos. 
+0400  4569 6e73 7465 696e 0a43 6164 6120 64c3  Einstein.Cada d.
+0420  ad61 2073 6162 656d 6f73 206d c3a1 6973  .a sabemos m..is
+0440  2065 2065 6e74 656e 6465 6d6f 7320 6d65   e entendemos me
+0460  6e6f 732e 2045 696e 7374 6569 6e0a 4361  nos. Einstein.Ca
+0500  6461 2064 c3ad 6120 7361 6265 6d6f 7320  da d..a sabemos 
+0520  6dc3 a169 7320 6520 656e 7465 6e64 656d  m..is e entendem
+0540  6f73 206d 656e 6f73 2e20 4569 6e73 7465  os menos. Einste
+0560  696e 0a43 6164 6120 64c3 ad61 2073 6162  in.Cada d..a sab
+0600  656d 6f73 206d c3a1 6973 2065 2065 6e74  emos m..is e ent
+0620  656e 6465 6d6f 7320 6d65 6e6f 732e 2045  endemos menos. E
+0640  696e 7374 6569 6e0a 4361 6461 2064 c3ad  instein.Cada d..
+0660  6120 7361 6265 6d6f 7320 6dc3 a169 7320  a sabemos m..is 
+0700  6520 656e 7465 6e64 656d 6f73 206d 656e  e entendemos men
+0720  6f73 2e20 4569 6e73 7465 696e 0a43 6164  os. Einstein.Cad
+0740  6120 64c3 ad61 2073 6162 656d 6f73 206d  a d..a sabemos m
+0760  c3a1 6973 2065 2065 6e74 656e 6465 6d6f  ..is e entendemo
+1000  7320 6d65 6e6f 732e 2045 696e 7374 6569  s menos. Einstei
+1020  6e0a 4361 6461 2064 c3ad 6120 7361 6265  n.Cada d..a sabe
+1040  6d6f 7320 6dc3 a169 7320 6520 656e 7465  mos m..is e ente
+1060  6e64 656d 6f73 206d 656e 6f73 2e20 4569  ndemos menos. Ei
+1100  6e73 7465 696e 0a43 6164 6120 64c3 ad61  nstein.Cada d..a
+1120  2073 6162 656d 6f73 206d c3a1 6973 2065   sabemos m..is e
+1140  2065 6e74 656e 6465 6d6f 7320 6d65 6e6f   entendemos meno
+1160  732e 2045 696e 7374 6569 6e0a 4361 6461  s. Einstein.Cada
+1200  2064 c3ad 6120 7361 6265 6d6f 7320 6dc3   d..a sabemos m.
+1220  a169 7320 6520 656e 7465 6e64 656d 6f73  .is e entendemos
+1240  206d 656e 6f73 2e20 4569 6e73 7465 696e   menos. Einstein
+1260  0a43 6164 6120 64c3 ad61 2073 6162 656d  .Cada d..a sabem
+1300  6f73 206d c3a1 6973 2065 2065 6e74 656e  os m..is e enten
+1320  6465 6d6f 7320 6d65 6e6f 732e 2045 696e  demos menos. Ein
+1340  7374 6569 6e0a 4361 6461 2064 c3ad 6120  stein.Cada d..a 
+1360  7361 6265 6d6f 7320 6dc3 a169 7320 6520  sabemos m..is e 
+1400  656e 7465 6e64 656d 6f73 206d 656e 6f73  entendemos menos
+1420  2e20 4569 6e73 7465 696e 0a43 6164 6120  . Einstein.Cada 
+1440  64c3 ad61 2073 6162 656d 6f73 206d c3a1  d..a sabemos m..
+1460  6973 2065 2065 6e74 656e 6465 6d6f 7320  is e entendemos 
+1500  6d65 6e6f 732e 2045 696e 7374 6569 6e0a  menos. Einstein.
+1520  4361 6461 2064 c3ad 6120 7361 6265 6d6f  Cada d..a sabemo
+1540  7320 6dc3 a169 7320 6520 656e 7465 6e64  s m..is e entend
+1560  656d 6f73 206d 656e 6f73 2e20 4569 6e73  emos menos. Eins
+1600  7465 696e 0a43 6164 6120 64c3 ad61 2073  tein.Cada d..a s
+1620  6162 656d 6f73 206d c3a1 6973 2065 2065  abemos m..is e e
+1640  6e74 656e 6465 6d6f 7320 6d65 6e6f 732e  ntendemos menos.
+1660  2045 696e 7374 6569 6e0a 4361 6461 2064   Einstein.Cada d
+1700  c3ad 6120 7361 6265 6d6f 7320 6dc3 a169  ..a sabemos m..i
+1720  7320 6520 656e 7465 6e64 656d 6f73 206d  s e entendemos m
+1740  656e 6f73 2e20 4569 6e73 7465 696e 0a43  enos. Einstein.C
+1760  6164 6120 64c3 ad61 2073 6162 656d 6f73  ada d..a sabemos
+2000  206d c3a1 6973 2065 2065 6e74 656e 6465   m..is e entende
+2020  6d6f 7320 6d65 6e6f 732e 2045 696e 7374  mos menos. Einst
+2040  6569 6e0a 4361 6461 2064 c3ad 6120 7361  ein.Cada d..a sa
+2060  6265 6d6f 7320 6dc3 a169 7320 6520 656e  bemos m..is e en
+2100  7465 6e64 656d 6f73 206d 656e 6f73 2e20  tendemos menos. 
+2120  4569 6e73 7465 696e 0a43 6164 6120 64c3  Einstein.Cada d.
+2140  ad61 2073 6162 656d 6f73 206d c3a1 6973  .a sabemos m..is
+2160  2065 2065 6e74 656e 6465 6d6f 7320 6d65   e entendemos me
+2200  6e6f 732e 2045 696e 7374 6569 6e0a 4361  nos. Einstein.Ca
+2220  6461 2064 c3ad 6120 7361 6265 6d6f 7320  da d..a sabemos 
+2240  6dc3 a169 7320 6520 656e 7465 6e64 656d  m..is e entendem
+2260  6f73 206d 656e 6f73 2e20 4569 6e73 7465  os menos. Einste
+2300  696e 0a43 6164 6120 64c3 ad61 2073 6162  in.Cada d..a sab
+2320  656d 6f73 206d c3a1 6973 2065 2065 6e74  emos m..is e ent
+2340  656e 6465 6d6f 7320 6d65 6e6f 732e 2045  endemos menos. E
+2360  696e 7374 6569 6e0a 4361 6461 2064 c3ad  instein.Cada d..
+2400  6120 7361 6265 6d6f 7320 6dc3 a169 7320  a sabemos m..is 
+2420  6520 656e 7465 6e64 656d 6f73 206d 656e  e entendemos men
+2440  6f73 2e20 4569 6e73 7465 696e 0a43 6164  os. Einstein.Cad
+2460  6120 64c3 ad61 2073 6162 656d 6f73 206d  a d..a sabemos m
+2500  c3a1 6973 2065 2065 6e74 656e 6465 6d6f  ..is e entendemo
+2520  7320 6d65 6e6f 732e 2045 696e 7374 6569  s menos. Einstei
+2540  6e0a 4361 6461 2064 c3ad 6120 7361 6265  n.Cada d..a sabe
+2560  6d6f 7320 6dc3 a169 7320 6520 656e 7465  mos m..is e ente
+2600  6e64 656d 6f73 206d 656e 6f73 2e20 4569  ndemos menos. Ei
+2620  6e73 7465 696e 0a43 6164 6120 64c3 ad61  nstein.Cada d..a
+2640  2073 6162 656d 6f73 206d c3a1 6973 2065   sabemos m..is e
+2660  2065 6e74 656e 6465 6d6f 7320 6d65 6e6f   entendemos meno
+2700  732e 2045 696e 7374 6569 6e0a 4361 6461  s. Einstein.Cada
+2720  2064 c3ad 6120 7361 6265 6d6f 7320 6dc3   d..a sabemos m.
+2740  a169 7320 6520 656e 7465 6e64 656d 6f73  .is e entendemos
+2760  206d 656e 6f73 2e20 4569 6e73 7465 696e   menos. Einstein
+3000  0a43 6164 6120 64c3 ad61 2073 6162 656d  .Cada d..a sabem
+3020  6f73 206d c3a1 6973 2065 2065 6e74 656e  os m..is e enten
+3040  6465 6d6f 7320 6d65 6e6f 732e 2045 696e  demos menos. Ein
+3060  7374 6569 6e0a 4361 6461 2064 c3ad 6120  stein.Cada d..a 
+3100  7361 6265 6d6f 7320 6dc3 a169 7320 6520  sabemos m..is e 
+3120  656e 7465 6e64 656d 6f73 206d 656e 6f73  entendemos menos
+3140  2e20 4569 6e73 7465 696e 0a43 6164 6120  . Einstein.Cada 
+3160  64c3 ad61 2073 6162 656d 6f73 206d c3a1  d..a sabemos m..
+3200  6973 2065 2065 6e74 656e 6465 6d6f 7320  is e entendemos 
+3220  6d65 6e6f 732e 2045 696e 7374 6569 6e0a  menos. Einstein.
+3240  4361 6461 2064 c3ad 6120 7361 6265 6d6f  Cada d..a sabemo
+3260  7320 6dc3 a169 7320 6520 656e 7465 6e64  s m..is e entend
+3300  656d 6f73 206d 656e 6f73 2e20 4569 6e73  emos menos. Eins
+3320  7465 696e 0a43 6164 6120 64c3 ad61 2073  tein.Cada d..a s
+3340  6162 656d 6f73 206d c3a1 6973 2065 2065  abemos m..is e e
+3360  6e74 656e 6465 6d6f 7320 6d65 6e6f 732e  ntendemos menos.
+3400  2045 696e 7374 6569 6e0a 4361 6461 2064   Einstein.Cada d
+3420  c3ad 6120 7361 6265 6d6f 7320 6dc3 a169  ..a sabemos m..i
+3440  7320 6520 656e 7465 6e64 656d 6f73 206d  s e entendemos m
+3460  656e 6f73 2e20 4569 6e73 7465 696e 0a43  enos. Einstein.C
+3500  6164 6120 64c3 ad61 2073 6162 656d 6f73  ada d..a sabemos
+3520  206d c3a1 6973 2065 2065 6e74 656e 6465   m..is e entende
+3540  6d6f 7320 6d65 6e6f 732e 2045 696e 7374  mos menos. Einst
+3560  6569 6e0a 4361 6461 2064 c3ad 6120 7361  ein.Cada d..a sa
+3600  6265 6d6f 7320 6dc3 a169 7320 6520 656e  bemos m..is e en
+3620  7465 6e64 656d 6f73 206d 656e 6f73 2e20  tendemos menos. 
+3640  4569 6e73 7465 696e 0a43 6164 6120 64c3  Einstein.Cada d.
+3660  ad61 2073 6162 656d 6f73 206d c3a1 6973  .a sabemos m..is
+3700  2065 2065 6e74 656e 6465 6d6f 7320 6d65   e entendemos me
+3720  6e6f 732e 2045 696e 7374 6569 6e0a 4361  nos. Einstein.Ca
+3740  6461 2064 c3ad 6120 7361 6265 6d6f 7320  da d..a sabemos 
+3760  6dc3 a169 7320 6520 656e 7465 6e64 656d  m..is e entendem
+4000  6f73 206d 656e 6f73 2e20 4569 6e73 7465  os menos. Einste
+4020  696e 0a43 6164 6120 64c3 ad61 2073 6162  in.Cada d..a sab
+4040  656d 6f73 206d c3a1 6973 2065 2065 6e74  emos m..is e ent
+4060  656e 6465 6d6f 7320 6d65 6e6f 732e 2045  endemos menos. E
+4100  696e 7374 6569 6e0a 4361 6461 2064 c3ad  instein.Cada d..
+4120  6120 7361 6265 6d6f 7320 6dc3 a169 7320  a sabemos m..is 
+4140  6520 656e 7465 6e64 656d 6f73 206d 656e  e entendemos men
+4160  6f73 2e20 4569 6e73 7465 696e 0a43 6164  os. Einstein.Cad
+4200  6120 64c3 ad61 2073 6162 656d 6f73 206d  a d..a sabemos m
+4220  c3a1 6973 2065 2065 6e74 656e 6465 6d6f  ..is e entendemo
+4240  7320 6d65 6e6f 732e 2045 696e 7374 6569  s menos. Einstei
+4260  6e0a 4361 6461 2064 c3ad 6120 7361 6265  n.Cada d..a sabe
+4300  6d6f 7320 6dc3 a169 7320 6520 656e 7465  mos m..is e ente
+4320  6e64 656d 6f73 206d 656e 6f73 2e20 4569  ndemos menos. Ei
+4340  6e73 7465 696e 0a43 6164 6120 64c3 ad61  nstein.Cada d..a
+4360  2073 6162 656d 6f73 206d c3a1 6973 2065   sabemos m..is e
+4400  2065 6e74 656e 6465 6d6f 7320 6d65 6e6f   entendemos meno
+4420  732e 2045 696e 7374 6569 6e0a 4361 6461  s. Einstein.Cada
+4440  2064 c3ad 6120 7361 6265 6d6f 7320 6dc3   d..a sabemos m.
+4460  a169 7320 6520 656e 7465 6e64 656d 6f73  .is e entendemos
+4500  206d 656e 6f73 2e20 4569 6e73 7465 696e   menos. Einstein
+4520  0a43 6164 6120 64c3 ad61 2073 6162 656d  .Cada d..a sabem
+4540  6f73 206d c3a1 6973 2065 2065 6e74 656e  os m..is e enten
+4560  6465 6d6f 7320 6d65 6e6f 732e 2045 696e  demos menos. Ein
+4600  7374 6569 6e0a 4361 6461 2064 c3ad 6120  stein.Cada d..a 
+4620  7361 6265 6d6f 7320 6dc3 a169 7320 6520  sabemos m..is e 
+4640  656e 7465 6e64 656d 6f73 206d 656e 6f73  entendemos menos
+4660  2e20 4569 6e73 7465 696e 0a43 6164 6120  . Einstein.Cada 
+4700  64c3 ad61 2073 6162 656d 6f73 206d c3a1  d..a sabemos m..
+4720  6973 2065 2065 6e74 656e 6465 6d6f 7320  is e entendemos 
+4740  6d65 6e6f 732e 2045 696e 7374 6569 6e0a  menos. Einstein.
+4760  4361 6461 2064 c3ad 6120 7361 6265 6d6f  Cada d..a sabemo
+5000  7320 6dc3 a169 7320 6520 656e 7465 6e64  s m..is e entend
+5020  656d 6f73 206d 656e 6f73 2e20 4569 6e73  emos menos. Eins
+5040  7465 696e 0a43 6164 6120 64c3 ad61 2073  tein.Cada d..a s
+5060  6162 656d 6f73 206d c3a1 6973 2065 2065  abemos m..is e e
+5100  6e74 656e 6465 6d6f 7320 6d65 6e6f 732e  ntendemos menos.
+5120  2045 696e 7374 6569 6e0a 4361 6461 2064   Einstein.Cada d
+5140  c3ad 6120 7361 6265 6d6f 7320 6dc3 a169  ..a sabemos m..i
+5160  7320 6520 656e 7465 6e64 656d 6f73 206d  s e entendemos m
+5200  656e 6f73 2e20 4569 6e73 7465 696e 0a43  enos. Einstein.C
+5220  6164 6120 64c3 ad61 2073 6162 656d 6f73  ada d..a sabemos
+5240  206d c3a1 6973 2065 2065 6e74 656e 6465   m..is e entende
+5260  6d6f 7320 6d65 6e6f 732e 2045 696e 7374  mos menos. Einst
+5300  6569 6e0a 4361 6461 2064 c3ad 6120 7361  ein.Cada d..a sa
+5320  6265 6d6f 7320 6dc3 a169 7320 6520 656e  bemos m..is e en
+5340  7465 6e64 656d 6f73 206d 656e 6f73 2e20  tendemos menos. 
+5360  4569 6e73 7465 696e 0a43 6164 6120 64c3  Einstein.Cada d.
+5400  ad61 2073 6162 656d 6f73 206d c3a1 6973  .a sabemos m..is
+5420  2065 2065 6e74 656e 6465 6d6f 7320 6d65   e entendemos me
+5440  6e6f 732e 2045 696e 7374 6569 6e0a 4361  nos. Einstein.Ca
+5460  6461 2064 c3ad 6120 7361 6265 6d6f 7320  da d..a sabemos 
+5500  6dc3 a169 7320 6520 656e 7465 6e64 656d  m..is e entendem
+5520  6f73 206d 656e 6f73 2e20 4569 6e73 7465  os menos. Einste
+5540  696e 0a43 6164 6120 64c3 ad61 2073 6162  in.Cada d..a sab
+5560  656d 6f73 206d c3a1 6973 2065 2065 6e74  emos m..is e ent
+5600  656e 6465 6d6f 7320 6d65 6e6f 732e 2045  endemos menos. E
+5620  696e 7374 6569 6e0a 4361 6461 2064 c3ad  instein.Cada d..
+5640  6120 7361 6265 6d6f 7320 6dc3 a169 7320  a sabemos m..is 
+5660  6520 656e 7465 6e64 656d 6f73 206d 656e  e entendemos men
+5700  6f73 2e20 4569 6e73 7465 696e 0a43 6164  os. Einstein.Cad
+5720  6120 64c3 ad61 2073 6162 656d 6f73 206d  a d..a sabemos m
+5740  c3a1 6973 2065 2065 6e74 656e 6465 6d6f  ..is e entendemo
+5760  7320 6d65 6e6f 732e 2045 696e 7374 6569  s menos. Einstei
+6000  6e0a 4361 6461 2064 c3ad 6120 7361 6265  n.Cada d..a sabe
+6020  6d6f 7320 6dc3 a169 7320 6520 656e 7465  mos m..is e ente
+6040  6e64 656d 6f73 206d 656e 6f73 2e20 4569  ndemos menos. Ei
+6060  6e73 7465 696e 0a43 6164 6120 64c3 ad61  nstein.Cada d..a
+6100  2073 6162 656d 6f73 206d c3a1 6973 2065   sabemos m..is e
+6120  2065 6e74 656e 6465 6d6f 7320 6d65 6e6f   entendemos meno
+6140  732e 2045 696e 7374 6569 6e0a 4361 6461  s. Einstein.Cada
+6160  2064 c3ad 6120 7361 6265 6d6f 7320 6dc3   d..a sabemos m.
+6200  a169 7320 6520 656e 7465 6e64 656d 6f73  .is e entendemos
+6220  206d 656e 6f73 2e20 4569 6e73 7465 696e   menos. Einstein
+6240  0a43 6164 6120 64c3 ad61 2073 6162 656d  .Cada d..a sabem
+6260  6f73 206d c3a1 6973 2065 2065 6e74 656e  os m..is e enten
+6300  6465 6d6f 7320 6d65 6e6f 732e 2045 696e  demos menos. Ein
+6320  7374 6569 6e0a 4361 6461 2064 c3ad 6120  stein.Cada d..a 
+6340  7361 6265 6d6f 7320 6dc3 a169 7320 6520  sabemos m..is e 
+6360  656e 7465 6e64 656d 6f73 206d 656e 6f73  entendemos menos
+6400  2e20 4569 6e73 7465 696e 0a43 6164 6120  . Einstein.Cada 
+6420  64c3 ad61 2073 6162 656d 6f73 206d c3a1  d..a sabemos m..
+6440  6973 2065 2065 6e74 656e 6465 6d6f 7320  is e entendemos 
+6460  6d65 6e6f 732e 2045 696e 7374 6569 6e0a  menos. Einstein.
+6500  4361 6461 2064 c3ad 6120 7361 6265 6d6f  Cada d..a sabemo
+6520  7320 6dc3 a169 7320 6520 656e 7465 6e64  s m..is e entend
+6540  656d 6f73 206d 656e 6f73 2e20 4569 6e73  emos menos. Eins
+6560  7465 696e 0a43 6164 6120 64c3 ad61 2073  tein.Cada d..a s
+6600  6162 656d 6f73 206d c3a1 6973 2065 2065  abemos m..is e e
+6620  6e74 656e 6465 6d6f 7320 6d65 6e6f 732e  ntendemos menos.
+6640  2045 696e 7374 6569 6e0a 4361 6461 2064   Einstein.Cada d
+6660  c3ad 6120 7361 6265 6d6f 7320 6dc3 a169  ..a sabemos m..i
+6700  7320 6520 656e 7465 6e64 656d 6f73 206d  s e entendemos m
+6720  656e 6f73 2e20 4569 6e73 7465 696e 0a43  enos. Einstein.C
+6740  6164 6120 64c3 ad61 2073 6162 656d 6f73  ada d..a sabemos
+6760  206d c3a1 6973 2065 2065 6e74 656e 6465   m..is e entende
+7000  6d6f 7320 6d65 6e6f 732e 2045 696e 7374  mos menos. Einst
+7020  6569 6e0a 4361 6461 2064 c3ad 6120 7361  ein.Cada d..a sa
+7040  6265 6d6f 7320 6dc3 a169 7320 6520 656e  bemos m..is e en
+7060  7465 6e64 656d 6f73 206d 656e 6f73 2e20  tendemos menos. 
+7100  4569 6e73 7465 696e 0a43 6164 6120 64c3  Einstein.Cada d.
+7120  ad61 2073 6162 656d 6f73 206d c3a1 6973  .a sabemos m..is
+7140  2065 2065 6e74 656e 6465 6d6f 7320 6d65   e entendemos me
+7160  6e6f 732e 2045 696e 7374 6569 6e0a 4361  nos. Einstein.Ca
+7200  6461 2064 c3ad 6120 7361 6265 6d6f 7320  da d..a sabemos 
+7220  6dc3 a169 7320 6520 656e 7465 6e64 656d  m..is e entendem
+7240  6f73 206d 656e 6f73 2e20 4569 6e73 7465  os menos. Einste
+7260  696e 0a43 6164 6120 64c3 ad61 2073 6162  in.Cada d..a sab
+7300  656d 6f73 206d c3a1 6973 2065 2065 6e74  emos m..is e ent
+7320  656e 6465 6d6f 7320 6d65 6e6f 732e 2045  endemos menos. E
+7340  696e 7374 6569 6e0a 4361 6461 2064 c3ad  instein.Cada d..
+7360  6120 7361 6265 6d6f 7320 6dc3 a169 7320  a sabemos m..is 
+7400  6520 656e 7465 6e64 656d 6f73 206d 656e  e entendemos men
+7420  6f73 2e20 4569 6e73 7465 696e 0a43 6164  os. Einstein.Cad
+7440  6120 64c3 ad61 2073 6162 656d 6f73 206d  a d..a sabemos m
+7460  c3a1 6973 2065 2065 6e74 656e 6465 6d6f  ..is e entendemo
+7500  7320 6d65 6e6f 732e 2045 696e 7374 6569  s menos. Einstei
+7520  6e0a 4361 6461 2064 c3ad 6120 7361 6265  n.Cada d..a sabe
+7540  6d6f 7320 6dc3 a169 7320 6520 656e 7465  mos m..is e ente
+7560  6e64 656d 6f73 206d 656e 6f73 2e20 4569  ndemos menos. Ei
+7600  6e73 7465 696e 0a43 6164 6120 64c3 ad61  nstein.Cada d..a
+7620  2073 6162 656d 6f73 206d c3a1 6973 2065   sabemos m..is e
+7640  2065 6e74 656e 6465 6d6f 7320 6d65 6e6f   entendemos meno
+7660  732e 2045 696e 7374 6569 6e0a 4361 6461  s. Einstein.Cada
+7700  2064 c3ad 6120 7361 6265 6d6f 7320 6dc3   d..a sabemos m.
+7720  a169 7320 6520 656e 7465 6e64 656d 6f73  .is e entendemos
+7740  206d 656e 6f73 2e20 4569 6e73 7465 696e   menos. Einstein
+7760  0a43 6164 6120 64c3 ad61 2073 6162 656d  .Cada d..a sabem
+
+debugfs: q <span class='label'>Premer de novo a tecla q para saír da consola debugfs</span>
+              </pre>
+            </li>
+          </ul>
+        </div>
+      </ol>
+    </div>
+    
+    <hr/>
+
+    <div id="footer">
+      <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
