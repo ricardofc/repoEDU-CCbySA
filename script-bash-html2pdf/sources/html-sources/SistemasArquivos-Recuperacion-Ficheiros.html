@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Sistemas de arquivos: Inodos</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='Inodos title30 arribasubsmini'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/GNU-Linux/SistemasArquivos' target='_blank'>Sistemas de arquivos: Inodos<br />Borrado de ficheiros non implica perda de información</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <div class='Inodos2'>
+      <div class='mtopplus2 fleft Inodos3'>
+        <div class='codesubcontidolongo mtop'>
+          NOTA: Para verificar o que acontece na práctica crear unha máquina virtual en VirtualBox que arranque cunha ISO Live Debian 32bits, escritorio XFCE, 512MB de RAM e disco duro dinámico de 8GB. Imos supor que esta máquina virtual posúe o nome <span class='label'>Debian32-Recovery</span> e o disco duro posúe o nome <span class='label'>Debian32-Recovery.vdi</span>. Verificar que a primeira opción de arranque sexa o CD Virtual.
+        </div>
+        <p class='mleftsubsx2 arribasubsmini'><img class='cfigure mleftplus280x2 arribasubsmini' src="images/mouse-pointer-mini-rotate-180.png" /></p>
+        <p>Por cada ficheiro ou directorio no sistema, existe un <a target='_blank' href='https://manuais.iessanclemente.net/index.php/Sistemas_de_arquivos#Estrutura_dos_Sistemas_de_arquivos_Linux_-_i-nodos'>inodo</a>, unha estrutura de datos, que garda a información do ficheiro. É similar aos rexistros do MFT en NTFS.</p>
+        <div class='minindent'>&nbsp;</div>
+        <center><p class='Inodoscenter1'><span class='label InodoscenterIn'>Sector</span> = <span class='label InodoscenterIn'>Bloque</span></p></center>
+        <center><p class='Inodoscenter2'><a href='https://www.seagate.com/es/es/tech-insights/advanced-format-4k-sector-hard-drives-master-ti/' target='_blank'><span class='label InodoscenterIn'>Sector lóxico</span> != <span class='label InodoscenterIn'>Sector físico</span></a></p>
+        <img class='mtopsubs cfigure' src="images/mouse-pointer-mini.png" /></center>
+
+	<div class='codesubcontidolongo mtop'>
+          <span class='label title16'>Comandos de interese sobre sistemas de ficheiros ext2/ext3/ext4</span>
+            <ul type='square'>
+              <li><b>debugfs</b> <span class='explicacion'> #O comando debugfs permite depurar sistemas de ficheiros ext2/ext3/ext4</li>
+              <li><b>stat</b> <span class='explicacion'> #O comando stat permite amosar información sobre ficheiros ou sistemas de ficheiros.</span></li>
+              <li><b>dumpe2fs</b> <span class='explicacion'> #O comando dumpe2fs permite listar información sobre sistemas de ficheiros ext2/ext3/ext4.</span></li>
+              <li><b>tune2fs</b> <span class='explicacion'> #O comando tune2fs permite axustar os parámetros do sistema de ficheiros sobre sistemas de ficheiros ext2/ext3/ext4.</span></li>
+            </ul>
+        </div>
+      </div>
+
+      <div class='EstruturaDiscoWikipedia'>
+        <figure class='cfigure'>
+          <img style="cfigure mleft40" src="images/Estrutura-disco.png" />
+            <figcaption style='margin-top:-5px;'>
+              <a target='_blank' href='https://es.wikipedia.org/wiki/Sector_(inform%C3%A1tica)'><span style='font-size:14px;color:#0F18A0;margin-left:40px;'>Wikipedia</span>
+              </a>
+            </figcaption>
+        </figure>
+        <img class='cfigure mleft80 mtopsubs' src="images/mouse-pointer-mini.png" />
+      </div>
+    </div>
+    
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='label'>Práctica Borrado de ficheiros non implica perda de información</div>
+    <div class='contido'>
+      <ol>
+        <li>Arrancar a máquina virtual creada en modo Inicio normal</li>
+        <span class='label'><pre>VBoxManage startvm Debian32-Recovery</pre></span>
+
+        <li>Na contorna gráfica (shell xfce) abrir un terminal e executar:
+        <ul class='dashed'>
+          <li  class='mleftsubsmini'>setxkbmap es <span style='font-size:14px;color:#0F18A0;'> #Cambiar o mapa de teclado ao idioma español</span>.
+          <li  class='mleftsubsmini'>sudo su - <span style='font-size:14px;color:#0F18A0;'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Crear e formatear particións</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsmini'>parted --script /dev/sda mklabel msdos<span style='font-size:14px;color:#0F18A0;'> #Crear a etiqueta de disco (táboa de particións) ao dispositivo /dev/sda sen ter que acceder ao prompt de parted</span></li><br />
+              <li class='mleftsubsmini'>parted --script /dev/sda mkpart primary 0 50% -a cylinder<span style='font-size:14px;color:#0F18A0;'> #Crear unha partición primaria no disco /dev/sda cos primeiros 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li class='mleftsubsmini'>parted --script /dev/sda mkpart primary 50% 70% -a cylinder<span style='font-size:14px;color:#0F18A0;'> #Crear unha partición primaria no disco /dev/sda de 2GB a continuación da partición de 5GB, alineando a cilindros, sen ter que acceder ao prompt de parted</span></li><br />
+              <li style='margin-left:-20px;margin-bottom:-5px;'>parted --script /dev/sda print<span style='font-size:14px;color:#0F18A0;'> #Amosa a táboa de particións do disco /dev/sda</span>
+                <pre>
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 8590MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start        End        Size       Type      File system  Flags
+ 1           32.3kB    4294MB  4294MB  primary  ext4
+ 2           4294MB  6013MB  1719MB  primary  ext3
+                </pre>
+              </li>
+              <li class='mleftsubsmini'>mkfs.ext4 -F -L 'PARTICION1' /dev/sda1 <span class='title16 nome'> #Formatear en ext4 coa etiqueta PARTICION1 a partición primaria /dev/sda1</span>
+                <pre>
+mke2fs 1.43.4 (31-Jan-2017)
+/dev/sda1 contains a ext4 file system labelled 'PARTICION1'
+	last mounted on /mnt/recuperacion on Mon Oct 29 17:58:50 2018
+Creating filesystem with 1048233 4k blocks and 262144 inodes
+Filesystem UUID: 459fb916-7189-4b3f-83de-fd81b56973f8
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done 
+                </pre>
+              </li>
+              <li class='mleftsubsmini'>mkfs.ext3 -F -L 'PARTICION2' /dev/sda2 <span class='title16 nome'> #Formatear en ext3 coa etiqueta PARTICION2 a partición primaria /dev/sda2</span>
+                <pre>
+mke2fs 1.43.4 (31-Jan-2017)
+/dev/sda2 contains a ext3 file system labelled 'PARTICION2'
+	created on Mon Oct 29 17:58:29 2018
+Creating filesystem with 419698 4k blocks and 105040 inodes
+Filesystem UUID: d5c70817-fa3c-4734-8825-fa78463558cd
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done 
+                </pre>
+              </li>
+            </ul>
+          </div>
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Montar particións e crear ficheiros e directorios</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsmini'>mkdir /mnt/recuperacion <span class='explicacion'> #Crear o directorio /mnt/recuperacion</span></li><br />
+              <li class='mleftsubsmini'>mount /dev/sda1 /mnt/recuperacion<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/recuperacion</span></li><br />
+              <li class='mleftsubsmini'>cd /mnt/recuperacion<span class='explicacion'> #Acceder ao directorio /mnt/recuperacion</span></li><br />
+              <li class='mleftsubsmini'>mkdir proverbios<span class='explicacion'> #Crear o directorio /mnt/recuperacion/proverbios:</li><br />
+              <li class='mleftsubsmini'>cd proverbios<span class='explicacion'> #Acceder ao directorio /mnt/recuperacion/proverbios:</li><br />
+              <li class='mleftsubsmini'>echo 'Aprender sen pensar é inútil. Pensar sen aprender, perigoso. Confucio' > Confucio1.txt<span class='explicacion'> #Crear o ficheiro /mnt/recuperacion/proverbios/Confucio1.txt co contido 1 frase.</span></li><br />
+              <li class='mleftsubsmini'>echo 'Eu non procuro coñecer as preguntas; procuro coñecer as respostas. Confucio' > Confucio2.txt<span class='explicacion'> #Crear o ficheiro /mnt/recuperacion/proverbios/Confucio2.txt co contido 1 frase.</span></li><br />
+              <li class='mleftsubsmini'>echo 'Estudia o pasado se queres pronosticar o futuro. Confucio' > Confucio3.txt<span class='explicacion'> #Crear o ficheiro /mnt/recuperacion/proverbios/Confucio3.txt co contido 1 frase.</span></li><br />
+              <li class='mleftsubsmini'>ls -lia<span class='explicacion'> #Listar de forma extendida e amosar os inodos dos ficheiros e directorios contidos en /mnt/recuperacion/proverbios </span>
+                <pre>
+total 20
+131073 drwxr-xr-x 2 root root 4096 Nov 1 00:25 .
+2 drwxr-xr-x 4 root root 4096 Nov 1 00:24 ..
+131074 -rw-r--r-- 1 root root 72 Nov 1 00:24 Confucio1.txt
+131075 -rw-r--r-- 1 root root 69 Nov 1 00:25 Confucio2.txt
+131076 -rw-r--r-- 1 root root 58 Nov 1 00:25 Confucio3.txt
+                </pre></li>
+              <li class='mleftsubsmini'>cat Confucio1.txt Confucio2.txt Confucio3.txt<span class='explicacion'> #Ver os contidos dos ficheiros Confucio1.txt Confucio2.txt Confucio3.txt </span>
+                <pre>
+Aprender sen pensar é inútil. Pensar sen aprender, perigoso. Confucio
+Eu non procuro coñecer as preguntas; procuro coñecer as respostas. Confucio
+Estudia o pasado se queres pronosticar o futuro. Confucio
+                </pre>
+            </ul>
+          </div>
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Desmontar para poder intentar recuperar a información</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsx2'>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+              <li class='mleftsubsx2'>umount /mnt/recuperacion<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/recuperacion</span></li><br />
+            </ul>
+            </div>
+            <br />
+
+            <div class='contido mleftsubsx2 mrightmini'><span class='label'>Revisar os bloques que referencian a información.</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsx2'>debugfs /dev/sda1 <span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span>
+                <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs: stat <131074> <span class='explicacion'> #Ver información sobre o inodo 131074</span>
+Inode: 131074 Type: regular Mode: 0644 Flags: 0x80000
+Generation: 204948144 Version: 0x00000000:00000001
+User:0 Group:0 Project:0 Size: 72
+File ACL: 0 Directory ACL: 0
+Links: 1 Blockcount: 8
+Fragment: Address: 0 Number: 0 Size: 0
+ctime: 0x5bda47db:8ec2f228 -- Thu Nov 1 00:24:59 2018
+atime: 0x5bda4810:9270b1e4 -- Thu Nov 1 00:25:52 2018
+mtime: 0x5bda47db:8ec2f228 -- Thu Nov 1 00:24:59 2018
+crtime: 0x5bda47db:8ec2f228 -- Thu Nov 1 00:24:59 2018
+Size of extra inode fields: 32
+Inode checksum: 0x53cfeeeb
+EXTENTS:
+(0):557056
+(END)
+                </pre>
+Vemos que logo de EXTENTS aparece/n o/s bloque/s onde está gardada a información.
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs
+                <pre>
+debugfs: cat <131074> <span class='explicacion'>#Ver o contido do ficheiro que corresponde co inodo 131074.</span>
+Aprender sen pensar é inútil. Pensar sen aprender, perigoso. Confucio
+debugfs: blocks <131074> <span class='explicacion'>#Ver o/s bloque/s que apunta/n ao contido do ficheiro que corresponde co inodo 131074</span>
+557056
+                </pre>
+debugfs: q <span class='explicacion'>#Premer de novo a tecla q para saír da consola debugfs</span>
+                </pre>
+              </li><br />
+            </ul>
+          </div>
+          <br />
+
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Eliminar ficheiros</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsmini'>mount /dev/sda1 /mnt/recuperacion<span class='explicacion'> #Montar (facer uso) a partición primaria /dev/sda1 en /mnt/recuperacion</span></li><br />
+              <li class='mleftsubsmini'>cd /mnt/recuperacion/proverbios<span class='explicacion'> #Acceder ao directorio /mnt/recuperacion/proverbios</span></li><br />
+              <li class='mleftsubsmini'>rm Confucio1.txt<span class='explicacion'> #Borrar o ficheiro /mnt/recuperacion/proverbios/Confucio1.txt</span></li><br />
+            </ul>
+          </div>
+          <br />
+
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Desmontar para revisar o que pasou coa información</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsx2'>cd <span class='explicacion'> #Acceder ao directorio casa do usuario (/home/user)</span></li><br />
+              <li class='mleftsubsx2'>umount /mnt/recuperacion<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda1 que estaba montada en /mnt/recuperacion</span></li><br />
+            </ul>
+          </div>
+          <br />
+
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Revisar os bloques que referencian a información.</span>
+            <ul class='hashtag'>
+              <li class='mleftsubsx2'>debugfs /dev/sda1 <span class='explicacion'> #Executar o comando debugfs sobre a partición primaria /dev/sda1</span>
+                <pre>
+debugfs 1.43.4 (31-Jan-2017)
+debugfs: stat <131074> <span class='explicacion'> #Ver información sobre o inodo 131074</span>
+Inode: 131074 Type: regular Mode: 0644 Flags: 0x80000
+Generation: 204948144 Version: 0x00000000:00000001
+User:0 Group:0 Project:0 Size: 0
+File ACL: 0 Directory ACL: 0
+Links: 0 Blockcount: 0
+Fragment: Address: 0 Number: 0 Size: 0
+ctime: 0x5bda4b93:21e4db74 -- Thu Nov 1 00:40:51 2018
+atime: 0x5bda4810:9270b1e4 -- Thu Nov 1 00:25:52 2018
+mtime: 0x5bda4b93:21e4db74 -- Thu Nov 1 00:40:51 2018
+crtime: 0x5bda47db:8ec2f228 -- Thu Nov 1 00:24:59 2018
+dtime: 0x5bda4b93:(21e4db74) -- Thu Nov 1 00:40:51 2018
+Size of extra inode fields: 32
+Inode checksum: 0xcd1b5c5b
+EXTENTS
+(END)
+                </pre>
+Vemos que logo de EXTENTS non aparece ningún bloque onde está gardada a información, é dicir, ao borrar o arquivo perdeuse a referencia dos bloques correspondnetes ao contido pero a información segue existindo a non ser que fose sobreescrita.
+Premer a tecla <span class='label'>q</span> para voltar á consola debugfs
+                <pre>
+debugfs: cat <131074> <span class='explicacion'>#Ver o contido do ficheiro que corresponde co inodo 131074.</span>
+                </pre>
+Neste caso non vemos contido xa que o ficheiro foi eliminado.
+                <pre>
+debugfs: blocks <131074> <span class='explicacion'>#Ver o/s bloque/s que apunta/n ao contido do ficheiro que corresponde co inodo 131074</span>
+                </pre>
+Neste caso non vemos referencia ningún bloque xa que o ficheiro foi eliminado perdendo así a referencia ao/s bloque/s. Como anteriormente vimos o/s bloque/s referenciados <span class='label'>(557056)</span> ao contido do ficheiro Confucio1.txt imos revisar se podemos ver o contido dese bloque. E no caso de poder ver o contido como non sobreescribimos o/s bloque/s deberiamos ver o texto do ficheiro Confucio1.txt
+                <pre>
+debugfs: block_dump 557056
+0000 4170 7265 6e64 6572 2073 656e 2070 656e Aprender sen pen
+0020 7361 7220 c3a9 2069 6ec3 ba74 696c 2e20 sar .. in..til.
+0040 5065 6e73 6172 2073 656e 2061 7072 656e Pensar sen apren
+0060 6465 722c 2070 6572 6967 6f73 6f2e 2043 der, perigoso. C
+0100 6f6e 6675 6369 6f0a 0000 0000 0000 0000 onfucio.........
+0120 0000 0000 0000 0000 0000 0000 0000 0000 ................
+*
+                </pre>
+Acabamos de ver que o bloque non está referenciado a ningún ficheiro pero segue preservando o contido do ficheiro Confucio1.txt porque non foi reescrito por ningún outro arquivo que o referencie.
+              </li><br />
+            </ul>
+          </div>
+          <br />
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Opción1 (dd): Recuperar a información do ficheiro borrado</span><br />
+  Imos revisar o tamaño de bloque da partición /dev/sda1
+            <ul class='hashtag'>
+              <li class='mleftsubsx2'>dumpe2fs -h /dev/sda1 | grep -i 'block size'<span class='explicacion'> #Listar o tamaño de bloque en bytes mediante o comando dumpe2fs. O comando dumpe2fs permite listar información sobre sistemas de ficheiros ext2/ext3/ext4. A opción -h permite ver o tamaño do bloque, é dicir, do contido de información que ofrece o superbloque permite ver o tamaño do bloque. O comando grep -i permite polo patrón de búsqueda, neste caso 'block size', ignorando a diferenza entre maiúsculas e minúsculas.</span>
+                <pre>
+    Block size:               4096
+                </pre>
+              <li class='mleftsubsx2'>tune2fs -l /dev/sda1 | grep -i 'block size'<span class='explicacion'> #Listar o tamaño de bloque en bytes mediante o comando tune2fs. O comando tune2fs permite axustar os parámetros do sistema de ficheiros sobre sistemas de ficheiros ext2/ext3/ext4. A opción -l permite ver os contidos do superbloque do sistema de ficheiros, é dicir, o contido de información sobre o sistema de ficheiros que ofrece o superbloque. O comando grep -i permite polo patrón de búsqueda, neste caso 'block size', ignorando a diferenza entre maiúsculas e minúsculas.</span>
+                <pre>
+    Block size:               4096
+                </pre>
+              <li class='mleftsubsx2'>stat -fc %s .<span class='explicacion'> #Listar o tamaño de bloque mediante o comando stat. O comando stat permite amosar información sobre ficheiros ou sistemas de ficheiros. A opción -f permite amosar información sobre o sistema de ficheiros e non sobre ficheiros. A opción -c permite formatear a saída a ensinar. O argumento %s amosa o tamaño total en bytes</span>
+                <pre>
+    4096
+                </pre>
+              </li>
+              <li class='mleftsubsx2'>echo revisar > revisar.txt<span class='explicacion'> #Xerar o ficheiro revisar.txt co contido revisar.</span><br />
+    du -h revisar.txt <span class='explicacion'>#Listar o tamaño de bloque mediante o comando du. O comando du permite estimar o uso do espazo de ficheiros. A opción -h engade á saída unha letra indicativa do tamaño.</span>
+                <pre>
+    4.0K	revisar.txt
+                </pre>
+              </li>
+              <span class='mleftsubsx2'>Todos os comandos anteriores amosan que o tamaño do bloque en disco é de: <span class='label'>4096B</span> ou <span class='label'>4.0kB</span></span>
+              <li class='mleftsubsx2'>dd if=/dev/sda1 of=recovery-data.txt bs=4096 count=1 skip=557056<span class='explicacion'> #Recuperación do bloque 557056 mediante o comando dd. Recuperamos da partición /dev/sda1 no ficheiro recovery-data.txt o ficheiro eliminado Confucio1.txt. Para iso ao comando dd pasámolle como argumentos o valor do bloque (bs=4096), a cantidade de bloques a recuperar (count=1) e dende que bloque comezar a recuperar (skip=557056).</span>
+                <pre>
+    1+0 records in
+    1+0 records out
+    4096 bytes (4.1 kB, 4.0 KiB) copied, 0.00274002 s, 1.5 MB/s
+                </pre>
+              </li>
+              <li class='mleftsubsx2'>cat recovery-data.txt<span class='explicacion'> #Ver o contido do ficheiro recovery-data.txt</span>
+                <pre>
+    Aprender sen pensar é inútil. Pensar sen aprender, perigoso. Confucio
+                </pre>
+              </li>
+              <span class='label'>O contido do ficheiro foi recuperado</span>
+            </ul>
+          </div>
+          <br />
+
+          <div class='indent pagebreak'>&nbsp;</div>
+          <div class='contido mleftsubsx2 mrightmini'><span class='label'>Opción2 (extundelete): Recuperar a información do ficheiro borrado</span><br />
+            <ul class='hashtag'>
+             <li class='mleftsubsx2'>apt-get update<span class='explicacion'> #Actualizar o repositorio de debian</span></li><br />
+             <li  class='mleftsubsx2'>apt-cache search extundelete <span class='explicacion'> #Buscar paquetes que fagan referencia a extundelete</span></li><br />
+             <li  class='mleftsubsx2'>apt-get -y install extundelete<span class='explicacion'> #Instalar o paquete extundelete</span></li><br />
+             <li  class='mleftsubsx2'>man extundelete<span class='explicacion'> #Ver as páxinas do manual do comando extundelete</span></li><br />
+             <li  class='mleftsubsx2'>ls<span class='explicacion'> #Listar ficheiros/directorios da ruta actual (/root)</span>
+               <pre>
+    recovery-data.txt  revisar.txt
+              </pre>
+              </li>
+              <li  class='mleftsubsx2'>extundelete --restore-all /dev/sda1<span class='explicacion'> #Recuperar todos os ficheiros borrados da partición /dev/sda1</span>
+                <pre>
+    NOTICE: Extended attributes are not restored.
+    Loading filesystem metadata ... 32 groups loaded.
+    Loading journal descriptors ... 27 descriptors loaded.
+    Searching for recoverable inodes in directory / ... 
+    1 recoverable inodes found.
+    Looking through the directory structure for deleted files ... 
+    1 recoverable inodes still lost.
+                </pre>
+              </li>
+              <li  class='mleftsubsx2'>ls<span class='explicacion'> #Listar ficheiros/directorios da ruta actual (/root)</span>
+                <pre>
+    RECOVERED_FILES  recovery-data.txt  revisar.txt
+                </pre>
+              </li>
+              <li  class='mleftsubsx2'>cd RECOVERED_FILES<span class='explicacion'> #Acceder ao directorio RECOVERED_FILES</span>
+              </li>
+              <br />
+              <li  class='mleftsubsx2'>ls<span class='explicacion'> #Listar o contido da ruta actual (/root/RECOVERED_FILES)</span>
+                <pre>
+    file.131074
+                </pre>
+              </li>
+              <li  class='mleftsubsx2'>cat file.131074<span class='explicacion'> #Ver o contido do ficheiro file.131074</span>
+                <pre>
+    Aprender sen pensar é inútil. Pensar sen aprender, perigoso. Confucio
+                </pre>
+              </li>
+              <span class='label'>O contido do ficheiro foi recuperado</span>
+            </ul>
+          </div>
+        </ul>
+      </ol>
+    </div>
+
+    <hr />
+    <div id="footer">
+      <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
