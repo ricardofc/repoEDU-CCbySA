@@ -1,0 +1,1207 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Cheat-Sheet: Samba4 Debian GNU/Linux</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+<body>
+  <div id='autocentrado'>
+    <h1>Cheat-Sheet: Samba4 Debian GNU/Linux</h1>
+    <div class='frightfs explicacion6 mtopsubsx3 up'>
+      <div class='minindent'>&nbsp;</div>
+      <div class='nome title16 mleft arriba'><b>Samba4: Integra <a href='https://wiki.samba.org/index.php/Samba_Internal_DNS_Back_End' target='_blank'>DNS</a>, <a href='https://wiki.samba.org/index.php/LDB' target='_blank'>LDAP</a> e <a href='https://github.com/heimdal/heimdal/wiki' target='_blank'>Kerberos Heimdal</a></b></div><br />
+      <img class='links links170' src="images/mouse-pointer-mini.png" width='18px'/>
+      <img class='links links50' src="images/mouse-pointer-mini.png" width='18px' />
+      <img class='links links50' src="images/mouse-pointer-mini.png" width='18px' />
+      <div class='nome title16 titlesamba'><b><a href='https://wiki.samba.org/index.php/Setting_up_Samba_as_an_Active_Directory_Domain_Controller' target='_blank'>AD DC</a> (<a href='https://wiki.samba.org/index.php/LDB#Active_Directory' target='_blank'>Active Directory Domain Controller</a>)</b></div>
+      <img class='links links70' src="images/mouse-pointer-mini.png" width='18px'/>
+      <img class='links links130' src="images/mouse-pointer-mini.png" width='18px' />
+    </div>
+    <div class='indent'>&nbsp;</div>
+    <div class='mtopsubsx3'>&nbsp;</div>
+    <figure class='mtop figurecenter cfigure down'>
+      <img class='mleft' width=82% src="images/Escenario-Cheat-Sheet-Samba4.bmp" />
+    </figure>
+    <div class='indent'>&nbsp;</div>
+    <hr class='mtopsubs' />
+    <div id="footer" class='arriba'>
+      <div class="nome">Ricardo Feijoo Costa</div>
+        <div class='.imgccbysa'>
+          <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" class='links' src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+        </div>
+      </div>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arriba'><span class='label bgaqua bradius8 prightx10'><a href='https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server' target='_blank'>Servidor Independente</a></h3><br />
+    <img class='links' src="images/mouse-pointer-mini.png" />
+    <div>
+        <table>
+          <th class='cheat-sheet label'>
+            <div>Instalación</div>
+          </th>
+          <td width='1%'>
+          </td>
+          <td class='cheat-sheet'>
+            <table>
+              <tr>
+                <td width='64%'><span class='nome'># echo 'samba-common samba-common/dhcp boolean false' | debconf-set-selections</span></td><td>&#10141;</td><td>Configurar na preinstalación do paquete samba: Non empregar a configuración WINS de DHCP</td>
+              </tr>
+              <tr>
+                <td><span class='nome'># dpkg -l samba | grep un && [ $? -eq 0 ] && apt update && apt -y install samba</span></td><td>&#10141;</td><td>Instalar SAMBA</td>
+              </tr>
+            </table>
+          </td>
+        </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet'>
+          <div><span class='label'>Configuración</span><br />
+            <span class='nomefwn'>(/etc/samba/smb.conf)</span><br />
+            <span class='nomefwn'>(testparm)</span><br />
+            <span class='nomefwn'>(man 5 smb.conf)</span><br />
+            <span class='nomefwn'>(man 7 samba)</span><br />
+            <span class='nomefwn'>(man 8 samba)</span>
+          </div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td><span class='nome'>#</span></td><td>&#10141;</td><td>Comentarios (opcións por defecto)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>;</span></td><td>&#10141;</td><td>Comentarios (opcións que difiren das de por defecto)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[global]</span></td><td>&#10141;</td><td>Sección <span class='nome'>obrigatoria</span> correspondente á configuración global.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[homes]</span></td><td>&#10141;</td><td>Sección <span class='nome'>opcional</span> correspondente á configuración dos cartafoles /home ou persoais dos usuarios</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[printers]</span></td><td>&#10141;</td><td>Sección <span class='nome'>opcional</span> correspondente á configuración de impresoras</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[print$]</span></td><td>&#10141;</td><td>Sección <span class='nome'>opcional</span> destinada a compartir os drivers de impresoras existentes na seccións [printers]</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[global]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='36%'><span class='nome'>workgroup = WORKGROUP</span></td><td>&#10141;</td><td>Nome do grupo de traballo do equipo</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>log file = /var/log/samba/log.%m</span></td><td>&#10141;</td><td>Empregar un arquivo log por máquina que conecta (%m)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>max log size = 1000</span></td><td>&#10141;</td><td>Limitar tamaño arquivo log a 1000kiB</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>logging = file</span></td><td>&#10141;</td><td>Enviar rexistros de Samba a /var/log/samba/log.{smbd,nmbd}</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>panic action = /usr/share/samba/panic-action %d</span></td><td>&#10141;</td><td>Acción cando Samba ten problema: Enviar correo co problema ao admin de Samba</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>server role = standalone server</span></td><td>&#10141;</td><td>Modo de operación de samba. Pode tomar valores: "standalone server", "member server", "classic primary domain controller", "classic backup domain controller", "active directory domain controller". Neste caso <span class='nome'>servidor independente</span>.<br />
+              Para executar como "active directory domain controller" requírese executar:
+                <ul class='hashtag mleftsubs'>
+                  <li class='nome title16imp'>samba-tool domain provision || samba-tool domain provision --use-rfc2307 --interactive
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><span class='nome'>obey pam restrictions = yes</span></td><td>&#10141;</td><td>Indica que Samba debe obedecer aos tipos account e session de PAM.</td>
+            </tr>
+
+            <tr>
+              <td><span class='nome'>unix password sync = yes</span></td><td>&#10141;</td><td>Sincronizar Unix password e SMB password cando SMB password cambia.</td>
+            </tr>
+            <tr>
+              <td class='bfigure bradius8'><span class='nome'>passwd program = /usr/bin/passwd %u<br />
+              passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .</span></td><td>&#10141;</td><td>Opcións necesarias para que a sincronización de Unix password funcione nun sistema Debian GNU/Linux</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>pam password change = yes</span></td><td>&#10141;</td><td>PAM para cambios de password dun cliente SMB</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>map to guest = bad user</span></td><td>&#10141;</td><td>Autenticacións fallidas son mapeadas a conexións anónimas</td>
+              <br />
+            </tr>
+            <tr>
+              <td><span class='nome '>usershare allow guests = yes</span></td><td>&#10141;</td><td>Usuarios non autenticados poden acceder a recursos compartidos por un usuario</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[homes]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='24%'><span class='nome'>comment = Home Directories</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = no</span></td><td>&#10141;</td><td>Este recurso compartido non se amosa ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0700</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol do usuario (u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>directory mask = 0700</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos directorios a crear dentro do cartafol do usuario (u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>valid users = %S</span></td><td>&#10141;</td><td width='81%'>%S &#10141; os usuarios acceden ao seu cartafol persoal: user_samba&nbsp;&#10141;&nbsp;/home/user_samba&nbsp;&#10141;&nbsp;\\server\user_samba</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div>
+      <table class='fixed'>
+        <th class='cheat-sheet label'>
+          <div>[printers]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='19%'><span class='nome'>comment = All Printers</span></td><td>&#10141;</td><td width='80%'>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = no</span></td><td>&#10141;</td><td>Este recurso compartido non se amosa ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /var/spool/samba</span></td><td>&#10141;</td><td>Accédese ao recurso compartido /var/spool/samba mediante o nome da sección printers.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>printable = yes</span></td><td>&#10141;</td><td>Recurso compartido impresora está dispoñible</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td>Acceso permitido soamente aos usuarios autenticados</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0700</span></td><td>&#10141;</td><td width='1200px'>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol definido na directiva path<br />(u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='arribaplusx2'>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[print$]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='24%'><span class='nome'>comment = Printer Drivers</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /var/lib/samba/printers</span></td><td>&#10141;</td><td>Ruta do recurso compartido onde se comparten os drivers de impresoras a descargar para clientes Windows.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+            <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td>Acceso permitido soamente aos usuarios autenticados</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='arribasubs'><span class='label bgspringgreen bradius8 prightx10'>Crear recurso compartido temporal (escritura)</span></h3>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[temporal]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='28%'><span class='nome'>comment = temporal</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /srv/temporal</span></td><td>&#10141;</td><td width='1200px'>Ruta do recurso compartido<br />
+              <span class='nome'># mkdir /srv/temporal && chgrp g-usuarios /srv/temporal && chmod 0775 /srv/temporal</span></td> 
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  no</span></td><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0660</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol /srv/temporal<br/>(u g o = rw- rw- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>directory mask = 0770</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos directorios a crear dentro do cartafol /srv/temporal<br />(u g o = rwx rwx ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <h3 class='arribasubs'><span class='label bgtomato bradius8 prightx10'>Crear recurso compartido descargas (só lectura)+(validación usuarios/grupos/hosts)</span></h3>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[descargas]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='28%'><span class='nome'>comment = descargas</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /srv/descargas</span></td><td>&#10141;</td><td width='840px'>Ruta do recurso compartido<br />
+              <span class='nome'># mkdir /srv/descargas && chgrp g-usuarios /srv/descargas && chmod 2770 /srv/descargas</span></td> 
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td>Acceso permitido soamente aos usuarios autenticados</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>valid users = ana, @g-usuarios</span></td><td>&#10141;</td><td>Acceso permitido ao usuario ana e ao grupo g-usuarios.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>invalid users = xurxo, @g-external</span></td><td>&#10141;</td><td>Acceso non permitido ao usuario xurxo e ao grupo @g-external. <b><span class='bgy'>invalid users prevalece no caso de conflicto con valid users</span></b></td>
+            </tr>
+            <tr>
+              <td width='38%'><span class='nome'>hosts allow = 127.0.0.1 172.16.10.0/24 lclient1</span></td><td>&#10141;</td><td>Acceso permitido á dirección IP 127.0.0.1, á rede 172.16.10.0/24 e ao host lclient1</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>hosts deny = 172.16.10.150 lclient2</span></td><td>&#10141;</td><td>Acceso non permitido aos host 172.16.10.150 e lclient2<br />
+                <ul class='mtopsubsmini2 arribasubsmini3'>
+                  <li><b><span class='bgy'>hosts allow prevalece no caso de conflicto con hosts deny</span></b><br />
+                  <li><b><span class='bgy'>hosts deny prevalece no caso de conflicto con valid users</span></b>
+                </ul>
+                <br />
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='mtopsubs'>
+      <table>
+        <th width='14%' class='cheat-sheet label'>
+          <div>Servizo/s<br />
+            <span class='nomefwn bgaqua'>(smbd<br />&&<br />nbmd)</span><br />
+            <span class='nomefwn'>(man 8 smbd<br />&&<br />man 8 nbmd)</span><br />
+            <span class='nomefwn bglime'>(samba-ad-dc<br />&&<br />winbind)</span><br />
+            <span class='nomefwn'>(man 8 winbindd)</span>
+          </div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='54%' class='bgaqua bradius8 pall'>
+                <table>
+                  <tr>
+                    <td colspan='3'><p class='label mtopsubsx2'>Servidor Independente: <span class='nomefwn'>smbd && nbmd</span></p>
+                      <p class='nome arribasubs'>smbd && nmbd</span> &#10141; Por defecto cando se instala Samba configúrase como Servidor Independente, enmascárase o servizo samba-ad-dc, e debemos empregar os servizos smbd e nmbd.</p><br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl status smbd && systemctl status nmbd</td><td> &#10141; </td><td>Ver estado</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl start smbd && systemctl start nmbd</td><td> &#10141; </td><td>Arrancar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop smbd && systemctl stop nmbd</td><td> &#10141; </td><td>Parar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl reload smbd && systemctl reload nmbd</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># smbcontrol all reload-config</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                </table>
+              </td>
+              <td class='bglime bradius8 pall'>
+                <p class='label mtopsubsmini2 arribasubs'>Controlador de dominio: <span class='nomefwn'>samba-ad-dc</span></p>
+                <p class='nome arribasubs'>samba-ad-dc &#10141; Cando configuramos Samba como AD-DC debemos instalar winbind e desenmascarar o servizo samba-ad-dc para poder empregalo.</p><br />
+                <table>
+                  <tr>
+                    <td class='nome'># apt -y install winbind</td><td> &#10141; </td><td>Instalar winbind</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl status samba-ad-dc</td><td> &#10141; </td><td>Ver estado</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl unmask samba-ad-dc</td><td> &#10141; </td><td>Desenmascarar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop smbd && systemctl stop nmbd</td><td> &#10141; </td><td>Parar smbd && nbmd</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl start samba-ad-dc</td><td> &#10141; </td><td>Arrancar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop samba-ad-dc</td><td> &#10141; </td><td>Parar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl reload samba-ad-dc</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl enable samba-ad-dc</td><td> &#10141; </td><td>Habilitar(/etc/rcX.d)</td> 
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <tr>
+          <th rowspan='2' class='cheat-sheet label'><p class='text-vertical'>Usuarios/Grupos</p></th>
+          <td class='cheat-sheet bradius8 pall arriba'>
+            <table>
+              <th width='200px' class='cheat-sheet label'>
+                <div>smbpasswd<br />
+                <span class='nomefwn'>(man 8 smbpasswd)</span><br />
+                <span class='nomefwn'>(man 5 smbpasswd)</span>
+                </div>
+              </th>
+              <td width='1%'>
+              </td>
+              <td class='cheat-sheet pall4'>
+                <table class='fixed'>
+                  <tr>
+                    <td colspan='3' class='nome'>
+                      <p class='arriba mtopsubsmini'>(1) Debe existir: user &#10141; usuario Unix</p><br />
+                        <ul class='hashtag mleftsubsx2'>
+                          <li>useradd -m -d /home/user -p $(mkpasswd -m sha-512 abc123.) -s /bin/bash user
+                        </ul><br />
+                      <p class='arriba mtopsubsmini'>Non se require shell válida nin cartafol de usuario, pero si un contrasinal de sistema que habilite a conta Unix. Se a conta de sistema Unix está deshabilitada Samba non permite o acceso. Así, poderiase crear o usuario:
+                        <p class='mtopsubsx2'>&nbsp;</p>
+                        <ul class='hashtag mleftsubsx2'>
+                          <li>useradd -M -s /usr/sbin/nologin -p $(mkpasswd -m sha-512 abc123.) user 
+                        </ul>
+                      <div class='fleft pright mtopsubsmini'>
+                        <p class='arribasubsmini mtopsubsmini2'><br />Pode engadirse ese usuario nun grupo:</p><br />
+                          <ul class='hashtag mleftsubsx2'>
+                            <li>groupadd g-usuarios
+                            <li>usermod -aG g-usuarios user
+                          </ul>
+                      </div>
+                      <div class='fleft mtopsubs'>
+                        <pre class='pall bradius8 bgy arribaplusx2 title16'>
+# useradd -M -s /usr/sbin/nologin -p $(mkpasswd -m sha-512 abc123.) ana
+# useradd -M -s /usr/sbin/nologin -p $(mkpasswd -m sha-512 abc123.) xurxo
+# groupadd g-usuarios
+# usermod -aG g-usuarios ana
+# groupadd g-external
+# usermod -aG g-external xurxo
+                          <p class='pall arribaplusx5'>&nbsp;</p>
+                        </pre>
+                      </div>
+                      <div class='indent arribasubsmini'>&nbsp;</div>
+                      <br />
+                      (2) Unha vez exista conta de usuario Unix pódese xerar user_samba &#10141; usuario Samba (o contrasinal Samba non ten porque ser o mesmo que o do sistema Unix)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width='26%'><span class='nome'># smbpasswd -a user</span></td><td>&#10141;</td><td>Engadir usuario a SAMBA e establecer o seu contrasinal SAMBA</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># smbpasswd -a user_samba</span></td><td>&#10141;</td><td width='771px'>Cambiar contrasinal SAMBA. Para deixar o mesmo contrasinal SAMBA premer &#9166;</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># smbpasswd -x user_samba</span></td><td>&#10141;</td><td>Eliminar usuario SAMBA</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># smbpasswd -d user_samba</span></td><td>&#10141;</td><td>Deshabilitar usuario SAMBA</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># smbpasswd -e user_samba</span></td><td>&#10141;</td><td class='abaixo'>Habilitar usuario SAMBA</td>
+                  </tr>
+                </table>
+              </td>
+              </tr>
+            </table>
+            <table class='arriba'>
+              <tr>
+              <th width='28%' class='cheat-sheet label'>
+                <div>Listar usuarios/grupos<br />
+                <span class='nomefwn'>(pdbedit &#10141; evolución de smbpasswd)</span><br />
+                <span class='nomefwn'>(getent &#10141; <a href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_pam_and_nss target=_blank'>/etc/nsswitch.conf)</a></span><br />
+                <img class='mleftplusx8' src="images/mouse-pointer-mini.png" />
+                <span class='nomefwn mleftsubsx8a'>(man getent)</span><br />
+                <span class='nomefwn'>(man nsswitch.conf)</span><br />
+              </th>
+              <td width='1%'>
+              </td>
+              <td class='cheat-sheet'>
+                <table>
+                  <tr>
+                    <td width='36%' class='nome'># pdbedit -Lv</span></td><td>&#10141;</td><td>Listar usuarios existentes en Samba</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># getent passwd && getent group</span></td><td>&#10141;</td><td>Listar usuarios/grupos existentes no sistema, sen incluír os pertencentes a un DOMINIO Samba</td>
+                  </tr>
+                </table>
+              </td>
+            </table>
+          </p>
+        </tr>
+      </table>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='mtopsubsx3'>
+      <table class='mtopsubs'>
+        <tr>
+          <th rowspan='2' class='cheat-sheet label'><p class='text-vertical'>Recursos&nbsp;Compartidos</p></th>
+          <th class='cheat-sheet label'>
+            <div>smbclient</div>
+          </th>
+          <td width='1%'>
+          </td>
+          <td class='cheat-sheet'>
+            <p class='mtopsubsmini2 arribaplus'><span class='nome'>lserver1</span> &#10141; Identifica o hostname(fqdn) ou a IP do Servidor Samba
+            <div class='minindent'>&nbsp;</div>
+            <table>
+              <tr>
+                <td class='nome mtopsubsmini2'>apt -y install smbclient</td><td> &#10141; </td><td>Instalar</td>
+              </tr>
+              <tr>
+                <td class='nome'>smbclient -L //lserver1 -U%</td><td> &#10141; </td><td>Visualizar recurso/s compartido/s mediante acceso anónimo</td>
+              </tr>
+              <tr>
+                <td class='nome'>smbclient -L //lserver1 -Uuser_samba</td><td> &#10141; </td><td>Visualizar recurso/s compartido/s mediante acceso autenticado</td>
+              </tr>
+              <tr>
+                <td class='nome'>smbclient //lserver1/descargas -Uuser_samba</td><td> &#10141; </td><td>Acceder(consola smb) a [descargas] mediante acceso autenticado</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <div class='minindent'>&nbsp;</div>
+          <th class='cheat-sheet label'>
+          <div>(Des)Montar<br />
+          <span class='nomefwn'>(u)mount</span><br />
+          <span class='nomefwn'>(/etc/fstab)</span><br />
+          <span class='nomefwn'>(pam_mount)</span></div>
+          </th>
+          <td width='1%'>
+          </td>
+          <td class='cheat-sheet'>
+            <p class='arriba mtopsubsmini2'><span class='nome'>lserver1</span> &#10141; Identifica o hostname(fqdn) ou a IP do Servidor Samba
+            <p class='arriba'><span class='nome'>Sharelserver1</span> &#10141; Identifica o recurso compartido no Servidor Samba
+            <p class='arriba'><span class='nome'>FolderClient</span> &#10141; Identifica o cartafol do Cliente Samba no que se terá acceso ao recurso compartido do Servidor Samba
+            <p class='arriba'><span class='nome'>/etc/fstab</span> &#10141; Ficheiro automontaxe no arranque do sistema ou empregando o comando <span class='nome'>mount -a</span>
+            <p class='arriba'><span class='nome'>libpam-mount (/etc/security/pam_mount.conf.xml)</span> &#10141; Configurar que o recurso compartido por CIFS poida <span class='nome'>ser montado no login</span> e <span class='nome'>desmontado no logout</span> sen ter que escribir as credenciais
+            <p><span class='nome'>WORKGROUP</span> &#10141; Identifica o nome do grupo de traballo do equipo
+            <p class='mtopsubs'><span class='label'>cifs-utils</span> <span class='nome'>(man mount.cifs && man mount)</span></p>
+            <table class='bfigure bradius8 mtopsubs'>
+              <tr>
+                <td class='nome'># apt -y install cifs-utils</td><td> &#10141; </td><td>Instalar</td>
+              </tr>
+              <tr>
+                <td width='52%' class='nome bgaqua bradius4' width='68%'># mount -t cifs //lserver1/Sharelserver1 /mnt/FolderClient -o \<br />user=USER,uid=UID,gid=GID,file_mode=0660,dir_mode=0770<br />
+                  # mount.cifs //lserver1/Sharelserver1 /mnt/FolderClient -o \<br />user=USER,uid=UID,gid=GID,file_mode=0660,dir_mode=0770<br />
+                  # apt -y install gvfs-backends<br />
+                  Alt+F2 --&gt; thunar --&gt; smb://lserver1/Sharelserver1</td>
+                <td> &#10141; </td><td>Montar no cliente o recurso compartido. Comandos equivalentes.<br />USER=user_samba, UID=uid_user_cliente, GID=gid_user_cliente, {file,dir}_mode &#10141; Controlan permisos ugo no lado do cliente. Debe existir /mnt/FolderClient (# mkdir -p /mnt/FolderClient)
+                </td>
+              </tr>
+              <tr>
+                <td class='nome bgsalmon bradius4'>echo '//lserver1/Sharelserver1 /mnt/FolderClient cifs user=USER,password=PASS,uid=UID,gid=GID,<br />file_mode=0660,dir_mode=0770 0 0' >> /etc/fstab</td>
+                <td> &#10141; </td><td>Montar de xeito permanente no cliente o recurso compartido.<br />USER=user_samba, PASS=password_user_samba, UID=uid_user_cliente, GID=gid_user_cliente<br />
+                <span class='label'>[homes] &#10141; Para que funcionen os permisos rw:</span><br />
+                <span class='label bgy'>mount &#10141; rw<span class='bgwhite'><span class='pright'>&nbsp;</span>+<span class='pright'>&nbsp;</span></span>[homes] &#10141; read only = no</span>   
+                </td>
+              </tr>
+              <tr>
+                <td class='nome bglime bradius4'># echo -e 'username=USER\npassword=PASS' > /root/file_credentials.txt<br />
+                  # chown root. /root/file_credentials.txt<br />
+                  # chmod 400 /root/file_credentials.txt<br />
+                  # echo '//lserver1/Sharelserver1 /mnt/FolderClient cifs credentials=/root/file_credentials.txt,uid=UID,gid=GID,<br />file_mode=0660,dir_mode=0770 0 0' >> /etc/fstab</td>
+                <td> &#10141; </td><td>Montar de xeito permanente no cliente o recurso compartido, <br />empregando o ficheiro file_credentials.txt para autenticación. Os permisos dese ficheiro son de só lectura para o usuario root.<br />
+                USER=user_samba, PASS=password_user_samba, UID=uid_user_cliente, GID=gid_user_cliente</td>
+              </tr>
+            </table>
+            <p class='mtop'><span class='label'>libpam-mount</span> <span class='nome'>(man pam_mount && man pam_mount.conf)(/etc/security/pam_mount.conf.xml)(~/.pam_mount.conf.xml)
+                <br />%(USER), %(USERUID): Variables pam_mount. Identifican user_samba/uid_user_samba respectivamente.<b>Non se modifican</b>
+                <br />Para que funcione a compartición &#10141; <span class='bgy'>password_user_system = password_user_samba</span> &#10141; smbpasswd -a user_samba
+               </span></p>
+            <table class='bfigure bradius8 mtopsubs fixed'>
+              <tr>
+                <td class='nome'># apt -y install libpam-mount</td><td> &#10141; </td><td>Instalar</td>
+              </tr>
+              <tr>
+                <td width='51%' class='nome bgsalmon bradius4'>
+                  &lt;volume pgrp="%(GROUP)" uid="%(USERUID)" fstype="cifs" server="lserver1" path="homes" mountpoint="/mnt/%(USER)" options="nodev,nosuid,workgroup=WORKGROUP,<br />iocharset=utf8,file_mode=0700,dir_mode=0700,vers=1.0" /&gt;
+                </td>
+                <td> &#10141; </td><td>Montar no login o recurso compartido [homes](path)<br />
+                (file_mode=0700 &#10141; Permisos ficheiros a crear rw- --- ---)<br />
+                (dir_mode=0700 &#10141; Permisos directorios a crear rwx --- ---)</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubs'><span class='label bgspringgreen bradius8 prightx10'>Exemplo: Verificación de Permisos UGO no lado do Servidor e no lado do Cliente</span></h3>
+    <ul type='square' class='nome bfigure'>
+      <li>Os permisos UGO no lado do Servidor veñen dados na configuración de Samba, é dicir, aínda que os permisos UGO poidan ser modificados na montaxe por un cliente Samba no servidor os ficheiros/directorios terán os permisos dados na configuración do recurso compartido de Samba.
+      <li>Os permisos UGO no lado do Cliente veñen dados polo cliente Samba a través do comando/app de montaxe (cifs.utils &#10140; mount &#10140; uid, gid, forceuid, forcegid, file_mode, dir_mode). 
+        <ul>
+          <li>uid=number/username &#10141; identifica u de ugo pertencente ao cliente cando o servidor non proporciona esta información. Por defecto = 0
+          <li>forceuid=number/username &#10141; obriga a identificar u de ugo pertencente ao cliente ignorando o uid proporcionado polo servidor.
+          <li>gid=number/groupname &#10141; identifica g de ugo pertencente ao cliente cando o servidor non proporciona esta información. Por defecto = 0
+          <li>forcegid=number/username &#10141; obriga a identificar g de ugo pertencente ao cliente ignorando o gid proporcionado polo servidor.
+        </ul>
+      <li>Unha vez montado o recurso modificar no cliente os permisos cos comandos chmod, chown non darán erro pero non terán efecto.
+    </ul>
+    <div class='mtopsubs'>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[temporal]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <td width='28%'><span class='nome'>comment = temporal</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /srv/temporal</span></td><td>&#10141;</td><td width='1200px'>Ruta do recurso compartido<br />
+              <span class='nome'># mkdir /srv/temporal && chgrp g-usuarios /srv/temporal && chmod 0775 /srv/temporal</span></td> 
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  no</span></td><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0660</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol /srv/temporal<br/>(u g o = rw- rw- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>directory mask = 0770</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos directorios a crear dentro do cartafol /srv/temporal<br />(u g o = rwx rwx ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <span class='nome'>&nbsp;ana &#10141; </span>user_samba que non ten por que existir no cliente.<br />
+          <span class='nome'>&nbsp;uid=1001, gid=1001 &#10141;</span>uid/gid pertecentes ao cliente Samba. Se existen aparecerán os nomes e se non existen aparecerán números.
+          <table>
+            <tr>
+              <td width='52%'><span class='nome'># mount.cifs //lserver1/temporal /mnt/temporal -o user=ana,uid=1001,gid=1001,file_mode=0764,dir_mode=0755</span></td><td>&#10141;</td><td>No cliente os ficheiros xerados terán permisos ugo <span class='nome'>764</span> e os directorios <span class='nome'>755</span>, aínda que no servidor os permisos destes ficheiros e directorios xerados serán <span class='nome'>660</span> para ficheiros e <span class='nome'>770</span> para directorios. Se soamente quixeramos que no cliente <span class='nome'>ana</span> tiverá permisos sobre os ficheiros e directorios xerados: file_mode=0600, dir_mode=0700</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># ls -ld /mnt/temporal</span></td><td>&#10141;</td><td>Revisar permisos do cartafol /mnt/temporal</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># mkdir /mnt/temporal/dir1-ana && touch /mnt/temporal/f1-ana.txt</span></td><td>&#10141;</td><td>Crear directorio e ficheiro</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># ls -l /mnt/temporal</span></td><td>&#10141;</td><td>Revisar permisos dentro do cartafol /mnt/temporal</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Servidor</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <td><span class='nome'># ls -ld /srv/temporal</span></td><td>&#10141;</td><td>Revisar permisos do cartafol /srv/temporal</td>
+            </tr>
+            <tr>
+              <td width='16%'><span class='nome'># ls -l /srv/temporal</span></td><td>&#10141;</td><td>Revisar permisos dentro do cartafol /srv/temporal. Como cando creamos o recurso compartido /srv/temporal executamos <span class='nome'>chmod 0775 /srv/temporal</span> todos os ficheiros/directorios creados en /srv/temporal terán como user/group propietario o user/group propietario do usuario samba que monta o recurso e crea o ficheiro/directorio.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <span class='nome'>&nbsp;xurxo &#10141; </span>user_samba que non ten por que existir no cliente. Grupos no servidor: pertence a g-external e non pertence a g-usuarios<br />
+          <table>
+            <tr>
+              <td><span class='nome'># umount /mnt/temporal</span></td><td>&#10141;</td><td>Desmontar recurso compartido</td>
+            </tr>
+            <tr>
+              <td width='46%'><span class='nome'># mount.cifs //lserver1/temporal /mnt/temporal -o user=xurxo,uid=1001,gid=1001,file_mode=0764,dir_mode=0755</span></td><td>&#10141;</td><td>Erro na montaxe pois <span class='nome'>xurxo</span> non é <span class='nome'>ana</span>, nin pertence ao grupo <span class='nome'>g-usuarios</span> do servidor, polo tanto non ten acceso ao recurso compartido. <i>(Verificar de novo tras executar no servidor: <span class='nome'># usermod -aG g-usuarios xurxo</span>)</i></td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubs'><span class='label bgspringgreen bradius8 prightx10'>Exemplo: Verificación de control de Usuarios/Grupos/Hosts</span></h3>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[descargas]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='28%'><span class='nome'>comment = descargas</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /srv/descargas</span></td><td>&#10141;</td><td width='840px'>Ruta do recurso compartido<br />
+              <span class='nome'># mkdir /srv/descargas && chgrp g-usuarios /srv/descargas && chmod 2770 /srv/descargas</span></td> 
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td>Acceso permitido soamente aos usuarios autenticados</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>valid users = ana, @g-usuarios</span></td><td>&#10141;</td><td>Acceso permitido ao usuario ana e ao grupo g-usuarios.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>invalid users = xurxo, @g-external</span></td><td>&#10141;</td><td>Acceso non permitido ao usuario xurxo e ao grupo @g-external. <b><span class='bgy'>invalid users prevalece no caso de conflicto con valid users</span></b></td>
+            </tr>
+            <tr>
+              <td width='38%'><span class='nome'>hosts allow = 127.0.0.1 172.16.10.0/24 lclient1</span></td><td>&#10141;</td><td>Acceso permitido á dirección IP 127.0.0.1, á rede 172.16.10.0/24 e ao host lclient1</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>hosts deny = 172.16.10.150 lclient2</span></td><td>&#10141;</td><td>Acceso non permitido aos host 172.16.10.150 e lclient2<br />
+                <ul class='mtopsubsmini2 arribasubsmini3'>
+                  <li><b><span class='bgy'>hosts allow prevalece no caso de conflicto con hosts deny</span></b><br />
+                  <li><b><span class='bgy'>hosts deny prevalece no caso de conflicto con valid users</span></b>
+                </ul>
+                <br />
+              </td>
+
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet'>
+          <div class='fright mtop mbottom'>
+            <pre class='pall bradius8 bfigure mtopsubsmini arribaplusx2 title16'>
+# usermod -G g-external xurxo
+$ id ana && id xurxo
+uid=1001(ana) gid=1001(ana) grupos=1001(ana),1003(g-usuarios)
+uid=1002(xurxo) gid=1002(xurxo) grupos=1002(xurxo),1004(g-external)
+             <p class='pall arribaplusx5'>&nbsp;</p>
+             </pre>
+          </div>
+          <span class='nome'>usuarios/grupos Samba &#10141; </span> que non teñen por que existir no cliente.
+          <div class='indent'>&nbsp;</div>
+          <table>
+            <tr>
+              <td width='52%'><span class='nome'># mount.cifs //lserver1/descargas /mnt/descargas -o user=ana,uid=1001,gid=1001,file_mode=0777,dir_mode=0777</span></td><td>&#10141;</td><td>O usuario Samba <span class='nome'>ana</span> pode montar o recurso compartido xa que pode autenticar (valid users + hosts allow). No cliente os ficheiros posúen permisos ugo 777 e os directorios 777, aínda que no servidor os permisos destes ficheiros e directorios son os xerados no servidor según a configuración de Samba.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># ls -ld /mnt/descargas</span></td><td>&#10141;</td><td>Revisar permisos do cartafol /mnt/descargas</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># mkdir /mnt/descargas/dir1-ana && touch /mnt/descargas/f1-ana.txt</span></td><td>&#10141;</td><td>Ao intentar crear directorio e ficheiros no recurso compartido non se pode debido á directiva Samba <span class='nome'>read only=yes</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># umount /mnt/descargas</span></td><td>&#10141;</td><td>Desmontar recurso compartido</td>
+            </tr>
+              <td width='48%'><span class='nome'># mount.cifs //lserver1/descargas /mnt/descargas -o user=xurxo,uid=1001,gid=1001,file_mode=0400,dir_mode=0500</span></td><td>&#10141;</td><td>O usuario Samba <span class='nome'>xurxo</span> non pode montar o recurso compartido xa que non pode autenticar (invalid users). </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Servidor</div>
+        </th>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td><span class='nome'># ls -ld /srv/descargas</span></td><td>&#10141;</td><td>Revisar permisos do cartafol /srv/descargas</td>
+            </tr>
+            <tr>
+              <td width='18%'><span class='nome'># ls -l /srv/descargas</span></td><td>&#10141;</td><td>Revisar permisos dentro do cartafol /srv/descargas. Como cando creamos o recurso compartido /srv/descargas executamos o comando <span class='nome'>chmod 2770 /srv/descargas</span>, (SGID 2000), e se a directiva deste recurso compartido no servidor Samba fose <i>read only = no</i>, todos os subdirectorios creados en /srv/descargas terán como grupo propietario o grupo propietario do directorio principal /srv/descargas, sendo neste caso o grupo g-usuarios. </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubs'><span class='label bgspringgreen bradius8 prightx10'>Exemplo: [homes] &#10141; libpam-mount &#10141; Montar home no login - Desmontar home no logout</span></h3>
+    <ul type='square' class='nome bfigure'>
+      <li><span class='label'>libpam-mount</span> <span class='nome'>(man pam_mount && man pam_mount.conf)(/etc/security/pam_mount.conf.xml)(~/.pam_mount.conf.xml)
+      <li>%(USER), %(USERUID): Variables pam_mount. Identifican user_samba/uid_user_samba respectivamente.<b>Non se modifican</b>
+      <li>Para que funcione a compartición &#10141; <span class='bgy'>password_user_system = password_user_samba</span> &#10141; smbpasswd -a user_samba
+      </span>
+    </ul>
+    <div>
+      <table class='mtopsubs'>
+        <th class='cheat-sheet label pall2'>
+          <div>[homes]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='24%'><span class='nome'>comment = Home Directories</span></td><td>&#10141;</td><td>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = no</span></td><td>&#10141;</td><td>Este recurso compartido non se amosa ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0700</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol do usuario (u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>directory mask = 0700</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos directorios a crear dentro do cartafol do usuario (u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>valid users = %S</span></td><td>&#10141;</td><td width='81%'>%S &#10141; os usuarios acceden ao seu cartafol persoal: user_samba&nbsp;&#10141;&nbsp;/home/user_samba&nbsp;&#10141;&nbsp;\\server\user_samba</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <div class='fright mtop mbottom'>
+            <br />
+            <pre class='pall bradius8 bfigure mtopsubs arriba title16'>
+root@lclient1:~# usermod -aG g-usuarios usuario
+usuario@lclient1:~$ id usuario
+uid=1000(usuario) gid=1000(usuario)
+grupos=1000(usuario),24(cdrom),25(floppy),29(audio),30(dip),44(video),
+46(plugdev),109(netdev),112(bluetooth),116(scanner),119(lpadmin),1001(g-usuarios)
+             <p class='pall arribaplusx5'>&nbsp;</p>
+             </pre>
+          </div>
+          <span class='nome'>&nbsp;pam_mount &#10141; </span> os usuarios Samba teñen que existir no cliente como usuarios Unix co mesmo contrasinal de acceso que en Samba, xa que imos montar no login e desmontar no logout.
+          <div class='indent arribaplus'>&nbsp;</div>
+          <table>
+            <tr>
+              <td width='51%' class='nome bgsalmon bradius4'>
+                &lt;volume sgrp="g-usuarios" fstype="cifs" server="lserver1" path="homes" mountpoint="/mnt/%(USER)" options="nodev,nosuid,workgroup=WORKGROUP" /&gt;
+              </td>
+              <td> &#10141; </td><td>Engadir en <span class='nome'>/etc/security/pam_mount.conf.xml</span> para montar no login o recurso compartido [homes](path). sgrp &#10141; Limita o volume aos usuarios que son membros do grupo g-usuarios (independentemente sexa grupo primario ou secundario).<b>Este grupo g-usuarios é un grupo existente no cliente Samba.</b>
+              </td>
+            </tr>
+            <tr>
+              <td><span class='nome'># su - usuario</span></td><td>&#10141;</td><td>Login &#10141; passwd pam_mount = passwd user_samba &#10141; pam_mount monta volume cifs en /mnt/usuario</td>
+            </tr>
+            <tr>
+              <td width='48%'><span class='nome'># mount</span></td><td>&#10141;</td><td>Verificar volumes montados.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># ls -ld /mnt/usuario</span></td><td>&#10141;</td><td>Revisar permisos do cartafol /mnt/usuario</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># mkdir /mnt/usuario/dir1 && touch /mnt/usuario/f1</span></td><td>&#10141;</td><td>Ao intentar crear directorio e ficheiros no recurso compartido non se pode debido á directiva Samba <span class='nome'>read only=yes</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># exit</span></td><td>&#10141;</td><td>Logout &#10141; Desmontar recurso compartido</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Servidor</div>
+        </th>
+        <td width='1200px' class='cheat-sheet pall2'>
+          <div class='fright mtop mbottom'>
+            <br />
+            <pre class='pall bradiuss8 bfigure mtopsubs arribaplus title16'>
+             <p class='pall arribaplusx4'>&nbsp;</p>
+usuario@lserver1:~$ id usuario
+uid=1000(usuario) gid=1000(usuario)
+grupos=1000(usuario),24(cdrom),25(floppy),29(audio),30(dip),44(video),
+46(plugdev),109(netdev),112(bluetooth),116(scanner),119(lpadmin)
+             <p class='pall arribaplusx5'>&nbsp;</p>
+             </pre>
+          </div>
+          <span class='nome'>&nbsp;usuario &#10141; </span> é un usuario Unix e Samba onde:<br />
+            <ul class='mtopsubsmini2 arriba'>
+              <li>password_user_system = password_user_samba
+              <li>Non pertence ao grupo g-usuarios.
+            </ul>
+          <div class='indent'>&nbsp;</div>
+          <table>
+            <tr>
+              <td><span class='nome'>[homes] &#10141; <span class='bgy'>read only = no</span></span></td><td>&#10141;</td><td>Modificar a directiva <span class='label'>read only = no</span> en <span class='label'>/etc/samba/smb.conf</span> na sección <span class='label'>[homes]</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># smbcontrol all reload-config</span></td><td>&#10141;</td><td>Recargar a configuración do Servidor Samba</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <td><span class='nome'>Probar de novo a creación de ficheiros e directorios</span></td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arriba'><span class='label bgspringgreen bradius8 prightx10'>Exemplo: Compartir Impresoras &#10141; [global] &#10141; backend cups &#10141; <a href='https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Print_Server' target='_blank'>[printers]</a> &#10141; impresoras compartidas</span></h3>
+    <img class='mtopplus mleftplus280x3 arribasubsmini2' src="images/mouse-pointer-mini.png" />
+    <ul type='square' class='nome bfigure'>
+      <li>Samba precisa dun servidor de impresión como backend, o cal debe estar instalado localmente no host Samba, xa que Samba non pode reenviar traballos de impresión a un host remoto.
+      <li><span class='label'>cups</span> &#10141; <span class='nome'>Servidor de impresión empregado como backend no Servidor Samba. Debe estar instalado localmente no servidor Samba
+      <li>/var/spool/samba &#10141; Directorio cola impresión Samba (ugo &#10141; 1777)
+      <li>Na configuración por defecto en /etc/samba/smb.conf todas as impresoras configuradas no backend de impresión (cups) están compartidas automaticamente.
+      </span>
+    </ul>
+    <div class='mtopsubs'>
+      <table class='fixed'>
+        <th class='cheat-sheet label'>
+          <div>[printers]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <td width='19%'><span class='nome'>comment = All Printers</span></td><td>&#10141;</td><td width='80%'>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = no</span></td><td>&#10141;</td><td>Este recurso compartido non se amosa ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /var/spool/samba</span></td><td>&#10141;</td><td>Accédese ao recurso compartido /var/spool/samba mediante o nome da sección printers.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>printable = yes</span></td><td>&#10141;</td><td>Recurso compartido impresora está dispoñible</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td>Acceso permitido soamente aos usuarios autenticados</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  yes</span></td><td>&#10141;</td><td>Permisos de só lectura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0700</span></td><td>&#10141;</td><td width='1200px'>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol definido na directiva path<br />(u g o = rwx --- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Servidor</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <p class='mtopsubsmini2 arribaplus pall'><span class='label'>CUPS</span> <span class='nome'>(servidor de impresión empregado como backend en Samba)</span></p><br />
+          <table>
+            <tr>
+              <td colspan='3'>
+                <table class='bgradius4 bgaqua'>
+                  <tr>
+                    <td class='nome'># apt -y install cups</td><td> &#10141; </td><td>Instalar cups</td>
+                  </tr>
+                  <tr>
+                    <td class='nome' width='30%'># apt -y install printer-driver-cups-pdf</td><td> &#10141; </td><td>
+                    <p class='mtopsubsmini2'>
+                      <img class='mleftplus280 mtopsubs' src="images/mouse-pointer-mini-rotate-180.png" /><br />
+                    Instalar <a href='https://wiki.debian.org/SystemPrinting#Print_to_a_PDF' target='_blank'>printer-driver-cups-pdf (Impresora virtual PDF)</a>
+                    </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'>http://localhost:631/printers/PDF</span></td><td>&#10141;</td><td>Acceder ao panel de Impresoras de cups. Debe existir a impresora virtual de nome PDF<br />
+                    <b>Controlador:</b> Generic CUPS-PDF Printer (w/ options) (color)<br />
+                    Os arquivos impresos serán gardados no servidor en ~/PDF, é dicir, /home/user_samba/PDF</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <br />
+          <p class='mtopsubsmini2 arribaplus pall'><span class='label'>Samba4</span> <span class='nome'>(compartir impresoras mediante backend CUPS)</span></p><br />
+          <table>
+            <tr>
+              <td colspan='3'>
+                <table class='bgradius4 bglime'>
+                  <tr>
+                    <td width='30%'><span class='nome'># smbd -b | grep "HAVE_CUPS"<br />
+                      <span class='title14'>HAVE_CUPS_CUPS_H<br />
+                      HAVE_CUPS_LANGUAGE_H<br />
+                      HAVE_CUPS</span>
+      </span></td><td>&#10141;</td><td>Verificar soporte cups de Samba, é dicir, Samba foi instalado co soporte CUPS habilitado. Se non amosa saída &#10141; <a href='https://wiki.samba.org/index.php/Package_Dependencies_Required_to_Build_Samba' target='_blank'>instalar Samba con soporte cups</a>
+                      <img class='mleftplus280x2' src="images/mouse-pointer-mini.png" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'>[global] &#10141; <span class='bgy'>printing = CUPS</span></span></td><td>&#10141;</td><td>Engadir a directiva <span class='label'>printing = CUPS</span> en <span class='label'>/etc/samba/smb.conf</span> na sección <span class='label'>[global]</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ls -ld /var/spool/samba</span></td><td>&#10141;</td><td>Revisar permisos do cartafol colas de impresión  /var/spool/samba (ugo &#10141; 1777)</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># smbcontrol all reload-config</span></td><td>&#10141;</td><td>Recargar a configuración do Servidor Samba</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <tr>
+                <td class='nome'># apt -y install cups</td><td> &#10141; </td><td>Instalar cups</td>
+              </tr>
+              <td width='50%' class='nome'>
+                $ su - -c 'apt -y install system-config-printer' && system-config-printer
+              </td>
+              <td> &#10141; </td><td>Instalar e executar system-config-printer para engadir a impresora virtual PDF compartida por Samba &#10141; <b>Controlador: PostScript</b> Generic PostScript Printer[en](recomendado)
+              </td>
+            </tr>
+            <tr>
+              <td><span class='nome'>&nbsp;Crear arquivo e imprimir escollendo a impresora PDF</span></td><td>&#10141;</td><td>Revisar o arquivo no servidor en /home/user_samba/PDF
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <h3 class='mtopsubs arriba'><span class='label bgsalmonnull bradius8 prightx10'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM' target='_blank'>Xestionar arrays de discos: RAID5(/dev/md5), RAID0(/dev/md0)</a></span></h3>
+      <p class='arribasubs'><img class='links links130' src="images/mouse-pointer-mini.png" width='18px'/></p>
+    <div>
+      <table>
+        <th class='cheat-sheet label' width='10%'>
+          <div>No Servidor<br />
+          <span class='nomefwn'>(mdadm)</span><br />
+          <span class='nomefwn'>(man mdadm.conf)</span><br />
+          <span class='nomefwn'>(man update-initramfs)</span><br />
+          <pre class='nomefwn mtopsubsmini2'>
+<p class='tleft mtopsubs'>
+sda: Disco duro do sistema
+sd[bcde]: Discos para montaxe de arrays
+</p>
+<table class='array mtopsubsx2'>
+  <tr>
+    <td class='array5'>sdb1</td>
+    <td class='array0'>sdb2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sdc1</td>
+    <td class='array0'>sdc2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sdd1</td>
+    <td class='array0'>sdd2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sde1</td>
+    <td class='array0'>sde2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+
+<p class='tleft mtopsubsx2'>
+<span class='bglime'>RAID5(/dev/md5): 4 discos/particións</span>
+3 sincronizados(sd[bcd]1) + 1 en espera(sde1)
+/dev/md5 &#10141; /mnt/md5
+
+<span class='bgpink'>RAID0(/dev/md0): 4 discos/particións (sd[bcde]2)</span>
+/dev/md0 &#10142; /mnt/md0
+</p>
+          </pre>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='60%'>
+                <pre class='mtopsubsmini2 bfigure arriba nome title16 pall'>
+# apt update && apt -y install mdadm parted
+# for i in sdb sdc sdd sde
+do 
+  parted -s /dev/${i} print
+  parted --script /dev/${i} mklabel msdos
+  parted --script /dev/${i} mkpart primary 0 50% -a cylinder
+  parted --script /dev/${i} mkpart primary 50% 70% -a cylinder
+  parted -s /dev/${i} print
+done
+# cat /proc/mdstat
+# yes | mdadm --create /dev/md5 --level=5 \
+  --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1 \
+  --spare-devices=1 /dev/sde1
+# yes | mdadm --create /dev/md0 --level=0 \
+  --raid-devices=4 /dev/sdb2 /dev/sdc2 /dev/sdd2 /dev/sde2
+# cat /proc/mdstat
+# mdadm --examine --scan >> /etc/mdadm/mdadm.conf 
+# mdadm --detail /dev/md5
+# mdadm --detail /dev/md0
+# mkdir /mnt/md5 /mnt/md0
+# mkfs.ext4 -F -L 'RAID5' /dev/md5 
+# mkfs.ext4 -F -L 'RAID0' /dev/md0 
+# UUID_MD5=$(lsblk -o +UUID | grep md5 | awk '{print $NF}' | sort -u) 
+# echo "UUID=${UUID_MD5} /mnt/md5 ext4 defaults 0 2" >> /etc/fstab
+# UUID_MD0=$(lsblk -o +UUID | grep md0 | awk '{print $NF}' | sort -u) 
+# echo "UUID=${UUID_MD0} /mnt/md0 ext4 defaults 0 2" >> /etc/fstab
+# mount -a
+# mount || findmnt
+# mkdir -p /mnt/md5/dir5 && touch /mnt/md5/dir5/f1 
+# mkdir -p /mnt/md0/dir0 && touch /mnt/md0/dir0/f0
+# ls -lR /mnt/md5 /mnt/md0
+# umount /mnt/md5 /mnt/md0
+# mount || findmnt
+# update-initramfs -u
+# reboot          </pre><br/>
+              <td> &#10141; </td><td>Crear os array de disco RAID5(/dev/md5) e RAID0(/dev/md0)
+              </td>
+            </tr>
+            <tr>
+              <td width='60%'>
+                <pre class='mtopsubsmini2 bfigure arriba nome title16 pall'>
+$ mount || findmnt
+$ cat /proc/mdstat
+# mdadm --detail /dev/md5
+# mdadm --detail /dev/md0
+# ls -lR /mnt/md5 /mnt/md0
+                </pre>
+              </td>
+              <td> &#10141; </td><td>Unha vez iniciado comprobar que os arrays seguen sendo funcionais
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+  <div class='mtopplusx2'>&nbsp;</div>  
+  <hr />
+  <div id="footer" class='arriba'>
+    <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" class='links' src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
