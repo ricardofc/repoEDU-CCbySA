@@ -36,11 +36,28 @@ f_help() {
   echo -ne '\e[01;33m'
   echo '#######################################################'
   echo -ne '\e[01;33m'
-  echo Execución errónea. Exemplo execución:
+  echo Execución errónea. Exemplos execución:
   echo -ne '\e[00m'
+  echo -e 'Exemplo1: Orientación Vertical'
   echo -ne '\e[01;77m'
-  echo bash $0 file.html
+  echo -e '\tbash $0 file.html vt'
   echo -ne '\e[01;33m'
+  echo -ne '\e[00m'
+  echo -e 'Exemplo2: Orientación Horizontal'
+  echo -ne '\e[01;77m'
+  echo -e '\tbash $0 file.html hz'
+  echo -ne '\e[01;33m'
+  echo -ne '\e[00m'
+  echo -e 'Exemplo3: Orientación Vertical con Delay(20000ms)'
+  echo -ne '\e[01;77m'
+  echo -e '\tbash $0 file.html vt 20000'
+  echo -ne '\e[01;33m'
+  echo -ne '\e[00m'
+  echo -e 'Exemplo4: Orientación Horizontal con Delay(20000ms)'
+  echo -ne '\e[01;77m'
+  echo -e '\tbash $0 file.html hz 20000' 
+  echo -ne '\e[01;33m'
+
   echo '#######################################################'
   echo -e '\e[00m'
   echo
@@ -89,12 +106,34 @@ f_exist() {
   [ ! -f ${FILE}.html ] && f_verify
 }
 
+f_orientation() {
+  if [ "$2" = 'hz' ] ; then
+    export ORIENTATION='-O landscape'
+  elif [ "$2" = 'vt' ]; then
+    export ORIENTATION=' ' 
+  else
+    f_help
+  fi
+}
+
+f_javascriptDelay() {
+  if [[ "$3" =~ ^[0-9]+\d*$ ]]; then
+    export DELAY="--javascript-delay $3" 
+  elif [ -z "$3" ]; then
+    export DELAY=' '
+  else
+    f_help
+  fi
+}
+
 f_main() {
   f_search
   f_exist
-  ${HTML2PDF} ${FILE}.html PDF/${FILE}.pdf
+  f_orientation $*
+  f_javascriptDelay $*
+  ${HTML2PDF} ${ORIENTATION} ${DELAY} ${FILE}.html PDF/${FILE}.pdf
 }
 
 
 ##main()
-[ $# -ne 1 ] && f_help || f_main
+([ $# -eq 2 ] || [ $# -eq 3 ]) && f_main $* || f_help

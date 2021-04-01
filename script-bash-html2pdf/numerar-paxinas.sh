@@ -15,7 +15,7 @@
 ##│   └── file.pdf
 
 ### bookmark/Bookmarking-file.tmp -> Índice
-### numerar-paxinas.sh -> Script a executar para númerar as páxinas e crear un índice do ficheiro PDF/file.pdf
+### numerar-paxinas.sh -> Script a executar para númeras as páxinas e crear un índice do ficheiro PDF/file.pdf
 ### PDF/ -> Cartafol onde se gardan os arquivos PDF
 ### PDF/file.pdf -> Ficheiro a numerar e crear o índice
 
@@ -41,10 +41,17 @@ f_help() {
   echo -ne '\e[00m'
   echo -ne '\e[01;77m'
   echo ""
-  echo "bash $0 PDF/file.pdf 0     #Ficheiro PDF/file.pdf non posúe portada na páxina 1"
-  echo "bash $0 PDF/file.pdf 1     #Ficheiro PDF/file.pdf posúe portada na páxina 1, a cal non se numera"
+  echo -e 'Exemplo1: Orientación Vertical'
+  echo "  bash $0 PDF/file.pdf 0 vt    #Ficheiro PDF/file.pdf non posúe portada na páxina 1"
+  echo "  bash $0 PDF/file.pdf 1 vt    #Ficheiro PDF/file.pdf posúe portada na páxina 1, a cal non se numera"
+  echo -ne '\e[00m'
+  echo -ne '\e[01;77m'
+  echo ""
+  echo -e 'Exemplo2: Orientación Horizontal'
+  echo "  bash $0 PDF/file.pdf 0 hz    #Ficheiro PDF/file.pdf non posúe portada na páxina 1"
+  echo "  bash $0 PDF/file.pdf 1 hz    #Ficheiro PDF/file.pdf posúe portada na páxina 1, a cal non se numera"
   echo "
-  ##Necesaria a existencia de bookmark/Bookmarking-file.tmp para crear o índice. Segue a plantilla:
+  ##Necesaria a existencia de Bookmarkingall.tmp para crear o índice. Segue a plantilla:
     BookmarkBegin
     BookmarkTitle: Repaso Comandos GNU/Linux - Shell bash
     BookmarkLevel: 1
@@ -69,18 +76,28 @@ f_exist(){
 }
 
 f_pageNumbersTex(){
+    if [ "$1" == 'hz' ]; then
+      HZ='\documentclass[12pt,a4paper,landscape]{article}'
+      BD='%Borde superior dereito
+        \usepackage[top=-0.6cm,bottom=30.34cm,left=29.3cm,right=0cm]{geometry}'
+    elif [ "$1" == 'vt' ]; then
+      HZ='\documentclass[12pt,a4paper]{article}'
+      BD='%Borde inferior dereito
+        \usepackage[top=1.54cm,bottom=1.14cm,left=20.4cm,right=0cm]{geometry}'
+    else
+      f_help
+    fi
+
     cat > ${TEMPORAL}/${FILETEX} << EOF
-        \documentclass[12pt,a4paper]{article}
+        ${HZ}
         \usepackage{multido}
         %\pagestyle{headings}
         \pagestyle{plain}
-        %Borde inferior dereito
-           \usepackage[top=1.54cm,bottom=1.14cm,left=20.4cm,right=0cm]{geometry}
+        ${BD}
         %Borde inferior esquerdo
           %\usepackage[top=1.54cm,bottom=1.24cm,left=0cm,right=23.4cm]{geometry}
         %Borde 
         %\usepackage[hmargin=0.1cm,vmargin=0.2cm,nohead,nofoot]{geometry}
-
         \begin{document}
         \multido{}{ZZZZ}{\vphantom{x}\newpage}
         \end{document}
@@ -135,9 +152,9 @@ f_remove(){
 
 
 ##main
-[ $# -ne 2 ] && f_help 
+[ $# -ne 3 ] && f_help 
 f_exist
-f_pageNumbersTex
+f_pageNumbersTex $3
 [ $2 != 0 ] && f_portadaSenNumerar $1
 f_numerarDoc $1
 [ $2 != 0 ] && f_numerarOverPage2 && f_joinPortadaDocumentWithoutIndex && f_docPortadaWithIndex || (f_numerarOverPage1 && f_docWithIndex)
