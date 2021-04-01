@@ -1,0 +1,1598 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Cheat-Sheet: Samba4 Debian GNU/Linux</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+<body>
+  <div id='autocentrado'>
+    <h1><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOR/Samba4' target='_blank'>Cheat-Sheet: Samba4 Debian GNU/Linux</h1>
+    <img class='links links300' src="images/mouse-pointer-mini.png" width='18px' />
+    <div class='frightfs explicacion6 mtopsubsx3 up'>
+      <div class='minindent'>&nbsp;</div>
+      <div class='nome title16 mleft arriba'><b>Samba4: Integra <a href='https://wiki.samba.org/index.php/Samba_Internal_DNS_Back_End' target='_blank'>DNS</a>, <a href='https://wiki.samba.org/index.php/LDB' target='_blank'>LDAP</a> e <a href='https://github.com/heimdal/heimdal/wiki' target='_blank'>Kerberos Heimdal</a></b></div><br />
+      <img class='links links170' src="images/mouse-pointer-mini.png" width='18px'/>
+      <img class='links links50' src="images/mouse-pointer-mini.png" width='18px' />
+      <img class='links links50' src="images/mouse-pointer-mini.png" width='18px' />
+      <div class='nome title16 titlesamba'><b><a href='https://wiki.samba.org/index.php/Setting_up_Samba_as_an_Active_Directory_Domain_Controller' target='_blank'>AD DC</a> (<a href='https://wiki.samba.org/index.php/LDB#Active_Directory' target='_blank'>Active Directory Domain Controller</a>)</b></div>
+      <img class='links links70' src="images/mouse-pointer-mini.png" width='18px'/>
+      <img class='links links130' src="images/mouse-pointer-mini.png" width='18px' />
+    </div>
+    <div class='indent'>&nbsp;</div>
+    <div class='mtopsubsx3'>&nbsp;</div>
+    <table>
+      <tr>
+        <td>
+          <figure class='mtop figurecenter cfigure down'>
+            <img class='mrightsubsx6' width='880px' src="images/Escenario-Cheat-Sheet-Samba4-AD-DC.svg" />
+          </figure>
+        </td>
+        <td>
+          <figure class='mtopplusx2 cfigure down mleftplusx8'>
+            <img class='bfigure' width='360px' src="images/Mapa-Conceptual-Escenario-Cheat-Sheet-Samba4-AD-DC.svg" />
+          </figure>
+        </td>
+      </tr>
+    </table>
+    <div class='indent'>&nbsp;</div>
+    <hr class='mtopplusx2' />
+    <div id="footer" class='arriba'>
+      <div class="nome">Ricardo Feijoo Costa</div>
+        <div class='.imgccbysa'>
+          <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" class='links' src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+        </div>
+      </div>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubsmini3'><span class='label bglime  bradius8 prightx10'>Controlador de dominio</span></h3>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>Controlador de dominio<br />
+          <span class='nomefwn'>(PDC)</span><br />
+          <span class='nomefwn'>(NTP)</span><br />
+          <span class='nomefwn'>(DNS)</span><br />
+          <span class='nomefwn'>(LDAP)</span><br />
+          <span class='nomefwn'>(Kerberos)</span></div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table class='bfigure bradius8'>
+            <p class='arribaplus pall mtopsubsmini2'><span class='label'>NTP</span> <span class='nome'>(sincronizar hosts para validez de tickets Kerberos)</span></p><br />
+            <tr>
+              <td width='70%' class='nome bgradius4 bgaqua'># apt -y install ntp<br />
+                # A=$(grep -n ^#server /etc/ntp.conf | cut -d':' -f1 | xargs | awk '{print $NF}')<br />
+                # sed -i "${A}a\server 2.es.pool.ntp.org iburst prefer\nserver 1.europe.pool.ntp.org iburst prefer\nserver 2.europe.pool.ntp.org iburst prefer" /etc/ntp.conf<br />
+                # systemctl restart ntp.service<br />
+                # ntpq -p
+              </td>
+              <td>&#10141;</td>
+              <td>Cambiar os <a href='http://www.pool.ntp.org/zone/es' target='_blank'>servidores ntp</a> cos que sincronizar o sistema</td> 
+            </tr>
+          </table>
+          <table class='bfigure bradius8 fixed'>
+            <p class='arribaplus pall'><span class='label'>HOSTNAME FQDN</span> <span class='nome'>(configurar nome DNS do servidor SAMBA para resolución DNS e reino Kerberos)</span></p><br />
+            <tr>
+              <td width='50%' class='nome bradius4 bgsalmonnull cfigure'># echo 'lserver1.ies.local' > /etc/hostname<br />
+               # sed -i 's/lserver1/lserver1.ies.local lserver1/' /etc/hosts<br />
+               # echo 'kernel.hostname=lserver1.ies.local' >> /etc/sysctl.conf<br />
+               # sysctl -p 
+              </td>
+              <td>&#10141;</td>
+              <td width='700px'>Configurar o nome DNS no equipo servidor SAMBA</td>
+            </tr>
+          </table>
+          <table class='bfigure bradius8 fixed'>
+            <p class='arribaplus pall'><span class='label'>AD DC (Active Directory Domain Controller)</span> <span class='nome'>(configurar o Servidor SAMBA como Controlador de Dominio)</span></p><br />
+            <tr>
+              <td colspan='3'>
+                <table>
+                  <tr>
+                    <td width='660px'><span class='nome'># dpkg -l bind9 | grep un && [ $? -ne 0 ] && apt -y purge bind9</span></td><td>&#10141;</td><td>Purgar se é o caso o servidor DNS bind9.</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># dpkg -l dnsmasq | grep un && [ $? -ne 0 ] && apt -y purge dnsmasq </span></td><td>&#10141;</td><td>Purgar se é o caso o servidor DNS/DHCP dnsmaq</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td width='76%' class='nome bradius4 bglime'>#  mv /etc/samba/smb.conf smb.conf.standalone.server<br />
+              # samba-tool domain provision --use-rfc2307 --realm=IES.LOCAL --domain=IES --server-role=dc \<br />
+              --dns-backend=SAMBA_INTERNAL --adminpass=abc123.
+              <pre class='nome mtopsubsmini2 arriba'>
+...
+Server Role:           active directory domain controller
+Hostname:              lserver1
+NetBIOS Domain:        IES
+DNS Domain:            ies.local
+DOMAIN SID:            S-1-5-21-307976336-692820594-3996066041
+              </pre>
+              </td>
+              <td>&#10141;</td>
+              <td>Promocionar a PDC</td>
+            </tr>
+            <tr>
+              <td width='76%' class='nome bradius4 bgfuchsia'>
+              # apt -y install winbind<br />
+              # systemctl unmask samba-ad-dc<br />
+              # systemctl stop smbd && systemctl stop nmbd<br />
+              # systemctl start samba-ad-dc<br />
+              # systemctl enable samba-ad-dc
+              </td>
+              <td>&#10141;</td>
+              <td>Activar servizo <span class='nome'>samba-ad-dc</span> <i>(Ver Servizo/s)</i></td>
+            </tr>
+            <tr>
+              <td class='nome bradius4 bgy'>
+              # echo -e "domain ies.local\nsearch ies.local\nnameserver 172.16.10.254" > /etc/resolv.conf<br />
+              # host -t SRV _ldap._tcp.ies.local.<br />
+              <pre class='nome mtopsubsmini2 arriba'>
+_ldap._tcp.ies.local has SRV record 0 100 389 lserver1.ies.local.
+              </pre>
+              # host -t SRV _kerberos._tcp.ies.local.<br />
+              <pre class='nome mtopsubsmini2 arriba'>
+_kerberos._tcp.ies.local has SRV record 0 100 88 lserver1.ies.local.
+              </pre>
+              # host -t A lserver1.ies.local.<br />
+              <pre class='nome mtopsubsmini2 arriba'>
+lserver1.ies.local has address 172.16.10.254
+              </pre>
+              </td>
+              <td>&#10141;</td>
+              <td width='400px'>DNS: Apuntar ao servidor SAMBA e Verificar a resolución DNS: ldap, kerberos, hostname<br />
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class'indent'>&nbsp;</div>
+    <div class='pagebreak'>&nbsp;</div>
+    <div class='mtopsubs'>
+      <table>
+        <th class='cheat-sheet label'>
+          <div><span class='label'>Configuración</span><br />
+            <span class='nomefwn'>(/etc/samba/smb.conf)</span><br />
+            <span class='nomefwn'>(testparm)</span><br />
+            <span class='nomefwn'>(man 5 smb.conf)</span><br />
+            <span class='nomefwn'>(man 7 samba)</span><br />
+            <span class='nomefwn'>(man 8 samba)</span>
+          </div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td><span class='nome'>#</span></td><td>&#10141;</td><td>Comentarios (opcións por defecto)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>;</span></td><td>&#10141;</td><td>Comentarios (opcións que difiren das de por defecto)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[global]</span></td><td>&#10141;</td><td>Sección <span class='nome'>obrigatoria</span> correspondente á configuración global.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[netlogon]</span></td><td>&#10141;</td><td>Sección <span class='nome'>obrigatoria</span> correspondente aos scripts que se executan durante o inicio de sesión (logon)</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>[sysvol]</span></td><td>&#10141;</td><td>Sección <span class='nome'>obrigatoria</span> correspondente aos ficheiros públicos dun dominio que se replican en cada controlador de dominio</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[global]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='36%'><span class='nome'>dns forwarder = 8.8.4.4</span></td><td>&#10141;</td><td>DNS ao que enviar peticións cando o DNS Interno de SAMBA non poida resolver</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>netbios name = LSERVER1</span></td><td>&#10141;</td><td>Nome netbios</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>realm = IES.LOCAL</span></td><td>&#10141;</td><td>Reino Kerberos</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>server role = active directory domain controller</span></td><td>&#10141;</td><td>Modo de operación de samba. Pode tomar valores: "standalone server", "member server", "classic primary domain controller", "classic backup domain controller", "active directory domain controller". Neste caso <span class='nome'>controlador de dominio</span>.<br />
+            </tr>
+            <tr>
+              <td><span class='nome'>workgroup = IES</span></td><td>&#10141;</td><td>Nome do grupo de traballo do equipo</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>idmap_ldb:use rfc2307 = yes</span></td><td>&#10141;</td><td>O uso de atributos RFC 2307 permite o almacenamento de información de grupos e usuarios de Unix nun directorio LDAP.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[netlogon]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='34%'><span class='nome'>path = /var/lib/samba/sysvol/ies.local/scripts</span></td><td>&#10141;</td><td>Accédese ao recurso compartido /var/lib/samba/sysvol/ies.local/scripts mediante o nome da sección netlogon.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only = No</span></td><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div>
+      <table class='fixed'>
+        <th class='cheat-sheet label'>
+          <div>[sysvol]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='24%'><span class='nome'>path = /var/lib/samba/sysvol</span></td><td>&#10141;</td><td width='1000px'>Accédese ao recurso compartido /var/lib/samba/sysvol/ mediante o nome da sección sysvol.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only = No</span></td><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <th width='14%' class='cheat-sheet label'>
+          <div>Servizo/s<br />
+            <span class='nomefwn bgaqua'>(smbd<br />&&<br />nbmd)</span><br />
+            <span class='nomefwn'>(man 8 smbd<br />&&<br />man 8 nbmd)</span><br />
+            <span class='nomefwn bglime'>(samba-ad-dc<br />&&<br />winbind)</span><br />
+            <span class='nomefwn'>(man 8 winbindd)</span>
+          </div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='54%' class='bgaqua bradius8 pall'>
+                <table>
+                  <tr>
+                    <td colspan='3'><p class='label mtopsubsx2'>Servidor Independente: <span class='nomefwn'>smbd && nbmd</span></p>
+                      <p class='nome arribasubs'>smbd && nmbd</span> &#10141; Por defecto cando se instala Samba configúrase como Servidor Independente, enmascárase o servizo samba-ad-dc, e debemos empregar os servizos smbd e nmbd.</p><br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl status smbd && systemctl status nmbd</td><td> &#10141; </td><td>Ver estado</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl start smbd && systemctl start nmbd</td><td> &#10141; </td><td>Arrancar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop smbd && systemctl stop nmbd</td><td> &#10141; </td><td>Parar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl reload smbd && systemctl reload nmbd</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># smbcontrol all reload-config</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                </table>
+              </td>
+              <td class='bglime bradius8 pall'>
+                <p class='label mtopsubsmini2 arribasubs'>Controlador de dominio: <span class='nomefwn'>samba-ad-dc</span></p>
+                <p class='nome arribasubs'>samba-ad-dc &#10141; Cando configuramos Samba como AD-DC debemos instalar winbind e desenmascarar o servizo samba-ad-dc para poder empregalo.</p><br />
+                <table>
+                  <tr>
+                    <td class='nome'># apt -y install winbind</td><td> &#10141; </td><td>Instalar winbind</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl status samba-ad-dc</td><td> &#10141; </td><td>Ver estado</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl unmask samba-ad-dc</td><td> &#10141; </td><td>Desenmascarar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop smbd && systemctl stop nmbd</td><td> &#10141; </td><td>Parar smbd && nbmd</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl start samba-ad-dc</td><td> &#10141; </td><td>Arrancar</td>
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl stop samba-ad-dc</td><td> &#10141; </td><td>Parar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl reload samba-ad-dc</td><td> &#10141; </td><td>Recargar</td> 
+                  </tr>
+                  <tr>
+                    <td class='nome'># systemctl enable samba-ad-dc</td><td> &#10141; </td><td>Habilitar(/etc/rcX.d)</td> 
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='mtopsubs'>
+      <table>
+        <tr>
+          <th rowspan='2' class='cheat-sheet label'><p class='text-vertical-AD'>Administrar&nbsp;ACTIVE&nbsp;DIRECTORY</p></th>
+          <td class='cheat-sheet bradius8 pall'>
+            <table class='fixed'>
+              <th width='9%' class='cheat-sheet label'>
+                <div>LDAP<br />
+                  <span class='nomefwn'>(ldb-tools)</span><br />
+                  <span class='nomefwn'>(ldif)</span>
+                </div>
+              </th>
+              <td width='1%'>
+              </td>
+              <td class='cheat-sheet'>
+                <table>
+                  <tr>
+                    <td colspan='3'>
+                      <p class='justify mtopsubsmini2 arribaplus'>O paquete <code>ldb-tools</code> ofrece unha serie de comandos para a administración de datos no directorio LDAP. Os comandos para engadir, modificar, buscar, eliminar, editar e renomear son respectivamente: <code>ldbadd</code>, <code>ldbmodify</code>, <code>ldbsearch</code>, <code>ldbdel</code>, <code>ldbedit</code> e <code>ldbrename</code>. Permiten ser empregados con arquivos LDIF e posúen unha sintaxe similar aos comandos openldap, do paquete ldap-utils, equivalentes (ldapadd, ldapmodify, ldapsearch, ldapdelete ...).</p><br />
+                      <p class='nome arribaplus'>OU &#10141; Unidade Organizativa</p>
+                      <div class='minindent'>&nbsp;</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width='72%'><span class='nome'># apt -y install ldb-tools
+                    </td>
+                    <td> &#10141; </td><td>Instalar</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ldbmodify -H ldap://localhost -Uadministrator%abc123. create-OU.ldif</span></td>
+                    <td> &#10141; </td><td>Crear OU a través do arquivo ldif create-OU.ldif</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ldbadd -H ldap://localhost -Uadministrator%abc123. create-OU.ldif</span></td>
+                    <td> &#10141; </td><td>Comando equivalente ao anterior.</td>
+                  </tr>
+
+                  <tr>
+                    <td><span class='nome'># ldbsearch -H ldap://localhost -Uadministrator%abc123. OU=ies</span></td>
+                    <td> &#10141; </td><td>Buscar rexistros correspondentes a OU=ies en IES.LOCAL</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ldbsearch -H ldap://localhost -Uadministrator%abc123. -b 'OU=ies,DC=ies,DC=local'</span></td>
+                    <td> &#10141; </td><td>Buscar rexistros correspondentes a OU co basedn OU=ies,DC=ies,DC=local en IES.LOCAL</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ldbsearch -H ldap://localhost -Uadministrator%abc123. -b 'ou=IES,DC=iEs,DC=lOcal'</span></td>
+                    <td> &#10141; </td><td>Comando equivalente ao anterior.</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># ldbmodify -H ldap://localhost -Uadministrator%abc123. delete-OU.ldif</span></td>
+                    <td> &#10141; </td><td>Eliminar OU a través do arquivo ldif delete-OU.ldif</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome tachar'># ldbdel -H ldap://localhost -Uadministrator%abc123. delete-OU.ldif</span></td>
+                    <td> &#10141; </td><td>Non podemos executar ldbdel en vez de ldbmodify xa que o comando ldbdel non admite arquivos ldif como parámetro/s.</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th width='9%' class='cheat-sheet label'>
+                <div>Arquivos LDIF</div>
+              </th>
+              <td width='1%'>
+              </td>
+              <td class='cheat-sheet'>
+                <table class='mtopsubs arribasubsmini2'>
+                  <tr>
+                    <td colspan='3' class='va'>
+                      <p class='arriba'>Nun arquivo LDIF pode haber mais dunha entrada definida. Cada entrada sepárase das demais por unha liña en branco e pode ter unha cantidade arbitraria de pares <code class='bgy'>&lt;nome_atributo&gt;: &lt;valor&gt;</code></p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class='va'>
+                      <p class='label arribaplus'>create-OU.ldif
+                        <pre class='arribaplusx2 abaixo2'>
+dn: OU=ies,DC=ies,dc=local
+changetype: add
+objectClass: top
+objectClass: organizationalunit
+description: ies OU
+
+dn: OU=usuarios,OU=ies,DC=ies,dc=local
+changetype: add
+objectClass: top
+objectClass: organizationalunit
+description: usuarios OU
+                        </pre>
+                      </p>
+                    </td>
+                    <td width='1%'>&nbsp;</td>
+                    <td class='va'>
+                      <p class='label arriba'>delete-OU.ldif
+                        <pre>
+dn: OU=usuarios,OU=ies,DC=ies,dc=local
+changetype: delete
+
+dn: OU=ies,DC=ies,dc=local
+changetype: delete
+                        </pre>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </tr>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div>
+      <table>
+        <tr>
+          <th rowspan='2' class='cheat-sheet label'><p class='text-vertical'>Usuarios/Grupos</p></th>
+          <td class='cheat-sheet bradius8 pall'>
+            <table class='fixed'>
+              <th width='11%' class='cheat-sheet label'>
+                <div>samba-tool</div>
+              </th>
+              <td width='1%'>
+              </td>
+              <td class='cheat-sheet'>
+                <p class='label mtopsubsmini2 arriba'>samba-tool &#10141; evolución de pdbedit &#10141; evolución de smbpasswd</p>
+                <br />
+                <table class='arribasubsmini'>
+                  <tr>
+                    <td width='66%'><span class='nome'># samba-tool group add g-usuarios \<br />
+                    --groupou=OU=USUARIOS,OU=IES --nis-domain=ies --gid-number=10000</span></td>
+                    <td> &#10141; </td><td>Crear grupo SAMBA g-usuarios</td>
+                  </tr>
+                  <tr>
+                    <td class='bgaqua bradius4'><span class='nome'># samba-tool user create anxo --random-password --must-change-at-next-login \ <br />
+                  --userou='OU=Usuarios,OU=IES' --gecos 'Pertencente a g-usuarios' \ <br />
+                  --uid-number=11000 --gid-number=11000 --login-shell=/bin/bash \ <br />
+                  --mail-address=anxo.carballeira@ies.local --telephone-number=639111111</span></td>
+                    <td> &#10141; </td><td>Crear o usuario de forma local</td>
+                  </tr>
+                  <tr>
+                    <td class='bglime bradius4'><span class='nome'># samba-tool user create brais 123passbraisABC --must-change-at-next-login \ <br />
+                  --userou='OU=Usuarios,OU=IES' --gecos 'Pertencente a g-usuarios' \ <br />
+                  --uid-number=11001 --gid-number=11001 --login-shell=/bin/bash \ <br />
+                  --mail-address=brais.peiteado@ies.local --telephone-number=639222222 \ <br />
+                  -H ldap://localhost -Uadministrator%abc123.</span></td>
+                    <td> &#10141; </td><td>Crear o usuario de forma remota indicando o servidor LDAP</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># samba-tool user setpassword anxo --newpassword=123passanxoABC</span></td>
+                    <td> &#10141; </td><td>Modificar o contrasinal do usuario anxo do dominio, pois a opción random-password ten sentido para servizos (sen login)</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># samba-tool group addmembers g-usuarios anxo,brais</span></td>
+                    <td> &#10141; </td><td>Engadir ao grupo SAMBA g-usuarios os usuarios anxo e brais</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># samba-tool group listmembers g-usuarios</span></td>
+                    <td> &#10141; </td><td>Listar os membros pertencentes ao grupo SAMBA g-usuarios</td>
+                  </tr>
+                  <tr>
+                    <td class='bgsalmon bradius4'>
+                      <p class='mtopsubsx3'><span class='nome'># samba-tool user list</span></p>
+                      <p class='pall mtopsubsx2'>&nbsp;</p>
+                      <table class='pall title16'>
+                          <tr>
+                            <td class='nome'>Administrator</td><td> &#10141; </td><td>Administrador do dominio</td>
+                          </tr>
+                          <tr>
+                            <td class='nome'>brais</td><td> &#10141; </td><td>Conta de usuario pertencente ao grupo do dominio g-usuarios</td>
+                          </tr>
+                          <tr>
+                            <td class='nome'>Guest</td><td> &#10141; </td><td>Invitado</td>
+                          </tr>
+                          <tr>
+                            <td class='nome'>krbtgt</td><td> &#10141; </td><td>Usuario kerberos</td>
+                          </tr>
+                          <tr>
+                            <td class='nome'>anxo</td><td> &#10141; </td><td>Conta de usuario pertencente ao grupo do dominio g-usuarios</td>
+                          </tr>
+                      </table>
+                    </td>
+                    <td> &#10141; </td><td>Listar todos os usuarios SAMBA do controlador de dominio rexistrados no LDB(LDAP). Agora non se amosan os usuarios Samba: ana, xurxo, usuario, que xeramos con smbpasswd cando o servidor SAMBA posuía o rol Servidor Independente (Server Standalone) porque ao instalar Samba como Controlador de Dominio eliminouse toda a base de datos de usuarios antiga.</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># samba-tool computer list</span>
+                      <pre class='nome'>
+LSERVER1$
+                      </pre>
+                    </td>
+                    <td> &#10141; </td><td>Listar todos os computadores.<br /><i class='bgy'>Os computadores, igual que os usuarios/grupos, tamén posúen conta no Directorio Activo do Dominio</i></td>
+                  </tr>
+
+
+                  <tr>
+                    <td><span class='nome'># samba-tool group removemembers g-usuarios anxo,brais</span></td>
+                    <td> &#10141; </td><td>Eliminar do grupo SAMBA g-usuarios os usuarios anxo e brais</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># samba-tool group delete g-usuarios</span></td>
+                    <td> &#10141; </td><td>Eliminar o grupos SAMBA g-usuarios</td>
+                  </tr>
+                  <tr>
+                    <td><span class='nome'># for i in anxo brais; do samba-tool user delete ${i};done</span></td>
+                    <td> &#10141; </td><td>Eliminar os usuarios SAMBA anxo e brais</td>
+                  </tr>
+                </table>
+              </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <div class='indent pagebreak'>&nbsp;</div>
+      <table class='mtopsubs arriba'>
+        <tr>
+          <th rowspan='2' class='cheat-sheet label'><p class='text-vertical'>Usuarios/Grupos</p></th>
+          <td class='cheat-sheet bradius8 pall2'>
+            <table>
+              <tr>
+                <th width='28%' class='cheat-sheet label'>
+                  <div>Listar usuarios/grupos<br />
+                  <span class='nomefwn'>(pdbedit &#10141; evolución de smbpasswd)</span><br />
+                  <span class='nomefwn'>(getent &#10141; /etc/nsswitch.conf &#10141; nscd)</span><br />
+                  <span class='nomefwn'>(man 8 nscd)</span><br />
+                  <span class='nomefwn'>(<a href='https://wiki.samba.org/index.php/Nslcd' target='_blank'>nslcd</a> &#10141; getent &#10141; ldap)</span><br />
+                  <img class='links' src="images/mouse-pointer-mini.png" />
+
+                  <span class='nomefwn'>(/etc/nslcd.conf)</span><br />
+                  <span class='nomefwn'>(man 5 nslcd.conf)</span><br />
+                  <span class='nomefwn'>(man 8 nslcd)</span><br />
+                  <span class='nomefwn'>(wbinfo &#10141; winbindd)</span><br />
+                  <span class='nomefwn'>(man 8 winbindd)</span><br />
+                  <span class='nomefwn'>(man 1 wbinfo)</span></div>
+                </th>
+                <td width='1%'>
+                </td>
+                <td class='cheat-sheet pall4'>
+                  <table class='abaixomini'>
+                    <tr>
+                      <td class='nome'># pdbedit -L
+                      <pre class='nome mtopsubsmini2 title14'>
+nobody:65534:nobody
+LSERVER1$:4294967295:
+brais:4294967295:
+anxo:4294967295:
+Administrator:4294967295:
+krbtgt:4294967295:
+                      </pre>
+                      </td><td>&#10141;</td><td><p class='mtopsubsx2'>Listar usuarios existentes en Samba (Active Directory: LDB(LDAP)). A saída do comando debe amosar as mesmas contas de Active Directory que na execución dos comandos anteriores:<br />
+                      <span class='mleft'># samba-tool user list</span> <br />
+                      <span class='mleft'># samba-tool computer list</span></p>
+                      </td>
+                    </tr>
+                  </table>
+                  <table class='mtopsubsx3 abaixo2'>
+                    <tr>
+                      <td width='26%' class='nome'># wbinfo -u && wbinfo -g
+                      </td><td>&#10141;</td><td>Comandos similares aos anteriores para listar usuarios/grupos existentes en LDB(LDAP) Samba. 
+                      </td>
+                    </tr>
+                  </table>
+                  <table>
+                    <tr>
+                      <td width='36%' class='nome'>
+                        # getent passwd && getent group</span></td><td>&#10141;</td><td>Listar usuarios/grupos existentes no sistema, os cales de momento NON inclúen os de LDB Samba. Polo tanto, anxo e brais, aínda que posúen conta LDB(LDAP) non poden acceder ao sistema xa que éste NON é quen de ler a base de datos LDB Samba.
+                      </td>
+                    </tr>
+                  </table>
+                  <table>
+                    <tr>
+                      <td width='76%' class='nome bgaqua bradius4'>
+                      # A=$(grep -n 'idmap' /etc/samba/smb.conf | cut -d':' -f1)<br />
+                      # sed -i "${A}a\\\tldap server require strong auth = no\n\tacl:search = no" /etc/samba/smb.conf<br />
+                      # systemctl restart samba-ad-dc</td>
+                      <td>&#10141;</td><td>Configurar e Reiniciar servizo Samba para permitir autenticación sen cifrar</td>
+                    </tr>
+                    <tr>
+                      <td class='nome bgsalmon bradius4' width='80%'>
+                      # echo 'nslcd	nslcd/ldap-uris	string	ldap://127.0.0.1/' | debconf-set-selections<br />
+                      # echo 'nslcd	nslcd/ldap-base	string	dc=ies.local' | debconf-set-selections<br />
+
+                      # echo 'libnss-ldapd    libnss-ldapd/nsswitch   multiselect     passwd, group, shadow' | debconf-set-selections<br />
+                      # echo 'libnss-ldapd:amd64      libnss-ldapd/nsswitch   multiselect     passwd, group, shadow' | debconf-set-selections<br />
+                      # apt -y install nslcd<br /></td><td>&#10141;</td><td>Instalar nslcd
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width='70%' class='nome bglime bradius4'>
+                      # sed -i 's/base dc=ies.local/base dc=ies,dc=local/' /etc/nslcd.conf
+                      <pre class='nome arribaplus mtopsubsmini2 pbottom2'>
+# echo 'pagesize 1000
+referrals off
+binddn cn=Administrator,cn=Users,dc=ies,dc=local
+bindpw abc123.
+filter passwd (objectClass=user)
+filter group (objectClass=group)
+map passwd uid sAMAccountName
+map passwd homeDirectory unixHomeDirectory
+map passwd gecos displayName
+map passwd gidNumber primaryGroupID
+' >> /etc/nslcd.conf
+                      </pre>
+                      # systemctl restart nslcd && systemctl restart nscd || reboot
+                      </td><td>&#10141;</td><td>nslcd: Integrar usuarios/grupos de LDB(LDAP) Samba no sistema Unix.
+                      </td>
+                    </tr>
+                  </table>
+                  <table class='arribasubs18 pbottom2'>
+                    <tr>
+                      <td width='36%' class='nome'>
+                        # getent passwd && getent group</span></td><td>&#10141;</td><td>Listar usuarios/grupos existentes no sistema, os cales agora SI inclúen os de LDB Samba. Polo tanto, anxo e brais, que posúen conta LDB(LDAP) si poden acceder ao sistema xa que éste SI é quen de ler a base de datos LDB Samba.
+                      </td>
+                    </tr>
+                    <table class='nome mtopsubsmini abaixo'>
+                    <tr>
+                      <td>
+                        Comprobar co usuario anxo que se accede mediante ttyX(tty1 -> anxo) e SSH(ssh anxo@lserver1)
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs'><span class='label bgsalmonnull bradius8 prightx10'>Clientes de dominio</span></h3>
+    <div class='mtopsubs arribasubsmini'>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>Clientes<br />
+          GNU/Linux<br />
+          <span class='nomefwn'>(Apuntar a DNS SAMBA)</span><br />
+          <span class='nomefwn'>(Cambiar hostname)</span><br />
+          <p class='arriba'><span class='nomefwn'>(<a href='https://repo.pbis.beyondtrust.com/apt.html' target='_blank'><span class='nomefwn'>Instalar/Configurar<br />pbis</span></a>)</span></p><br />
+          <img class='links' src="images/mouse-pointer-mini.png" />
+          <br />
+          <span class='nomefwn'>(man 7 pbis)</span>
+          <br />
+          <span class='nomefwn'>(<a href='https://www.beyondtrust.com/docs/ad-bridge/getting-started/installation/join-ad-domain/join-ad-with-cmd-line.htm' target='_blank'><span class='nomefwn'>Unir/Quitar<br />domainjoin-cli</span></a>)</span></div>
+          <img class='links' src="images/mouse-pointer-mini.png" />
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+        <p class='mtopsubsmini2 pbottom2'><span class='nome'>lserver1</span> &#10141; Identifica o hostname(fqdn) ou a IP do Servidor Samba.
+          <span class='fright nome bgbisque'>$HOME(/home/IES/username) ($ /opt/pbis/bin/config --list)<span>
+        </p>
+        <p class='mtopsubs pbottom2'><span class='nome'>lclient1</span> &#10141; Identifica o hostname do equipo cliente
+          <span class='fright nome bgbisque'> /opt/pbis/bin/config HomeDirTemplate %H/%D/%U</span>
+        </p>
+        <p class='mtopsubs pbottom2 arribasubsmini3'><span class='nome'>lcliente1.ies.local</span> &#10141; Identifica o hostname FQDN  do equipo cliente (reino kerberos)
+          <span class='fright nome bgbisque'>%H &#10141; /home<span class='mleft5'>%D &#10141; IES</span><span class='mleft5'> %U &#10141; username</span></span>
+        </p>
+        <p class='arribasubsmini bglime'>Executar o seguinte script en cada host a ser cliente do dominio (Modificar lclient1 polo hostname que corresponda).
+        </p>
+          <pre class='bfigure nome arriba title16'>
+#Configurar como servidor DNS o servidor Samba4
+f_DNS() {
+  echo -e "domain ies.local\nsearch ies.local\nnameserver 172.16.10.254" > /etc/resolv.conf
+}
+#Modificar hostname a FQDN apuntando ao servidor DNS Samba4
+f_modify_hostname(){
+  echo 'lclient1.ies.local' > /etc/hostname && sed -i 's/lclient1/lclient1.ies.local lclient1/' /etc/hosts
+  grep 'lclient1.ies.local' /etc/sysctl.conf
+  [ $? -ne 0 ] &&  echo 'kernel.hostname=lclient1.ies.local' >> /etc/sysctl.conf
+  sysctl -p #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar
+  [ $(hostname -f) != 'lclient1.ies.local' ] && exit 55
+  if [ $? -eq 55 ]; then
+  echo '##################### O hostname é incorrecto #####################'
+  fi
+}
+#Instalar pbis para poder unir/quitar clientes do dominio
+f_install_pbis() {
+  apt -y install gpgv2 wget
+  wget -O - <a href="http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis">http://repo.pbis.beyondtrust.com/apt/RPM-GPG-KEY-pbis</a> | apt-key add - \ <br />&amp;&amp; wget -O /etc/apt/sources.list.d/pbiso.list <a href="http://repo.pbis.beyondtrust.com/apt/pbiso.list">http://repo.pbis.beyondtrust.com/apt/pbiso.list</a>
+  apt update && apt -y install pbis-open
+}
+#Configurar contas: Permitir facer login sen empregar nome dominio, umask 077, /bin/bash ($ /opt/pbis/bin/config --list)
+f_config_pbis(){
+  /opt/pbis/bin/config AssumeDefaultDomain true
+  /opt/pbis/bin/config UserDomainPrefix IES
+  /opt/pbis/bin/config HomeDirUmask 077
+  /opt/pbis/bin/config LoginShellTemplate /bin/bash
+}
+f_main() {
+  f_DNS && f_modify_hostname && f_install_pbis && f_config_pbis
+}
+##main()
+f_main   </pre>
+          <br />
+          <table>
+              <tr>
+              <td width='54%' class='nome'># apt -y install openssh-server</td>
+              <td> &#10141; </td><td>Instalar o paquete openssh-server</td>
+            </tr>
+            <tr>
+              <td width='54%' class='nome bgaqua bgradius8'># domainjoin-cli join IES.LOCAL Administrator abc123. && reboot</td>
+              <td> &#10141; </td><td>Unir o equipo onde se executa o comando ao dominio.
+                Unha vez reiniciado comprobar co usuario anxo que se accede mediante ttyX(tty1 -> anxo), su(su - anxo) e SSH(ssh anxo@lserver1)
+              </td>
+            </tr>
+            <tr>
+              <td class='nome bgsalmon bgradius8'># domainjoin-cli leave Administrator@IES.LOCAL abc123.</td>
+              <td> &#10141; </td><td>Quitar o equipo onde se executa o comando ao dominio</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <div class='abaixo2'>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Servidor</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <table>
+            <tr>
+              <td class='nome'># samba-tool computer list</td>
+              <td> &#10141; </td><td>Listar equipos do dominio</td>
+            </tr>
+            <tr>
+              <td class='nome'># samba-tool computer show LCLIENT1$</td>
+              <td> &#10141; </td><td>Amosar o obxeto computadora LCLIENT1$ do dominio</td>
+            </tr>
+            <tr>
+              <td class='nome red'># samba-tool computer delete LCLIENT1$</td>
+              <td> &#10141; </td><td>Eliminar conta equipo LCLIENT1$ do dominio</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubs'><span class='label bgspringgreen bradius8 prightx10'>No Cliente de dominio(lclient1) &#10141; Verificar acceso de usuarios</span></h3>
+    <br />
+    <div>
+    <ul type='square' class='nome bfigure mtopsubsmini2'>
+      <li><span class='label'>Domain users (domain^users)</span> Todo usuario do dominio pertence a este grupo para poder acceder aos recursos compartidos.
+    </ul>
+      <table class='mtopsubs'>
+        <th class='cheat-sheet label'>
+          <div>anxo</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <p class='mtopsubsmini2'>Acceder mediante ttyX(tty7 -> anxo) e SSH(ssh anxo@lserver1). Comprobar que como anteriormente cambiamos o contrasinal non se solicita o cambio no inicio de sesión. Unha vez iniciada sesión executar:
+          <table class='mtopsubs'>
+            <tr>
+              <td class='nome'>$ id anxo</td>
+              <td> &#10141; </td><td>Imprime UIDs e GIDs reais e efectivos</td>
+            </tr>
+            <tr>
+              <td class='nome'>$ groups anxo</td>
+              <td> &#10141; </td><td>Imprime os grupos nos que está o usuario anxo</td>
+            </tr>
+          </table>
+          <pre class='nome arribasubs'>
+anxo@lclient1:~$ id anxo
+uid=1843922004(anxo) gid=1843921409(domain^users) grupos=1843921409(domain^users),1843922003(g-usuarios)
+anxo@lclient1:~$ groups anxo
+anxo : domain^users g-usuarios</pre><br />
+        </td>
+      </table>
+    </div>
+    <br />
+    <div>
+      <table class='mtopsubs'>
+        <th class='cheat-sheet label'>
+          <div>brais</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <p class='mtopsubsmini'>Acceder mediante ttyX(tty7 -> brais) e SSH(ssh brais@lserver1). Verificar que agora ao usuario brais solicítaselle o cambio de contrasinal no primeiro inicio de sesión como se definiu na creación da conta. Unha vez iniciada sesión executar:</p>
+          <table class='mtopsubs'>
+            <tr>
+              <td class='nome'>$ id brais</td>
+              <td> &#10141; </td><td>Imprime UIDs e GIDs reais e efectivos</td>
+            </tr>
+            <tr>
+              <td class='nome'>$ groups brais</td>
+              <td> &#10141; </td><td>Imprime os grupos nos que está o usuario brais</td>
+            </tr>
+          </table>
+          <pre class='nome arribasubs'>
+brais@lclient1:~$ id brais
+uid=1843922005(brais) gid=1843921409(domain^users) grupos=1843921409(domain^users),1843922003(g-usuarios)
+brais@lclient1:~$ groups brais
+brais : domain^users g-usuarios</pre><br />
+        </td>
+      </table>
+    </div>
+
+    <br />
+    <h3 class='mtopsubs arriba'><span class='label bgsalmonnull bradius8 prightx10'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/RAID_e_LVM' target='_blank'>No Servidor &#10141; Xestionar arrays de discos: RAID5(/dev/md5), RAID0(/dev/md0)</a></span></h3>
+      <p class='arribasubs'><img class='links links300' src="images/mouse-pointer-mini.png" width='18px'/></p>
+    <div>
+      <table>
+        <th width='10%' class='cheat-sheet label'>
+          <div>No Servidor<br />
+          <span class='nomefwn'>(mdadm)</span><br />
+          <span class='nomefwn'>(man mdadm.conf)</span><br />
+          <span class='nomefwn'>(man update-initramfs)</span><br />
+          <pre class='nomefwn mtopsubsmini2'>
+<p class='tleft mtopsubs'>
+sda: Disco duro do sistema
+sd[bcde]: Discos para montaxe de arrays
+</p>
+<table class='array mtopsubsx2'>
+  <tr>
+    <td class='array5'>sdb1</td>
+    <td class='array0'>sdb2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sdc1</td>
+    <td class='array0'>sdc2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sdd1</td>
+    <td class='array0'>sdd2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+<table class='array mtopsubsmini'>
+  <tr>
+    <td class='array5'>sde1</td>
+    <td class='array0'>sde2</td>
+    <td class='arraynull'>&nbsp;</td>
+  </tr>
+</table>
+
+<p class='tleft mtopsubsx2 arribaplusx2'>
+<span class='bglime'>RAID5(/dev/md5): 4 discos/particións</span>
+3 sincronizados(sd[bcd]1) + 1 en espera(sde1)
+/dev/md5 &#10141; /mnt/md5
+<span class='bgpink'>RAID0(/dev/md0): 4 discos/particións (sd[bcde]2)</span>
+/dev/md0 &#10142; /mnt/md0
+</p>        </pre>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='60%'>
+                <pre class='mtopsubs bfigure arriba nome title16 pall'>
+$ mount || findmnt
+$ cat /proc/mdstat
+# mdadm --detail /dev/md5
+# mdadm --detail /dev/md0
+# ls -lR /mnt/md5 /mnt/md0
+# mkdir /mnt/md0/temporal
+# mkdir -p /mnt/md5/usuarios/alumnos
+# mkdir -p /mnt/md5/usuarios/profesores
+# <i>#Comando <span class='bgbisque'>chgrp</span>
+  #Necesario facer o apartado <span class='bgbisque'>Prerrequisitos ACLS Servidor</span>
+  ##chgrp -R "Domain Admins" /mnt/md0/temporal /mnt/md5/usuarios</i>
+# chmod 0775 /mnt/md0/temporal
+# chmod 2750 /mnt/md5/usuarios
+# apt -y install tree
+# tree -a /mnt/md5 /mnt/md0
+  /mnt/md5
+  ├── lost+found
+  └── usuarios
+      ├── alumnos
+      └── profesores
+<p class='mtopsubsx2'>&nbsp;</p>
+  /mnt/md0
+  ├── lost+found
+  └── temporal
+# ls -lR /mnt/md5 /mnt/md0</pre>
+              </td>
+              <td> &#10141; </td>
+              <td>
+                Comprobar que os arrays RAID5(/dev/md5) e RAID0(/dev/md0) son funcionais e xerar cartafoles dentro dos arrays para empregalos como Recursos Compartidos:<br />
+                <span class='label'>[usuarios]<br />
+                [temporal]</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arriba'><span class='label bgsalmonnull bradius8 prightx10'>Recursos Compartidos nos arrays de discos: RAID5(usuarios), RAID0(temporal)</span></h3>-->
+    <ul type='square' class='nome bfigure'>
+      <li><span class='label'>Domain users (domain^users)</span> Todo usuario do dominio pertence a este grupo para poder acceder aos recursos compartidos.
+        <div class='minindent'>&nbsp;</div>
+      <p class='pbottom10 mtopsubs arribasubs'><img class='links links50' src="images/mouse-pointer-mini-rotate-180.png" width='18px'/></p>
+      <li><span class='label'><a href='https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs#Granting_the_SeDiskOperatorPrivilege_Privilege' target='_blank'>SeDiskOperatorPrivilege</a></span> Só os usuarios e grupos que teñan o privilexio SeDiskOperatorPrivilege concedido poden configurar os permisos para compartir. Suxírese crear un novo grupo AD "Unix Admins" e engadir o seu gidNumber ao grupo Administrators, para logo empregar ese grupo en Unix onde usaría normalmente Domain Admins.  
+    </ul>
+    <br />
+    <div class='mtopsubs'>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div><a href='https://wiki.samba.org/index.php/Windows_User_Home_Folders' target='_blank'>[usuarios]</a></span>
+            <p class='mtopsubsmini2'><img class='links links50' src="images/mouse-pointer-mini.png" width='18px'/></p>
+          </div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='26%'><span class='nome'>comment = Cartafol dos usuarios</span></td><td>&#10141;</td><td width='1000px'>Descrición da sección a visualizar</td>
+            </tr>
+            <tr>
+              <td>
+                <span class='nome'>path = /mnt/md5/usuarios</span></td><td>&#10141;</td><td>Accédese ao recurso compartido /mnt/md5/usuarios/ mediante o nome da sección usuarios<br />             
+                <span class='nome'># mkdir /mnt/md5/usuarios && <span class='bgbisque'>chgrp -R "Domain Admins" /mnt/md5/usuarios</span> && chmod 2750 /mnt/md5/usuarios</span>
+                <br />
+                #Necesario facer o apartado <span class='bgbisque'>Prerrequisitos ACLS Servidor</span>
+                <table class='arribaplusx2'>
+                  <tr>
+                    <td>
+                      <span class='label'>Non empregar <i>homes</i> como nome da sección a compartir (ver <a href='https://wiki.samba.org/index.php/Windows_User_Home_Folders#Introduction' target='_blank'>Introduction)</a></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><p class='fright mtopsubsmini2'><img class='links' src="images/mouse-pointer-mini.png" width='18px'/></p>
+                      <span class='label'>De interese: <a href='https://wiki.samba.org/index.php/Roaming_Windows_User_Profiles' target='_blank'>Roaming Windows User Profiles</a><br />
+                      <p class='fleft mtopsubsmini2 '><img class='links' src="images/mouse-pointer-mini.png" width='18px'/></p>
+                      <p class='mtopplus'>&nbsp;</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  no</span><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>guest ok = no</span></td><td>&#10141;</td><td><p class='mtopsubsmini2'>Acceso permitido soamente aos usuarios autenticados</p></td>
+            </tr>
+            <tr>
+              <td><span class='nome'>force create mode = 0600</span></td><td>&#10141;</td><td>
+              Controla permisos ugo no lado do servidor. Obriga a Samba a crear os novos ficheiros dentro do recurso compartido(path) mediante os permisos ugo 600 (u g o = rw- --- ---). 
+              </td>
+            </tr>
+            <tr>
+              <td><span class='nome'>force directory mode = 0700</span></td><td>&#10141;</td><td>
+              Controla permisos ugo no lado do servidor. Obriga a Samba a crear os novos directorios dentro do recurso compartido(path) mediante os permisos 700 (u g o = rwx --- ---). 
+              </td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>[temporal]</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td width='22%'><span class='nome'>comment = temporal.</td><td>&#10141;</td><td>Descrición da sección a visualizar. Este recurso: Bórrase todos os días (Tarefa Programada: /etc/crontab). Alumnos: Permisos de Lectura. Profesores: Permisos de escritura.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>path = /mnt/md0/temporal</span></td><td>&#10141;</td><td width='1200px'>Ruta do recurso compartido<br />
+              <span class='nome'># mkdir /mnt/md0/temporal && <span class='bgbisque'>chgrp -R 'Domain Admins' /mnt/md0/temporal</span> && chmod 2750 /mnt/md0/temporal</span>
+                #Necesario facer o apartado <span class='bgbisque'>Prerrequisitos ACLS Servidor</span>
+              </td> 
+            </tr>
+            <tr>
+              <td><span class='nome'>browseable = yes</span></td><td>&#10141;</td><td>Este recurso compartido é accesible ao explorar a rede.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>read only =  no</span></td><td>&#10141;</td><td>Permisos de escritura</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>create mask = 0660</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos ficheiros a crear dentro do cartafol /mnt/md0/temporal<br/>(u g o = rw- rw- ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+            <tr>
+              <td><span class='nome'>directory mask = 0770</span></td><td>&#10141;</td><td>Máximo nivel de permisos dos directorios a crear dentro do cartafol /mnt/md0/temporal<br />(u g o = rwx rwx ---). Controla permisos ugo no lado do servidor.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label'>
+          <div>No Servidor</div>
+        </th>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td class='nome'># testparm</td><td> &#10141; </td><td>Verificar ficheiro de confgiuración Samba</td> 
+            </tr>
+            <tr>
+              <td class='nome'># smbcontrol all reload-config</td><td> &#10141; </td><td>Recargar configuración Samba</td> 
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='mtopsubs'>
+      <table>
+        <tr>
+          <th rowspan='3' class='cheat-sheet label'><p class='text-vertical-AD'>Administrar&nbsp;ACTIVE&nbsp;DIRECTORY</p></th>
+          <td class='cheat-sheet bradius8 pall'>
+            <figure class='mtop figurecenter cfigure down'>
+              <img width='400px' src="images/Escenario-Cheat-Sheet-Samba4-AD-DC-OU-Groups-Users.bmp" />
+            </figure>
+          </td>
+          <td class='cheat-sheet bradius8 pall'>
+            <table class='fixed mtopsubsmini'>
+              <th width='9%' class='cheat-sheet label'>
+                <div>LDAP<br />
+                  <span class='nomefwn'>(ldb-tools)</span><br />
+                  <span class='nomefwn'>(ldif)</span>
+                </div>
+              </th>
+              <td class='cheat-sheet'>
+                <table>
+                  <tr>
+                    <td colspan='3'>
+                      <p class='justify mtopsubsmini2 arribaplus'>O paquete <code>ldb-tools</code> ofrece unha serie de comandos para a administración de datos no directorio LDAP. Os comandos para engadir, modificar, buscar, eliminar, editar e renomear son respectivamente: <code>ldbadd</code>, <code>ldbmodify</code>, <code>ldbsearch</code>, <code>ldbdel</code>, <code>ldbedit</code> e <code>ldbrename</code>. Permiten ser empregados con arquivos LDIF e posúen unha sintaxe similar aos comandos openldap, do paquete ldap-utils, equivalentes (ldapadd, ldapmodify, ldapsearch, ldapdelete ...).</p><br />
+                      <p class='nome arribaplus'>OU &#10141; Unidade Organizativa</p>
+                      <div class='minindent'>&nbsp;</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width='60%'><span class='nome'># ldbmodify -H ldap://localhost -Uadministrator%abc123. create-OU-2.ldif</span></td>
+                    <td> &#10141; </td><td>Crear OU a través do arquivo create-OU-2.ldif</td>
+                  </tr>
+                </table>
+              </td>
+            </table>
+            <table class='arribasubsmini2'>
+              <tr>
+                <th width='9%' class='cheat-sheet label'>
+                  <div>Arquivos LDIF</div>
+                </th>
+                <td width='1%'>
+                </td>
+                <td width='1000px' class='cheat-sheet '>
+                  <table class='mtopsubs arriba'>
+                    <tr>
+                      <td class='va'>
+                        <p class='label arribaplus'>create-OU-2.ldif
+                          <pre class='arribaplus abaixo2'>
+dn: OU=alumnos,OU=usuarios,OU=ies,DC=ies,dc=local
+changetype: add
+objectClass: top
+objectClass: organizationalunit
+description: alumnos OU
+
+dn: OU=profesores,OU=usuarios,OU=ies,DC=ies,dc=local
+changetype: add
+objectClass: top
+objectClass: organizationalunit
+description: profesores OU
+                          </pre>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>  
+          <td colspan='2'>
+            <table>
+              <tr>
+                <th rowspan='2' class='cheat-sheet label'><p class='text-vertical'>Usuarios/Grupos</p></th>
+                <td colspan='2' class='cheat-sheet bradius8 pall'>
+                  <p class='label mtopsubsmini2 arriba'>samba-tool &#10141; evolución de pdbedit &#10141; evolución de smbpasswd</p>
+                  <br />
+                    <table class='arribasubsmini'>
+                      <tr>
+                        <td width='62%'><span class='nome tachar'># samba-tool group add g-usuarios \<br />
+                        --groupou=OU=USUARIOS,OU=IES --nis-domain=ies --gid-number=10000</span></td>
+                        <td> &#10141; </td><td>Crear grupo g-usuarios no dominio SAMBA. Pero xa deberiamos telo creado.</td>
+                      </tr>
+                      <tr>
+                        <td width='62%'><span class='nome'># samba-tool group add g-alumnos \<br />
+                        --groupou=OU=ALUMNOS,OU=USUARIOS,OU=IES --nis-domain=ies \<br />--gid-number=10001</span></td>
+                        <td> &#10141; </td><td>Crear grupo g-alumnos no dominio SAMBA</td>
+                      </tr>
+                      <tr>
+                        <td width='62%'><span class='nome'># samba-tool group add g-profesores \<br />
+                        --groupou=OU=PROFESORES,OU=USUARIOS,OU=IES --nis-domain=ies \<br />--gid-number=10002</span></td>
+                        <td> &#10141; </td><td>Crear grupo g-profesores no dominio SAMBA g-profesores</td>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group addmembers g-usuarios g-alumnos,g-profesores</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Engadir ao grupo do dominio SAMBA g-usuarios os grupos g-alumnos e g-profesores</span></td>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group addmembers g-alumnos anxo</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Engadir ao grupo do dominio SAMBA g-alumnos o usuario anxo</span></td>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group addmembers g-profesores brais</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Engadir ao grupo do dominio SAMBA g-alumnos o usuario brais</span>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group listmembers g-usuarios</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Listar membros pertencentes ao grupo do dominio SAMBA g-usuarios</span>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group listmembers g-alumnos</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Listar membros pertencentes ao grupo do dominio SAMBA g-alumnos</span>
+                      </tr>
+                      <tr>
+                        <td colspan='3'><span class='nome'># samba-tool group listmembers g-profesores</span>
+                        <span class='mleft5'> &#10141; </span><span class='mleft5'>Listar membros pertencentes ao grupo do dominio SAMBA g-profesores</span></td>
+                      </tr>
+                    </table>
+                  </tr>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+    </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>ACLs Servidor</div>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet pall8'>
+          <div class='arribaplus'><span class='label bglime'>Prerrequisitos ACLs</div>
+            <br />
+            <ol class='mleftsubsminix2 arribasubsmini2 pbottom10'>
+              <li><span class='nome'>Soporte para ACLs estendido nos sistemas de ficheiros:</span>
+                Hoxe en día o kernel trae incorporado por defecto soporte para ACLs para distintos sistemas de ficheiros. Podemos verificalo co seguinte comando:<br />
+                <code>
+                  # [ -f /boot/config-$(uname -r) ] && grep -i acl /boot/config-$(uname -r)<br />
+                  CONFIG_EXT4_FS_POSIX_ACL=y<br />
+                  CONFIG_REISERFS_FS_POSIX_ACL=y<br />
+                  ...<br />
+                </code>
+                Pero no caso que así non sexa debemos activar no sistema de ficheiros o soporte para as ACLs, polo que deberiamos instalar o paquete acl e modificar o arquivo <a target="_blank" href='https://debian-handbook.info/browse/es-ES/stable/sect.config-misc.html#sect.fstab-mount-points'>/etc/fstab</a>:<br />
+                <code>
+                  <span class='fonte2'>
+                  # apt update && apt -y install acl<br />
+                  # cat /etc/fstab | nl<br />
+                  ...<br />
+                  7 # &lt;file system&gt; &lt;mount point&gt;   &lt;type&gt;  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;<br />
+                  8 # / was on /dev/sda1 during installation<br />
+                  9 UUID=3e1ae11e-dac7-4a58-8aec-d06a345171dc /               ext4    <span class='azul'>acl</span>,errors=remount-ro 0       1<br />
+                  ...<br />
+                  </span>
+                </code>
+                No <span class='azul'>cuarto campo</span> do ficheiro <span class='azul'>/etc/fstab</span> correspondente aos opcións de montaxe debemos agregar a opción <span class='azul'>acl</span> e posteriormente debemos remontar o sistema de ficheiros modificado. Para non ter que reiniciar podemos empregar calquera dos 2 seguintes comandos:<br />
+                <span class='fonte2'>
+                  <ul class='hashtag arribasubs15 mtop'>
+                    <li>mount -a  #Remonta todos os sistemas de ficheiros seguindo a orde en /etc/fstab</li>
+                    <li>mount -o remount /dev/sda1 #Remonta soamente o sistema de ficheiros modificado en /etc/fstab (neste caso /dev/sda1)</li>
+                  </ul>
+                </span>
+                <br />
+             <li><span class='nome'>Soporte para ACLs estendido de Samba</span>, é dicir, Samba foi instalado co soporte ACL estendido habilitado. 
+               <pre class='mtopsubsmini3 arribasubsmini2'>
+# smbd -b | grep "HAVE_LIBACL"
+HAVE_LIBACL</pre>
+               <br />
+               Se non amosa saída &#10141; <a href='https://wiki.samba.org/index.php/Package_Dependencies_Required_to_Build_Samba' target='_blank'>Dependencias paquete Samba</a>
+               <br />
+               <img class='mleftplus280' src="images/mouse-pointer-mini.png" />
+               <div class='mtopsubs'>&nbsp;</div>
+               <span class='bgaqua bradius8'>Un host Samba que funciona como AD-DC sempre está habilitado con soporte ACL estendido: <br /><span class='label'>testparm &#10141; [global] &#10141; vfs objects &#10141; acl_xattr</span></span>
+               <div class='minindent'>&nbsp;</div>
+              <li><span class='bgbisque'>É necesario establecer o gidNumber de "Domain Admins" para poder traballar as ACLs con este grupo.</span>
+                <table>
+                  <tr>
+                      <td width='60%'><span class='nome'># ldbmodify -H ldap://localhost -Uadministrator%abc123. modify-gidNumber.ldif</span></td>
+                  </tr>
+                  <tr>
+                    <td class='va bfigure'>
+                     <p class='label arriba'>modify-gidNumber.ldif
+                       <pre class='arribaplus abaixo2'>
+      dn: CN=Domain Admins,CN=Users,DC=ies,DC=local
+      changetype: modify
+      replace: gidNumber
+      gidNumber: 12000
+                       </pre>
+                     </p>
+                    </td>
+                  </tr>
+                </table>
+            </ol>
+          </div>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <div class='mtopsubs'>
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>ACLs Servidor</div>
+        </th>
+        <td class='cheat-sheet pall8'>
+          <div class='cboth'>&nbsp;</div>
+          <p class='mtopsubs arriba'>
+            Ao configurar o recurso compartido nun controlador de dominio (DC) de Samba Active Directory (AD), non pode usar ACL POSIX. Nun Samba DC, só se admiten comparticións que usan ACL estendidas. Consulte:
+            <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li><a href="https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs#Enable_Extended_ACL_Support_in_the_smb.conf_File" title="Configuración dun uso compartido mediante ACL de Windows">Activar a asistencia ACL estendida no ficheiro smb.conf</a>.<br /> 
+                <img class='links links170' src="images/mouse-pointer-mini.png" width='18px'/><br />
+                <p class='mtopsubs arribasubsmini2'>
+                  <img class='links links300' src="images/mouse-pointer-mini-rotate-180.png" width='18px'/>
+                </p>
+              <li><a href="https://wiki.samba.org/index.php/Windows_User_Home_Folders#Using_Windows_ACLs">Configuración do uso compartido de cartafoles domésticos no servidor de ficheiros Samba - Usando ACL de Windows</a>.
+            </ul>
+          </p>
+          <table>
+            <tr>
+              <td rowspan='2'>
+                <p class='bgaqua'>ACLs para o recurso compartido [usuarios]</p>
+                <pre class='nome bfigure'>
+mkdir -p /mnt/md5/usuarios/alumnos /mnt/md5/usuarios/profesores
+chgrp -R "Domain Admins" /mnt/md5/usuarios/
+chmod 2770 /mnt/md5/usuarios/
+
+setfacl -m g:g-usuarios:rwx /mnt/md5/usuarios
+setfacl -m g:"Domain Admins":rwx /mnt/md5/usuarios
+setfacl -dm g:"Domain Admins":rwx /mnt/md5/usuarios
+
+setfacl -m g:"Domain Admins":rwx /mnt/md5/usuarios/alumnos
+setfacl -m g:g-profesores:rx /mnt/md5/usuarios/alumnos
+setfacl -m g:g-alumnos:rx /mnt/md5/usuarios/alumnos
+
+setfacl -m g:"Domain Admins":rwx /mnt/md5/usuarios/profesores
+setfacl -m g:g-profesores:rx /mnt/md5/usuarios/profesores
+setfacl -m g:g-alumnos:--- /mnt/md5/usuarios/profesores
+setfacl -dm o::--- /mnt/md5/usuarios/profesores
+setfacl -dm g::--- /mnt/md5/usuarios/profesores</pre>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class='nome bglime'>Usuarios pertencentes ao grupo g-alumnos: Crear cartafol + ACLs</p>
+                <pre class='nome bfigure'>
+mkdir -p /mnt/md5/usuarios/alumnos/anxo 
+setfacl -m u:anxo:rwx /mnt/md5/usuarios/alumnos/anxo  
+setfacl -dm u:anxo:rwx /mnt/md5/usuarios/alumnos/anxo</pre>
+                <p class='nome bglime'>Usuarios pertencentes ao grupo g-profesores: Crear cartafol + ACLs</p>
+                <pre class='nome bfigure'>
+mkdir -p /mnt/md5/usuarios/profesores/brais 
+setfacl -m u:brais:rwx /mnt/md5/usuarios/profesores/brais 
+setfacl -dm u:brais:rwx /mnt/md5/usuarios/profesores/brais</pre>
+              </td>
+            </tr>
+          </table>
+
+
+          <p class='bgaqua'>ACLs para o recurso compartido [temporal]</p>
+          <table class='mtopsubsmini'>
+            <tr>
+              <td width='40%'><span class='nome'># mkdir -p /mnt/md0/temporal
+              </td><td>&#10141;</td><td>Crear cartafol /mnt/md0/temporal</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># chgrp -R "Domain Admins" /mnt/md0/temporal/
+              </td><td>&#10141;</td><td><span class='bgbisque'>Asignar, recursivamente, a "Domain Admins" como grupo propietario</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># chmod 2750 /mnt/md0/temporal/
+              </td><td>&#10141;</td><td>Cambiar permisos ugo (rwx r-s ---). O permiso 2000(SGID) provoca que cada subdirectorio xerado continúe tendo como grupo propietario "Domain Admins"</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># setfacl -m g:g-profesores:rwx /mnt/md0/temporal/
+              </td><td>&#10141;</td><td><span class='bgbisque'>ACL estendida: Permisos rwx ao grupo g-profesores no cartafol /mnt/md0/temporal</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># setfacl -dm g:g-profesores:rwx /mnt/md0/temporal/
+              </td><td>&#10141;</td><td>ACL estendida: Herdanza de Permisos rwx ao grupo g-profesores para calquera ficheiro/cartafol a crear dentro de /mnt/md0/temporal</td>
+            </tr>
+            <tr>
+              <td><span class='nome'># setfacl -m g:g-alumnos:rx /mnt/md0/temporal/
+              </td><td>&#10141;</td><td><span class='bgbisque'>ACL estendida: Permisos rx ao grupo g-alumnos no cartafol /mnt/md0/temporal</span></td>
+            </tr>
+            <tr>
+              <td><span class='nome'># setfacl -dm g:g-alumnos:rx /mnt/md0/temporal/
+              </td><td>&#10141;</td><td>ACL estendida: Herdanza de Permisos rx ao grupo g-alumnos para calquera ficheiro/cartafol a crear dentro de /mnt/md0/temporal</td>
+            </tr>
+          </table>
+          <span class='bgaqua'>Revisar ACLs</span>
+          <pre class='nome arribasubsmini2 pbottom10'>
+# getfacl -R /mnt/md5/usuarios/ && /mnt/md0/temporal/</pre>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubsmini3'><span class='label bgsalmonnull bradius8 prightx10'>Tarefa programada: Eliminar diariamente contido do recurso [temporal]</span></h3>
+    <br />
+    <div>
+      <table>
+        <th width='14%' class='cheat-sheet label'>
+          <div>No servidor<br />
+          <span class='nomefwn'>(/etc/crontab)</span>
+          <br />
+          <span class='nomefwn'>(man 1 crontab)</span>
+          <br />
+          <span class='nomefwn'>(man 5 crontab)</span>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table class='fleft'> 
+            <tr>
+              <td colspan='3'><span class='nome'># echo '@daily root rm -rf /mnt/md0/temporal/*'  >> /etc/crontab</span><span class='mleft5'>&#10141;</span><span class='mleft5'>Eliminar todos os días as 00:00h o contido do cartafol /mnt/md0/temporal</span></td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+    <br />
+    <div>
+      <h3 class='arribasubsmini2'><span class='label bgsalmonnull bradius8 prightx10'>(Des)Montar Recursos Compartidos &#10141; libpam_mount &#10141; login/logout</span></h3><br />
+      <table>
+        <th class='cheat-sheet label pall2'>
+          <div>No Cliente</div>
+        </th>
+        <td class='cheat-sheet pall2'>
+          <span class='nome'>&nbsp;pam_mount &#10141; </span> Os usuarios do dominio (AD Samba) non teñen que existir no cliente como usuarios Unix.
+          <p class='mleftplusx8 mtopsubsmini2'><span class='bgy'>Imos montar no login e desmontar no logout.</span></p>
+          <ul class='mtopsubsmini2 arribasubs'>
+            <li><span class='label'>libpam-mount</span> <span class='nome'>(man pam_mount && man pam_mount.conf)(/etc/security/pam_mount.conf.xml)(~/.pam_mount.conf.xml)
+            <li><span class='label'>%(USER):</span> Variable pam_mount. Identifica user_samba/uid_user_samba respectivamente. <b>Non se modifican</b>
+          </ul><br />
+          <p><span class='nome mleft5'># smbpasswd -a user_samba || samba-tool user setpassword user_samba
+            --newpassword=123passuser_sambaABC</span>
+          <br />
+          <span class='nome mleft5'># /opt/pbis/bin/config HomeDirTemplate %H/%D%U &#10141; </span> actualizar $HOME a /home/IES/user_samba
+          </p>
+
+          <div class='indent arribaplus'>&nbsp;</div>
+          <table>
+            <tr>
+              <table class='bfigure bradius8 bgbisque'>
+                <tr>
+                  <td width='51%' class='nome bgsalmon bradius4'>
+                    &lt;volume sgrp="g-alumnos" fstype="cifs" server="lserver1" path="usuarios/alumnos/%(USER)" mountpoint="/home/local/IES/%(USER)/Documentos" options="nodev,nosuid,workgroup=IES,file_mode=0640,dir_mode=0750" /&gt;
+                  </td>
+                  <td> &#10141; </td><td>Engadir en <span class='nome'>/etc/security/pam_mount.conf.xml</span> para montar no login o recurso compartido [usuarios](path). sgrp &#10141; Limita o volume aos usuarios que son membros do grupo g-alumnos (independentemente sexa grupo primario ou secundario).<b>Este grupo g-alumnos é un grupo existente no dominio Samba.</b> 
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan=3'>anxo pertence a g-alumnos &#10141; pode montar o recurso &#10141; permisos de montaxe no lado do cliente &#10141; file_mode=640, dir_mode=750 &#10141;  permisos de escritura &#10141; ACLs no lado do servidor &#10141; soamente anxo permiso de escritura
+                  </td>
+                </tr>
+              </table>
+              <table class='bfigure bradius8'>
+                <tr>
+                  <td width='51%' class='nome bgpink bradius4'>
+                    &lt;volume sgrp="g-profesores" fstype="cifs" server="lserver1" path="usuarios/profesores/%(USER)" mountpoint="/home/local/IES/%(USER)/Documentos" options="nodev,nosuid,workgroup=IES,uid=%(USER)" /&gt;
+                  </td>
+                  <td> &#10141; </td><td>Engadir en <span class='nome'>/etc/security/pam_mount.conf.xml</span> para montar no login o recurso compartido [usuarios](path). sgrp &#10141; Limita o volume aos usuarios que son membros do grupo g-profesores (independentemente sexa grupo primario ou secundario).<b>Este grupo g-profesores é un grupo existente no dominio Samba.</b>
+                  </td>
+                <tr>
+                  <td colspan=3'>brais pertence a g-profesores &#10141; pode montar o recurso &#10141; permisos de montaxe no lado do cliente &#10141; uid=%(USER) &#10141;  permisos de escritura &#10141; ACLs no lado do servidor &#10141; soamente brais permiso de escritura 
+                  </td>
+                </tr>
+              </table>
+              <table class='bfigure bradius8 bgbisque'>
+                <tr>
+                  <td width='51%' class='nome bglime bradius4'>
+                &lt;volume sgrp="g-usuarios" fstype="cifs" server="lserver1" path="temporal" mountpoint="/mnt/%(USER)/temporal" options="nodev,nosuid,workgroup=IES,file_mode=0600,dir_mode=0700" /&gt;
+                  </td>
+                  <td> &#10141; </td><td>Engadir en <span class='nome'>/etc/security/pam_mount.conf.xml</span> para montar no login o recurso compartido [temporal](path=/mnt/md0/temporal en /mnt/${USER}/temporal). sgrp &#10141; Limita o volume aos usuarios que son membros do grupo g-usuarios (independentemente sexa grupo primario ou secundario).<b>Este grupo g-usuarios é un grupo existente no dominio Samba.</b>
+                  <td>
+                </tr>
+                <tr>
+                  <td colspan=3'>anxo, brais pertencen a g-usuarios &#10141 poden montar o recurso &#10141 permisos de montaxe no lado do cliente &#10141; file_mode=600, dir_mode=700 &#10141;  permisos de escritura &#10141; ACLs no lado do servidor &#10141; soamente g-profesores permiso de escritura &#10141; soamente brais posúe permisos de escritura
+                  </td>
+                </tr>
+              </table>
+              <table class='mtopplus'>
+                <tr>
+                  <td colspan='3' class='nome'>
+                     Iniciar sesión cos usuarios anxo, brais e probar a creación de ficheiros/directorios (gvfs-backends &#10141; thunar). <i>Comprobar no cliente e no servidor</i>.
+                  </td>
+                </tr>
+              </table>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubsmini3'><span class='label bgsalmonnull bradius8 prightx10'>Cotas de usuario (soft/hard)</span></h3>
+    <br />
+    <div>
+      <table>
+        <th class='cheat-sheet label' width='10%'>
+          <div>quota<br />
+          <span class='nomefwn'>(/etc/fstab &#10141; usrquota,grpquota)</span>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td class='nome bgaqua bgradius8'># apt -y install quota</td>
+              <td> &#10141; </td><td>Instalar o paquete quota</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'>for i in $(grep -nE 'md5|md0' /etc/fstab | cut -d':' -f1 | xargs);do sed -i "${i} s/defaults/defaults,usrquota,grpquota/g" /etc/fstab;done</td>
+              <td> &#10141; </td><td>Incorporar cotas aos puntos de montaxe /dev/md5 e /dev/md0</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># mount -o remount /mnt/md5<br />
+             # mount -o remount /mnt/md0
+              </td>
+              <td> &#10141; </td><td>Remontar os arrays para ter en conta as cotas</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># quotacheck -avug</td>
+              <td> &#10141; </td><td>Chequear e ver (-v) a máxima información de todos (-a) os sistemas de ficheiros con cotas de usuarios (-u) e grupos (-g). No caso que non existen os ficheiros necesarios para activar as cotas: aquota.user e aquota.group no raíz de cada sistema de ficheiros comprobados, entón créaos.</td>
+            </tr>
+            <tr>
+              <td class='nome bglime bgradius8'># quotaon -av</td>
+              <td> &#10141; </td><td>Activar as cotas</td>
+            </tr>
+            <tr>
+              <td class='nome bglime bgradius8'># setquota -h</td>
+              <td> &#10141; </td><td>Ver a axuda do comando setquota</td>
+            </tr>
+            <tr>
+              <td class='nome bglime bgradius8'># setquota -u anxo 180000 200000 0 0 /mnt/md5</td>
+              <td> &#10141; </td><td>Establecer as cotas de bloques (espazo en disco) e as cotas de inodos (número de ficheiros). Así, establece para o usuario anxo as seguintes cotas de bloques: cota branda(soft) de 180000KB, cota dura(hard) de 200000KB e sen cotas de inodos para o sistema de ficheiros /dev/md5</td>
+            </tr>
+            <tr>
+              <td class='nome bgsalmon bgradius8'># edquota -h</td>
+              <td> &#10141; </td><td>Ver a axuda do comando edquota</td>
+            </tr>
+            <tr>
+              <td class='nome bgsalmon bgradius8'># edquota -u anxo</td>
+              <td> &#10141; </td><td>Editar as cotas do usuario anxo</td>
+            </tr>
+            <tr>
+              <td class='nome bgsalmon bgradius8'># edquota -uT anxo</td>
+              <td> &#10141; </td><td>Editar o período de graza para o usuario anxo</td>
+            </tr>
+            <tr>
+              <td class='nome bgsalmon bgradius8'># edquota -t</td>
+              <td> &#10141; </td><td>Editar o período de graza para todos</td>
+            </tr>
+            <tr>
+              <td class='nome bgred bgradius8'># setquota -u anxo 0 0 0 0 /mnt/md5</td>
+              <td> &#10141; </td><td>Eliminar as cotas do usuario anxo en /mnt/md5</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># quota anxo</td>
+              <td> &#10141; </td><td>Verificar as quotas do usuario anxo</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># repquota -a</td>
+              <td> &#10141; </td><td>Verificar as quotas en todos os sistemas de ficheiros</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># repquota -av</td>
+              <td> &#10141; </td><td>Verificar as quotas en todos os sistemas de ficheiros. Tamén amosa usuarios e grupos sen o uso das súas quotas activadas.</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+    <h3 class='mtopsubs arribasubsmini3'><span class='label bgsalmonnull bradius8 prightx10'>Scripts de execución no inicio de sesión</span></h3>
+    <br />
+    <div>
+      <table>
+        <th width='10%' class='cheat-sheet label'>
+          <div>Configuración no Host cliente<br />
+          <span class='nomefwn'>(/etc/netlogon/user/script &#10141; /etc/profile)</span>
+        </th>
+        <td width='1%'>
+        </td>
+        <td class='cheat-sheet'>
+          <table>
+            <tr>
+              <td class='nome bgaqua bgradius8' width='60%'># mkdir -p /etc/netlogon/user</td>
+              <td> &#10141; </td><td>Crear o cartafol /etc/netlogon/user</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># cat &gt; /etc/netlogon/user/script_01.sh &lt;&lt;EOF<br />
+#!/bin/bash<br />
+if (groups \${u} | grep g-usuarios);then<br />
+<span class='pleft'>data=\$(date +%F-%H_%M)</span><br />
+<span class='pleft'>touch /tmp/file-\$data</span><br />
+fi<br />
+EOF</td>
+              <td> &#10141; </td><td>Xerar script a executar</td>
+            </tr>
+            <tr>
+              <td class='nome bgaqua bgradius8'># echo '/bin/bash /etc/netlogon/user/script_01.sh' >> /etc/profile</td>
+              <td> &#10141; </td><td>Engadir en /etc/profile a execución do script. No próximo inicio de sesión executarase o script</td>
+            </tr>
+            <tr>
+              <td class='nome bglime bgradius8'># su - anxo<br /> 
+domain^users g-usuarios<br />
+anxo@lclient1:~$ ls -l /tmp/<br />
+total 0<br />
+-rw-r--r-- 1 anxo domain^users    0 Xan  4 19:53 file-2020-01-04-19_53</td>
+              <td> &#10141; </td><td>Comprobar iniciando sesión co usuario anxo</td>
+            </tr>
+          </table>
+        </td>
+      </table>
+    </div>
+  
+  <div class='mtopplusx8'>&nbsp;</div>
+  <div class='mtopplusx8'>&nbsp;</div>
+  <div class='mtopplus'>&nbsp;</div>
+  <div class='indent'>&nbsp;</div>
+  <hr />
+  <div id="footer" class='arriba'>
+    <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" class='links' src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+<volume sgrp="g-alumnos" fstype="cifs" server="lserver1" path="usuarios/alumnos/%(USER)" mountpoint="/home/local/IES/%(USER)/Documentos" options="workgroup=IES,iocharset=utf8,uid=%(USER)" />
+<volume sgrp="g-profesores" fstype="cifs" server="lserver1" path="usuarios/profesores/%(USER)" mountpoint="/home/local/IES/%(USER)/Documentos" options="workgroup=IES,iocharset=utf8,uid=%(USER)" />
+
