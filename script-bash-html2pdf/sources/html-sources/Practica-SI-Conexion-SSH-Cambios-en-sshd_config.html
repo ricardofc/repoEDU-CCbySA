@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title> Conexion Remota mediante SSH: Cambios en sshd_config</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Conexión Remota mediante SSH<br />Cambios en sshd_config</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario2-repaso-ssh-apache2-rede-interna.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+<!--      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>-->
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='colorblue'><a href='https://www.debian.org/doc/manuals/debian-handbook/sect.remote-login.es.html' target='_blank'>Servidor ssh GNU/Linux</a>: 
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li type='square'>Paquete openssh-server (# apt update && apt -y install openssh-server).</span>
+              <li type='square'>Ficheiro de configuración: <span class='label'>/etc/ssh/sshd_config (man sshd_config)</span>
+                <p><span class='label'>PermitRootLogin</span> &#10140; Directiva que determina se o usuario root pode acceder a conectarse mediante SSH. 
+                <p><span class='label'>Port</span> &#10140; Directiva que determina o porto TCP de escoita para o servidor SSH. Poden existir múltiples liñas Port indicando diferentes portos de escoita do servizo SSH.
+                <p><span class='label'>ListenAddress</span> &#10140; Directiva que determina que direccións locais escoitan no servizo SSH. Poden existir múltiples liñas ListenAddress indicando varias interfaces de escoita do servizo SSH. 
+                <p><span class='label'>X11Forwarding</span> &#10140; Directiva que determina se a redirección gráfica é posible mediante conexións SSH. Pode soamente tomar 2 valores: yes/no.
+                <p><span class='label'>X11DisplayOffset</span> &#10140; Directiva que determina o número do display onde espera o servidor gráfico. Por defecto é 10, para evitar interferencias con reais servidores X11.
+                <p><span class='label'>X11UseLocalhost</span> &#10140; Directiva que determina se a redirección gráfica é posible na dirección loopback ou en calquera dirección.
+                <p><span class='label'>PubKeyAuthentication</span> &#10140; Directiva que determina se a autenticación de cifrado asimétrico (ou cifrado de clave pública) está permitida. Por defecto está permitida tomando o valor <i>yes</i>
+                <p><span class='label'>AuthorizedKeysFile</span> &#10140; Directiva que especifica o ficheiro que contén as claves públicas empregadas para a autenticación de usuario. Por defecto o ficheiro toma o valor <i>~/.ssh/authorized_keys</i> ou <i>~/.ssh/authorized_keys2</i>
+                <p><span class='label'>PermitEmptyPasswords</span> &#10140; Directiva que especifica se a autenticación de usuario é posible con contrasinais baleiras. Por defecto, toma o valor <i>no</i> impedindo o acceso cunha contrasinal baleira.
+                <p><span class='label'>PasswordAuthentication</span> &#10140; Directiva que especifica se a autenticación de usuario é posible mediante contrasinal. Por defecto, toma o valor <i>yes</i> permitindo o acceso a través de contrasinal. Soe configurarse a <i>no</i> cando soamente interesa acceder mediante cifrado asimétrico.
+                <p><span class='label'>MaxAuthTries</span> &#10140; Directiva que especifica o número máximo de reintentos de autenticación por conexión. Por defecto son <i>6</i>
+              </li>
+            </ul>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='mleft'><span class='label'>Servidor gráfico X (Xorg)</span>: Variable de contorna <span class='label'>DISPLAY (man X ; man ssh)</span>
+            <p>Un <span class='label'>display</span> consta mínimo de 3 elementos: teclado, rato e pantalla. Dende a perspectiva dun usuario todo servidor gráfico ten un display, o cal defínese como &#10140; hostname:displaynumber.screennumber
+              <p><span class='label'>DISPLAY=hostname:displaynumber.screennumber</span> &#10140; Variable de contorna que permite definir o display dun servidor gráfico:
+              <ul >
+                <li> hostname: Especifica o nome do host no cal o display está fisicamente conectado. Se non se define enténdese que a comunicación ao servidor gráfico sobre a mesma máquina (maquina local) terá lugar da forma máis eficiente.
+                <li> displaynumber: É o único valor do DISPLAY que sempre debe configurarse. O termo display é usado normalmente para referirse a un conxunto de monitores que comparten un conxunto común de dispositivos de entrada (teclado, rato, tablet, etc.). A maioría dos equipos soamente posúen un display, pero pode ser que posúan varíos. xa que é necesario que varios usuarios poidan traballar nunha contorna gráfica simultaneamente. Para evitar confusión, cada display sobre un equipo ten asignado un número de display (comenzando en 0) cando o servidor gráfico (X) arranca para ese display. <span class='label'>O número do display sempre debe darse para configurar o DISPLAY</span>
+                <li> screennumber: Algúns displays comparten os seus dispositivos de entrada con 2 ou máis monitores, que poden ser configurados como unha única pantalla lóxica, o al permite ás ventás moverse entre as pantallas, ou como pantallas individuais. Se se configura como que cada monitor ten as súas propias ventás, cada pantalla é asignada a un screen number. Se non se especifica o screen number toma o valor 0
+                </li>
+              </ul>
+              <p><span class='label'>DISPLAY=:0.0</span> &#10140; Display por defecto, que equivale a hostname=comunicación máis eficiente co servidor gráfico na mesma máquina local, displaynumber=0 e screennumber=0
+              <ul class='dashed mleftsubs'>
+                <li>declare -p | grep DISPLAY <br />
+                declare -x DISPLAY=":0.0"
+                <span class='explicacion'> #Amosa o valor da variable <b>DISPLAY</b> e como está declarada</span>. Vemos que a variable está exportada, de tal xeito que a variable é válida na contorna actual da shell e en calquera subshell.
+              </ul>
+              <p>Ben, pero que acontece cando non conectamos dende a máquina local senón dende a rede? Pois necesitamos definir o DISPLAY para que poida ser empregado dende a rede. Por exemplo, exportando a variable co nome do noso hostname. Así, se o hostname posúe o valor kaliA deberiamos facer o seguinte:
+              <ul class='dashed mleftsubs'>
+                <li>declare -x DISPLAY=kaliA:0 
+              </ul>
+              <p>Nas conexións SSH se empregamos o comando ssh coa opción -X podemos executar un programa no servidor gráfico remoto e visualizalo no equipo cliente. Neste caso, automaticamente xa o comando ssh configura a variable DISPLAY correctamente para poder facer a redirección gráfica.
+              <p>A maioría dos programas aceptan na liña de comandos a opción <span class='label'>-display DISPLAY</span> ou <span class='label'>--display DISPLAY</span>, a cal <span class='label'>sobreescribe</span> o contido da variable <span class='label'>DISPLAY</span>:
+              <ul class='dashed mleftsubs'>
+                <li>xeyes -display :0.0 & <span class='explicacion'> #Executar en segundo plano o comando xeyes no display :0.0 (hostname=servidor gráfico local, display=0, screennumber=0)
+              </ul>
+              <p>Podemos arrancar outro sistema X Window (servidor gráfico + cliente gráfico) mediante o comando <span class='label'>startx (man startx; man xinit)</span>:
+              <ul class='dashed mleftsubs'>
+                <li>su - -c "startx -- :10" <span class='explicacion'> #No comando <span class='label'>startx</span> antes dos caracteres <span class='label'>--</span> teñen lugar as opcións do cliente gráfico, e logo teñen lugar as opcións do servidor gráfico. Así, creamos o display :10 (hostname=servidor gráfico local, display=10, screennumber=0). O comando é executado mediante o usuario <span class'label'>root</span> a través de <i>su - -c</i>
+                <li>su - -c "xeyes -display :10" <span class='explicacion'> #Executar coma root o comando xeyes no display :10 (hostname=servidor gráfico local, display=10, screennumber=0)
+              </ul>
+            </li>
+          </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak contido'>
+      <ol>
+        <img class='cfigure mleftplus arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+        <div><span class='label'><a href='https://manuais.iessanclemente.net/index.php/Exemplo_1._Distribuci%C3%B3n_Live_SystemRescueCD._Conexi%C3%B3n_ao_seu_servidor_SSH_e_configuraci%C3%B3n_do_mesmo#Cambios_no_arquivo_de_configuraci.C3.B3n_.2Fetc.2Fssh.2Fsshd_config' target='_blank'>Práctica - Conexión Remota mediante SSH - Cambios en sshd_config</a></div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+        <li class='mtop mleft mbottom'>Pór contrasinal ao usuario, co que arranca a live, de nome: kali
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd kali || (echo -e 'kali\nabc123.\nabc123.' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            <li>sudo passwd root || (sudo -c "echo -e 'abc123.\nabc123.' | passwd")<span class='explicacion'> #Cambiar o contrasinal do usuario root. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final). O cambio de contrasinal é posible debido aos permisos configurados co comando sudo (/etc/sudoers, visudo)</span>.</li>
+          </ul>
+ 
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+               <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+               </li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+              </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'>sshd_config: Impedir/Permitir a root a conexión mediante SSH</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>PermitRootLogin</span> &#10140; Directiva que determina se o usuario root pode acceder a conectarse mediante SSH. Así, pode tomar os seguintes valores:
+                <li>PermitRootLogin prohibit-password &#10140; o usuario root non poderá conectar mediante SSH. 
+                <li>PermitRootLogin without-password &#10140; igual que prohibit-password, pero está obsoleta (en desuso). 
+                <li>PermitRootLogin yes &#10140; o usuario root poderá conectar mediante SSH. 
+                <li>PermitRootLogin forced-commands-only &#10140; o usuario root poderá conectar realizar conexións de comandos (non consola) SSH mediante cifrado asimétrico (cifrado de clave pública). 
+                <li>PermitRootLogin no &#10140; deshabilita ao usuario root o acceso mediante conexión SSH. 
+              </p>
+          </div>
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>grep -n '^#PermitRootLogin' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'#PermitRootLogin'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^#PermitRootLogin' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/PermitRootLogin/#PermitRootLogin/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>PermitRootLogin</i> por <i>#PermitRootLogin</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>PermitRootLogin</i>
+                <li>sed -i "${VAR}a\PermitRootLogin yes" /etc/ssh/sshd_config <span class='explicacion'> #Activar o acceso a root mediante conexión SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>PermitRootLogin yes</i> logo da liña atopada anteriormente que comeza por <i>#PermitRootLogin</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -v root@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario root e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>sed -i 's/PermitRootLogin yes/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config <span class='explicacion'> #Deshabilitar conexións SSH ao usuario root. 
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -v root@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario root e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.<br />
+               Neste caso como modificamos a directiva <i>PermitRootLogin</i> a <i>prohibit-password</i> o acceso co usuario <i>root</i> non é posible.
+               <li>exit <span class='explicacion'> #Saír da consola local do usuario <b>root</b> para voltar á consola local do usuario <b>kali</b>.</span></li>
+                </li>
+              </ul>
+          </ul>
+        </li>
+
+       <div class='indent'>&nbsp;</div>
+       <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>sshd_config: Modificar o porto TCP de conexión SSH</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>Port</span> &#10140; Directiva que determina o porto TCP de escoita para o servidor SSH. Poden existir múltiples liñas Port indicando diferentes portos de escoita do servizo SSH:
+                <li>Port 22 &#10140; por defecto o servidor SSH espera no porto TPC 22 (ver /etc/services). 
+                <li>Port 4444 &#10140; modificación do porto de escoita do servidor SSH ao porto TCP 4444. 
+              </p>
+          </div>
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>grep -n '^#Port' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'#Port'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^#Port' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/Port/#Port/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>Port</i> por <i>#Port</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>Port</i>
+                <li>sed -i "${VAR}a\Port 4444" /etc/ssh/sshd_config <span class='explicacion'> #Activar o porto TCP de escoita 4444 para esperar conexións SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>Port 4444</i> logo da liña atopada anteriormente que comeza por <i>#Port</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -p 4444 kali@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario kali e o seu contrasinal a través do porto TCP 4444. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>sed -i "${VAR}a\Port 22" /etc/ssh/sshd_config <span class='explicacion'> #Activar o porto TCP de escoita 22 para esperar conexións SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>Port 22</i> logo da liña atopada anteriormente que comeza por <i>#Port</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -p 22 kali@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario kali e o seu contrasinal a través do porto TCP 22. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+              <li>exit <span class='explicacion'> #Saír da consola local do usuario <b>root</b> para voltar á consola local do usuario <b>kali</b>.</span></li>
+              </ul>
+          </ul>
+        </li>
+
+       <div class='indent'>&nbsp;</div>
+       <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>sshd_config: Especificar as interfaces de rede de escoita para o servizo SSH</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>ListenAddress</span> &#10140; Directiva que determina que direccións locais escoitan no servizo SSH. Poden existir múltiples liñas ListenAddress indicando varias interfaces de escoita do servizo SSH. Pódese empregar os seguintes formatos:
+                <li>ListenAddress 0.0.0.0 &#10140; é a opción por defecto. O servizo SSH está a escoita de conexións en todas as interfaces de rede locais. 
+                <li>ListenAddress localhost &#10140; indica o hostname onde espera a escoita o servizo SSH, neste caso localhost (ver /etc/hosts) 
+                <li>ListenAddress kaliA &#10140; indica o hostname onde espera a escoita o servizo SSH, neste caso kaliA (ver /etc/hosts) 
+                <li>ListenAddress kaliA:5555 &#10140; indica o hostname e o porto TCP onde espera á escoita o servizo SSH, neste caso no host kaliA (ver /etc/hosts) e no porto TCP 5555 
+                <li>ListenAddress 127.0.0.1 &#10140; indica a IP onde espera o a escoita o servizo SSH, neste caso 127.0.0.1 
+                <li>ListenAddress 127.0.0.1:6666 &#10140; indica a IP e o porto TCP onde espera á escoita o servizo SSH, neste caso 127.0.0.1 e no porto TCP 6666
+              </p>
+          </div>
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>grep -n '^#ListenAddress' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'#ListenAddress'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^#ListenAddress' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/ListenAddress/#ListenAddress/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>ListenAddress</i> por <i>#ListenAddress</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>ListenAddress</i>
+                <li>sed -i "${VAR}a\ListenAddress 127.0.0.1" /etc/ssh/sshd_config <span class='explicacion'> #Pór soamente (xa que comentamos anteriormente todas as directivas ListenAddress) á escoita a IP interface loopback(lo) 127.0.0.1. 
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -l kali 127.0.0.1<span class='explicacion'> #Intento de conexión SSH a través do porto TCP 22 en 127.0.0.1 mediante o usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. 
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>ssh kali@localhost<span class='explicacion'> #Intento de conexión SSH a través do porto TCP 22 en localhost (/etc/hosts) mediante o usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. 
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>sed -i "${VAR}a\ListenAddress localhost:6666" /etc/ssh/sshd_config <span class='explicacion'> #Pór á escoita o host localhost (interface loopback(lo) 127.0.0.1) no porto TCP 6666. 
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -p 6666 kali@localhost<span class='explicacion'> #Intento de conexión SSH a través do porto TCP 6666 en localhost mediante o usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. 
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>sed -i "${VAR}a\ListenAddress 192.168.120.100:7777" /etc/ssh/sshd_config <span class='explicacion'> #Pór á escoita a interface configurada coa IP 192.168.120.100 no porto TCP 7777. 
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -p 7777 kali@localhost<span class='explicacion'> #Intento de conexión SSH a través do porto TCP 7777 en localhost mediante o usuario kali e o seu contrasinal. Pero como localhost non está configurado para acceder por ese porto non é posible a conexión. 
+                <li>ssh -p 7777 -l kali 192.168.120.100<span class='explicacion'> #Intento de conexión SSH a través do porto TCP 7777 en 192.168.120.100 mediante o usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. 
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+              <li>exit <span class='explicacion'> #Saír da consola local do usuario <b>root</b> para voltar á consola local do usuario <b>kali</b>.</span></li>
+              </ul>
+          </ul>
+        </li>
+
+       <div class='indent'>&nbsp;</div>
+       <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>sshd_config: Redireccionar X (X11Forwarding, X11DisplayOffset, X11UseLocalhost) para realizar conexións gráficas remotas en conexións SSH</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>X11Forwarding</span> &#10140; Directiva que determina se a redirección gráfica é posible mediante conexións SSH. Pode soamente tomar 2 valores: yes/no.
+                <li class='mleftplus'>X11Forwarding no &#10140; é o valor por defecto. Deshabilita a redirección gráfica do servidor SSH. 
+                <li class='mleftplus'>X11Forwarding yes &#10140; Habilita a redirección gráfica do servidor SSH. 
+            </ul>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>X11DisplayOffset</span> &#10140; Directiva que determina o número do display onde espera o servidor gráfico. Por defecto é 10, para evitar interferencias con reais servidores X11.
+                <li class='mleftplus'>X11DisplayOffset 10 &#10140; é o valor por defecto. Indica o número de display onde espera o servidor gráfico para conexións SSH. 
+                <li class='mleftplus'>X11DisplayOffset 100 &#10140; Indica o número de display a 100 onde espera o servidor gráfico para conexións SSH. 
+                <li class='mleftplus'>X11Forwarding yes &#10140; Habilita a redirección gráfica do servidor SSH. 
+            </ul>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>X11UseLocalhost</span> &#10140; Directiva que determina se a redirección gráfica é posible na dirección loopback ou en calquera dirección:
+                <li class='mleftplus'>X11UseLocalhost yes &#10140; é o valor por defecto. Permite a redirección gráfica á dirección loopback e define a variable de entorno DISPLAY a localhost, o cal prevén conexións remotas non permitidas ao display. 
+                <li class='mleftplus'>X11UseLocalhost no &#10140; Habilita a redirección gráfica a todas as interfaces de rede. 
+              </p>
+            </ul>
+          </div>
+
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>grep -n '^X11Forwarding' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'X11Forwarding'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^X11Forwarding' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/X11Forwarding/#X11Forwarding/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>X11Forwarding</i> por <i>#X11Forwarding</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>X11Forwarding</i>
+                <li>sed -i "${VAR}a\X11Forwarding yes" /etc/ssh/sshd_config <span class='explicacion'> #Activar o acceso a root mediante conexión SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>X11Forwarding yes</i> logo da liña atopada anteriormente que comeza por <i>#X11Forwarding</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -X kali@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario kali e o seu contrasinal a través do porto TCP 22 solicitando a redirección gráfica (<i>-X</i>). Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+                </li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>grep -n '^#X11DisplayOffset' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'#X11DisplayOffset'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^#X11DisplayOffset' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/X11DisplayOffset/#X11DisplayOffset/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>X11DisplayOffset</i> por <i>#X11DisplayOffset</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>X11DisplayOffset</i>
+                <li>sed -i "${VAR}a\X11DisplayOffset 100" /etc/ssh/sshd_config <span class='explicacion'> #Redirección gráfica no display 100 en conexións SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>X11DisplayOffset 100</i> logo da liña atopada anteriormente que comeza por <i>#X11DisplayOffset</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>ssh -X kali@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario kali e o seu contrasinal a través do porto TCP 22 solicitando a redirección gráfica (<i>-X</i>), agora no display 100. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>grep -n '^#X11UseLocalhost' /etc/ssh/sshd_config <span class='explicacion'> #Buscar no ficheiro /etc/ssh/sshd_config  mediante o comando <i>grep</i> o patrón de texto <i>'#X11UseLocalhost'</i> nun comezo de liña <i>^</i> indicando o número/s da/s liña/s (<i>-n</i>) onde existe o patrón buscado. 
+                <li>VAR=$(grep -n '^#X11UseLocalhost' /etc/ssh/sshd_config | cut -d ':'  -f1  | tail -1) <span class='explicacion'> #Crear a variable VAR co contido o número da última liña (poden existir máis de 1 se o ficheiro xa fora modificado) do patrón buscado no ficheiro /etc/ssh/sshd_config
+                <li>sed -i "s/X11UseLocalhost/#X11UseLocalhost/g" /etc/ssh/sshd_config <span class='explicacion'> #Modificar no ficheiro /etc/ssh/sshd_config o patrón de texto <i>X11UseLocalhost</i> por <i>#X11UseLocalhost</i> en todas as concurrencias atopadas, inclusive que fosen na mesma liña, é dicir, comentar (mediante o caracter <i>#</i>) para que non teña lugar a directiva <i>X11UseLocalhost</i>
+                <li>sed -i "${VAR}a\X11UseLocalhost yes" /etc/ssh/sshd_config <span class='explicacion'> #Redirección gráfica onde soamente está permitida a interface loopback para exportación gráfica en conexións SSH, é dicir, modificar o ficheiro /etc/ssh/sshd_config engadindo a liña <i>X11UseLocalhost yes</i> logo da liña atopada anteriormente que comeza por <i>#X11UseLocalhost</i>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>ssh -X kali@localhost<span class='explicacion'> #Realizar unha conexión SSH a localhost mediante o usuario kali e o seu contrasinal a través do porto TCP 22 solicitando a redirección gráfica (<i>-X</i>), permitindo soamente a exportación gráfica a través de localhost. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+              </li>
+              <ul class='dashed-kaliA mleftsubs'>
+                <li>firefox &<span class='explicacion'> #Lanzar o navegador firefox, realizando a execución en segundo plano (&). Agora é posible mediante SSH visualizar comandos que empreguen o servidor gráfico debido a que temos activada a redirección gráfica.
+                <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+              </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+        <div class='nota w80 fright'>
+          <p class='pall arriba'><b>NOTAS</b>:
+            <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li class='colorblue'><span class='label'>Cliente ssh GNU/Linux:</span>
+              <ul>
+                <li type='square'>Comando ssh. Paquete openssh-client (# apt update && apt -y install openssh-client)</span>.</span> 
+                <li type='square'>Ficheiro de configuración: <span class='label'>/etc/ssh/ssh_config (man ssh_config)</span>
+              </ul>
+              </li>
+            </ul>
+          </p>
+        </div>
+        <div class='indent'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'>Pór contrasinal ao usuario, co que arranca a live, de nome: kali
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd kali || (echo -e 'kali\nkaliBpass\nkaliBpass' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>kaliBpass</b></span></li>
+          </ul>
+ 
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kaliB'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliB'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa Máquina Virtual A na IP 192.168.120.100</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'><span class='label'>Comprobar estado do Servidor SSH e execución de comandos a través da conexión SSH:</span>
+          <ul class='dashed-kaliB'>
+            <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh (192.168.120.100) está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+            <li>ssh kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el en 192.168.120.100 co usuario kali e o seu contrasinal no porto TCP 22. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+            </li>
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+            </ul>
+            <li>ssh kali@192.168.120.100 "netstat -natp | grep 22" <span class='explicacion'> #Executar o comando <b>netstat</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB.
+            <li>ssh kali@192.168.120.100 ss -natp <span class='explicacion'> #Executar o comando <b>ss</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB.
+            <li>ssh -X kali@192.168.120.100 "thunar &"<span class='explicacion'> #Lanzar en segundo plano o explorador de arquivos thunar da máquina 192.168.120.100 a través dunha conexión SSH e como está activada a redirección gráfica é posible visualizar na máquina local (kaliB) o administrador de arquivos da máquina virtual A (kaliA).
+            <li>ssh -X kali@192.168.120.100 "firefox &"<span class='explicacion'> #Lanzar en segundo plano o navegador firefox da máquina 192.168.120.100 a través dunha conexión SSH e como está activada a redirección gráfica é posible visualizar na máquina local (kaliB) o navegador gráfico da máquina virtual A (kaliA).
+          </ul>
+        </li>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>

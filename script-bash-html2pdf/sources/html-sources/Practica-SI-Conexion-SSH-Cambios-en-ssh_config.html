@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title> Conexion Remota mediante SSH: Cambios en ssh_config</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Conexión Remota mediante SSH<br />Cambios en ssh_config</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall arriba' src="images/Escenario2-repaso-ssh-apache2-rede-interna.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='colorblue'><span class='label'>Cliente ssh GNU/Linux:</span>
+            <ul>
+              <li type='square'>Comando ssh. Paquete openssh-client (# apt update && apt -y install openssh-client)</span>.</span> 
+              <li type='square'>Configuración <span class='label'>(man ssh_config)</span>:
+                <p>O cliente (comando ssh) posúe unha configuración predeterminada que podemos modificar. A orde de prioridade desa configuración é:
+                  <ol>
+                    <li>Opcións invocadas dende a liña de comandos ao executar o propio comando ssh co parámetro <span class='label'>-o</span>
+                    <li>Opcións invocadas a través do ficheiro pertencente a cada usuario situado na ruta <span class='label'>~/.ssh/config</span>
+                    <li>Opcións invocadas a través do ficheiro de configuración global do sistema en <span class='label'>/etc/ssh/ssh_config</span>
+                  </ol>
+                <p>Nos ficheiros de configuración (~/.ssh/config e /etc/ssh/ssh_config):
+                  <ul>
+                    <li>Aparecen por liña pares de valores: directiva e argumento. As directivas non distinguen entre maiúsculas e minúsculas e os argumentos si.
+                    <li>As liñas que comezan co caracter <span class='label'>#</span> e as liñas en branco son consideradas comentarios.
+                    <li>É soamente cambiada a primeira vez que aparece. Así, definicións específicas de host deberían estar no comezo da configuración dos ficheiros e as opcións por defecto ao final. Dese xeito no caso de repetir unha configuración terase en conta a primeira, que seguramente sexa o que queiramos.
+                  </ul>
+                <p><span class='label'>Host</span> &#10140; Restrinxe as seguintes directivas existentes ata atopar outra directiva Host. Admite máis de 1 argumento separados polo caracter espazo. Como argumento admite:
+                <p><span class='label'>StrictHostKeyChecking</span> &#10140; Directiva que determina se se confía na key host do servidor SSH co que se establece a conexión. Os hosts keys son gardados por defecto no ficheiro ~/.ssh/known_hosts.
+                <p><span class='label'>User</span> &#10140; Directiva que determina o usuario que fai login para establecer a conexión. 
+                <p><span class='label'>Port</span> &#10140; Directiva que determina o porto TCP co que establecer conexión no servidor SSH.
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <div class='indent'></div>
+        <ul>
+          <li class='colorblue'><b>Formato comandos conexión SSH:</b> 
+            <ul type='disc'>
+              <li class='mtop mleftsubs mbottom'>Comando ssh: Consola remota ou execución remota de comandos. 
+                <ul class='dashed'>
+                  <li> ssh [-p port] user@hostname [command] || ssh [-p port] -l user hostname [command]
+                  <div class='explicacion4 pall'>
+                    <p> ssh &#10140; comando cliente para realizar as conexións SSH. Execútase no equipo cliente.
+                    <p> -p port &#10140; indica o porto TCP(ver /etc/services) onde espera as conexións o servidor SSH. É opcional e se non se especifica indica que a conexión terá lugar por defecto no porto TCP 22(ver /etc/services), a non ser que apareza configurado a directiva Port no arquivo <i>~/.ssh/config</i> ou no arquivo <i>/etc/ssh/ssh_config</i>
+                    <p> user@hostname &#10140; indica o usuario (user) co que se quere establecer a conexión e o hostname onde espera o servidor ssh. Pode empregarse outra nomenclatura equivalente: <i>-l user hostname</i> para facer login co usuario user.
+                    <p> user &#10140; indica o usuario co que se quere acceder ao servidor SSH, o cal debe existir no servidor SSH.
+                    <p> hostname &#10140; indica o nome do servidor SSH. Pode tomar o valor:
+                      <ul>
+                        <li> Do nome configurado no arquivo /etc/hosts do equipo cliente
+                        <li> Da IP
+                        <li> Do nome DNS
+                      </ul>
+                    </p>
+                    <p> command &#10140; indica o/s comando/s (script) a executar no servidor SSH, amosando a saída do/s comando/s na máquina cliente. É opcional, polo que se non se especifica abrirase unha consola de conexión remota co servidor SSH.
+                    </p>
+                  </div>
+                </ul>
+              </li>
+
+              <li class='mtop mleftsubs mbottom'>Comando scp: Copia remota segura. 
+               <ul class='dashed'>
+                 <li> scp [-P port] user@hostname:remote_path local_path <span class='explicacion'> #Copiar ficheiros</span>
+                 <li> scp -r [-P port] user@hostname:remote_path local_path <span class='explicacion'>#Copiar directorios recursivamente</span>
+                 <li> scp [-P port] local_path user@hostname:remote_path <span class='explicacion'>#Copiar ficheiros</span>
+                 <li> scp -r [-P port] local_path user@hostname:remote_path <span class='explicacion'>#Copiar directorios recursivamente</span>
+                 <div class='explicacion4 pall'>
+                   <p> scp &#10140; comando cliente para realizar as copias seguras mediante conexións SSH. Execútase no equipo cliente.
+                   <p> -P port &#10140; indica o porto TCP(ver /etc/services) onde espera as conexións o servidor SSH. É opcional e se non se especifica indica que a conexión terá lugar por defecto no porto TCP 22(ver /etc/services), a non ser que apareza configurado a directiva Port no arquivo <i>~/.ssh/config</i> ou no arquivo <i>/etc/ssh/ssh_config</i>
+                   <p> user@hostname &#10140; indica o usuario (user) co que se quere establecer a conexión e o hostname onde espera o servidor ssh.
+                   <p> user &#10140; indica o usuario co que se quere acceder ao servidor SSH, o cal debe existir no servidor SSH.
+                   <p> hostname &#10140; indica o nome do servidor SSH. Pode tomar o valor:
+                     <ul>
+                       <li> Do nome configurado no arquivo /etc/hosts do equipo cliente
+                       <li> Da IP
+                       <li> Do nome DNS
+                     </ul>
+                   </p>
+                   <p> local_path &#10140; indica a ruta local(ruta do cliente) a copiar ou onde volcar o copiado
+                   <p> :remote_path &#10140; indica a ruta remota(ruta do servidor) onde copiar ou de onde copiar. Se non se especifica remote_path por defecto ou especifícase unha ruta relativa o caracter ':' simboliza a variable $HOME do usuario co que se establece a conexión. En caso contrario pode especificarse unha ruta absoluta deixando de ter valor o caracter ':'
+                   <p> -r &#10140; permite copiar directorios enteiros recursivamente. A opción <i>-r</i> segue ligazóns simbólicas.
+                   </p>
+                 </div>
+               </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='nota w80 fright'>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <div class='indent'>&nbsp;</div>
+        <ul>
+          <li class='colorblue'><a href='https://www.debian.org/doc/manuals/debian-handbook/sect.remote-login.es.html' target='_blank'>Servidor ssh GNU/Linux</a>: 
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li type='square'>Paquete openssh-server (# apt update && apt -y install openssh-server).</span>
+              <li type='square'>Ficheiro de configuración: <span class='label'>/etc/ssh/sshd_config (man sshd_config)</span>
+            </ul>
+            <div class='minindent'>&nbsp;</div>
+            <p>O<strong> servizo SSH</strong> permite obter, mediante conexión cifrada, un terminal de comandos a quen accede de forma remota. Os comandos tamén poden ser aplicacións gráficas xa que o <strong>servizo SSH</strong> tamén permite redireccionar o servidor gráfico, de tal xeito que un comando que emprega librarías gráficas, como por exemplo Firefox, será visionado na máquina cliente (a que accede ao servizo SSH).</span></p>
+            <p>O <strong>porto TCP</strong>(ver /etc/services) de conexión por defecto é o <strong>22</strong>, pero pódese configurar.</span></p>
+            <p>Para conectarse é necesario posuir un <strong>cliente ssh</strong>, tipicamente o comando <strong>ssh</strong>, o cal soe vir preinstalado por defecto nas distribucións GNU/Linux.</span></p>
+            <p>O arquivo de configuración de sistema do servidor ssh pódese atopar na ruta: <span class='label'>/etc/ssh/sshd_config</span></p>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak contido'>
+      <ol>
+        <div><span class='label'>Práctica - Conexión Remota mediante SSH - Cambios en ssh_config</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p>
+        <li class='mtop mleft mbottom'>Pór contrasinal ao usuario, co que arranca a live, de nome: kali
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd kali || (echo -e 'kali\nabc123.\nabc123.' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            <li>sudo passwd root || (sudo -c "echo -e 'abc123.\nabc123.' | passwd")<span class='explicacion'> #Cambiar o contrasinal do usuario root. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final). O cambio de contrasinal é posible debido aos permisos configurados co comando sudo (/etc/sudoers, visudo)</span>.</li>
+          </ul>
+ 
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kaliA mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+               <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+               </li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+              </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <p class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</p>
+        <div class='indent'></div>
+
+
+        <li class='mtop mleft mbottom'>Pór contrasinal ao usuario, co que arranca a live, de nome: kali
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>passwd kali || (echo -e 'kali\nkaliBpass\nkaliBpass' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>kaliBpass</b></span></li>
+          </ul>
+ 
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span style='font-size:14px;color:#0F18A0;'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kaliB'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliB'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa Máquina Virtual A na IP 192.168.120.100</span></li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH 
+          <ul class='dashed-kaliB'>
+            <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh (192.168.120.100) está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+            <li>ssh kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el en 192.168.120.100 co usuario kali e o seu contrasinal no porto TCP 22. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter.
+            </li>
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+            </ul>
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Execución de comandos a través da conexión SSH:</span>
+          <div class='explicacion3 pall'>
+                  <ul>
+                    <li>HostA: Servidor SSH coa IP 192.168.120.100
+                    <li>HostB: Cliente SSH coa IP 192.168.120.101
+                  </ul>
+            <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>&nbsp;SSH</sub> </span></p>
+            <p class='mtop mleft'><span class='label'>&nbsp; B &#10140; A </span>Acceder mediante SSH dende o HostB (cliente SSH) ao HostA (servidor SSH): 
+          </div>
+        <ul class='dashed-kaliB'>
+            <li> ssh kali@192.168.120.100 <span class='explicacion'> #Acceder de B a A mediante o usuario de nome <span class='nome'>kali</span> ao porto TCP <span class='nome'>22</span>(ver /etc/services) onde se supón que está esperando o servizo SSH do HostA, a non ser que teñamos configurado no equipo cliente o arquivo <i>~/.ssh/config</i> ou o arquivo <i>/etc/ssh/ssh_config</i> coa directiva <i>Port</i> indicando un porto distinto.
+            <li> ssh -l kali 192.168.120.100<span class='explicacion'> #Comando equivalente ao anterior.
+            <li> ssh kali@192.168.120.100 -p 22<span class='explicacion'> #Acceder de B a A mediante o usuario de nome <span class='nome'>kali</span> ao porto TCP <span class='nome'>22</span> do servidor SSH.
+            <li> ssh -p 22 -l kali 192.168.120.100<span class='explicacion'> #Comando equivalente ao anterior.
+            <li> ssh 192.168.120.100 <span class='explicacion'> #Acceder de B a A mediante o usuario co que estamos conectados no sistema do HostB (neste caso como indica o prompt PS1 intentaríase a conexión co usuario kali), a non ser que tiñamos configurado no arquivo <i>~/.ssh/config</i> ou no arquivo <i>/etc/ssh/ssh_config</i> do equipo cliente a directiva <i>User</i> cun nome de usuario. Como non se indica o porto TCP da conexión, esta terá lugar no porto TCP 22(ver /etc/services), a non ser que teñamos configurado no equipo cliente o arquivo <i>~/.ssh/config</i> ou o arquivo <i>/etc/ssh/ssh_config</i> coa directiva <i>Port</i> indicando un porto distinto.   
+           <li>ssh kali@192.168.120.100 cat /etc/motd <span class='explicacion'> #Executar o comando <i>cat /etc/motd</i> no servidor SSH 192.168.120.100(hostA) e ver a saída da execución do comando na máquina local kaliB(hostB).
+           <li>ssh kali@192.168.120.100 "netstat -natp | grep 22" <span class='explicacion'> #Executar o comando <i>netstat</i> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB.
+            <li>ssh kali@192.168.120.100 ss -natp <span class='explicacion'> #Executar o comando <i>ss</i> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB.
+            <li> scp kali@192.168.120.100:/etc/passwd .<span class='explicacion'> #Estando situado no HostB, copiar de A a B (do servidor ao cliente) o arquivo <span class='nome'>/etc/passwd</span>, é dicir, copiar en B o ficheiro /etc/passwd existente no HostA, e copialo na ruta onde lanza o comando o usuario cliente <span class='nome'> que é o que simboliza o caracter '.' </span>. Neste caso a copia realizarase no $HOME(~) do usuario local <span class='nome'>/home/kali</span>
+            <li> echo $(hostname) &gt; fileHostB.txt && scp ./fileHostB.txt kali@192.168.120.100:<span class='explicacion'> #Crear en B o ficheiro /home/kali/filehostB.txt co contido de 1 liña que posúe o nome do equipo: kaliB. Se este comando non obtivo erro na súa execución (&&) execútase o segundo comando, o cal indica que estando situado no HostB, copiar de B a A o arquivo <span class='nome'>/home/kali/fileHostB.txt</span> na casa do usuario kali do hostA, é dicir, copiar en A o ficheiro filehostB.txt no cartafol <span class='nome'> /home/kali, que é o que simboliza o caracter ':' </span>
+            <li> scp -r kali@192.168.120.100:/tmp .<span class='explicacion'> #Estando situado no HostB, copiar de A a B (do servidor ao cliente) todo o directorio <span class='nome'>/tmp</span>, é dicir, copiar en B o directorio /tmp (e todo que colga deste) existente no HostA, e copialo na ruta onde lanza o comando o usuario cliente <span class='nome'> que é o que simboliza o caracter '.' </span>. Neste caso a copia realizarase no $HOME(~) do usuario local <span class='nome'>/home/kali</span>
+            <li> mkdir ~/cousas && cp -pv /etc/passwd cousas <span class='explicacion'> #No hostB(cliente) crear o directorio <span class='nome'>/home/kali/cousas</span>. Se este comando non obtivo erro na súa execución (&&) execútase o segundo comando, o cal indica copiar en modo verbose (detallado) e preservando permisos e datas o ficheiro <span class='nome'>/etc/passwd dentro de /home/kali/cousas</span>.
+            <li> scp -r cousas kali@192.168.120.100:/tmp <span class='explicacion'> #Estando situado no HostB, copiar de B a A (do cliente ao servidor) todo o directorio <span class='nome'>cousas</span> dentro do directorio /tmp do servidor(hostA), é dicir, copiar en A o directorio /home/kali/cousas (e todo que colga deste) existente no HostB, e copialo dentro da ruta /tmp do servidor</span>
+            <li> ln -s /tmp cousas/tmp <span class='explicacion'> #No hostB(cliente) crear o enlace simbólico /home/kali/cousas/tmp que apunta a /tmp</span>
+            <li> scp -r cousas kali@192.168.120.100:/tmp <span class='explicacion'> #Estando situado no HostB, copiar de B a A (do cliente ao servidor) todo o directorio <span class='nome'>cousas</span> dentro do directorio /tmp do servidor(hostA), é dicir, copiar en A o directorio /home/kali/cousas (e todo que colga deste) existente no HostB, e copialo dentro da ruta /tmp do servidor. Como agora dentro de cousas existe un enlace simbólico a /tmp, non se copia o enlace simbólico, senón que se segue ese enlace e polo tanto copiase tamén no servidor(hostA) o contido do directorio /tmp do cliente(hostB) en /home/kali/cousas/tmp, é dicir:
+              <ul> 
+                <li> No cliente(hostB) cousas/tmp é unha ligazón simbólica a /tmp</span>
+                <li> No servidor(hostA) cousas/tmp é un directorio coa copia do contido do cartafol /tmp do cliente(hostB)</span>
+              </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'>ssh_config: Modificar a configuración de acceso ao servidor SSH de determinados hosts.</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <p><span class='label'>Host</span> &#10140; Restrinxe as seguintes directivas existentes ata atopar outra directiva Host ou Match. Admite máis de 1 argumento separados polo caracter espazo. Como argumento admite:
+                <ul>
+                  <li><span class='label'>*</span> &#10140; Simboliza todos os hosts
+                  <li><span class='label'>?</span> &#10140; Simboliza un caracter
+                  <li><span class='label'>hostname</span> &#10140; Un host determinado
+                  <li><span class='label'>IP</span> &#10140; Un host determinado
+                  <li><span class='label'>*.example.local</span> &#10140; Calquera host do dominio example.local
+                  <li><span class='label'>192.168.120.10?</span> &#10140; Calquera host que coincida no rango 192.168.120.10[0-9]
+                  <li><span class='label'>!argumento</span> &#10140; Nega o argumento, indicando que as directivas desta sección Host non terán lugar nese argumento.
+                </ul>
+              </p>
+              <p><span class='label'>StrictHostKeyChecking</span> &#10140; Directiva que determina se se confía na key host do servidor SSH co que se establece a conexión. Os hosts keys son gardados por defecto no ficheiro ~/.ssh/known_hosts. Pode tomar como argumento:
+                <ul>
+                  <li><span class='label'>no</span> &#10140; Garda automaticamente a host key do servidor SSH no ficheiro ~/.ssh/known_hosts
+                  <li><span class='label'>off</span> &#10140; Garda automaticamente a host key do servidor SSH no ficheiro ~/.ssh/known_hosts
+                  <li><span class='label'>ask</span> &#10140; Pregunta se se confía na host key do servidor SSH co que se establece a conexións. Se respostamos <i>yes</i> gardarase a host key no ficheiro <i>~/.ssh/known_hosts</i> e a conexión terá lugar. No caso de respostar <i>non</i> a conexión non se establecerá.
+                  <li><span class='label'>yes</span> &#10140; Nunca engade automaticamente a host key do servidor SSH no ficheiro ~/ssh/known_hosts, e rechaza conectar a hosts que cambiaran a host key.
+                  <li><span class='label'>accept-new</span> &#10140; Garda automaticamente a host key do servidor SSH no ficheiro ~/.ssh/known_hosts, e rechaza conectar a hosts que cambiaran a host key.
+                </ul>
+               </p>
+          </div>
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>rm -f ~/.ssh/known_hosts <span class='explicacion'> #Eliminar sen pedir confirmación o ficheiro ~/.ssh/known_hosts, no cal gárdanse as hosts keys dos servidores coñecidos tras conexións SSH.</span><br />
+            <li>cat > ~/.ssh/config &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear ~/.ssh/config</span><br />
+            Host * <span class='explicacion'> #As seguintes directivas, desta sección, ata atopar outra directiva <i>Hosts</i> ou <i>Match</i></span><br />
+            StrictHostKeyChecking no <span class='explicacion'> #Gardar automaticamente en ~/.ssh/known_hosts a host key do servidor a conectar.</span><br />
+            EOF <span class='explicacion'>Fin do ficheiro a crear ~/.ssh/config</span><br />
+            </li>
+            <li>ssh -o StrictHostKeyChecking=ask kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión no porto TCP por defecto 22 e co usuario kali. Para aquelas opcións que non se establecen por liña de comandos lese o ficheiro <i>~/.ssh/config</i>, pero neste caso introdúcese por liña de comandos mediante a opción <i>-o</i> que o <i>StrictHostKeyChecking</i> está a <i>ask</i>. Entón pregúntase pola confirmación do host key do servidor gardándose para establecer a conexión e poder gardala no ficheiro <i>~/.ssh/known_hosts</i>. Respóstase <i>yes</i> para establecer a conexión SSH.
+            <li>cat ~/.ssh/known_hosts <span class='explicacion'> #Observar que a conexión tipo lugar co cal gardouse o host key no ficheiro ~/.ssh/known_hosts</span><br />
+            <li>rm -f ~/.ssh/known_hosts <span class='explicacion'> #Eliminar sen pedir confirmación o ficheiro ~/.ssh/known_hosts, no cal gárdanse as hosts keys dos servidores coñecidos tras conexións SSH.</span><br />
+            <li>ssh kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión no porto TCP por defecto 22 e co usuario kali. E como agora non se introduce por teclado a opción correspondente á directiva <i>StrictHostKeyChecking</i> actívase a configuración correspondente a esa directiva no ficheiro <i>~/.ssh/config</i>
+            <li>cat ~/.ssh/known_hosts <span class='explicacion'> #Observar que a conexión tipo lugar co cal gardouse o host key no ficheiro ~/.ssh/known_hosts</span><br />
+            <li>rm -f ~/.ssh/known_hosts <span class='explicacion'> #Eliminar sen pedir confirmación o ficheiro ~/.ssh/known_hosts, no cal gárdanse as hosts keys dos servidores coñecidos tras conexións SSH.</span><br />
+            <li>sed -i 's/Host */Host !192.168.120.100/' ~/.ssh/config <span class='explicacion'> #Habilitar as directivas do ficheiro <span class='label'>~/.ssh/config</span> a todos os hosts agás para o host 192.168.120.100, é dicir, agora as directivas non funcionan para o host 192.168.120.100 
+            <li>ssh kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión no porto TCP por defecto 22 e co usuario kali. Para aquelas opcións que non se establecen por liña de comandos lese o ficheiro <i>~/.ssh/config</i>, e neste caso para o host 192.168.120.100 como <i>StrictHostKeyChecking</i> está a <i>yes</i> entón pregúntase pola confirmación do host key do servidor gardándose para establecer a conexión e poder gardala no ficheiro <i>~/.ssh/known_hosts</i>
+            <li>cat ~/.ssh/known_hosts <span class='explicacion'> #Observar que a conexión tipo lugar co cal gardouse o host key no ficheiro ~/.ssh/known_hosts</span><br />
+            <li>rm -f ~/.ssh/known_hosts <span class='explicacion'> #Eliminar sen pedir confirmación o ficheiro ~/.ssh/known_hosts, no cal gárdanse as hosts keys dos servidores coñecidos tras conexións SSH.</span><br />
+            <li>sed -i 's/Host !192.168.120.100/Host 192.168.120.100' ~/.ssh/config <span class='explicacion'> #Habilitar as directivas do ficheiro <span class='label'>~/.ssh/config</span> soamente ao host 192.168.120.100, é dicir, agora as directivas soamente funcionan para o host 192.168.120.100 
+            <li>ssh kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión no porto TCP por defecto 22 e co usuario kali. Para aquelas opcións que non se establecen por liña de comandos lese o ficheiro <i>~/.ssh/config</i>, e neste caso para o host 192.168.120.100 como <i>StrictHostKeyChecking</i> está a <i>no</i> entón non se pregunta pola confirmación do host key do servidor gardándose no ficheiro <i>~/.ssh/known_hosts</i> establecéndose a conexión SSH.
+            <li>cat ~/.ssh/known_hosts <span class='explicacion'> #Observar que a conexión tipo lugar co cal gardouse o host key no ficheiro ~/.ssh/known_hosts</span><br />
+          </ul>
+        </li>
+
+       <div class='indent'>&nbsp;</div>
+       <div class='pagebreak'></div>
+
+       <li class='mtop mleft mbottom'><span class='label'>ssh_config: Modificar na configuración de acceso o usuario de conexión por defecto ao servidor SSH.</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <li><span class='label'>User</span> &#10140; Directiva que determina o usuario que fai login para establecer a conexión. 
+            </ul>
+          </div>
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>cat > ~/.ssh/config &lt;&lt;EOF <span class='explicacion'>Comezo do ficheiro a crear ~/.ssh/config</span><br />
+            Host * <span class='explicacion'> #As seguintes directivas, desta sección, ata atopar outra directiva <i>Hosts</i> ou <i>Match</i></span><br />
+            User root <span class='explicacion'> #Se non se especifica por liña de comandos facer login co usuario root.</span><br />
+            EOF <span class='explicacion'>Comezo do ficheiro a crear ~/.ssh/config</span><br />
+            </li>
+            <li>ssh -o User=kali kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión no porto TCP por defecto 22 e co usuario kali. Para aquelas opcións que non se establecen por liña de comandos lese o ficheiro <i>~/.ssh/config</i>, pero neste caso introdúcese por liña de comandos mediante a opción <i>-o</i> que o <i>User</i> toma o valor <i>kali</i>.
+            <li>ssh 192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, pero como non determinamos o usuario co que facemos por liña de comandos, lese o ficheiro <i>~/.ssh/config</i>, no cal o usuario para todas as conexións <i>(Host *)</i> e root <i>(User root)</i>, e o login con este usuario non está permitido, co cal non se establece a conexión SSH.
+            <li>sed -i 's/User root/User kali/' ~/.ssh/config <span class='explicacion'> #Habilitar por defecto o usuario kali como o usuario a establecer login mediante conexións SSH. 
+            <li>ssh 192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, pero como non determinamos o usuario co que facemos por liña de comandos, lese o ficheiro <i>~/.ssh/config</i>, no cal o usuario para todas as conexións <i>(Host *)</i> e kali <i>(User kali)</i>, e o login con este usuario está permitido, co cal agora si se establece a conexión SSH. 
+          </ul>
+        </li>
+
+       <div class='indent'>&nbsp;</div>
+       <div class='pagebreak'></div>
+
+       <li class='mtop mleft mbottom'><span class='label'>ssh_config: Modificar na configuración de acceso o porto TCP de conexión ao servidor SSH.</span>
+          <div class='explicacion3 pall'>
+            <ul type='square' class='mleftsubs'>
+              <li><span class='label'>Port</span> &#10140; Directiva que determina o porto TCP co que establecer conexión no servidor SSH.
+            </ul>
+          </div>
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>cat > ~/.ssh/config &lt;&lt;EOF <span class='explicacion'>Comezo do ficheiro a crear ~/.ssh/config</span><br />
+            Host * <span class='explicacion'> #As seguintes directivas, desta sección, ata atopar outra directiva <i>Hosts</i> ou <i>Match</i></span><br />
+            Port 9999 <span class='explicacion'> #Se non se especifica por liña de comandos facer conexión ao porto TCP 9999 do servidor SSH.</span><br />
+            EOF <span class='explicacion'>Comezo do ficheiro a crear ~/.ssh/config</span><br />
+            </li>
+            <li>ssh -o Port=1111 kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, establecendo a conexión co usuario kali. Para aquelas opcións que non se establecen por liña de comandos lese o ficheiro <i>~/.ssh/config</i>, pero neste caso introdúcese por liña de comandos mediante a opción <i>-o</i> que o <i>Port</i> toma o valor <i>1111</i>.
+            <li>ssh kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, pero como non determinamos o porto TCP de conexión por liña de comandos, lese o ficheiro <i>~/.ssh/config</i>, no cal o porto TCP por defecto para as conexións SSH é o 9999, e como o servidor non está a esperar conexións neste porto non se establece a conexión SSH.
+            <li>sed -i 's/Port 9999/Port 22/' ~/.ssh/config <span class='explicacion'> #Por defecto no ficheiro estableceranse as conexións SSH accedendo ao porto TCP 22
+            <li>ssh kali@192.168.120.100 cat /etc/passwd <span class='explicacion'> #Executar o comando <b>cat /etc/passwd</b> no servidor SSH 192.168.120.100 e ver a saída da execución do comando na máquina local kaliB, pero como non determinamos o porto TCP de conexión por liña de comandos, lese o ficheiro <i>~/.ssh/config</i>, no cal agora o porto TCP por defecto para as conexións SSH é o 22, e como o servidor si está a esperar conexións neste porto si se establece a conexión SSH.
+          </ul>
+        </li>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
