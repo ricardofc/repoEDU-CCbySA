@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>VLAN (802.1Q)</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+<div id='autocentrado'>
+  <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/RL' target='_blank'>Exercicio 15: VLAN (802.1Q) - Switch HP Procurve 1700-24</a></h1>
+  <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+  <div class='minindent'>&nbsp;</div>
+  <figure class='cfigure'>
+    <img class='contido bfigure pall' src="images/Escenario-VLAN.png" />
+    <figcaption>Fig.0 - Escenario</figcaption>
+  </figure>
+
+  <div class='indent nota w80 title24 pall'>
+    <b>NOTAS</b>:<br />
+    <br />
+    (1) SMR_ALUXY -onde XY pode tomar os valores 01, 02, ..., 30 e corresponde ao número de PC que tes asignado.<br />
+    <br />
+    (2) O diagrama da Fig.0 representa 2 despachos dunha empresa: kaliA &#10141; Administración e kaliB &#10141; Xerencia<br />
+    <br />
+    (3) IP=IPv4, MS=Máscara de Subrede, GW=Gateway, DR=Dirección de Rede.<br />
+    <br />
+    (4) En Oracle VirtualBox unha tarxeta de rede(NIC) virtual configurada como Ponte permite a conectividade coa tarxeta de rede física do equipo anfitrión simulando que ambas (virtual e física) estan conectadas ao mesmo switch, é dicir, a máquina virtual será unha host máis na rede física onde está conectado o equipo anfitrión. É importante, realizar a configuración da Fig.0 para o correcto desenvolvemento do exercicio.<br />
+    <br />
+    (5) Garda as respostas/imaxes coa solución dos apartados nun arquivo, dentro do teu cartafol asignado, co nome: <span class='label'>Solucion-RL-Exercicio15_Apelido1-Apelido2-Nome-ALUXY.pdf</span>, onde debes sustituír Nome, Apelidos e XY polo que corresponda.
+    <br />
+    <br />
+  </div>
+
+  <div class='indent pagebreak contido title24'>
+    <ol>
+	<div><span class='label'>Configuración VLANs - Switch HP ProCurve 1700-24</span>
+          <div class='minindent arriba'>&nbsp;</div>
+	  <li class='mtop mleft mbottom'>Resetea a configuración do switch para restablecer os parámetros de fábrica seguindo a documentación descrita [1]: 
+          <table>
+            <tr>
+              <td style="width: 95% ;WHITE-SPACE: normal; word-wrap: break-word; word-break: normal; padding-right: 4px;">
+                  <ol type='A'>
+                    <li>
+                      <p><font style="vertical-align: inherit;">Retire o cable de alimentación da parte traseira do interruptor.</font></p>
+                    </li>
+                    <li>
+                      <p><font style="vertical-align: inherit;"> Conecte o porto 1 ao porto 2 do panel frontal mediante un cable de rede estándar.  </font></p>
+                    </li>
+                    <li>
+                      <p><font style="vertical-align: inherit;">  Volva conectar o cable de alimentación á parte traseira do interruptor.  </font></p>
+                    </li>
+                    <li>
+                      <p><font style="vertical-align: inherit;">  Agarde polo menos 40 segundos antes de desconectar o porto 1 do porto 2.  </font></p>
+                    </li>
+                  </ol>
+                  <p><font style="vertical-align: inherit;">Despois de completar este procedemento, non haberá ningún contrasinal, a dirección IP devolverase ao 192.168.2.10 predeterminado e todas as opcións de configuración volverán ser as predeterminadas de fábrica.</font></p>
+              </td>
+            </tr>
+            </table>
+	  <li class='mtop mleft mbottom'>Arranca as máquinas virtuais en modo ponte e realiza a configuración de rede indicada na Fig.0</li>
+             <ul class='explicacion3 title24'>
+              <b>NOTA:</b> Ten en conta que os equipos anfitrións deben estar conectados no Port1  e Port2 do switch. Así, o equipo anfitrión de kaliA debe estar conectado ao Port1 e o equipo anfitrión de kaliB ao Port2.
+            </ul>
+            <br>
+	  <li class='mtop mleft mbottom'>Revisa a configuración de rede nas máquinas virtuais (kaliA e kaliB) executando o comando:
+            <code>
+              <ul class='dashed mtop mbottom'>
+                <li>ip addr show
+              </ul>
+            </code>
+            Captura as imaxes correspondentes aos comandos anteriores para cada máquina virtual.
+             <ul class='explicacion3 title24'>
+              <b>NOTA:</b> Pode ser necesario deshabilitar e habilitar de novo a rede para que teña efecto o cambio na configuración de rede.
+            </ul>
+          </li>
+          <br>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliA á IP 127.0.0.1 
+              <li>De kaliA á IP 127.127.127.127 
+              <li>De kaliA á IP 192.168.2.100 
+              <li>De kaliA á IP 192.168.2.101 
+              <li>De kaliA á IP 192.168.2.10 
+              <li>De kaliA á IP 10.10.10.10
+              <li>De kaliA á IP 8.8.8.8 
+            </ol>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliB á IP 127.0.0.1 
+              <li>De kaliB á IP 127.127.127.127 
+              <li>De kaliB á IP 192.168.2.101 
+              <li>De kaliB á IP 192.168.2.100 
+              <li>De kaliB á IP 192.168.2.10 
+              <li>De kaliB á IP 10.10.10.10
+              <li>De kaliB á IP 8.8.8.8 
+            </ol>
+          </li>  
+	  <li class='mtop mleft mbottom'>Cambia o cable de kaliB. Así o cable que está no Port2 conéctao ao Port20. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Dende kaliA accede a configuración do switch: http://192.168.2.10 (Revisar punto 1. deste exercicio)
+            <figure class='cfigure'>
+              <img class='contido bfigure pall' src="images/switch-HP-ProCurve-1.png" />
+              <figcaption>Fig.1 - Configuración Switch: http://192.168.2.10</figcaption>
+            </figure>
+          </li>
+          </li>
+          <div class='indent pagebreak'>&nbsp;</div>
+	  <li class='mtop mleft mbottom'>Configura o switch tal e como se amosa nas seguintes imaxes:
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-HP-ProCurve-2.png"  />
+              <figcaption>Fig.2 - System information: Trunk + VLAN</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-HP-ProCurve-3.png"  />
+              <figcaption>Fig.3 - VLAN Setup: Crear VLAN ID 10</figcaption>
+            </figure>
+            <div class='indent'>&nbsp;</div>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-HP-ProCurve-4.png"  />
+              <figcaption>Fig.4 - VLAN Setup: 802.1Q VLAN Group - VLAN ID 10 - Asignar Port 2</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-HP-ProCurve-5.png"  />
+              <figcaption>Fig.5 - VLAN Setup: 802.1Q VLAN Group - VLAN ID 10 - Modificar</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-HP-ProCurve-6.png"  />
+              <figcaption>Fig.6 - VLAN Port Config: 802.1Q Per Port Configuration - Port 2 - All - 10 - Aplicar</figcaption>
+            </figure>
+            </li>
+	  <li class='mtop mleft mbottom'>Logo do cambio na configuración do switch, realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Cambia de novo o cable de kaliB. Así o cable que está no Port20 conéctao ao Port2. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Configura o Port 8 na VLAN ID 10. Unha vez realizado cambia o cable de kaliA ao Port8, é dicir, o cable que está no Port1 conéctao ao Port8. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Podes seguir configurando o switch dende kaliA? E dende kaliB? Por que? Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Cambia de novo o cable de kaliA. Así o cable que está no Port8 conéctao ao Port1. Agora podes configurar o switch? E se cambias este cable a un porto distinto do 2 e do 8? Por que?. Razoa as respostas.
+          </li>
+          <li class='mtop mleft arriba'>Sube a resolución deste exercicio realizado á tarefa correspondente da Aula Virtual. Verifica o nome antes de subir o arquivo á tarefa (Ver NOTAS).</li><br>
+	</div>
+    </ol>
+    <h3>URLs de Interese:</h3>
+    <p class='mtopsubs'>&nbsp;</p>
+      <table class='arriba links'>
+        <tr>
+          <td>[1] <a href='https://support.hpe.com/hpesc/public/docDisplay?docId=c01752898&docLocale=en_US' target='_blank'>Resetear a configuración do switch para restablecer os parámetros de fábrica</a>.</td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+         <td>[2] <a href="https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=c01955899" target='_blank'>Descrición xeral</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[3] <a href='https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=c02608916' target='_blank'>Que é unha VLAN</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[4] <a href='ftp://ftp.hp.com/pub/networking/software/1700-24-Install-Feb07-59916221.pdf' target='_blank'>Manual</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+  </div>
+</div>
+  <hr />
+  <div id="footer" style='margin-top:-10px;margin-bottom:-10px;font-size:24px;width:1580px;'>
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
