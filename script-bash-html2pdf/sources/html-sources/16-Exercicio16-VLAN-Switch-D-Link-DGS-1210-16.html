@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>VLAN (802.1Q)</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+<div id='autocentrado'>
+  <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/RL' target='_blank'>Exercicio 16: VLAN (802.1Q) - Switch D-Link DGS-1210-16</a></h1>
+  <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+  <div class='minindent'>&nbsp;</div>
+  <figure class='cfigure'>
+    <img class='contido bfigure pall' src="images/Escenario-VLAN-2.png" />
+    <figcaption>Fig.A - Escenario</figcaption>
+  </figure>
+  <figure class='cfigure'>
+  <img class='contido bfigure pall' src="images/switch-D-Link-6-Example-VLAN.png"  />
+    <figcaption>Fig.B - Example VLAN: http://10.90.90.90/www/iss/Example_for_Asymmetric_VLAN.html</figcaption>
+  </figure>
+  <div class='indent nota w80 title24 pall'>
+    <b>NOTAS</b>:<br />
+    <br />
+    (1) SMR_ALUXY -onde XY pode tomar os valores 01, 02, ..., 30 e corresponde ao número de PC que tes asignado.<br />
+    <br />
+    (2) O diagrama da Fig.A representa 3 departamentos dunha empresa:
+      <ul type='square'>
+        <li>kaliA &#10141; Administración
+        <li>kaliB &#10141; Xerencia
+        <li>kaliC &#10141; Compras
+      </ul>
+    (3) IP=IPv4, MS=Máscara de Subrede, GW=Gateway, DR=Dirección de Rede.<br />
+    <br />
+    (4) En Oracle VirtualBox unha tarxeta de rede(NIC) virtual configurada como Ponte permite a conectividade coa tarxeta de rede física do equipo anfitrión simulando que ambas (virtual e física) estan conectadas ao mesmo switch, é dicir, a máquina virtual será unha host máis na rede física onde está conectado o equipo anfitrión. É importante, realizar a configuración da Fig.A para o correcto desenvolvemento do exercicio.<br />
+    <br />
+    (5) Garda as respostas/imaxes coa solución dos apartados nun arquivo, dentro do teu cartafol asignado, co nome: <span class='label'>Solucion-RL-Exercicio16_Apelido1-Apelido2-Nome-ALUXY.pdf</span>, onde debes sustituír Nome, Apelidos e XY polo que corresponda.
+    <br />
+  </div>
+    <h3>URLs de Interese:</h3>
+    <p class='mtopsubs'>&nbsp;</p>
+      <table class='arriba links'>
+        <tr>
+          <td>[1] <a href='https://eu.dlink.com/es/es/-/media/business_products/dgs/dgs-1210/manual/dgs_1210-smart-series-manual.pdf' target='_blank'>Resetear a configuración do switch para restablecer os parámetros de fábrica (páx.11)</a>.</td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+         <td>[2] <a href='https://eu.dlink.com/es/es/-/media/business_products/dgs/dgs-1210/datasheet/dgs_1210_series_g1_datasheet_en_eu.pdf' target='_blank'>Descrición Xeral</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[3] <a href='https://eu.dlink.com/es/es/support/faq/switches/layer-2-gigabit/dgs-series/es_dgs-1210_como-configurar-vlan-estaticas' target='_blank'>Configuración VLAN Estática</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[4] <a href='https://eu.dlink.com/es/es/support/faq/switches/layer-2-gigabit/dgs-series/uk_how_to_configure_vlan_asymmetric_dgs_1210_series' target='_blank'>Configuración VLAN Asimétrica</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[5] <a href='https://eu.dlink.com/es/es/-/media/business_products/dgs/dgs-1210/manual/dgs_1210-smart-series-manual.pdf' target='_blank'>Manual</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+
+  <div class='indent pagebreak contido title24'>
+    <ol>
+	<div><span class='label'>Configuración VLANs - Switch D-Link DGS-1210-16</span>
+          <div class='minindent arriba'>&nbsp;</div>
+	  <li class='mtop mleft mbottom'>Resetea a configuración do switch para restablecer os parámetros de fábrica seguindo a documentación descrita [1](páx. 11): 
+            <ul type='square'>
+              <li><b>Reset</b>: Ao premer o botón Reset durante 5 segundos, o Switch volverá á configuración predeterminada e perderanse todos os cambios.</li>
+            </ul>
+            <p>Despois de completar este procedemento todas as opcións de configuración volverán ser as predeterminadas de fábrica. Así: 
+              <ul class='mtopsubs'>
+                <li>IP/MS: 10.90.90.90/8
+                <li>GW: 0.0.0.0
+                <li>Contrasinal: admin
+              </ul>
+            </p>
+	  <li class='mtop mleft mbottom'>Arranca as máquinas virtuais kaliA e kaliB en modo ponte. Arranca kaliC instalada no portátil. Realiza a configuración de rede indicada na Fig.A</li>
+             <ul class='explicacion4 title24 mtopsubs'>
+              <b>NOTA:</b> Ten en conta que:
+                <ul>
+                  <li>Os equipos anfitrións deben estar conectados no Port1 e Port2 do switch. Así, o equipo anfitrión de kaliA debe estar conectado ao Port1 e o equipo anfitrión de kaliB ao Port2.
+                  <li>O portátil debe estar conectado no Port3, é dicir, kaliC no Port3 do switch.
+                </ul>
+            </ul>
+	  <li class='mtop mleft mbottom'>Revisa a configuración de rede nas máquinas virtuais (kaliA e kaliB) e no portátil (kaliC) executando o comando:
+            <code>
+              <ul class='dashed mtop mbottom'>
+                <li>ip addr show
+              </ul>
+            </code>
+          </li>
+          <p class='mtopsubs mleft'>Captura as imaxes correspondentes aos comandos anteriores en kaliA, kaliB e kaliC.</p>
+             <ul class='explicacion4 title24 mtopsubs'>
+              <b>NOTA:</b> Pode ser necesario deshabilitar/habilitar de novo a rede para que teña efecto o cambio na configuración de rede.
+            </ul>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliA á IP 127.0.0.1 
+              <li>De kaliA á IP 127.127.127.127 
+              <li>De kaliA á IP 10.100.100.100 
+              <li>De kaliA á IP 10.101.101.101 
+              <li>De kaliA á IP 10.102.102.102 
+              <li>De kaliA á IP 10.90.90.90 
+              <li>De kaliA á IP 172.16.16.16
+              <li>De kaliA á IP 8.8.8.8 
+            </ol>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliB á IP 127.0.0.1 
+              <li>De kaliB á IP 127.127.127.127 
+              <li>De kaliB á IP 10.100.100.100 
+              <li>De kaliB á IP 10.101.101.101 
+              <li>De kaliB á IP 10.102.102.102 
+              <li>De kaliB á IP 10.90.90.90 
+              <li>De kaliB á IP 172.16.16.16
+              <li>De kaliB á IP 8.8.8.8 
+            </ol>
+          </li>  
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliC á IP 127.0.0.1 
+              <li>De kaliC á IP 127.127.127.127 
+              <li>De kaliC á IP 10.100.100.100 
+              <li>De kaliC á IP 10.101.101.101 
+              <li>De kaliC á IP 10.102.102.102 
+              <li>De kaliC á IP 10.90.90.90 
+              <li>De kaliC á IP 172.16.16.16
+              <li>De kaliC á IP 8.8.8.8 
+            </ol>
+          </li>  
+	  <li class='mtop mleft mbottom'>Cambia o cable de kaliB. Así o cable que está no Port2 conéctao ao Port16. Realiza de novo os apartados 4), 5) e 6). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Dende kaliA accede a configuración do switch: http://10.90.90.90 (Revisar punto 1. deste exercicio)
+            <figure class='cfigure'>
+              <img class='contido bfigure pall' src="images/switch-D-Link-1.png" />
+              <figcaption>Fig.1 - Configuración Switch: http://10.90.90.90</figcaption>
+            </figure>
+          </li>
+          </li>
+          <div class='indent pagebreak'>&nbsp;</div>
+	  <li class='mtop mleft mbottom'>Tras acceder co contrasinal <b>admin</b> configura o switch tal e como se amosa nas seguintes imaxes:
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-D-Link-2.png"  />
+              <figcaption>Fig.2 - Smart Wizard: Step 1 of 3 (Configuración de rede)</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-D-Link-3.png"  />
+              <figcaption>Fig.3 - Smart Wizard: Step 2 of 3 (Contrasinal &#10141; abc123.)</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-D-Link-4.png"  />
+              <figcaption>Fig.4 - Smart Wizard: Step 3 of 3 (SNMP disabled)</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-D-Link-5.png"  />
+              <figcaption>Fig.5 - VLAN &#10141; 802.1Q VLAN</figcaption>
+            </figure>
+            <figure class='bfigure'>
+            <img class='contido pall' src="images/switch-D-Link-6a.png"  />
+            <img class='contido pall' src="images/switch-D-Link-6b.png"  />
+              <figcaption>Fig.6 - Asymmetric VLAN Enabled</figcaption>
+            </figure>
+            <figure class='bfigure'>
+            <img class='contido pall' src="images/switch-D-Link-7a.png"  />
+            <img class='contido pall' src="images/switch-D-Link-7b.png"  />
+            <img class='contido pall' src="images/switch-D-Link-7c.png"  />
+              <figcaption>Fig.7 - Crear VLAN ID 10: Untagged Port1 e Port2</figcaption>
+            </figure>
+            <figure class='cfigure'>
+            <img class='contido bfigure pall' src="images/switch-D-Link-8.png"  />
+              <figcaption>Fig.8 - 802.1QVLAN PVID Settings: Port1 &#10141; PVID=1 e Port2 &#10141; PVID=10</figcaption>
+            </figure>
+
+            </li>
+	  <li class='mtop mleft mbottom'>Logo do cambio na configuración do switch, realiza de novo os apartados 4), 5) e 6). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Cambia de novo o cable de kaliB. Así o cable que está no Port16 conéctao ao Port2. Realiza de novo os apartados 4), 5) e 6). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Crea outra VLAN tal que:
+            <ul>
+              <li>VID &#10141; 20
+              <li>VLAN Name &#10141; VLAN20
+              <li>Untagged: Port1 e Port3
+              <li>Not member: O resto de portos.
+            </ul>
+            Reconfigura os PVID, tal que:
+            <ul>
+              <li>Port1 &#10141; PVID=1
+              <li>Port2 &#10141; PVID=10
+              <li>Port3 &#10141; PVID=20
+            </ul>
+            Unha vez realizada esta nova configuración no switch, realiza de novo os apartados 4), 5) e 6). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Podes seguir configurando o switch dende kaliA? E dende kaliB? E dende kaliC? Por que? Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Cambia o cable de kaliA ao Port8. Agora podes configurar o switch dende kaliA? E se cambias este cable a un porto distinto do 1, 2 e 3? Por que?. Razoa as respostas.
+          </li>
+          <li class='mtop mleft arriba'>Sube a resolución deste exercicio realizado á tarefa correspondente da Aula Virtual. Verifica o nome antes de subir o arquivo á tarefa (Ver NOTAS).</li><br>
+	</div>
+    </ol>
+  </div>
+</div>
+  <hr />
+  <div id="footer" style='margin-top:-10px;margin-bottom:-10px;font-size:24px;width:1580px;'>
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
