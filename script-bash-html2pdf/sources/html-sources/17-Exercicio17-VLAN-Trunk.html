@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>VLAN (802.1Q)</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+<div id='autocentrado'>
+  <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/RL' target='_blank'>Exercicio 17: VLAN (802.1Q) - Trunk</a></h1>
+  <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+  <div class='minindent'>&nbsp;</div>
+  <figure class='cfigure'>
+    <img class='contido bfigure pall' src="images/Escenario-VLAN-3.png" width='100%'/>
+    <figcaption>Fig.A - Escenario</figcaption>
+  </figure>
+
+  <div class='indent nota w80 title24 pall'>
+    <b>NOTAS</b>:<br />
+    <br />
+    (1) SMR_ALUXY -onde XY pode tomar os valores 01, 02, ..., 30 e corresponde ao número de PC que tes asignado.<br />
+    <br />
+    (2) O diagrama da Fig.A representa 2 despachos dunha empresa: kaliA &#10141; Administración e kaliB &#10141; Xerencia<br />
+    <br />
+    (3) IP=IPv4, MS=Máscara de Subrede, GW=Gateway, DR=Dirección de Rede.<br />
+    <br />
+    (4) En Oracle VirtualBox unha tarxeta de rede(NIC) virtual configurada como Ponte permite a conectividade coa tarxeta de rede física do equipo anfitrión simulando que ambas (virtual e física) estan conectadas ao mesmo switch, é dicir, a máquina virtual será unha host máis na rede física onde está conectado o equipo anfitrión. É importante, realizar a configuración da Fig.A para o correcto desenvolvemento do exercicio.<br />
+    <br />
+    (5) Garda as respostas/imaxes coa solución dos apartados nun arquivo, dentro do teu cartafol asignado, co nome: <span class='label'>Solucion-RL-Exercicio17_Apelido1-Apelido2-Nome-ALUXY.pdf</span>, onde debes sustituír Nome, Apelidos e XY polo que corresponda.
+    <br />
+  </div>
+  <div class='mtopplusx2 mleft'>
+    <h3>URLs de Interese:</h3>
+    <p class='mtopsubs'>&nbsp;</p>
+      <table class='arriba links'>
+        <tr>
+          <td>[1] <a href='https://support.hpe.com/hpesc/public/docDisplay?docId=c01752898&docLocale=en_US' target='_blank'>Resetear a configuración do switch ProCurve para restablecer os parámetros de fábrica</a>.</td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[2] <a href='https://eu.dlink.com/es/es/-/media/business_products/dgs/dgs-1210/manual/dgs_1210-smart-series-manual.pdf' target='_blank'>Resetear a configuración do switch D-Link para restablecer os parámetros de fábrica (páx.11)</a>.</td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[3] <a href='ftp://ftp.hp.com/pub/networking/software/1700-24-Install-Feb07-59916221.pdf' target='_blank'>Manual Switch ProCurve 1720-24</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+      <table class='arriba links'>
+        <tr>
+          <td>[4] <a href='ftp://ftp.hp.com/pub/networking/software/1700-MgmtCfg-Feb07-59916222.pdf' target='_blank'>Mantemento/Configuración Switch ProCurve 1720-24</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+
+      <table class='arriba links'>
+        <tr>
+          <td>[5] <a href='https://eu.dlink.com/es/es/-/media/business_products/dgs/dgs-1210/manual/dgs_1210-smart-series-manual.pdf' target='_blank'>Manual Switch D-Link DGS-1210-16</a></td>
+        </tr>
+        <tr>
+          <td class='fright'><img class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+        </tr>
+      </table>
+  </div>
+
+  <div class='indent pagebreak contido title24'>
+    <ol>
+	<div><span class='label'>Configuración VLANs - Trunk</span>
+          <div class='minindent arriba'>&nbsp;</div>
+	  <li class='mtop mleft mbottom'>
+            <ol type='a'>
+              <li><span class='nomefwn'>Switch HP ProCurve 1700-24</span>: Resetea a configuración do switch para restablecer os parámetros de fábrica seguindo a documentación descrita [1]: 
+                <table>
+                  <tr>
+                    <td style="width: 95% ;WHITE-SPACE: normal; word-wrap: break-word; word-break: normal; padding-right: 4px;">
+                      <ol type='A'>
+                        <li>
+                          <p><font style="vertical-align: inherit;">Retire o cable de alimentación da parte traseira do interruptor.</font></p>
+                        </li>
+                        <li>
+                          <p><font style="vertical-align: inherit;"> Conecte o porto 1 ao porto 2 do panel frontal mediante un cable de rede estándar.  </font></p>
+                        </li>
+                        <li>
+                          <p><font style="vertical-align: inherit;">  Volva conectar o cable de alimentación á parte traseira do interruptor.  </font></p>
+                        </li>
+                        <li>
+                          <p><font style="vertical-align: inherit;">  Agarde polo menos 40 segundos antes de desconectar o porto 1 do porto 2.  </font></p>
+                        </li>
+                      </ol>
+                      <p>Despois de completar este procedemento todas as opcións de configuración volverán ser as predeterminadas de fábrica. Así: 
+                        <ul class='mtopsubs'>
+                          <li>IP/MS: 192.168.2.10/24
+                          <li>GW: 0.0.0.0
+                          <li>Sen Contrasinal
+                        </ul>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                  <ul class='explicacion3 title24 mtopsubs'>
+                    <b>NOTA:</b> Ten en conta que o switch Procurve 1700-24 soamente é configurable a través da VLAN 1 (VLAN por defecto), é dicir, o host empregado para configuralo debe conectarse a un porto pertencente á VLAN 1
+                  </ul>
+                <br />
+                <li><span class='nomefwn'>Switch D-Link DGS-1210-16</span>: Resetea a configuración do switch para restablecer os parámetros de fábrica seguindo a documentación descrita [2](páx. 11): 
+                  <div class='minindent'>&nbsp;</div>
+                  <ul type='square'>
+                  <li><b>Reset</b>: Ao premer o botón Reset durante 5 segundos, o Switch volverá á configuración predeterminada e perderanse todos os cambios.</li>
+                </ul>
+                <p>Despois de completar este procedemento todas as opcións de configuración volverán ser as predeterminadas de fábrica. Así: 
+                  <ul class='mtopsubs'>
+                    <li>IP/MS: 10.90.90.90/8
+                    <li>GW: 0.0.0.0
+                    <li>Contrasinal: admin
+                  </ul>
+                </p>
+                <ul class='explicacion3 title24 mtopsubs'>
+                  <b>NOTA:</b> Ten en conta que o switch D-Link DGS-1210-16 é configurable a través de calquera VLAN e non soamente da VLAN 1 (VLAN por defecto), é dicir, o host empregado para configuralo pode conectarse a calquera porto.
+                </ul>
+            </ol>
+          </li>
+
+	  <li class='mtop mleft mbottom'>Arranca a máquina virtual kaliA en modo ponte. Arranca kaliB instalada no portátil. Realiza a configuración de rede indicada na Fig.A</li>
+             <ul class='explicacion3 title24'>
+              <b>NOTA:</b> Ten en conta que:
+                <ul>
+                  <li>O equipo anfitrión de kaliA debe estar conectado no Port1 do Switch Procurve, é dicir, kaliA no Port1 do Switch ProCurve. 
+                  <li>O portátil debe estar conectado no Port1 do Switch D-Link, é dicir, kaliB no Port1 do Switch D-Link.
+                </ul>
+
+            </ul>
+            <br>
+	  <li class='mtop mleft mbottom'>Revisa a configuración de rede nas máquinas virtuais (kaliA e kaliB) executando o comando:
+            <code>
+              <ul class='dashed mtop mbottom'>
+                <li>ip addr show
+              </ul>
+            </code>
+            Captura a imaxe correspondente ao comando anterior para kaliA e kaliB.
+             <ul class='explicacion3 title24'>
+              <b>NOTA:</b> Pode ser necesario deshabilitar e habilitar de novo a rede para que teña efecto o cambio na configuración de rede.
+            </ul>
+          </li>
+          <br>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliA á IP 127.0.0.1 
+              <li>De kaliA á IP 127.127.127.127 
+              <li>De kaliA á IP 192.168.2.10 
+              <li>De kaliA á IP 192.168.2.20 
+              <li>De kaliA á IP 192.168.2.100 
+              <li>De kaliA á IP 192.168.2.101 
+              <li>De kaliA á IP 10.10.10.10
+              <li>De kaliA á IP 8.8.8.8 
+            </ol>
+	  <li class='mtop mleft mbottom'>A continuación, por cada apartado realiza mediante comandos un ping de 2 paquetes ICMP indicando que é o que acontece (Razoa a resposta):
+            <ol type='a'>
+              <li>De kaliB á IP 127.0.0.1 
+              <li>De kaliB á IP 127.127.127.127 
+              <li>De kaliB á IP 192.168.2.10 
+              <li>De kaliB á IP 192.168.2.20 
+              <li>De kaliB á IP 192.168.2.100 
+              <li>De kaliB á IP 192.168.2.101 
+              <li>De kaliB á IP 10.10.10.10
+              <li>De kaliB á IP 8.8.8.8 
+            </ol>
+          </li>  
+	  <li class='mtop mleft mbottom'>Conecta un cable entre os 2 portos 8 dos switch, é dicir, conectar un cable do Port8 do switch ProCurve ao Port8 do switch D-Link. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+          </li>
+          <br>
+	  <li class='mtop mleft mbottom'>Cambia o cable de kaliB. Así, o cable que está no Port1 conéctao ao Port16. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+          </li>
+	  <li class='mtop mleft mbottom'>Dende kaliA accede a configuración do switch ProCurve: http://192.168.2.10 (Revisar punto 1a. deste exercicio) e:
+            <ol type='a'>
+	       <li class='mtop mleft mbottom'>Crea a <b>VLAN 10</b></li>
+	       <li class='mtop mleft mbottom'>Asigna os portos dende 1 ao 9 á <b>VLAN 1</b> e os portos dende o 8 ao 24 á <b>VLAN 10</b></li>
+	       <li class='mtop mleft mbottom'>Asigna os portos 8 e 9 ao <b>Trunk 1</b></li>
+               <figure class='cfigure'>
+                 <img class='contido bfigure pall' src="images/trunk0.png" />
+                 <img class='contido bfigure pall' src="images/trunk1.png" />
+                 <img class='contido bfigure pall' src="images/trunk2.png" />
+                 <img class='contido bfigure pall' src="images/trunk3.png" />
+                 <img class='contido bfigure pall' src="images/trunk4.png" />
+                 <img class='contido bfigure pall' src="images/trunk5.png" />
+                 <img class='contido bfigure pall' src="images/trunk6.png" />
+               <figcaption>Configuración Trunk</figcaption>
+                </figure>
+            </ol>
+        </li>
+        </li>
+        <li class='mtop mleft mbottom'>Logo do cambio na configuración do switch ProCurve, realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+        <li class='mtop mleft mbottom'>Cambia de novo o cable de kaliB. Así o cable que está no Port16 conéctao ao Port1. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+        </li>
+	  <li class='mtop mleft mbottom'>Dende kaliB accede a configuración do switch D-Link: http://192.168.2.20 (Revisar punto 1b. deste exercicio) e:
+            <ol type='a'>
+	       <li class='mtop mleft mbottom'>Crea a <b>VLAN 10</b></li>
+	       <li class='mtop mleft mbottom'>Na <b>VLAN 1</b> asigna os portos como segue:
+                 <ul type='square'>
+                   <li>Untagged: Os portos dende 1 ao 7
+                   <li>Tagged: Os portos 8 e 9
+                   <li>Non member: Os portos dende o 10 ao 20
+                 </ul>
+               </li>
+               <li class='mtop mleft mbottom'>Na <b>VLAN 10</b> asigna os portos como segue:
+                 <ul type='square'>
+                   <li>Untagged: Os portos dende o 10 ao 20
+                   <li>Tagged: Os portos 8 e 9
+                   <li>Non member: Os portos dende o 1 ao 7
+                 </ul>
+                 <div class='explicacion3 title24'>
+                   Ao asignar os portos 8 e 9 como Tagged nas VLAN xeradas estamos a asignar eses portos a un enlace <b>Trunk</b> equivalente ao <b>Trunk 1</b> do switch ProCurve.
+                 </div>
+               </li>
+            </ol>
+            <figure class='cfigure'>
+              <img class='contido bfigure pall' src="images/trunk7.png" width='100%'/>
+              <img class='contido bfigure pall' src="images/trunk8.png" width='100%'/>
+              <img class='contido bfigure pall' src="images/trunk9.png" width='100%'/>
+              <img class='contido bfigure pall' src="images/trunk10.png" width='100%'/>
+            <figcaption>Configuración Trunk</figcaption>
+            </figure>
+          </li>
+	  <li class='mtop mleft mbottom'>Logo do cambio na configuración do switch D-Link, realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Desconecta o cable entre os 2 portos 8 dos switch e conéctao nos 2 portos 9 dos switch, é dicir, conecta ese cable do Port9 do switch ProCurve ao Port9 do switch D-Link. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Conecta o anterior cable no porto 8 do switch ProCurve e no porto 9 do switch D-Link. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Conecta o anterior cable no porto 9 do switch ProCurve e no porto 8 do switch D-Link. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>Conecta 2 cables: 1 entre o Port8 do switch ProCurve e o Port8 do switch D-Link, e outro entre o Port9 do switch ProCurve e o Port9 do switch D-Link. Realiza de novo os apartados 4) e 5). Que é o que acontece?. Razoa as respostas.
+	  <li class='mtop mleft mbottom'>En kaliB realiza un ping sen limitación de paquetes ICMP á IP 192.168.2.100
+              <ul class='dashed mtop mbottom'>
+                <li>ping 192.168.2.100
+              </ul>
+              Vai cambiando o cable de kaliA que está no Port1 por todos os portos do switch ProCurve esperando un máximo de 120 segundos en cada cambio. Que é o que acontece en cada cambio co ping enviado dende kaliB?. Razoa as respostas. 
+              <div class='explicacion3 title24'>
+                <b>Procedemento a seguir no Switch ProCurve:</b>
+              <ul type='square'>
+                <li>kaliA &#10141; Port1 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>kaliA &#10141; Port2 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>kaliA &#10141; Port3 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>...</li>
+                <li>kaliA &#10141; Port8 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>kaliA &#10141; Port9 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>kaliA &#10141; Port10 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>kaliA &#10141; Port11 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+                <li>...</li>
+                <li>kaliA &#10141; Port24 &#10141; Esperar un máximo de 120 segundos &#10141; Que pasa co ping dende kaliB?
+              </ul>
+          </li>
+	  <li class='mtop mleft mbottom'>En kaliB realiza un ping sen limitación de paquetes ICMP á IP 192.168.2.100
+              <ul class='dashed mtop mbottom'>
+                <li>ping 192.168.2.100
+              </ul>
+              <ul type='square'>
+                <li>Conecta o cable de kaliA no Port4 do switch ProCurve. 
+                <li>Conecta o cable de kaliB no Port4 do switch D-Link. 
+                <li>Espera un máximo de 120 segundos logo do cambio de cables. 
+                <li>Que é o que acontece co ping enviado dende kaliB?. Razoa a resposta. 
+              </ul>
+          </li>
+	  <li class='mtop mleft mbottom'>En kaliB realiza un ping sen limitación de paquetes ICMP á IP 192.168.2.100
+              <ul class='dashed mtop mbottom'>
+                <li>ping 192.168.2.100
+              </ul>
+              <ul type='square'>
+                <li>Conecta o cable de kaliA no Port16 do switch ProCurve. 
+                <li>Conecta o cable de kaliB no Port4 do switch D-Link. 
+                <li>Espera un máximo de 120 segundos logo do cambio de cables. 
+                <li>Que é o que acontece co ping enviado dende kaliB?. Razoa a resposta. 
+              </ul>
+          </li>
+	  <li class='mtop mleft mbottom'>En kaliB realiza un ping sen limitación de paquetes ICMP á IP 192.168.2.100
+              <ul class='dashed mtop mbottom'>
+                <li>ping 192.168.2.100
+              </ul>
+              <ul type='square'>
+                <li>Conecta o cable de kaliA no Port16 do switch ProCurve. 
+                <li>Conecta o cable de kaliB no Port16 do switch D-Link. 
+                <li>Espera un máximo de 120 segundos logo do cambio de cables. 
+                <li>Que é o que acontece co ping enviado dende kaliB?. Razoa a resposta. 
+              </ul>
+          </li>
+          <li class='mtop mleft arriba'>Sube a resolución deste exercicio realizado á tarefa correspondente da Aula Virtual. Verifica o nome antes de subir o arquivo á tarefa (Ver NOTAS).</li><br>
+	</div>
+    </ol>
+  </div>
+</div>
+  <hr />
+  <div id="footer" style='margin-top:-10px;margin-bottom:-10px;font-size:24px;width:1580px;'>
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
