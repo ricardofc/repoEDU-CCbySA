@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Práctica SI Xestor Correo: Cifrado e Sinatura Dixital</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Práctica Seguridade Informática<br /> Xestor de correo: Cifrado e Sinatura Dixital</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <div class='minindent'>&nbsp;</div>
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Colision-Hash-MD5.png" />
+    </figure>
+
+    <div class='minindent'>&nbsp;</div>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> <a href='https://gnupg.org/' target='_blank'>gpg</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://www.openpgp.org/' target='_blank'>OpenPGP</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://philzimmermann.com/ES/background/index.html' target='_blank'>Philip Zimmermann</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='minindent'>&nbsp;</div>
+          </li>
+          <li class='colorblue'><span class='label'> <a href='https://support.mozilla.org/es/kb/firma-digital-y-cifrado-de-mensajes' target='_blank'>Firma digital y cifrado de mensajes</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+        <div><span class='label'>Práctica</span>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'>Instalar xestor de correo Thunderbird</span>:  
+          <ul class='dashed-kali'>
+            <div class='minindent'>&nbsp;</div>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-kali'>
+              <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+              <li>apt search thunderbird <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda thunderbird</li>
+              <li>apt -y install thunderbird thunderbird-l10n-gl<span class='explicacion'> #Instalar o paquete thunderbird(xestor de correo) e o paquete thunderbird-l10n-gl(idioma galego para o xestor de correo thunderbird). Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              <li>exit <span class='explicacion'> #Saír da consola do usuario root, para voltar á consola do usuario kali sen permisos de root</span></li>
+            </ul>
+            <li>
+          </ul>
+
+        <li class='mtop mleft mbottom'><span class='label'>Configurar Thunderbird</span></a>
+        <div class='minindent'>&nbsp;</div>
+          <ul class='dashed-kali'>
+            <li>thunderbird & <span class='explicacion'> #Executar thunderbird en segundo plano, devolveńdose o prompt da consola</span></li>
+            <ol type='A'>
+              <li class='mtopplus'> Cubrir os campos do formulario solicitado para configurar a conta de correo, e picar en Continue:</li>
+              <img class='cfigure mleft' src="images/thunderbird1.png" width='40%'/>
+              <li class='mtopplus'> Picar en Done</li>
+              <img class='cfigure mleft' src="images/thunderbird2.png" width='40%' />
+              <div class='pagebreak'></div>
+              <li class='mtopplus'> Acceder a gmail</li>
+              <img class='cfigure mleft' src="images/thunderbird3.png" width='28%' />
+              <li class='mtopplus'> Permitir acceso a thunderbird</p>
+              <img class='cfigure mleft' src="images/thunderbird4.png" width='40%' />
+              <li class='mtopplus'> Cambiar o idioma da interface a Galego: <span class='nomefwn'>Preferences &#10141; Buscar language &#10141; Galician &#10141; Cambiado</span></li>
+              <table>
+                <tr>
+                  <td rowspan='2' width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird5.png" width='80%'/>
+                  </td>
+                  <td width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird6.png" width='80%' />
+                  </td>
+                </tr>
+                <tr>
+                  <td width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird7.png" width='80%' />
+                  </td>
+                </tr>
+              </table>
+              <li class='mtopplus'> Abrir o xestor claves PGP en thunderbird: <span class='nomefwn'>Ferramentas &#10141; OpenPGP Key Manager</span></li>
+              <img class='cfigure mleft' src="images/thunderbird14.png" width='40%' />
+              <div class='pagebreak'></div>
+               <li class='mtopplus'> Crear un novo par de claves: <span class='nomefwn'>Generate &#10141; New Key Pair &#10141; Generate Key &#10141; Confirm </span></li>
+              <table>
+                <tr>
+                  <td width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird16.png" width='80%' />
+                  </td>
+                </tr>
+                <tr>
+                  <td width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird17.png" width='80%' />
+                  </td>
+                </tr>
+                <tr>
+                  <td width='50%'>
+                    <img class='cfigure mleft' src="images/thunderbird18.png" width='80%'/>
+                  </td>
+                </tr>
+              </table>
+
+              <li class='mtopplus'> Configurar a conta para permitir cifrar(clave pública destinatario), descifrar(clave privada propia) e asinar correos(clave privada propia): <span class='nomefwn'>Configuración da conta &#10141; End-To-End Encryption &#10141; </li>
+              <img class='cfigure mleft' src="images/thunderbird19.png" width='40%' />
+              <img class='cfigure mleft' src="images/thunderbird20.png" width='28%' />
+              <img class='cfigure mleft' src="images/thunderbird21.png" width='100%'/>
+              <img class='cfigure mleft' src="images/thunderbird22.png" width='100%' />
+              <img class='cfigure mleft' src="images/thunderbird23.png" width='80%' />
+            </ol>
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <li class='mtop mleft mbottom'><span class='label'>Enviar correo cifrado/asinado:</span> <span class='nomefwn'>Escribir &#10141; Seguranza &#10141; Escoller a/s opción/s que interesen</span></li>
+              <img class='cfigure mleft' src="images/thunderbird24.png" width='80%' />
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
