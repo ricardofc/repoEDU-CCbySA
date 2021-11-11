@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica SI Esteganografía</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Esteganografia' target='_blank'>Práctica Seguridade Informática:<br />Esteganografía</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Esteganografia.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='label'>Comandos: cat, file, strings, dd, xxd</li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://en.wikipedia.org/wiki/List_of_file_signatures'>magic number or file signatures</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://www.kali.org/tools/binwalk/'>binwalk</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://www.kali.org/tools/foremost/'>foremost</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://www.kali.org/tools/steghide/'>steghide</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://openclipart.org/detail/133561/kempachitux'>Imaxe PNG empregada &#10141; kempachitux</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak contido'>
+      <ol>
+        <div><span class='label'>Práctica SI Esteganografía</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Máquina Kali amd64</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            </ul>
+          </li>
+
+        <p class='mtop mleft mbottom label'>Exemplo 1</p>
+        <li class='mtop mleft mbottom'>Concatenar ficheiros: 
+          <ul class='dashed-kali mleftsubs'>
+            <li class='mtop'>wget https://openclipart.org/image/2000px/133561 -O kempachitux.png <span class='explicacion'> #Descargar imaxe kempachitux.png</li>
+            <li class='mtop'>echo 'Kali GNU/Linux - 1234567890' > file.txt <span class='explicacion'> #Xerar o ficheiro file.txt</span></li>
+            <li class='mtop'>cat kempachitux.png file.txt > file.png <span class='explicacion'> #Concatenar os ficheiros kempachitux.png e file.txt en file.png, obtendo así un ficheiro imaxe de resultado</span></li>
+            <li class='mtop'>file file.png <span class='explicacion'> #Determinar que tipo de ficheiro é o ficheiro file.png. Neste caso: tipo imaxe PNG image data</span>
+           <pre class='code2'>
+file.png: PNG image data, 1990 x 2000, 8-bit/color RGBA, non-interlaced 
+            </pre></li>
+            <li class='mtop'>ls -l kempachitux.png file.png <span class='explicacion'> #Listar de forma extendida os ficheiros kempachitux.png e file.png. Ambos amosan a mesma imaxe pero posúen distinto tamaño. Iso é debido a que file.png tamén contén oculto un arquivo de texto (file.txt)</span>
+           <pre class='code2'>
+-rw-r--r-- 1 kali kali 647631 nov 10 13:32 file.png
+-rw-r--r-- 1 kali kali 647603 nov 10 13:31 kempachitux.png
+</pre>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>
+         <ol type='A'><li>Esteganografía (binwalk): Ver arquivos ocultos na imaxe file.png: 
+          <ul class='dashed-kali mleftsubs'>
+              <li class='mtop'>binwalk --dd='.*' -e file.png <span class='explicacion'> #Extraer se é o caso contido oculto no cartafol _file.png.extracted</span>
+           <pre class='code2'>
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             PNG image, 1990 x 2000, 8-bit/color RGBA, non-interlaced
+477           0x1DD           Zlib compressed data, best compression
+
+</pre>              
+              </li>
+              <li class='mtop'>ls _file.png.extracted <span class='explicacion'> #Listar o contido do cartafol _file.png.extracted</span><br /><br />
+<pre class='code2'>
+total 16820
+-rw-r--r-- 1 kali kali   647631 nov 10 13:32 0
+-rw-r--r-- 1 kali kali 15922000 nov 10 13:32 1DD
+-rw-r--r-- 1 kali kali   647154 nov 10 13:32 1DD.zlib
+</pre> 
+              </li>
+              <li>file _file.png.extracted/* <span class='explicacion'> #Determinar os tipos de ficheiros existentes no cartafol _file.png.extracted</span>
+           <pre class='code2'>
+_file.png.extracted/0:        PNG image data, 1990 x 2000, 8-bit/color RGBA, non-interlaced
+_file.png.extracted/1DD:      data
+_file.png.extracted/1DD.zlib: zlib compressed data
+</pre>
+              <li class='mtop'>cat  _file.png.extracted/1DD.zlib <span class='explicacion'> #Ver o contido do ficheiro. Fixarse na última liña &#10141; contido de file.txt que estaba oculto na imaxe file.png</span>
+           <pre class='code2'>
+...
+...
+...
+?�����Z򟯎�i��X3�J�V%�i���Fڮ�D��^�	*V�v�����vޗ�+!�!�!��{Kѿ�IEND�B`�Kali GNU/Linux - 1234567890
+           </pre>
+              </li>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Esteganografía - Outro método (strings): Ver arquivos ocultos na imaxe file.png: 
+          <ul class='dashed-kali mleftsubs'>
+              <li class='mtop'>strings -n 22 file.png <span class='explicacion'> #Ver cadeas de texto con lonxitude mínima de 22 caracteres</span>
+           <pre class='code2'>
+this tux is inspired by zaraki kempachi from the manga "bleach"S
+https://openclipart.org/detail/133561/kempachi-tux-by-zafx
+CC0 Public Domain Dedication http://creativecommons.org/publicdomain/zero/1.0/
+Kali GNU/Linux - 1234567890
+           </pre>
+          </ol>
+        </ul>
+      </ul>
+
+<div class='pagebreak'></div>
+<div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Exemplo 2</p>
+        <li class='mtop mleft mbottom'>Concatenar ficheiros: 
+          <ul class='dashed-kali mleftsubs'>
+            <li class='mtop'>wget https://openclipart.org/image/2000px/133561 -O kempachitux.png <span class='explicacion'> #Descargar imaxe kempachitux.png</li>
+            <li class='mtop'>echo 'Kali GNU/Linux - 1234567890' > file.txt <span class='explicacion'> #Xerar o ficheiro file.txt</span></li>
+            <li class='mtop'>tar cvjf file.tar.bz2 file.txt <span class='explicacion'> #Empaquetar e comprimir o ficheiro file.txt en file.tar.bz2</span></li>
+            <li class='mtop'>cat kempachitux.png file.tar.bz2 > file2.png <span class='explicacion'> #Concatenar os ficheiros kempachitux.png e file.tar.bz2 en file2.png, obtendo así un ficheiro imaxe de resultado</span></li>
+            <li class='mtop'>file file2.png <span class='explicacion'> #Determinar que tipo de ficheiro é o ficheiro file2.png. Neste caso: tipo imaxe PNG image data</span>
+           <pre class='code2'>
+file.png: PNG image data, 1990 x 2000, 8-bit/color RGBA, non-interlaced 
+            </pre></li>
+            <li class='mtop'>ls -l kempachitux.png file2.png <span style='font-size:14px;color:#0F18A0;'> #Listar de forma extendida os ficheiros kempachitux.png e file.png. Ambos amosan a mesma imaxe pero posúen distinto tamaño. Iso é debido a que file.png tamén contén oculto un arquivo comprimido (file.tar.bz2)</span></li>
+           <pre class='code2'>
+-rw-r--r-- 1 kali kali 647758 nov 10 13:42 file2.png
+-rw-r--r-- 1 kali kali 647603 nov 10 13:31 kempachitux.png
+</pre>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>
+        <ol type='A'><li>Esteganografía (binwalk): Ver arquivos ocultos na imaxe file2.png: 
+          <ul class='dashed-kali mleftsubs'>
+              <li class='mtop'>binwalk --dd='.*' -e file2.png <span class='explicacion'> #Extraer se é o caso contido oculto no cartafol _file2.png.extracted</span>
+           <pre class='code2'>
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             PNG image, 1990 x 2000, 8-bit/color RGBA, non-interlaced
+477           0x1DD           Zlib compressed data, best compression
+647603        0x9E1B3         bzip2 compressed data, block size = 900k
+
+</pre>              
+              </li>
+              <li class='mtop'>ls _file2.png.extracted <span class='explicacion'> #Listar o contido do cartafol _file2.png.extracted</span><br /><br />
+<pre class='code2'>
+total 16836
+-rw-r--r-- 1 kali kali   647758 nov 10 13:42 0
+-rw-r--r-- 1 kali kali 15922000 nov 10 13:42 1DD
+-rw-r--r-- 1 kali kali   647281 nov 10 13:42 1DD.zlib
+-rw-r--r-- 1 kali kali    10240 nov 10 13:42 9E1B3
+</pre> 
+              </li>
+              <li class='mtop'>file _file2.png.extracted/* <span class='explicacion'> #Determinar os tipos de ficheiros existentes no cartafol _file2.png.extracted</span>
+           <pre class='code2'>
+_file2.png.extracted/0:        PNG image data, 1990 x 2000, 8-bit/color RGBA, non-interlaced
+_file2.png.extracted/1DD:      data
+_file2.png.extracted/1DD.zlib: zlib compressed data
+_file2.png.extracted/9E1B3:    POSIX tar archive (GNU)
+</pre>
+</li>
+              <li class='mtop'>tar tvf _file2.png.extracted/9E1B3 <span class='explicacion'> #Amosar o contido empaquetado no ficheiro 9E1B3</span>
+           <pre class='code2'>
+-rw-r--r-- kali/kali  28 2021-11-10 13:44 file.txt
+           </pre>
+              </li>
+              <li class='mtop'>tar xvf _file2.png.extracted/9E1B3 -C _file2.png.extracted <span class='explicacion'> #Extraer o contido empaquetado no ficheiro 9E1B3 no cartafol _file2.png.extracted</span>.</li>
+           <pre class='code2'>
+file.txt
+</pre>
+              <li class='mtop'>cat _file2.png.extracted/file.txt <span class='explicacion'> #Ver o contido do ficheiro file.txt que estaba oculto na imaxe file2.png</span></li>
+           <pre class='code2'>
+Kali GNU/Linux - 1234567890
+           </pre>
+              </li>
+         </ul>
+
+<div class='pagebreak'></div>
+<div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Esteganografía - Outro método (binwalk + dd): Ver arquivos ocultos na imaxe file2.png: 
+          <ul class='dashed-kali mleftsubs'>
+              <li class='mtop'>binwalk file2.png <span class='explicacion'> #Extraer se é o caso contido oculto no cartafol _file2.png.extracted</span>
+           <pre class='code2'>
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             PNG image, 1990 x 2000, 8-bit/color RGBA, non-interlaced
+477           0x1DD           Zlib compressed data, best compression
+647603        0x9E1B3         bzip2 compressed data, block size = 900k
+
+</pre>              
+              </li>
+              <li class='mtop'>dd if=file2.png of=hide bs=1 skip=647603<span class='explicacion'> #Recuperación dos bloques que conteñen o ficheiro oculto file.txt mediante o comando dd. Recuperamos do ficheiro file2.png o ficheiro hide. Para iso ao comando dd pasámolle como argumentos o valor do bloque (bs=1) e dende que bloque comezar a recuperar (skip).</span>
+<pre class='code2'>
+155+0 registros leídos
+155+0 registros escritos
+155 bytes copied, 0,000843733 s, 184 kB/s
+</pre> 
+              </li>
+              <li class='mtop'>file hide <span class='explicacion'> #Determinar o tipo de ficheiro hide</span>
+           <pre class='code2'>
+</pre>
+</li>
+              <li class='mtop'>tar tvfj hide <span class='explicacion'> #Amosar o contido empaquetado e comprimido no ficheiro hide</span>
+           <pre class='code2'>
+hide: bzip2 compressed data, block size = 900k
+           </pre>
+              </li>
+              <li class='mtop'>tar xvfj hide <span class='explicacion'> #Extraer o contido empaquetado e comprimido no ficheiro hide</span>.</li>
+           <pre class='code2'>
+file.txt
+</pre>
+              <li class='mtop'>cat file.txt <span class='explicacion'> #Ver o contido do ficheiro file.txt que estaba oculto na imaxe file2.png</span></li>
+           <pre class='code2'>
+Kali GNU/Linux - 1234567890
+           </pre>
+              </li>
+         </ol>
+        </ul>
+
+
+
+<div class='pagebreak'></div>
+<div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Exemplo 3</p>
+        <li class='mtop mleft mbottom'>
+          <a href='https://en.wikipedia.org/wiki/List_of_file_signatures'>Magic Number / File Signature:</a> 
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <ul class='dashed-kali mleftsubs mtopplusx2'>
+            <li class='mtop'>xxd kempachitux.png | head -1 <span class='explicacion'> #Ver o contido hexadecimal do ficheiro kempachitux.png e filtrar a saída para quedarse soamente coa primeira liña, na cal observamos que o ficheiro comeza por <span class='label'>8950 4e47 0d0a 1a0a</span> o que significa que é un ficheiro PNG</span>
+           <pre class='code2'>
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+            </pre></li>
+            <li class='mtop'>xxd file.png | head -1 <span class='explicacion'> #Ver o contido hexadecimal do ficheiro file.png e filtrar a saída para quedarse soamente coa primeira liña, na cal observamos que o ficheiro comeza por <span class='label'>8950 4e47 0d0a 1a0a</span> o que significa que é un ficheiro PNG</span>
+           <pre class='code2'>
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+            </pre></li>
+            <li class='mtop'>xxd file2.png | head -1 <span class='explicacion'> #Ver o contido hexadecimal do ficheiro file2.png e filtrar a saída para quedarse soamente coa primeira liña, na cal observamos que o ficheiro comeza por <span class='label'>8950 4e47 0d0a 1a0a</span> o que significa que é un ficheiro PNG</span>
+           <pre class='code2'>
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+            </pre></li>
+            <li class='mtop'>xxd file2.png | grep BZh <span class='explicacion'> #Ver o contido hexadecimal do ficheiro file2.png e filtrar a saída co patrón de búsqueda BZh, na cal observamos que no ficheiro file2.png existe o magic number <span class='label'>BZh (equivalente ao hexadecimal 42 5a 68, sendo neste caso 42 5a68 na dirección 0x9e1b0)</span> o que significa que é un ficheiro Bzip2</span>
+           <pre class='code2'>
+0009e1b0: 4260 8242 5a68 3931 4159 2653 598d c3a7  B`.BZh91AY&SY...
+        </ul>
+
+<div class='minindent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label'>Cuestións. Razoa as respostas:</p>
+          <li class='mtop mleft mbottom'>Como poderiamos verificar que un ficheiro descargado é orixinal? Hashes? Sinatura electrónica? Magic number?
+          <li class='mtop mleft mbottom'>Como poderiamos verificar que un ficheiro descargado non posúe "contido oculto"? Hashes? Sinatura electrónica? Magic number?
+     </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
