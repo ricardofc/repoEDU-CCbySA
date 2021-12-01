@@ -55,76 +55,115 @@
         <p class='mtop mleft mbottom label'>Descargar ISO Debian</p>
         <li class='mtop mleft mbottom'>Visitar <a href="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/" target='_blank'>https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/</a>
         <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
-        <li class='mtop mleft mbottom'>Descargar unha imaxe, por exemplo: debian-10.6.0-amd64-netinst.iso
+        <li class='mtop mleft mbottom'>Descargar unha imaxe, por exemplo: debian-11.1.0-amd64-netinst.iso
           <div class='minindent'>&nbsp;</div>
           <ul class='dashed mleftsubs'>
-            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.6.0-amd64-netinst.iso <span class='explicacion'> #Descargar a ISO debian-10.6.0-amd64-netinst.iso <br />
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.1.0-amd64-netinst.iso <span class='explicacion'> #debian-11.1.0-amd64-netinst.iso <br />
           </ul>
         </li>
 
         <div class='minindent'>&nbsp;</div>
 
         <p class='mtop mleft mbottom label arriba'>Comparar "hash"</p>
-        <li class='mtop mleft mbottom'>Comparar os "hash" da imaxe ISO anterior co que aparece dentro dos ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS:
+        <li class='mtop mleft mbottom'>Comparar os "hash" da imaxe ISO anterior co que aparece dentro dos ficheiros SHA256SUMS e SHA512SUMS:
+              <div class='explicacion2'>Non existe o ficheiro MD5SUMS. A que será debido?</div>
           <div class='minindent'>&nbsp;</div>
           <ul class='dashed mleftsubs'>
-            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/MD5SUMS<span class='explicacion'> #Descargar o ficheiro MD5SUMS que contén os "hash" das ISO debian <br />
-            <li class='mtop mleft mbottom'>md5sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1 > 1.md5.txt <span class='explicacion'> #Gardar soamente o hash MD5 no ficheiro 1.md5.txt, é dicir, executar o comando md5sum sobre a ISO de debian e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
-            <li class='mtop mleft mbottom'>grep debian-10.6.0-amd64-netinst.iso MD5SUMS | cut -d' ' -f1 > 2.md5.txt<span class='explicacion'> #Gardar soamente o hash MD5 no ficheiro 2.md5.txt, é dicir, executar o comando grep sobre o ficheiro MD5SUMS e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
-            <li class='mtop mleft mbottom'>diff 1.md5.txt 2.md5.txt <span class='explicacion'> #Comparar os ficheiros 1.md5.txt e 2.md5.txt, é dicir, comparar o hash MD5 do ficheiro descargado co gardado no ficheiro MD5SUMS <br />
             <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS<span class='explicacion'> #Descargar o ficheiro SHA256SUMS que contén os "hash" das ISO debian <br />
-            <li class='mtop mleft mbottom'>sha256sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1 > 1.sha256.txt <span class='explicacion'> #Gardar soamente o hash SHA256 no ficheiro 1.sha256.txt, é dicir, executar o comando sha256sum sobre a ISO de debian e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
-            <li class='mtop mleft mbottom'>grep debian-10.6.0-amd64-netinst.iso SHA256SUMS | cut -d' ' -f1 > 2.sha256.txt<span class='explicacion'> #Gardar soamente o hash SHA256 no ficheiro 2.sha256.txt, é dicir, executar o comando grep sobre o ficheiro SHA256SUMS e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
+            <li class='mtop mleft mbottom'>sha256sum debian-11.1.0-amd64-netinst.iso | cut -d' ' -f1 > 1.sha256.txt <span class='explicacion'> #Gardar soamente o hash SHA256 no ficheiro 1.sha256.txt, é dicir, executar o comando sha256sum sobre a ISO de debian e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
+            <li class='mtop mleft mbottom'>grep debian-11.1.0-amd64-netinst.iso SHA256SUMS | cut -d' ' -f1 > 2.sha256.txt<span class='explicacion'> #Gardar soamente o hash SHA256 no ficheiro 2.sha256.txt, é dicir, executar o comando grep sobre o ficheiro SHA256SUMS e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
             <li class='mtop mleft mbottom'>diff 1.sha256.txt 2.sha256.txt <span class='explicacion'> #Comparar os ficheiros 1.sha256.txt e 2.sha256.txt, é dicir, comparar o hash SHA256 do ficheiro descargado co gardado no ficheiro SHA256SUMS <br />
 
             <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA512SUMS<span class='explicacion'> #Descargar o ficheiro SHA512SUMS que contén os "hash" das ISO debian <br />
-            <li class='mtop mleft mbottom'>sha512sum debian-10.6.0-amd64-netinst.iso | cut -d' ' -f1 > 1.sha512.txt <span class='explicacion'> #Gardar soamente o hash SHA512 no ficheiro 1.sha512.txt, é dicir, executar o comando sha512sum sobre a ISO de debian e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
-            <li class='mtop mleft mbottom'>grep debian-10.6.0-amd64-netinst.iso SHA512SUMS | cut -d' ' -f1 > 2.sha512.txt<span class='explicacion'> #Gardar soamente o hash SHA512 no ficheiro 2.sha512.txt, é dicir, executar o comando grep sobre o ficheiro SHA512SUMS e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
+            <li class='mtop mleft mbottom'>sha512sum debian-11.1.0-amd64-netinst.iso | cut -d' ' -f1 > 1.sha512.txt <span class='explicacion'> #Gardar soamente o hash SHA512 no ficheiro 1.sha512.txt, é dicir, executar o comando sha512sum sobre a ISO de debian e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
+            <li class='mtop mleft mbottom'>grep debian-11.1.0-amd64-netinst.iso SHA512SUMS | cut -d' ' -f1 > 2.sha512.txt<span class='explicacion'> #Gardar soamente o hash SHA512 no ficheiro 2.sha512.txt, é dicir, executar o comando grep sobre o ficheiro SHA512SUMS e desa saida quedarse soamente coa primeira columna (-f1), entendendo que as columnas son tidas en conta co caracter espazo (-d ' ') como separador <br />
             <li class='mtop mleft mbottom'>diff 1.sha512.txt 2.sha512.txt <span class='explicacion'> #Comparar os ficheiros 1.sha512.txt e 2.sha512.txt, é dicir, comparar o hash SHA512 do ficheiro descargado co gardado no ficheiro SHA512SUMS <br />
           </ul>
         <li class='mtop mleft mbottom'>Se os "hash" coinciden: a descarga foi corrupta? Por que?
-        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen os "hash" na páxina oficial de Debian (MD5SUMS, SHA256SUMS e SHA512SUMS)? Por que?
+        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen os "hash" na páxina oficial de Debian (SHA256SUMS e SHA512SUMS)? Por que?
 
           
-        <div class='indent'>&nbsp;</div>
-        
-        <p class='mtop mleft mbottom label arriba'>Importar clave pública de Debian</p>
-        <li class='mtop mleft mbottom'>Importar ao noso anel de claves a clave pública de Debian para logo poder verificar os ficheiros asinados coa clave privada de Debian (MD5SUMS.sign, SHA256SUMS.sign e SHA512SUMS.sign):
+        <div class='indent pagebreak'>&nbsp;</div>
+         <p class='mtop mleft mbottom label arriba'>Verificar sinaturas</p>
+        <li class='mtop mleft mbottom'>Verificar as sinaturas dos ficheiros SHA256SUMS e SHA512SUMS:
           <div class='minindent'>&nbsp;</div>
           <ul class='dashed mleftsubs'>
-            <li class='mtop mleft mbottom'>gpg --keyserver keyring.debian.org --recv-keys 0x64E6EA7D<span class='explicacion'> #Importar ao noso anel a chave pública de Debian que se atopa no servidor keyring.debian.org <br />
-              <div class='explicacion2'><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
-                <img class='cfigure mleftsubs pall' src="images/mouse-pointer-mini-rotate-180.png" />
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA256SUMS.sign, sinatura do ficheiro SHA256SUMS <br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA256SUMS.sign SHA256SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA256SUMS mediante o ficheiro asinado SHA256SUMS.sign </span>
+<pre>
+gpg: Signature made Sat 09 Oct 2021 04:53:47 PM EDT
+gpg:                using RSA key DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+gpg: Can't check signature: No public key
+</pre> 
+
+            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA512SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA512SUMS.sign, sinatura do ficheiro SHA512SUMS <br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA512SUMS.sign SHA512SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA512SUMS mediante o ficheiro asinado SHA512SUMS.sign </span><br />
+<pre>
+gpg: Signature made Sat 09 Oct 2021 04:53:48 PM EDT
+gpg:                using RSA key DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+gpg: Can't check signature: No public key
+</pre>
+              <div class='explicacion2'>As sinaturas non se poden verificar. Debemos importar a clave pública de Debian para poder verificalas. Fixarse na saída dos comandos anteriores para recoller o fingerprint. Así:
+<pre>
+SHA256SUMS &#10141; DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+SHA512SUMS &#10141; DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+</pre>
+Co cal o fingerprint é:
+<pre>
+DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+</pre>
+
+              <p><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
+                <img class='cfigure mleftsubs pall' src="images/mouse-pointer-mini-rotate-180.png" /></p>
               </div>
+          </ul>
+ 
+       
+        <div class='indent'>&nbsp;</div>
+        <p class='mtop mleft mbottom label arriba'>Importar clave pública de Debian</p>
+        <li class='mtop mleft mbottom'>Importar ao noso anel de claves a clave pública de Debian para logo poder verificar os ficheiros asinados coa clave privada de Debian (SHA256SUMS.sign e SHA512SUMS.sign):
+          <div class='minindent'>&nbsp;</div>
+          <ul class='dashed mleftsubs'>
+            <li class='mtop mleft mbottom'>gpg --keyserver keyring.debian.org --recv-keys 0xDF9B9C49EA<span class='explicacion'> #Importar ao noso anel a chave pública de Debian que se atopa no servidor keyring.debian.org Non é necesario escribir o todo o fingerprint, soamente o número de caracteres hexadecimal co que sexa identificativo e unívoco.</span>
+<pre>
+gpg: key DA87E80D6294BE9B: public key "Debian CD signing key <debian-cd@lists.debian.org>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+</pre>
             </li>
           </ul>
 
         <div class='indent'>&nbsp;</div>
 
-        <p class='mtop mleft mbottom label arriba'>Verificar sinaturas</p>
-        <li class='mtop mleft mbottom'>Verificar as sinaturas dos ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS:
+        <p class='mtop mleft mbottom label arriba'>Verificar de novo as sinaturas</p>
+        <li class='mtop mleft mbottom'>Verificar de novo as sinaturas dos ficheiros SHA256SUMS e SHA512SUMS:
           <div class='minindent'>&nbsp;</div>
           <ul class='dashed mleftsubs'>
-            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/MD5SUMS.sign<span class='explicacion'> #Descargar o ficheiro MD5SUMS.sign, sinatura do ficheiro MD5SUMS <br />
-            <li class='mtop mleft mbottom'>gpg --verify MD5SUMS.sign MD5SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro MD5SUMS mediante o ficheiro asinado MD5SUMS.sign </span><br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA256SUMS.sign SHA256SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA256SUMS mediante o ficheiro asinado SHA256SUMS.sign </span>
+<pre>
+gpg: Signature made Sat 09 Oct 2021 04:53:47 PM EDT
+gpg:                using RSA key DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+gpg: Good signature from "Debian CD signing key <debian-cd@lists.debian.org>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: DF9B 9C49 EAA9 2984 3258  9D76 DA87 E80D 6294 BE9B
+</pre>
 
-            <li class='mtop mleft mbottom'>gpg --keyserver keyring.debian.org --recv-keys 0x6294BE9B<span class='explicacion'> #Importar ao noso anel outra chave pública de Debian que se atopa no servidor keyring.debian.org <br />
-              <div class='explicacion2'><span class='label'> <a href='https://www.debian.org/events/keysigning.es.html' target='_blank'>Firmado de claves</a></span>
-                <img class='cfigure mleftsubs pall' src="images/mouse-pointer-mini-rotate-180.png" />
-
-            <li class='mtop mleft mbottom'>gpg --verify MD5SUMS.sign MD5SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro MD5SUMS mediante o ficheiro asinado MD5SUMS.sign </span><br />
-
-            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA256SUMS.sign, sinatura do ficheiro SHA256SUMS <br />
-            <li class='mtop mleft mbottom'>gpg --verify SHA256SUMS.sign SHA256SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA256SUMS mediante o ficheiro asinado SHA256SUMS.sign </span><br />
-
-            <li class='mtop mleft mbottom'>wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA512SUMS.sign<span class='explicacion'> #Descargar o ficheiro SHA512SUMS.sign, sinatura do ficheiro SHA512SUMS <br />
-            <li class='mtop mleft mbottom'>gpg --verify SHA512SUMS.sign SHA512SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA512SUMS mediante o ficheiro asinado SHA512SUMS.sign </span><br />
+            <li class='mtop mleft mbottom'>gpg --verify SHA512SUMS.sign SHA512SUMS <span class='explicacion'> #Verificar a sinatura do ficheiro SHA512SUMS mediante o ficheiro asinado SHA512SUMS.sign </span>
+<pre>
+gpg: Signature made Sat 09 Oct 2021 04:53:48 PM EDT
+gpg:                using RSA key DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+gpg: Good signature from "Debian CD signing key <debian-cd@lists.debian.org>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: DF9B 9C49 EAA9 2984 3258  9D76 DA87 E80D 6294 BE9B
+</pre>
           </ul>
 
         <div class='minindent'>&nbsp;</div>
 
-        <li class='mtop mleft mbottom'>Se as sinaturas verificadas son auténticas pódese deducir que os ficheiros MD5SUMS, SHA256SUMS e SHA512SUMS son pertencentes a Debian? Por que?
-        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen as sinaturas na páxina oficial de Debian (MD5SUMS.sign, SHA256SUMS.sign e SHA512SUMS.sign)? Por que? Ten algo que ver o servidor keyring.debian.org
+        <li class='mtop mleft mbottom'>Se as sinaturas verificadas son auténticas <b><i>(Good Signature)</i></b> pódese deducir que os ficheiros SHA256SUMS e SHA512SUMS son pertencentes a Debian? Por que?
+        <li class='mtop mleft mbottom'>Teño que confiar nos ficheiros que conteñen as sinaturas na páxina oficial de Debian (SHA256SUMS.sign e SHA512SUMS.sign)? Por que? Ten algo que ver o servidor keyring.debian.org
        </ul>
  
       </ol>
