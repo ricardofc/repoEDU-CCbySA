@@ -7,4 +7,3 @@ RL  - Módulo CM FP Redes Locais<br />
 SI  - Módulo CM FP Seguridade Informática<br />
 SOM - Módulo CM FP Sistemas Operativos Monoposto<br />
 SOR - Módulo CM FP Sistemas Operativos en Rede<br />
-
