@@ -300,7 +300,7 @@
                 <li>sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Modificar a directiva <span class='label'>SecRuleEngine</span>. Por defecto configúrase modsecurity en modo detección <a href='https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-%28v2.x%29#SecRuleEngine' target='_blank'>(DetectionOnly)</a>, polo cal soamente detecta ataques pero non actúa sobre o detectado.</span>
                   <img class='cfigure mleftplus240' src="images/mouse-pointer-mini.png" />
                 </li>
-                <li>sed -i 's/SecAuditLogParts ABDEFHIJZ/SecAuditLogParts ABEFHIJKZ/' /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Modificar a directiva <a href='https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-%28v2.x%29#SecRuleEngine' target='_blank'>SecAuditLogParts</a>. 
+                <li>sed -i 's/SecAuditLogParts ABDEFHIJZ/SecAuditLogParts ABEFHIJKZ/' /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Modificar a directiva <a href='https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-%28v2.x%29#SecAuditLogParts' target='_blank'>SecAuditLogParts</a>. 
                   <img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini.png" />
                   <p class='mtopplusx2'></p>
                   <p class='up'>Por defecto configúrase modsecurity coa opción D que non está implementada e sen a opción K, a cal permite ver nos logs unha lista completa de todas as regras que coincidían (unha por liña) na orde en que foron coincidentes. As regras están totalmente cualificadas e, polo tanto, mostrarán accións herdadas e operadores predeterminados. Compatible a partir da versión 2.5.0.</p></span>
@@ -361,7 +361,7 @@
           <ol type="a" class='mleftsubs'>
             <li><p><i><span class='BookmarkTitle-Level-5'>Example 1</span></i> ➝ <br />
              <code>http://192.168.120.100/commandexec/example1.php?ip=192.168.120.101</code><br />
-             <span class='red'><b><code>http://192.168.120.100/commandexec/example1.php?ip=192.168.120.101;whoami</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403 </p></p>
+             <span class='red'><b><code>http://192.168.120.100/commandexec/example1.php?ip=192.168.120.101;whoami</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403 </p></p>
              <div class='explicacion3' style='margin-left:-40px;'>
                <ul>
                  Agora non se amosa a execución do comando whoami. Isto é debido a que agora está activado o módulo security2 (modsecurity). De feito, revisando os logs (/var/log/apache2/modsec_audit.log) atopamos que una regra de OWASP (OWASP_CRS/3.3.2) detecta o intento de execución de comandos na sección H:</b></p>
@@ -382,7 +382,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
   <div class='pagebreak'>&nbsp;</div>
             <li><p><i><span class='BookmarkTitle-Level-5'>Example 2</span></i> ➝ <br />
              <code>http://192.168.120.100/commandexec/example2.php?ip=192.168.120.101</code><br />
-             <span class='red'><b><code>http://192.168.120.100/commandexec/example2.php?ip=192.168.120.101%0Awhoami</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</p></p>
+             <span class='red'><b><code>http://192.168.120.100/commandexec/example2.php?ip=192.168.120.101%0Awhoami</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</p></p>
              <div class='explicacion3'>
                <ul>
                  Similar ao exemplo1</b></p>
@@ -455,7 +455,7 @@ c"]
           <ol type="a" class='arriba mleftsubs'>
             <li><p><i><span class='BookmarkTitle-Level-5'>Example 1</span></i> ➝ Imaxe ➝ Clic botón dereito ➝ 
               <p class='mleftsubsx4 arribasubsmini2'><code>http://192.168.120.100/dirtrav/example1.php?file=hacker.png</code> ➝</p>
-              <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example1.php?file=../../../../../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</p></p>
+              <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example1.php?file=../../../../../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</p></p>
              <div class='explicacion3'>
                <ul>
                  Agora non se amosa o contido do ficheiro /etc/passwd. Isto é debido a que agora está activado o módulo security2 (modsecurity). De feito, revisando os logs (/var/log/apache2/modsec_audit.log) atopamos que una regra de OWASP (OWASP_CRS/3.3.2) detecta o intento de execución de comandos na sección H:</b></p>
@@ -476,7 +476,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
 
 	    <li><p><i><span class='BookmarkTitle-Level-5'>Example 2</span></i> ➝ Imaxe ➝ Clic botón dereito ➝ 
               <p class='mleftsubsx4 arribasubsmini2'><code>http://192.168.120.100/dirtrav/example2.php?file=/var/www/files/hacker.png</code> ➝</p>
-              <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example2.php?file=/var/www/files/../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</b></p>
+              <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example2.php?file=/var/www/files/../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</b></p>
              <div class='explicacion3' style='margin-left:-60px;'>
                <ul>
                  <b>Similar ao exemplo1</b></p>
@@ -497,7 +497,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
             </li>
 	    <li><p><i><span class='BookmarkTitle-Level-5'>Example 3</span></i> ➝ Imaxe ➝ Clic botón dereito ➝ 
               <p class='mleftsubsx4 arribasubsmini2'><code>http://192.168.120.100/dirtrav/example3.php?file=hacker</code> ➝</p>
-	      <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example3.php?file=../../../../../etc/passwd%00hacker</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</b></p>
+	      <p class='mleftsubsx4'><span class='red'><b><code>http://192.168.120.100/dirtrav/example3.php?file=../../../../../etc/passwd%00hacker</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</b></p>
              <div class='explicacion3' style='margin-left:-60px;'>
                <ul>
                  <b>Similar ao exemplo1</b></p>
@@ -581,7 +581,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
             <li><p><i><span class='BookmarkTitle-Level-5'>Example 1</span></i> ➝ <br />
               <p class='mleftsubsx4'><code>http://192.168.120.100/fileincl/example1.php?page=intro.php</code> ➝ </p>
               <p class='mleftsubsx4'><b>LFI</b> ➝
-                <span class='red'><b><code>http://192.168.120.100/fileincl/example1.php?page=../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</b></p>
+                <span class='red'><b><code>http://192.168.120.100/fileincl/example1.php?page=../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</b></p>
              <div class='explicacion3' style='margin-left:-60px;'>
                <ul>
                  <b>Similar a <i>Directory Transversal ➝ Exemplo1</i></b></p>
@@ -603,7 +603,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
             <li><p><i><span class='BookmarkTitle-Level-5'>Example 2</span></i> ➝<br />
               <p class='mleftsubsx4'>http://192.168.120.100/fileincl/example2.php?page=intro ➝ </p>
               <p class='mleftsubsx4'><span class='cblack'><b>LFI</b> ➝</span>
-                <span class='red'><b><code>http://192.168.120.100/fileincl/example2.php?page=../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403</b></p>
+                <span class='red'><b><code>http://192.168.120.100/fileincl/example2.php?page=../../../../../etc/passwd</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403</b></p>
              <div class='explicacion3' style='margin-left:-60px;'>
                <ul>
                  <b>Similar a <i>Directory Transversal ➝ Exemplo1</i></b></p>
@@ -708,7 +708,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
                     </pre>
                   </li>
                   <li>Subir o arquivo file.php:
-                  ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.php</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403 </span></p></p>
+                  ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.php</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403 </span></p></p>
                 </ol>
              <div class='explicacion3' style='margin-left:-60px;'>
                <ul>
@@ -739,7 +739,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
                   <li>Subir o arquivo file.php:
                   ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.php</code></b> ➝ Erro: NO PHP
                   <li class='mtopplus'>Renomear ficheiro file.php a file.php3 
-                  <li class='mtopplus'>Subir file.php3 ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.php3</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403 </span></p></p>
+                  <li class='mtopplus'>Subir file.php3 ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.php3</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403 </span></p></p>
                 </ol>
              <div class='explicacion3 negro' style='margin-left:-60px;'>
                <ul>
@@ -776,7 +776,7 @@ Engine-Mode: "ENABLED"
                </ul>
              </div>
              <ol type='i' class='red' start='6'>
-                  <li class='mtopplus'><span class='red'>Copiar file.php3 a file.phtml ➝ Subir file.phtml ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.phtml</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403 </span></p></p>
+                  <li class='mtopplus'><span class='red'>Copiar file.php3 a file.phtml ➝ Subir file.phtml ➝ Premer na ligazón ➝ <b><code>http://192.168.120.100/upload/images/file.phtml</code> ➝ O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403 </span></p></p>
              </ol>
              <div class='explicacion3'>
                <ul>
@@ -802,7 +802,7 @@ Message: Access denied with code 403 (phase 2). Operator GE matched 5 at TX:anom
                     ?&gt;
                     </pre>
                   </li>
-                  <li class='mtopplus'>Subir o arquivo file2.php3 ➝ <b>O ataque non ten éxito ➝ ModSecurity ➝ OWAPS_CRS ➝ Erro 403 <i>(ver File Upload ➝ Exemplo2 ➝ apartado b.iv)</i></b>
+                  <li class='mtopplus'>Subir o arquivo file2.php3 ➝ <b>O ataque non ten éxito ➝ ModSecurity ➝ OWASP_CRS ➝ Erro 403 <i>(ver File Upload ➝ Exemplo2 ➝ apartado b.iv)</i></b>
                 </ol>
               </p>
             </li>
