@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Monitorización de hosts, servizos e redes: Nagios</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Monitorizacion' target='_blank'><span class='BookmarkTitle-Level-1'>Monitorización de hosts, servizos e redes: Nagios</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Nagios.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li> Prerrequisito: <a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SI/Criptografia/Practica-SI-Apache-HTTP-Basic.pdf' target='_blank'>HTTP Basic: Apache</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://www.nagios.com/solutions/linux-monitoring/' target='_blank'>[1] Linux Monitoring With Nagios</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtop'><br></div>
+          <li type='square'><a href='https://library.nagios.com/library/products/nagios-core/manuals//' target='_blank'>[2] Documentación Nagios</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://support.nagios.com/kb/article/nagios-core-installing-nagios-core-from-source-96.html#Debian' target='_blank'>[3] Debian Easy Guide Installation</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          </li>
+          <li type='square'><a href='https://assets.nagios.com/downloads/nagioscore/docs/nrpe/NRPE.pdf' target='_blank'>[4] NRPE
+            <img class='contido bfigure pall' src="images/nrpe.png" />
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /></a>
+            <div class='mtopplus'><br></div>
+          </li>
+
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual A: Kali amd64</span></p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+          </ul>
+
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual B: Kali amd64</span></p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <div class='pagebreak'></div>
+
+        <div><span class='label'><span class='BookmarkTitle-Level-2'>Nagios</span></div>
+        <div class='minindent'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>kaliA ➝ Instalar Nagios (Motor GUI Web + Servidor Nagios)</span></span>: Realizar o procedemento descrito en [3]. Basicamente:<br />
+        <p class='label'>A. <span class='BookmarkTitle-Level-4'>Procedemento instalación nagios-core (Motor GUI Web + Servidor Nagios)</span></p>
+          <ul class='dashed-kaliA mleft mtopsubsmini'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA-generic'>
+                <li>apt-get update
+                <li>apt-get install -y autoconf gcc libc6 make wget unzip apache2 apache2-utils php libgd-dev
+                <li>cd /tmp
+                <li>wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.6.tar.gz
+                <li>tar xzf nagioscore.tar.gz
+                <li>cd /tmp/nagioscore-nagios-4.4.6/
+                <li>./configure --with-httpd-conf=/etc/apache2/sites-enabled
+                <li>make all
+                <li>make install-groups-users
+                <li>usermod -a -G nagios www-data
+                <li>make install
+                <li>make install-daemoninit
+                <li>make install-commandmode
+                <li>make install-config
+                <li>make install-webconf
+                <li>a2enmod rewrite
+                <li>a2enmod cgi
+                <li>htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+                <li>systemctl restart apache2.service
+                <li>systemctl start nagios.service
+              </ul>
+          </ul>
+          <div class='mleftsubsx3'>
+            <div class='explicacion3'>
+              <p class='mleft'><b>NOTA:</b> No comando htpasswd solicítase un contrasinal para o usuario <b><i>nagiosadmin</i></b>. Imos pór como contrasinal <b><i>abc123.</i></b> (Ollo que o contrasinal ten un caracter punto final)</p>
+              <p class='label arribasubsmini2'>Comandos</p>
+              <pre style='white-space: pre-wrap;' class='arribasubsmini2 pall'>
+  apt-get update
+  apt-get install -y autoconf gcc libc6 make wget unzip apache2 apache2-utils php libgd-dev
+  cd /tmp
+  wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.6.tar.gz
+  tar xzf nagioscore.tar.gz
+  cd /tmp/nagioscore-nagios-4.4.6/
+  ./configure --with-httpd-conf=/etc/apache2/sites-enabled
+  make all
+  make install-groups-users
+  usermod -a -G nagios www-data
+  make install
+  make install-daemoninit
+  make install-commandmode
+  make install-config
+  make install-webconf
+  a2enmod rewrite
+  a2enmod cgi
+  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+  systemctl restart apache2.service
+  systemctl start nagios.service
+              </pre>
+            </div>
+          </div>
+
+        <div class='pagebreak'></div>
+        <p class='label'>B. <span class='BookmarkTitle-Level-4'>Procedemento instalación nagios-plugins (plugin ➝ permite monitorizar recursos)</span></p>
+          <ul class='dashed-kaliA mleft mtopsubsmini'>
+              <ul class='hashtag-kaliA-generic'>
+                <li>apt-get install -y autoconf gcc libc6 libmcrypt-dev make libssl-dev wget bc gawk dc build-essential snmp libnet-snmp-perl gettext
+                <li>cd /tmp
+                <li>wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz
+                <li>tar zxf nagios-plugins.tar.gz
+                <li>cd /tmp/nagios-plugins-release-2.3.3/
+                <li>./tools/setup
+                <li>./configure
+                <li>make
+                <li>make install
+                <li>systemctl restart nagios.service
+                <li>exit
+              </ul>
+            <li>
+          </ul>
+        </li>
+
+
+          <div class='mleftsubsx3'>
+            <div class='explicacion3'>
+              <p class='label arribasubsmini2'>Comandos</p>
+              <pre style='white-space: pre-wrap;' class='arribasubsmini2 pall'>
+apt-get install -y autoconf gcc libc6 libmcrypt-dev make libssl-dev wget bc gawk dc build-essential snmp libnet-snmp-perl gettext
+cd /tmp
+wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz
+tar zxf nagios-plugins.tar.gz
+cd /tmp/nagios-plugins-release-2.3.3/
+./tools/setup
+./configure
+make
+make install
+systemctl restart nagios.service
+exit
+              </pre>
+            </div>
+          </div>
+
+        <div class='indent'>&nbsp;</div>
+        <div><span class='label'><span class='BookmarkTitle-Level-4'>Verificar</span></div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ URL http://kaliA/nagios</span></span>: Lanzar na máquina virtual B (Kali) un navegador e visitar a URL http://kaliA/nagios
+          <div class='explicacion3'>
+            <ul type='square'>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Hosts</li>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Services</li>
+            </ul>
+          </div>
+        </li>
+        
+        <div class='pagebreak'></div>
+        <div><span class='label'><span class='BookmarkTitle-Level-3'>NRPE</span></div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mleft mtop mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>kaliB ➝ Instalar o servidor nagios NRPE</span>[4]</span>: Permite executar nagios-plugin nos hosts clientes a monitorizar por Nagios
+          <ul class='dashed-kaliB mleft'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliB'>
+                <li>apt-get update
+                <li>apt-get install -y nagios-nrpe-server
+                <li>sed -i -e 's/allowed_hosts=127.0.0.1,::1/allowed_hosts=127.0.0.1,::1,192.168.120.100/' -e 's/hda1/sda1/g' /etc/nagios/nrpe.cfg
+                <li>/etc/init.d/nagios-nrpe-server status
+                <li>/etc/init.d/nagios-nrpe-server start
+                <li>/etc/init.d/nagios-nrpe-server status
+                <li>netstat -natp | grep -i nrpe
+                <li>ps -ef | grep -i [n]rpe
+              </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>kaliA ➝ Instalar cliente NRPE no Servidor Nagios</span>[4]</span>: Plugin NRPE para poder executar comandos nos clientes Nagios dende o servidor Nagios</span></p>
+          <ul class='dashed-kaliA mleft mtopsubsmini'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA-generic'>
+                <li>apt-get update
+                <li>apt-get install -y nagios-nrpe-plugin
+                <li>/usr/lib/nagios/plugins/check_nrpe -H 192.168.120.101<br />NRPE v3.2.1
+                <li>cat &gt; /tmp/command-nrpe.txt &lt;&lt;EOF
+                <pre class='mtopsubs arriba'>
+
+####### NRPE #######
+define command {
+    command_name    check_nrpe
+    command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+}
+EOF
+
+</pre>
+
+                <li> cat /tmp/command-nrpe.txt &gt;&gt;/usr/local/nagios/etc/objects/commands.cfg
+                <li> cd /usr/local/nagios/etc/objects/
+                <li> cat &gt; kaliB.cfg &lt;&lt;EOF
+                <pre class='mtopsubsmini2 pall'>
+define host{
+ use linux-server
+ host_name kaliB
+ alias cliente
+ address 192.168.120.101
+}
+
+define service{
+ use generic-service
+ host_name kaliB
+ service_description CPU Load
+ check_command check_nrpe!check_load
+}
+
+define service{
+ use generic-service
+ host_name kaliB
+ service_description Current Users
+ check_command check_nrpe!check_users
+}
+
+define service{
+ use generic-service
+ host_name kaliB
+ service_description /dev/sda1 Free Space
+ check_command check_nrpe!check_sda1
+}
+        <div class='pagebreak'></div>
+define service{
+ use generic-service
+ host_name kaliB
+ service_description Total Processes
+ check_command check_nrpe!check_total_procs
+}
+
+define service{
+ use generic-service
+ host_name kaliB
+ service_description Zombies Processes
+ check_command check_nrpe!check_zombie_procs
+}
+EOF
+</pre>
+                <li> echo 'cfg_file=/usr/local/nagios/etc/objects/kaliB.cfg' >> /usr/local/nagios/etc/nagios.cfg
+                <li>/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+                <li>ln -s /usr/lib/nagios/plugins/check_nrpe /usr/local/nagios/libexec/check_nrpe
+                <li> systemctl restart nagios.service
+                <li>for i in $(grep check kaliB.cfg | awk -F'!' '{print $NF}' | xargs)<br />
+do<br />
+/usr/lib/nagios/plugins/check_nrpe -H 192.168.120.101 -c $i<br />
+done
+                <pre style='white-space: pre-wrap;' class='arribasubsmini2 pall'>
+CRITICAL - load average: 0.21, 0.26, 0.26|load1=0.210;0.150;0.300;0; load5=0.263;0.100;0.250;0; load15=0.263;0.050;0.200;0; 
+PROCS CRITICAL: 262 processes | procs=262;150;200;0;
+USERS OK - 2 users currently logged in |users=2;5;10;0
+PROCS OK: 0 processes with STATE = Z | procs=0;5;10;0;
+DISK OK - free space: /dev 1871 MB (100% inode=99%);| /dev=0MB;1496;1683;0;1871
+</pre>
+              </ul>
+          </ul>
+        </li>
+       
+        <div><span class='label'><span class='BookmarkTitle-Level-4'>Verificar</span></div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ URL http://kaliA/nagios</span></span>: Actualizar na máquina virtual B (Kali) a páxina referente á URL http://kaliA/nagios
+          <div class='explicacion3'>
+            <ul type='square'>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Hosts</li>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Services</li>
+            </ul>
+          </div>
+        </li>
+        <div class='pagebreak'></div>
+        <div><span class='label'><span class='BookmarkTitle-Level-3'>Servizos NRPE</span></div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>kaliB ➝ Agregar servizos a chequear mediante NRPE</span>[4]</span>: 
+          <ul class='dashed-kaliB mleft'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliB'>
+                <li>echo 'command[check_http]=/usr/lib/nagios/plugins/check_http -H 127.0.0.1 -w 5 -c 10' >> /etc/nagios/nrpe.cfg
+                <li>echo 'command[check_ssh]=/usr/lib/nagios/plugins/check_ssh -H 127.0.0.1' >> /etc/nagios/nrpe.cfg
+                <li>/etc/init.d/nagios-nrpe-server restart
+                <li>/etc/init.d/nagios-nrpe-server status
+              </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>kaliA ➝ Chequear os anteriores servizos mediante NRPE no Servidor Nagios</span>[4]</span>: </p>
+          <ul class='dashed-kaliA mleft'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA-generic'>
+                <li> cd /usr/local/nagios/etc/objects/
+                <li> cat &gt;&gt; kaliB.cfg &lt;&lt;EOF
+                <pre style='white-space: pre-wrap;' class='arribasubsmini2 pall'>
+define service{
+ use generic-service
+ host_name kaliB
+ service_description Check HTTP Service
+ check_command check_nrpe!check_http
+}
+
+define service{
+ use generic-service
+ host_name kaliB
+ service_description Check SSH Service
+ check_command check_nrpe!check_ssh
+}
+EOF
+</pre>
+                <li>/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+                <li> systemctl restart nagios.service
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <div><span class='label'><span class='BookmarkTitle-Level-4'>Verificar</span></div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ URL http://kaliA/nagios</span></span>: Actualizar na máquina virtual B (Kali) a páxina referente á URL http://kaliA/nagios
+          <div class='explicacion3'>
+            <ul type='square'>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Hosts</li>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Services</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ Activar Servidor HTTP (Apache)</span></span>: <br />
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-kaliB mleftsubs'>
+              <li>nc -vz localhost 80 ; [ $(echo $?) -ne 0 ] && /etc/init.d/apache2 start <span class='explicacion'> #Verificar se o servizo HTTP(Apache) está activo. Se non está activo, arráncase</span></li>
+              <li>/etc/init.d/apache2 status <span class='explicacion'> #Comprobar o estado do servidor HTTP(Apache), agora debe estar arrancado.</span></li>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+            </ul>
+            <li>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ Activar Servidor SSH</span></span>: <br />
+          <ul class='dashed-kaliB mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-kaliB mleftsubs'>
+              <li>nc -vz localhost 22 ; [ $(echo $?) -ne 0 ] && /etc/init.d/ssh start <span class='explicacion'> #Verificar se o servizo SSH está activo. Se non está activo, arráncase</span></li>
+              <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+            </ul>
+            <li>
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-5'>kaliB ➝ URL http://kaliA/nagios</span></span>: Actualizar na máquina virtual B (Kali) a páxina referente á URL http://kaliA/nagios
+          <div class='explicacion3'>
+            <ul type='square'>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Hosts</li>
+              <li class='mleft pall4'>Menú lateral esquerdo ➝ Services</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
