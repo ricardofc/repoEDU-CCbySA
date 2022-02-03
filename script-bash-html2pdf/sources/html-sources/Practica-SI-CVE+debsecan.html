@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>CVE+debsecan</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'><span class='BookmarkTitle-Level-1'>CVE+debsecan</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-CVE.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li type='square'><a href='https://www.redhat.com/es/topics/security/what-is-cve#:~:text=Los%20puntos%20vulnerables%20y%20las,a%20una%20falla%20de%20seguridad.' target='_blank'>[1] Concepto CVE</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://www.cve.org/ResourcesSupport/FAQs#pc_cve_id_requests' target='_blank'>[2] CVE Id</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtop'><br></div>
+          <li type='square'><a href='https://www.debian.org/security/cve-compatibility.es.html' target='_blank'>[3] Debian e CVE</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://cve.mitre.org/' target='_blank'>[4] CVE Program Mission</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          </li>
+          <li type='square'><a href='https://www.incibe-cert.es/alerta-temprana/avisos-seguridad/pwnkit-escalada-privilegios-local-polkit-afecta-distribuciones' target='_blank'>[5] INCIBE - CVE-2021-4034
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /></a>
+            <div class='mtopplus'><br></div>
+          </li>
+          <li type='square'><a href='https://github.com/berdav/CVE-2021-4034' target='_blank'>[6] Exploit CVE-2021-4034
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /></a>
+            <div class='mtopplus'><br></div>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual Kali amd64 <i>(kali-linux-2021.4a-live-amd64.iso)</i></span></p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>exploit (Explotar a vulnerabilidade CVE-2021-4034)</span></span>
+          <ol type='A'>
+            <li class='mtop'>Arrancar coa Kali Live amd64</li>
+            <li class='mtop'>Na contorna gráfica abrir un terminal e executar:</li>
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>git clone https://github.com/berdav/CVE-2021-4034 <span class='explicacion'> #Descargar o repositorio hashclash de git de Marc Stevens</li>
+              <li>cd CVE-2021-4034 <span class='explicacion'> #Acceder ao cartafol CVE-2021-4034</span></li>
+              <li>make <span class='explicacion'> #Compilar para crear o executable(exploit) cve-2021-4034</span></li>
+              <li>./cve-20211-4034 <span class='explicacion'> #Executar o exploit cve-2021-4034</span></li>
+                <ul class='hashtag mleftsubs'>
+                  <li> <span class='explicacion bgred'> <b>#CONSEGUIDO ACCESO ROOT</b></span></li>
+                  <li> id <span class='explicacion'> #Imprime UIDs e GIDs reais e efectivos do usuario que executa o comando, neste caso os do usuario <i>root</i></span></li>
+                  <li>exit <span class='explicacion'> #Saír da consola root que acabamos de conseguir mediante escalada de privilexios (CVE-2021-4034).</span></li>
+                </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ol>
+
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>debsecan (Listar vulnerabilidades presentes no sistema operativo)</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtopsubsmini'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kali mleftsubs'>
+                  <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i>
+                  <li>apt search debsecan || apt-cache search debsecan<span class='explicacion'> #Buscar nas anteriores listas descargadas en <i>/var/lib/apt/lists</i> paquetes que coincidan co patrón de búsqueda <i>debsecan</i>. A saída do/s comando/s amosan o nome do/s paquete/s e unha pequena descrición do/s mesmo/s.</span>
+                  <li>apt show debsecan || apt-cache show debsecan <span class='explicacion'> #Amosa información sobre o paquete debsecan, incluídas as súas dependencias, instalación e tamaño de descarga, fontes nas que está dispoñible o paquete, descrición do contido dos paquetes e moito máis. </span>
+                  <div class='explicacion3 pall justify'>
+debsecan é unha ferramenta para xerar unha lista de vulnerabilidades que afectan a instalacións concretas de Debian.<br />
+debsecan execútase no  sistema que se vai a analizar, e descarga da internet información sobre vulnerabilidades. Pode enviar correos electrónicos ás partes
+ interesadas cando se descubran novas vulnerabilidades ou cando as actualizacións de seguridade estean dispoñibles.
+                  </div>
+                  <li>apt -y install debsecan || apt-get -y install debsecan<span class='explicacion'> #Instalar o paquete de nome <i>debsecan</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>debsecan <span class='explicacion'> #Execución para auditar e conseguir as vulnerabilidades existentes no noso sistema operativo</span></li>
+                  <li>debsecan | grep -i cve-2021-4034 <span class='explicacion'> #Filtrar a saída da execución do comando debsecan para revisar se o sistema operativo é vulnerable ao CVE-2021-4034</span>
+                    <pre>
+CVE-2021-4034 gir1.2-polkit-1.0
+CVE-2021-4034 libpolkit-agent-1-0
+CVE-2021-4034 libpolkit-gobject-1-0
+CVE-2021-4034 policykit-1</pre>
+                  </li>
+                   <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+          </ul>
+
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Corrixir vulnerabilidades (Actualización de paquetes do sistema operativo)</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtopsubsmini'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kali mleftsubs'>
+                   <li>apt policy policykit-1 <span class='explicacion'> #Amosa o posible paquete candidato de policykit-1 a instalar e, dado o caso, que versión do paquete policykit-1 está instalado.</span>
+                     <pre>
+policykit-1:
+  Installed: 0.105-31+kali1
+  Candidate: 0.105-31.1+kali1
+  Version table:
+     0.105-31.1+kali1 500
+        500 http://http.kali.org/kali kali-rolling/main amd64 Packages
+ *** 0.105-31+kali1 100
+        100 /var/lib/dpkg/status
+                     </pre>
+                  </li>
+
+                  <li>apt -y install policykit-1 || apt-get -y install policykit-1<span class='explicacion'> #Instalar o paquete de nome <i>policykit-1</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+            <p class='bglime pall'><b>Comprobar que a vulnerabilidade está corrixida realizando de novo o apartado 1B.</b></p>
+          </ul>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
