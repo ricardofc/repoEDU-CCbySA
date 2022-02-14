@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica SI GET POST Proxy Burp Suite</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'>Práctica Seguridade Informática:<br /><span class='BookmarkTitle-Level-1'>Métodos GET, POST + Proxy Burp Suite</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-metodos-get-post-proxy-burpsuite.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://developer.mozilla.org/es/docs/Learn/Forms/Sending_and_retrieving_form_data'>Métodos GET e POST</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://portswigger.net/'>PortSwigger</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+          <li class='colorblue mtopplusx2'><span class='label'> <a href='https://portswigger.net/burp/communitydownload'>Burp Suite Community Edition</a></span>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak contido'>
+      <ol>
+          <li class='mtop mleft'><span class='label'><span class='BookmarkTitle-Level-2'>Configuración de rede</span></span>
+            <br />
+            Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, as tarxetas de rede: loopback(lo) e interna(eth0)</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>exit <span style='font-size:14px;color:#0F18A0;'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+            </ul>
+          </li>
+
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Crear formulario: arquivo index.php</span></span>
+            <ul class='dashed-kali mleftsubs'>
+              <li>mkdir /home/kali/web <span class='explicacion'> #Crear cartafol /home/kali/web, o cal será o DocumenRoot do noso servidor web, é dicir, será o cartafol por defecto que publicará o noso servidor web</span>.</li>
+              <li>cat > /home/kali/web/index.php &lt;&lt;EOF<span class='explicacion'> #Crear arquivo que será visitado por defecto no noso servidor web. Este arquivo conteń o formulario co cal imos a probar os métodos GET e POST</span>.</li>
+              <pre style='white-space: pre-wrap;' class='code3 mleftsubsx3 label'>
+&lt;?php
+if(isset(\$_POST['user'],\$_POST['password'])):
+  \$user=\$_POST['user'];
+  \$password=\$_POST['password'];
+  echo "&lt;div class='metodo'&gt;";
+  echo "&lt;h1&gt;Método POST&lt;/h1&gt;";
+  echo "&lt;h2&gt;Usuario: ".\$user."&lt;br&gt;";
+  echo "&lt;h2&gt;Contrasinal: ".\$password."&lt;br&gt;";
+  echo "&lt;/div&gt;";
+elseif(isset(\$_GET['user'],\$_GET['password'])):
+  \$user=\$_GET['user'];
+  \$password=\$_GET['password'];
+  echo "&lt;div class='metodo'&gt;";
+  echo "&lt;h1&gt;Método GET&lt;/h1&gt;";
+  echo "&lt;h2&gt;Usuario: ".\$user."&lt;br&gt;";
+  echo "&lt;h2&gt;Contrasinal: ".\$password."&lt;br&gt;";
+  echo "&lt;/div&gt;";
+endif;
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Formulario-GET-POST-Proxy&lt;/title&gt;
+    &lt;style&gt;
+      .mtop0{margin-top:0px;}
+      .mtop10{margin-top:10px;}
+      .center{position: absolute;left: 50%;top: 50%;}
+      .estilo,.metodo{border:1px dashed black;border-radius:10px; padding: 14px 14px;
+      background-color:lightcyan;}
+      .metodo{background-color:yellow;}
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div class='center estilo'&gt;
+      &lt;h2 class='mtop0'&gt;Autentificación&lt;/h2&gt;
+      &lt;form&gt;
+      &lt;!--&lt;form method='GET'&gt;--&gt;
+      &lt;!--&lt;form method='POST'&gt;--&gt;
+        &lt;input type="text" name="user" placeholder="Usuario" autofocus required&gt;
+        &lt;br&gt;
+        &lt;input class='mtop10' type="password" name="password" placeholder="Contrasinal" required&gt;
+        &lt;br&gt;
+        &lt;input class='mtop10' type="submit" value="Entrar"&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+EOF
+              </pre>
+            </ul>
+          </li>
+          <div class='pagebreak'>&nbsp;</div>
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Lanzar e acceder ao servidor web (localhost)</span></span>
+            <ul class='dashed-kali mleftsubs'>
+              <li>sudo php -S localhost:80 -t /home/kali/web &<span class='explicacion'> #Executar en segundo plano (&) cos permisos de root(administrador) o comando <i>php -S localhost:80 -t /home/kali/web</i>, o cal activa no porto TCP 80 un servidor web php sendo /home/kali/web o DocumentRoot publicado.</span></li>
+              <li>firefox http://localhost:80 <span class='explicacion'> #Lanzar o navegador firefox na URL http://localhost no porto TCP 80, realizando a execución en primer plano, é dicir, acceder ao servidor web php do paso anterior.</span>
+              <p>Unha vez que accedamos á páxina paramos a execución do comando anterior premendo Ctrl+C no terminal onde executamos o comando firefox</p>
+            </ul>
+          </li>
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Lanzar e acceder ao servidor web (192.168.120.100)</span></span>
+            <ul class='dashed-kali mleftsubs'>
+              <li>sudo php -S 192.168.120.100:80 -t /home/kali/web & <span class='explicacion'> #Executar en segundo plano (&) cos permisos de root(administrador) o comando <i>php -S 192.168.120.100:80 -t /home/kali/web</i>, o cal activa no porto TCP 80 un servidor web php sendo /home/kali/web o DocumentRoot publicado.</span></li>
+              <li>firefox http://192.168.120.100:80 &<span class='explicacion'> #Lanzar o navegador firefox na URL http://192.168.120.100 no porto TCP 80, realizando a execución en segundo plano (&), é dicir, acceder ao servidor web php do paso anterior.</span>
+            </ul>
+          </li>
+
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Formulario: Método GET</span></span>
+            <ol type='A'>
+              <li>Introducir credenciais (usuario/contrasinal) no formulario, por exemplo usuario <i>kali</i> e contrasinal <i>abc123.</i></li>
+              <li>Premer no botón Enviar</li>
+              <div class='explicacion3'>
+                Podemos observar no código do arquivo index.php que na etiqueta &lt;form&gt; non está definido ningún método o que equivale ao método GET, é dicir, se non se indica método por defecto o envío do formulario farase mediante o método GET. Que acontece coa URL? Agora aparecen os parámetros na propia URL, é dicir, podemos ver os valores das variables user e password na propia URL separadas mediante o caracter &:<br />
+                <code>
+http://192.168.120.100/?user=kali&password=abc123.
+                </code>
+              </div>
+              <li>Modificar o código do arquivo index.php para que o método a empregar no formulario sexa o método GET, é dicir, comentar a liña 36 e descomentar a liña 37:
+                <pre style='white-space: pre-wrap;' class='code3 mleftsubsx3'>
+        &lt;!--&lt;form--&gt;
+        &lt;form method='GET'&gt;
+        &lt;!--&lt;form method='POST'&gt;--&gt;
+                </pre>
+              </li>
+              <li>Realizar de novo os pasos 5A e 5B</li>
+              <div class='explicacion3'>
+                Podemos observar que agora no código do arquivo index.php na etiqueta <i>form</i> está definido o método GET. Que acontece coa URL? Agora aparecen os parámetros na propia URL, é dicir, podemos ver os valores das variables user e password na propia URL separadas mediante o caracter &:<br />
+                <code>
+http://192.168.120.100/?user=kali&password=abc123.
+                </code>
+              </div>
+              <li>Modificar a URL como segue: 
+                <code>
+http://192.168.120.100/?user=alumnado&password=12345678
+                </code>
+              </li>
+              <li>Premer Enter na URL. Que acontece?</li>
+            </ol>
+          </li>
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Formulario: Método POST</span></span>
+            <ol type='A'>
+              <li>Modificar o código do arquivo index.php para que o método a empregar no formulario sexa o método POST, é dicir, comentar a liña 37 e descomentar a liña 38:
+                <pre style='white-space: pre-wrap;' class='code3 mleftsubsx3'>
+        &lt;!--&lt;form--&gt;
+        &lt;!--form method='GET'&gt;--&gt;
+        &lt;form method='POST'&gt;
+                </pre>
+              </li>
+              <li>Abrir unha nova lapela e acceder á URL http://192.168.120.100:80</li>
+              <li>Realizar de novo os pasos 5A e 5B</li>
+              <div class='explicacion3'>
+                Podemos observar que agora no código do arquivo index.php na etiqueta <i>form</i> está definido o método POST. Que acontece coa URL? Agora non aparecen os parámetros na propia URL, é dicir, non podemos ver os valores das variables user e password na propia URL separadas mediante o caracter &<br />
+              </div>
+            </ol>
+          </li>
+          <div class='pagebreak'>&nbsp;</div>
+          <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Proxy burpsuite</span></span>
+            <ol type='A'>
+              <li>Imos visualizar as variables introducidas co método POST mediante o Proxy burpsuite. Así, abrir un novo terminal e executar:
+                <ul class='dashed-kali mleftsubs'>
+                  <li>burpsuite & <span class='explicacion'> #Executar o proxy burpsuite en segundo plano (&)</span>.</li>
+                </ul>
+              <li>Aceptar Todo</li>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-1.png" />
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-2.png" />
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-3.png" />
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-4.png" />
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-5.png" />
+              </figure>
+              <li>Seleccionar a lapela Proxy e executar o navegador embebido (Open browser)</li>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-6.png" />
+              </figure>
+          <div class='pagebreak'>&nbsp;</div>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-7.png" />
+              </figure>
+              <li>Realizar de novo os pasos 6B e 6C</li>
+              <figure class='cfigure'>
+                <img width='100%' class='contido bfigure pall' src="images/burpsuite-8.png" />
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/burpsuite-9.png" />
+              </figure>
+              <div class='explicacion3'>
+                <ul type='square'>
+                  <li>O proxy burpsuite está activo por defecto na interface loopback na IP 127.0.0.1 e no porto TCP 8080. 
+                  <li>O navegador embebido xa está configurado para facer peticións a través do proxy burpsuite (127.0.0.1:8080).
+                  <li>Todas as peticións do cliente quedaran gardadas na lapela HTTP History.
+                  <li>Por defecto temos no Proxy ➝ Intercept On, polo cal debemos premer en Forward para permitir que calquera petición do cliente pase a través do proxy e poida comunicarse co servidor web. Se non quixeramos que tivera lugar a petición podemos descartala premendo en Drop. Tamén poderiamos pór Intercept a Off para permitir todas as peticións do cliente para revisalas logo na lapela HTTP History.
+                  <li>Unha vez introducidas as credenciais podemos observar en HTTP History as peticións realizadas, escoller a comunicación POST e visualizar as variables introducidas. A maiores se tiveramos Intercept On tamén poderiamos modificar esas variables antes de envialas ao servidor na petición POST do cliente.
+                </ul>
+              </div>
+            </ol>
+          </li>
+        </ol>
+    <div class='mtopplusx8'>&nbsp;</div>
+    <div class='mtopplusx8'>&nbsp;</div>
+    <div class='mtopplusx2'>&nbsp;</div>
+    <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
