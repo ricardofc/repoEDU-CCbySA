@@ -116,24 +116,38 @@ f_orientation() {
   fi
 }
 
-f_javascriptDelay() {
-  if [[ "$3" =~ ^[0-9]+\d*$ ]]; then
-    export DELAY="--javascript-delay $3" 
+f_size() {
+  if [[ "$3" = 'A3' ]]; then
+    export SIZE="-s A3" 
+    FILEPDF="${FILE}_A3"
   elif [ -z "$3" ]; then
+    export SIZE="-s A4"
+    FILEPDF="${FILE}"
+  else
+    f_help
+  fi
+}
+
+f_javascriptDelay() {
+  if [[ "$4" =~ ^[0-9]+\d*$ ]]; then
+    export DELAY="--javascript-delay $4" 
+  elif [ -z "$4" ]; then
     export DELAY=' '
   else
     f_help
   fi
 }
 
+
 f_main() {
   f_search
   f_exist
   f_orientation $*
+  f_size $*
   f_javascriptDelay $*
-  ${HTML2PDF} ${ORIENTATION} ${DELAY} ${FILE}.html PDF/${FILE}.pdf
+  ${HTML2PDF} ${ORIENTATION} ${DELAY} ${SIZE} ${FILE}.html PDF/${FILEPDF}.pdf
 }
 
 
 ##main()
-([ $# -eq 2 ] || [ $# -eq 3 ]) && f_main $* || f_help
+([ $# -eq 2 ] || [ $# -eq 3 ] || [ $# -eq 4 ]) && f_main $* || f_help
