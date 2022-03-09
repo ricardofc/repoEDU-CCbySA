@@ -1,0 +1,403 @@
+<!DOCTYPE HTML><br />
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica2 Seguridade Informática: Recuperación de ficheiros dunha Memoria Externa</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Forense/RecuperacionFicheiros' target='_blank'>Práctica2 Seguridade Informática:<br />Recuperación de ficheiros dunha Memoria Externa</a></h1>
+    <img class='cfigure' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Forense-Recuperacion-Ficheiros.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTA</b>:
+        <ul type='square'>
+          <li>Documentación de interese:
+            <br />
+            <br />
+            <ul type='none'>
+              <br />
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/GNU-Linux/SistemasArquivos' target='_blank'>Sistemas de arquivos</a></td>
+                    <td width='15%'>&nbsp;</td>
+                    <td><a href='https://www.cgsecurity.org/wiki/TestDisk_ES' target='_blank'>TestDisk</a></td>
+                    <td width='15%'>&nbsp;</td>
+                    <td><a href='https://www.cgsecurity.org/wiki/PhotoRec_ES' target='_blank'>PhotoRec</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              </li>
+            </ul>
+          </li>
+          <li><span class='label'>Comando dd</span>
+            <ul class='dashed'>
+              <li>man dd 
+            </ul>
+            <ul class='hashtag'>
+              <li>dd if=/dev/sdX of=/mnt/image-SD.dd bs=1024K status=progress
+              <div class='explicacion3 pall'>
+                Volcar todos os sectores/bloques do disco sdX en /mnt/image-SD.dd, onde:<br />
+                <ul>
+                  <li> if=/dev/sdX &#10140; input file (Orixe da copia): Ficheiro/dispositivo que se quere copiar. Neste caso, o dispositivo /dev/sdX
+                  <li> of=/mnt/image-SD.dd &#10140; output file (Destino da): Ficheiro/dispositivo a onde se quere volcar/copiar a orixe indicada. Neste caso, o destino é o ficheiro /mnt/image-SD.dd
+                  <li> bs=1024K &#10140; Tamaño de lectura/escritura en bloques para realizar o volcado de <b>if</b> a <b>of</b>
+                  <li> status=progress &#10140;  amosar o progreso da copia durante a transferencia.
+                  </span></li><br />
+                </ul>
+              </div>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent explicacion3 pall title20'>
+      <b>IMPORTANTE!:</b>
+      <ul type='square'>
+        <li>Nunca tratar de recuperar os datos no propio dispositivo(memoria externa) do que queremos recuperar os datos.
+        <li>Facer un volcado(copia por sectores/bloques co comando <span class='label'>dd</span>) do dispositivo que posúe os datos a recuperar.
+        <li>Se un dase conta que eliminou datos por erro nun dispositivo, deixar inmediatamente de traballar co dispositivo, para non corromper máis o dispositivo, sobreescribindo sectores, e impedindo un bo resultado no procedemento de recuperación de datos.
+        <li>Non montar a memoria externa para recuperar datos, é dicir, non montar o propio dispositivo do cal queremos recuperar datos.</span>
+      </ul>
+    </div>
+
+
+    <div class='indent'>&nbsp;</div>
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <p class='mtop mbottom label'>Recuperación de ficheiros dunha Memoria Externa</p>
+      <p class='justify pright pall'>Imos recuperar datos dunha memoria externa (pendrive, tarxeta SD (microSD ou similar), disco duro externo, etc. mediante o mesmo procedemento. Basicamente:
+        <ol>
+          <li>Arrancar en modo forense Kali Linux.
+          <li>Montar o disco duro <span class='label'>sdb</span> (particións/volumes sdaX) que posúe o espazo suficiente para volcar a memoria externa e tamén poder recuperar os datos.
+          <li>Conectar a memoria externa.
+          <li><span class='label'>IMPORTANTE: Non montar a memoria externa.</span>
+          <li>Facer un volcado do sistema de arquivos da memoria externa mediante o comando <span class='label'>dd</span>
+          <li>Recuperar a información desexada mediante o comando <span class='label'>photorec</span>
+        </ol>
+      </p>
+
+      <p class='mtop mbottom label'>Procedemento:</p>
+      <ol>
+        <li class='mtop mbottom'>Arrancar en modo forense en Kali Linux.<br />
+          <img class='contido bfigure pall' src="images/Kali-Linux-Modo-Forense.png" />
+        </li>
+        <li class='mtop mbottom'>Montar o disco duro <span class='label'>sdb</span> (particións/volumes sdaX) que posúe o espazo suficiente para volcar a memoria externa e tamén poder recuperar os datos.
+          <p>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kali mleftsubs'>
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                  <li>fdisk -l /dev/sdb <span class='explicacion'> #Lista a táboa de particións do disco /dev/sdb e logo remata.</span></li>
+                  <pre>
+  Disco /dev/sdb: 1,8 TiB, 2000398931968 bytes, 3907029164 sectores
+  Modelo de disco: External USB 3.0
+  Unidades: sectores de 1 * 512 = 512 bytes
+  Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+  Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+  Tipo de etiqueta de disco: dos
+  Identificador del disco: 0xabc123ab
+
+  Disposit.  Inicio Comienzo      Final   Sectores Tamaño Id Tipo
+  /dev/sdb1             2048 3907028991 3907026944   1,8T  7 HPFS/NTFS/exFAT
+                  </pre>
+                  <li>mkdir /mnt/recuperar <span class='explicacion'> #Crear o directorio /mnt/recuperar</span>.</li>
+                  <li>mount -t auto /dev/sdb1 /mnt/recuperar <span class='explicacion'> #Montar a partición 1 do disco duro /dev/sdb no directorio da live /mnt/recuperar. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span>.</li>
+                </ul>
+            </ul>        
+          </p>        
+        </li>
+
+        <li class='mtop mbottom'>Conectar/identificar a memoria externa (pendrive, SD, disco duro, etc)
+          <p>Antes de conectar a memoria externa, executar:
+            <ul class='hashtag-kali'>
+              <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+              <li>dmesg -w <span class='explicacion'> #Amosar as mensaxes do kernel acontecidas e espera a próximas conexións en tempo real sen devolver o prompt. A opción -w é válida dende a versión do kernel 3.5.0</span></li>
+            </ul>
+          <p>Conectar a memoria externa e revisar a consola onde executamos o comando anterior <i>dmesg -w</i>. Agora debería aparecer identificado o dispositivo conectado. 
+            <ul>
+              <pre>
+[217321.291034] usb 1-6: USB disconnect, device number 9
+[217459.947432] usb 1-3: new high-speed USB device number 10 using xhci_hcd
+[217460.100498] usb 1-3: New USB device found, idVendor=0951, idProduct=162d, bcdDevice= 1.00
+[217460.100506] usb 1-3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[217460.100511] usb 1-3: Product: DataTraveler 102
+[217460.100515] usb 1-3: Manufacturer: Kingston
+[217460.100519] usb 1-3: SerialNumber: AA1CC0BB34EAAAC0ACCCCCC9
+[217460.102232] usb-storage 1-3:1.0: USB Mass Storage device detected
+[217460.102624] scsi host2: usb-storage 1-3:1.0
+[217461.127002] scsi 2:0:0:0: Direct-Access     Kingston DataTraveler 102 PMAP PQ: 0 ANSI: 0 CCS
+[217461.128726] sd 2:0:0:0: Attached scsi generic sg1 type 0
+[217462.119994] sd 2:0:0:0: [sdc] 7831552 512-byte logical blocks: (4.01 GB/3.73 GiB)
+[217462.121398] sd 2:0:0:0: [sdc] Write Protect is off
+[217462.121404] sd 2:0:0:0: [sdc] Mode Sense: 03 41 00 00
+[217462.122766] sd 2:0:0:0: [sdc] No Caching mode page found
+[217462.122778] sd 2:0:0:0: [sdc] Assuming drive cache: write through
+[217462.143673]  sdc: sdc1
+[217462.148693] sd 2:0:0:0: [sdc] Attached SCSI removable disk
+              </pre>
+            </ul>
+          <p>Executar:
+            <ul class='hashtag-kali'>
+              <li>^C <span class='explicacion'> #Abortar execución do comando anterior, é dicir, abortar o comando <i>dmesg -w</i>, enviando o sinal 2 (SIGNINT 2)(kill -l) ao sistema.</span></li><br />
+              <li>fdisk -l /dev/sdc <span class='explicacion'> #Lista a táboa de particións do disco /dev/sdc e logo remata.</span></li>
+                <pre>
+Disco /dev/sdc: 3,8 GiB, 4009754624 bytes, 7831552 sectores
+Modelo de disco: DataTraveler 102
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0x4a423dc7
+
+Disposit.  Inicio Comienzo   Final Sectores Tamaño Id Tipo
+/dev/sdc1             2048 7831551  7829504   3,8G  b W95 FAT32
+                </pre>
+
+            </ul>
+          </p>        
+        </li>
+
+        <li class='mtop mbottom'>IMPORTANTE: Non montar a memoria externa.</span>
+          <p>Revisar antes de proceder que o dispositivo memoria externa non está montado:
+            <ul class='hashtag-kali'>
+              <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+            </ul>
+          </p>
+        </li>
+
+
+        <li class='mtop mbottom'>Facer un volcado do sistema de arquivos da memoria externa mediante o comando <span class='label'>dd</span>
+          <ul class='hashtag-kali mtopplus'>
+            <li>dd if=/dev/sdc of=/mnt/recuperar/image-SD.dd bs=1024K status=progress<span class='explicacion'> #Facer un volcado da memoria externa (/dev/sdc) no ficheiro image-SD.dd. Para iso ao comando dd pasámolle como argumento o tamaño de lectura/escritura en bloques que emprega para realizar a copia (bs=1024K).</span>
+              <pre>
+3997171712 bytes (4,0 GB, 3,7 GiB) copied, 239 s, 16,7 MB/s
+3824+0 registros leídos
+3824+0 registros escritos
+4009754624 bytes (4,0 GB, 3,7 GiB) copied, 239,97 s, 16,7 MB/s
+              </pre>
+          </ul>
+        </li>
+
+        <div class='indent pagebreak'>&nbsp;</div>
+        <li class='mtop mbottom'>Recuperar a información desexada mediante o comando <span class='label'>photorec</span>
+          <ul class='hashtag-kali mtopplus'>
+            <li>photorec /mnt/recuperar/image-SD.dd <span class='explicacion'> #Abrir mediante o comando <i>photorec</i> a imaxe copiada da memoria externa para proceder á recuperación de datos.</span>
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+  PhotoRec is free software, and
+comes with ABSOLUTELY NO WARRANTY.
+
+Select a media (use Arrow keys, then press Enter):
+<span class='selectTD'>&gt;Disk image-SD.dd - 4009 MB / 3824 MiB (RO)</span>
+
+
+
+
+
+
+<span class='selectTD'>>[Proceed ]</span>  [  Quit  ]
+
+Note:
+Disk capacity must be correctly detected for a successful recovery.
+If a disk listed above has an incorrect size, check HD jumper settings an
+detection, and install the latest OS patches and disk drivers.
+              </pre>
+            </li>
+          </ul>
+          <ol type='A'>
+            <li>Elixir <span class='label'>Proceed</span> para continuar.
+            <li>Escoller a partición onde intentar recuperar datos:
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+Disk image-SD.dd - 4009 MB / 3824 MiB (RO)
+
+     Partition                  Start        End    Size in sectors
+      No partition             0   0  1   487 125 22    7831552 [Whole di
+<span class='selectTD'>> 1 P FAT32                    0  32 33   487 125 22    7829504 [USB-PDF]</span>
+
+
+
+
+
+
+<span class='selectTD'>>[ Search ]</span>  [Options ]  [File Opt]  [  Quit  ]
+                              Start file recovery
+              </pre>
+            <li>Escoller <span class='label'>File Opt</span> para seleccionar o tipo de ficheiros a recuperar
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+PhotoRec will try to locate the following files
+
+<span class='selectTD'>>[X] custom Own custom signatures</span>
+ [X] 1cd  Russian Finance 1C:Enterprise 8
+ [X] 3dm  Rhino / openNURBS
+ [X] 7z   7zip archive file
+ [X] DB
+ [X] a    Unix Archive/Debian package
+ [X] abr  Adobe Brush
+ [X] acb  Adobe Color Book
+ [X] accdb Access Data Base
+ [X] ace  ACE archive
+    Next
+Press s to disable all file families, b to save the settings
+<span class='selectTD'>>[  Quit  ]</span>
+                              Return to main menu
+              </pre>
+            Unha vez seleccionados os tipos de ficheiros premer <span class='label'>b</span>, para gardar a configuración escollida, a continuación premer <b>Enter</b> para seleccionar <span class='label'>OK</span> e por último premer en <span class='label'>Quit</span> para voltar ao menú principal.      
+            <div class='minindent'>&nbsp;</div>
+            <li>Escoller <span class='label'>Search</span>      
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+Disk image-SD.dd - 4009 MB / 3824 MiB (RO)
+
+     Partition                  Start        End    Size in sectors
+      No partition             0   0  1   487 125 22    7831552 [Whole di
+> 1 P FAT32                    0  32 33   487 125 22    7829504 [USB-PDF]
+
+
+
+
+
+
+<span class='selectTD'>[ Search ]</span>  [Options ]  [File Opt]  [  Quit  ]
+              </pre>
+            <li>Escoller <span class='label'>Other</span>      
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+ 1 P FAT32                    0  32 33   487 125 22    7829504 [USB-PDF]
+
+To recover lost files, PhotoRec needs to know the filesystem type where t
+file were stored:
+ [ ext2/ext3 ] ext2/ext3/ext4 filesystem
+<span class='selectTD'>[ Other     ]</span> FAT/NTFS/HFS+/ReiserFS/...
+
+
+
+
+
+
+
+
+              </pre>
+            <li>Elixir <span class='label'>Free</span> como o espazo a analizar:
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+ 1 P FAT32                    0  32 33   487 125 22    7829504 [USB-PDF]
+
+
+Please choose if all space needs to be analysed:
+<span class='selectTD'>>[   Free    ]</span> Scan for file from FAT32 unallocated space only
+ [   Whole   ] Extract files from whole partition
+</pre>
+            </li>
+            <li>Elixir onde copiar. Imos premer <span class='label'>C</span> para indicar que <span class='label'>/mnt/recuperar</span> é o destino de copia:
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+
+Please select a destination to save the recovered files to.
+Do not choose to write the files to the same partition they were stored o
+Keys: <span class='bqwhite'><b>Arrow</b></span> keys to select another directory
+      <span class='bqwhite'><b>C</b></span> when the destination is correct
+      <span class='bqwhite'><b>Q</b></span> to quit
+Directory /mnt/recuperar
+<span class='selectTD'>>drwxr-xr-x     0     0      4096  9-Mar-2022 17:31 .</span>
+ drwxr-xr-x     0     0      4096  9-Mar-2022 17:31 ..
+ -rwxrwxrwx  1000  1000 4009754624  9-Mar-2022 15:20 image-SD.dd
+              </pre>
+              <div class='indent pagebreak'>&nbsp;</div>
+            <li>Recuperado e Copiado:
+              <pre class='bfigure testdisk'>
+PhotoRec 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+
+Disk image-SD.dd - 4009 MB / 3824 MiB (RO)
+     Partition                  Start        End    Size in sectors
+ 1 P FAT32                    0  32 33   487 125 22    7829504 [USB-PDF]
+
+
+1 files saved in /mnt/recuperar/recup_dir directory.
+Recovery completed.
+
+You are welcome to donate to support and encourage further development
+https://www.cgsecurity.org/wiki/Donation
+
+
+
+
+
+
+
+
+<span class='selectTD'>[ Quit ]</span>
+              </pre>
+            <li>Saír de <i>photorec</i> premendo varias veces a tecla <span class='label'>q</span> 
+            <li>Comprobar que o ficheiro foi recuperado: 
+              <ul class='hashtag-kali mleftsubsx2 mtopplus'>
+                <li>ls -l /mnt/recuperar/recup_dir.1<span class='explicacion'> #Listar de forma extendida amosando o contido do directorio /mnt/recuperar/recup_dir.1 </span>
+                  <pre>
+total 20
+-rw-r--r-- 1 root root 8193 mar  9 17:39 f0015304.pdf
+-rw-r--r-- 1 root root 1630 mar  9 17:42 report.xml
+                  </pre>
+                </li>
+              </ul>
+            </li>
+            <p class='label'>Os datos foron recuperados</p>
+            <li>Unha vez recuperados os datos desmontar o disco externo onde foron recuperados: 
+              <ul class='hashtag-kali mleftsubsx2 mtopplus'>
+                <li>cd <span class='explicacion'> #Cambiar ao directorio $HOME do usuario que executa o comando, é dicir, se $HOME=/home/usuario, cambiarase ao directorio /home/usuario, se $HOME=/root, cambiarase ao directorio /root</span></li>
+                <li>umount /mnt/recuperar<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sdb1 que estaba montada en /mnt/recuperar</span></li>
+              </ul>
+            </li>
+          </ol>
+        </li>
+      </ol>
+    </div>
+    <div class='mtopplusx8'>&nbsp;</div>
+    <div class='mtopplusx8'>&nbsp;</div>
+    <div class='mtopplusx4'>&nbsp;</div>
+    <hr />
+    <div id="footer">
+      <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa arriba'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div
+</body>
+</html>
