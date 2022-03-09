@@ -145,7 +145,7 @@ f_main() {
   f_orientation $*
   f_size $*
   f_javascriptDelay $*
-  ${HTML2PDF} ${ORIENTATION} ${DELAY} ${SIZE} ${FILE}.html PDF/${FILEPDF}.pdf
+  ${HTML2PDF} ${ORIENTATION} ${DELAY} ${SIZE} --enable-local-file-access ${FILE}.html PDF/${FILEPDF}.pdf
 }
 
 
