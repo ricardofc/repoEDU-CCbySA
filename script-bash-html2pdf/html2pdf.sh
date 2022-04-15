@@ -48,14 +48,14 @@ f_help() {
   echo -e '\tbash $0 file.html hz'
   echo -ne '\e[01;33m'
   echo -ne '\e[00m'
-  echo -e 'Exemplo3: Orientación Vertical con Delay(20000ms)'
+  echo -e 'Exemplo3: Orientación Vertical A4 con Delay(20000ms)'
   echo -ne '\e[01;77m'
-  echo -e '\tbash $0 file.html vt 20000'
+  echo -e '\tbash $0 file.html vt A4 20000'
   echo -ne '\e[01;33m'
   echo -ne '\e[00m'
-  echo -e 'Exemplo4: Orientación Horizontal con Delay(20000ms)'
+  echo -e 'Exemplo4: Orientación Horizontal A3 con Delay(20000ms)'
   echo -ne '\e[01;77m'
-  echo -e '\tbash $0 file.html hz 20000' 
+  echo -e '\tbash $0 file.html hz A3 20000' 
   echo -ne '\e[01;33m'
 
   echo '#######################################################'
@@ -120,7 +120,7 @@ f_size() {
   if [[ "$3" = 'A3' ]]; then
     export SIZE="-s A3" 
     FILEPDF="${FILE}_A3"
-  elif [ -z "$3" ]; then
+  elif [ -n "$3" ]; then
     export SIZE="-s A4"
     FILEPDF="${FILE}"
   else
