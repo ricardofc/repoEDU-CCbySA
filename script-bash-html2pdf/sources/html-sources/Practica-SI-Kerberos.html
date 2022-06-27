@@ -1,0 +1,1051 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>GNU/Linux Kerberos</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: black; font-size:14px; }
+/*body { font-family: monospace; color: #000000; background-color: #ffffff; }*/
+.lnr, .LineNr { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Error { color: #ffffff; background-color: #ff6060; font-weight: bold; }
+.Special { color: #ff40ff; }
+.Statement { color: #ffff00; }
+.Constant { color: #ff6060; }
+.Identifier { color: #00ffff; }
+.Comment { color: #8080ff; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+/* function to open any folds containing a jumped-to line before jumping to it */
+function JumpToLine()
+{
+  var lineNum;
+  lineNum = window.location.hash;
+  lineNum = lineNum.substr(1); /* strip off '#' */
+
+  if (lineNum.indexOf('L') == -1) {
+    lineNum = 'L'+lineNum;
+  }
+  lineElem = document.getElementById(lineNum);
+  /* Always jump to new location even if the line was hidden inside a fold, or
+   * we corrected the raw number to a line ID.
+   */
+  if (lineElem) {
+    lineElem.scrollIntoView(true);
+  }
+  return true;
+}
+if ('onhashchange' in window) {
+  window.onhashchange = JumpToLine;
+}
+
+-->
+</script>
+</head>
+
+<body onload='JumpToLine();'>
+
+<div id='autocentrado'>
+<h1><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Criptografia' target='_blank'>Kerberos (autenticación, SSO, cifrado simétrico, KDC)</a></h1>
+<img class='arriba' style="border-width:0;margin-top:0px;" src="images/mouse-pointer-mini.png" />
+<!--<h2>URL de referencia: <a href='https://debian-handbook.info/browse/es-ES/stable/' target='_blank'>El manual del Administrador de Debian</a></h2>-->
+
+
+
+<div class='contido'>
+<div class='minindent'>&nbsp;</div>
+  <div style='text-align:right;margin-right:40px;'><img alt="PROTOCOLO KERBEROS" style="border-width:0" src="images/practica_dominios_kerberos.png" /></div>
+  <div class='explicacion3 pall'>
+    <table cellspacing=9>
+    <tr><td><h3 class='arriba'><a href='https://web.mit.edu/kerberos/' target='_blank'>Kerberos MIT</a></h3>
+      <div class='minindent'>&nbsp;</div>
+      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+    <td><h3 class='arriba'><a href='https://github.com/heimdal/heimdal/wiki' target='_blank'>Kerberos Heimdal</a></h3>
+      <div class='minindent'>&nbsp;</div>
+      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+    <td><h3 class='arriba'><a href='https://help.ubuntu.com/community/Kerberos' target='_blank'>Official documentation Ubuntu<br />Kerberos</a></h3>
+      <div class='minindent'>&nbsp;</div>
+      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+    <td><img class='cfigure' src="images/mouse-pointer-mini-rotate-180.png" />
+      <br />
+      <span class='label'><a href='https://help.ubuntu.com/community/Kerberos#Realm_Administration:_kadmin' target='_blank'>kadmin</a></span><br /> Comando para administrar Kerberos<br />de forma local ou remota</td>
+    <td><img class='cfigure' src="images/mouse-pointer-mini-rotate-180.png" />
+      <br />
+    <span class='label'><a href='https://help.ubuntu.com/community/Kerberos#Configuration' target='_blank'>krb5-config</a></span><br /> Comando para configuración</td>
+    <td><img class='cfigure' src="images/mouse-pointer-mini-rotate-180.png" />
+      <br />
+    <span class='label'><a href='https://help.ubuntu.com/community/Kerberos#Configuration' target='_blank'>/etc/krb5.conf</a></span><br /> Ficheiro de configuración</td>
+    <td><img class='cfigure' src="images/mouse-pointer-mini-rotate-180.png" />
+      <br />
+    <span class='label'><a href='https://help.ubuntu.com/community/Kerberos#Testing' target='_blank'>kinit</a></span><br /> Comando que permite solicitar un ticket TGT<br />tras verificación de autententicación do usuario que procesa a solicitude.</td>
+    </tr>
+    </table>
+
+  </div>
+<div class='minindent'>&nbsp;</div>
+<div id='protocoloKerberos'>
+<div><span style='background-color:#ccffff;float:right;padding: 5px;'><b>NOMENCLATURA KERBEROS</b></span></div>
+<b><span>KDC:</span></b> Key Distribution Center → Emite tickets Kerberos<br />
+<b><span>Ticket:</span></b> Credenciais electrónicas temporais que verifican a identidade dun cliente para un servizo particular<br />
+<b><span>BBDD Principal:</span></b> Base de datos de usuarios do KDC ≠ /etc/passwd<br />
+<b><span>AS:</span></b> Authentication Server → Emite tickets de acceso TGT para gañar acceso ao servidor TGS, é dicir, encárgase de validar ao usuario frente ao sistema sustituíndo ao login clásico<br />
+<b><span>TGS:</span></b> Ticket Granting Server → Emite tickets para un servizo desexado, os cales son entregados aos usuarios para que poidan acceder ao servizo <br />
+<b><span>TGT:</span></b> Ticket especial que permite ao cliente obter tickets sen solicitalos dende o KDC<br />
+<b><span>Cliente Kerberizado</b> (PAM(login), kinit ...)<br />
+<b><span>Servidor Kerberizado</b> (Servizo/s Kerberizado/s)<br />
+<b><span>Key:</span></b> Chave → Datos usados cando ciframos ou desciframos datos. Non se pode descifrar os datos cifrados sen a chave correcta <br />
+<b><span>Reino de Kerberos (Realm):</span></b> Rede que usa Kerberos, composto por un ou varios servidores KDCs e un número potencial de clientes. O nome do reino de Kerberos para o KDC de Microsoft é o nome do controlador de dominio en MAIÚSCULAS, por exemplo:</span></b> EDUCACION.LOCAL . Un cliente en Kerberos identifícase co seu principal<br />
+<b><span>Principal (nome do principal):</span></b> É o nome único do usuario ou servizo que pode autenticar mediante o uso de Kerberos. <span class='label'>Formato: name[/instance]@REALM</span>  <br />
+<span class='label pall'>→ name</span> para os usuarios é o mesmo que o ID de inicio de sesión, por exemplo root<br />
+<span class='label pall'>→ instance</span> pode ser opcional no caso dos usuarios pero é obrigatorio para os servizos, por exemplo: alumno, alumno/admin, alumno/host1.educacion.local<br />
+<span class='label pall'>→ REALM</span> é o nome do reino de Kerberos, por exemplo EDUCACION.LOCAL . Todos os principais dun reino teñen a súa propia chave, sendo para os usuarios derivada do seu contrasinal e para os servizos xerada aleatoriamente.<br />
+<b><span>Keytab:</span></b> Para os servizos dun host é similar ao contrasinal dun usuario. Cada host que proporciona un servizo debe ter un arquivo local keytab, que contén o principal para o servizo en cuestión, o cal denomínase clave de servizo.
+</div>
+</div>
+<div>
+<div class='indent'>&nbsp;</div>
+<div class='pagebreak'>&nbsp;</div>
+<div class='label'>KERBEROS</a></div>
+<div class='contido'>
+Kerberos proporciona autenticación SSO (Single Sing-On), de xeito que un usuario soamente ten que autenticarse unha vez en cada sesión e pode facer uso de esta autenticación para tódolos servizos e equipos do reino de Kerberos.<br />
+Kerberos permite:
+<ul style='margin: 0 0 0 -10px;'>
+  <li>Ao cliente probar a súa identidade ante un servidor</li>
+  <li>Ao servidor probar a súa identidade frente aos clientes</li>
+  <li>Unha vez autenticados, cifrar a comunicación</li>
+  <li>Que en ningún momento o contrasinal do usuario sexa enviado por rede</li>
+  <li>Que os contrasinais dos usuarios non estén almacenados nos equipos clientes</li>
+  <li>Que os contrasinais dos usuarios estén almacenados cifrados no KDC, na BBDD Principal</li>
+  <li>Que os tickets soamente poden usarse durante un tempo limitado. Debido a isto é necesario a sincronización temporal do KDC, cliente e servidores kerberizados.</li>
+</ul>
+<p style='text-align:justify'>Microsoft Active Directory emprega Kerberos como mecanismo de seguridade predeterminado. Cando se engaden usuarios a Microsoft Active Directory, a súa identificación de Windows é equivalente a un nome principal Kerberos.</p>
+<div class='explicacion3 pall'>
+  <p><span class='label'>IMPORTANTE:</span></p>
+  <ul type='square'>
+    <li><span class='label'>Active directory</span> &#10140; Non distingue entre maiúsculas e minúsculas os nomes dos servizos</p>
+    <li><span class='label'>Kerberos</span> &#10140; Distingue entre maiúsculas e minúsculas os nomes dos servizos</p>
+    <li><span class='label'>Convencións:</span>:
+    <ul>
+      <li>Os reinos de Kerberos e os dominios de Active Directory están escritos con maiúscula.
+      <li>Os nomes de host escríbense en minúscula.
+      <li>As buscas de bases de datos distinguen entre maiúsculas e minúsculas.
+    </ul>
+  </p>
+</div>
+</div>
+<div class='minindent'>&nbsp;</div>
+<div class='label'><a href='https://tools.ietf.org/html/rfc4120' target='_blank'>EXPLICACIÓN PROTOCOLO KERBEROS</a></div>
+<div class='contido'>
+<div class='label' style='margin-left:10px;'>Autenticación en 3 fases:</div>
+<div class='subcontidolongo' style='margin-left: 5px;'>
+  <b><span style='color:#0F18A0;'>Fase 1:</span></b> Pasos 1 e 2. Autenticación de usuario<br />
+  <b><span style='color:#0F18A0;'>Fase 2:</span></b> Pasos 3 e 4. Autorización de tipo de servizo<br />
+  <b><span style='color:#0F18A0;'>Fase 3:</span></b> Pasos 5 e 6. Autorización dun servidor<br />
+A <b><span style='color:#0F18A0;'>Fase 1</span></b> soamente ten lugar unha vez, sendo a <b><span style='color:#0F18A0;'>Fase 2</span></b> e a <b><span style='color:#0F18A0;'>Fase 3</span></b> as que se repiten para acceder a múltiples servizos kerberizados.
+</div>
+<ul style='list-style-type: square;'>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 1:</span></b> O usuario introduce credenciais (PAM(login, su ...)  no cliente e envía o principal ao servizo AS do servidor KDC.</li>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 2:</span></b> O servizo AS do KDC verifica as credenciais na BBDD Principal e logo de autenticar envía ao cliente un TGT.</li>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 3:</span></b> O cliente quere acceder a un servizo polo que envía o TGT ao TGS do KDC.</li>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 4:</span></b> O TGS verifica o TGT e envía un ticket de servizo para o servizo ou aplicación destino.</li>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 5:</span></b> O cliente envía o ticket de servizo ao servizo kerberizado para a súa autenticación.</li>
+   <li><b><span style='font-size:14px;color:#0F18A0;'>Paso 6:</span></b> Se o servizo kerberizado acepta o ticket establécese un contexto de seguridade e entón a aplicación do usuario pode intercambiar datos co servizo destino.</li>
+</ul>
+<div> 
+<p style='text-align:justify'>Finalmente, o cliente autenticouse <span style='font-size:12px;'>(usuario/contrasinal)</span> contra a BBDD Principal <span style='font-size:12px;'>(Base de datos de usuarios do KDC ≠ /etc/passwd)</span>  → o cliente conta durante un período de tempo con un ticket TGT que permitira acceder a múltiples servizos kerberizados.</p>
+</div>
+</div>
+
+<div class='indent'>&nbsp;</div>
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Kerberos-NTP-ssh-rede-interna_NAT.bmp" />
+    </figure>
+
+<div class='indent'>&nbsp;</div>
+<div class='pagebreak'>&nbsp;</div>
+<div class='mtop mleft mbottom label'>Máquina virtual A: Kali amd64</p></div>
+    <div class='arriba contido'>
+      <ol>
+        <div class='minindent'>&nbsp;</div>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+            </ul>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor SSH: 
+          <ul class='dashed-kaliA mleftsubs'>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+                <li>nc -vz localhost 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>netstat -natp | grep 22 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>ss -natp | grep 22 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+                <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+                <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl enable ssh<span class='explicacion'> #Permite que o servizo ssh sexa iniciado no arranque xerando os links nos runlevels (/etc/rcX.d)</span></li>
+                <li>find /etc/rc* -name "*ssh*"<span class='explicacion'> #Busca polas links runlevels nos cartafoles /etc/rc*</span></li>
+                <li>systemctl is-enabled ssh.service<span class='explicacion'> #Amosa se o servizo ssh está enabled ou disabled</span></li>
+                <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+                <li>ssh -v kali@localhost<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el dende localhost co usuario kali e o seu contrasinal. Se é a primeira ver que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.
+                </li>
+                <ul class='dashed-kaliA mleftsubs'>
+                  <li>exit <span class='explicacion'> #Saír da consola remota ssh a que acabamos de acceder, para voltar á consola local de <b>root</b>.</span></li>
+                </ul>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>
+          </ul>
+        </li>
+
+          </ul>
+      </ol>
+</div>
+
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <div class='mtop mleft mbottom label'>Máquina virtual B: Kali amd64</div>
+
+        <div class='arriba contido'>
+       <ol>
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <p class='mtop pall mleftplus arriba'><span class='labelmini'> <sub>SSH</sub> </span></p>
+        <li class='mtop mleft mbottom'><span class='label'>B &#10140; A </span>Acceder mediante SSH dende a máquina virtual B á máquina virtual A. Dende agora executaremos sempre os comandos dende a máquina virtual B, a través da consola SSH: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar:</p> 
+            <ul class='dashed-kaliB mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>nc -vz 192.168.120.100 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>nc -vz  kaliA 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar que o porto 22 do servidor SSH está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>ssh -v kali@192.168.120.100<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el. Agora accedemos como o usuario <b>kali</b> a través da conexión cifrada SSH.</span></li>
+              <ul class='dashed-kaliA'>
+                <li></li>
+              </ul>
+            </ul>
+        </li>
+       </ol>
+     </div>
+
+
+
+
+
+<div class='indent'>&nbsp;</div>
+<div class='pagebreak'>&nbsp;</div>
+<div class='label' style='font-size:20px;'><a href='https://wiki.debian.org/es/NTP' target='_blank'>NTP (sincronizar hosts para validez de tickets Kerberos)</a></div>
+<img class='arriba' style="border-width:0;margin-top:0px;" src="images/mouse-pointer-mini.png" />
+<div class='indent'>&nbsp;</div>
+
+
+<div class='arriba contido'>
+      <div><span class='label'>Realizar nas 2 máquinas virtuais: A e B</div>
+      <ol>
+        <div><span class='label'>Opción 1: Servizo NTP (ntpd)</div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Instalar servizo NTP: 
+          <ul class='hashtag'>
+            <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search ntp || apt-cache search ntp<span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda ntp</li>
+            <li>apt -y install ntp || apt-get -y install ntp<span class='explicacion'> #Instalar o paquete ntp, é dicir, instalar o servizo NTP. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar servizo NTP (/etc/ntp.conf): 
+          <ul class='hashtag'>
+            <li>A=$(grep -n server /etc/ntp.conf | cut -d':' -f1 | xargs | awk '{print $NF}') 
+            <li>sed -i -e 's/server/##server/g' -e &quot;${A}a\server 2.es.pool.ntp.org iburst prefer\nserver 3.europe.pool.ntp.org iburst prefer\nserver 1.europe.pool.ntp.org iburst prefer&quot; /etc/ntp.conf <span class='explicacion'>#Cambiar os servidores ntp cos que sincronizar o sistema (ver <a href="http://www.pool.ntp.org/zone/es)">http://www.pool.ntp.org/zone/es)</a></span>
+            <li>systemctl restart ntp.service <span class='explicacion'> #Reiniciar o servizo ntp para ter en conta o cambio dos servidores realizado</span>
+            <li>nc -uvz localhost 123 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 123 do servizo NTP está activo. A opción -u indica que o porto a buscar emprega o protocolo UDP, a opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 123 é o porto UDP a escanear.</span></li>
+            <li>ntpq -p <span class='explicacion'> #Identificar con que servidores ntp estamos a sincronizar o sistema</li>
+          </ul>
+        </li>
+
+        <div class='indent'>&nbsp;</div>
+
+        <div><span class='label'>Opción 2: Servizo NTP (systemd-timesyncd)</div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Purgar servizo NTP (ntpd): 
+          <ul class='hashtag'>
+            <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li> apt -y purge ntp || apt-get -y purge ntp<span class='explicacion'> #Eliminar o servizo NTP mediante a purga do paquete de nome <i>ntp</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na desinstalación do paquete. <span class='label'>IMPORTANTE:</span> Con <span class='label'>purge</span> <span class='label'>SI SE ELIMINAN os ficheiros de configuración</span> do paquete desinstalado.
+            <li>systemctl status systemd-timesyncd <span class='explicacion'> #Comprobar o estado do servizo systemd-timesyncd.</li>
+          </ul>
+
+        <li class='mtop mleft mbottom'>Configurar NTP mediante timesyncd (systemd, timedatectl): 
+          <ul class='hashtag'>
+            <li>A=$(grep -n 'NTP=' /etc/systemd/timesyncd.conf | cut -d':' -f1 | xargs | awk '{print $NF}') 
+            <li>sed -i -e 's/NTP=/##NTP=/g' -e &quot;${A}a\NTP=2.es.pool.ntp.org\nNTP=3.europe.pool.ntp.org\nNTP=1.europe.pool.ntp.org&quot; /etc/systemd/timesyncd.conf <span class='explicacion'>#Cambiar os servidores ntp cos que sincronizar o sistema (ver <a href="http://www.pool.ntp.org/zone/es)">http://www.pool.ntp.org/zone/es)</a></span>
+            <li>systemctl restart systemd-timesyncd <span class='explicacion'> #Reiniciar o servizo ntp para ter en conta o cambio dos servidores realizado</span>
+            <li>timedatectl set-timezone Europe/Madrid<span class='explicacion'> #Modificar a zona temporal a Europe/Madrid</span><br />
+            <div class='explicacion3 pall'>
+            $ timedatectl <span class='explicacion'> #Comando que controla a hora e data do sistema. Executado Sen opcións amosa información sobre como está configurada a hora/data do sistema (sincronización NTP, zona temporal...)</span><br />
+            $ timedatectl list-timezones<span class='explicacion'> #Lista as zonas temporais</span><br />
+            </div>
+          </ul>
+
+</div>
+
+
+<div class='label' style='page-break-before:always;font-size:20px;'><a  href='https://wiki.archlinux.org/index.php/Dnsmasq_(Espa%C3%B1ol)' target='_blank'>dnsmasq: Servizos DNS + DHCP</a></div>
+<img class='arriba' style="border-width:0;margin-top:0px;" src="images/mouse-pointer-mini.png" />
+
+
+<div class='arriba contido'>
+      <ol>
+        <div><span class='label'>dnsmasq (DNS + DHCP) na máquina virtual A</span></div>
+        <div class='explicacion3 pall'>
+          <p><span class='label'>Convencións:</span>:
+          <ul>
+            <li>Os reinos de Kerberos e os dominios de Active Directory están escritos con maiúscula.
+            <li>Os nomes de host escríbense en minúscula.
+            <li>As buscas de bases de datos distinguen entre maiúsculas e minúsculas.
+          </ul>
+          </p>
+        </div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Hostname. Pór kalia.ies.local como hostname: 
+          <ul class='hashtag-kaliA mleftsubs'>
+              <li>echo 'kalia.ies.local' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+              <li>sed -i 's/kaliA/kalia.ies.local/' /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+              <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Instalar dnsmasq: 
+          <ul class='hashtag-kalia mleftsubs'>
+            <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search dnsmasq <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda dnsmasq</li>
+            <li>apt -y install dnsmasq <span class='explicacion'> #Instalar o paquete dnsmasq. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Resolución DNS. Actualizar o arquivo /etc/hosts:
+          <ul class='hashtag-kalia mleftsubs'>
+<!--            <li>A=$(grep -n '^127.0.0.1' /etc/hosts | cut -d':' -f1 | xargs | awk '{print $NF}') <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado no ficheiro /etc/hosts e gardalo na variable A</li> 
+            <li>sed -i "${A}s/localhost/kaliA.ies.local localhost/" /etc/hosts <span class='explicacion'> #Modificar a entrada localhost no ficheiro /etc/hosts para que resolva como primeira opción kaliA.ies.local</li> 
+            <li>A=$(grep -n '^::1' /etc/hosts | cut -d':' -f1 | xargs | awk '{print $NF}') <span class='explicacion'> #Atopar o número de liña onde aparece o patrón buscado no ficheiro /etc/hosts e gardalo na variable A</li> 
+            <li>sed -i "${A}s/localhost/kaliA.ies.local localhost/" /etc/hosts <span class='explicacion'> #Modificar a entrada localhost no ficheiro /etc/hosts para que resolva como primeira opción kaliA.ies.local</li> 
+-->
+            <li>echo '192.168.120.100 kalia.ies.local' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kalia.ies.local para que atenda á IP 192.168.120.100</li> 
+            <li>echo '192.168.120.101 kalib.ies.local' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kalib.ies.local para que atenda á IP 192.168.120.101</li> 
+            <li>hostname -f <span class='explicacion'> #Comprobar que se responde ao nome FQDN: kaliA.ies.local</li>
+          </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Configurar /etc/resolv.conf para apuntar a dnsmasq como servidor DNS a empregar para as resolucións de nomes/IPs:
+          <div class='explicacion3 pall'>
+            <p><span class='label'>/etc/resolv.conf:</span> Arquivo onde se configuran os servidores DNS. Exemplo contido tipo:</p>
+            <ul>
+              <p>domain example.local <span class='explicacion'> #Dominio a engadir na procura de hostnames. Se o host a buscar é pepito, é a procura falla, intentariase de novo esta como pepito.example.local</span></li><br />
+              <p>search example.local<span class='explicacion'> #Lista de dominios a engadir na procura de hostnames.</span></li>
+              <p>nameserver 8.8.8.8 <span class='explicacion'> #Servidor DNS primario para resolución de nomes.</span></li><br />
+              <p>nameserver 8.8.4.4<span class='explicacion'> #Agregar servidor DNS secundario para resolución de nomes.</span></li>
+            </ul>
+            <p class='label'>domain e search son excluintes, a última directiva que apareza no ficheiro prevalece.</p>
+          </div>
+          <div class='minindent'>&nbsp;</div>
+          <ul class='hashtag-kalia mleftsubs'>
+            <li>echo -e 'nameserver 127.0.0.1\nnameserver 192.168.120.100\nnameserver 8.8.4.4' &gt; /etc/resolv.conf<span class='explicacion'> #Agregar servidor DNS para resolución de nomes.</span></li>
+            
+          </ul>
+        </li>
+
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Habilitar servizo dnsmasq(DNS + DHCP):
+          <ul class='hashtag-kalia mleftsubs'>
+            <li>/etc/init.d/dnsmasq status <span class='explicacion'> #Comprobar o estado do servidor dnsmasq</span></li>
+            <li>/etc/init.d/dnsmasq start <span class='explicacion'> #Arrancar o servidor dnsmasq.</span></li>
+            <li>/etc/init.d/dnsmasq status <span class='explicacion'> #Comprobar o estado do servidor dnsmasq</span></li>
+          </ul>
+        </li>
+
+
+      </ol>
+     </div>
+
+<div class='label' style='page-break-before:always;font-size:20px;'><a href='https://github.com/heimdal/heimdal/wiki' target='_blank'>Kerberos Heimdal</a></div>
+<img class='arriba' style="border-width:0;margin-top:0px;" src="images/mouse-pointer-mini.png" />
+
+
+<div class='arriba contido'>
+      <ol>
+        <div><span class='label'>Servidor Kerberos Heimdal (kdc) na máquina virtual A</div>
+        <div class='minindent'>&nbsp;</div>
+
+<!--        <li class='mtop mleft mbottom'>Actualizar prompt PS1:
+          <ul class='hashtag-kaliA mleftsubs'>
+            <li>A=$(grep -n 'PS1' ~/.bashrc | cut -d':' -f1 | xargs | awk '{print $NF}') <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado no ficheiro /home/kali e gardalo na variable A</li> 
+            -->
+        <li class='mtop mleft mbottom'>Instalar servidor Kerberos Heimdal e definir REALM: 
+          <ul class='hashtag-kalia mleftsubs'>
+            <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search heimdal-kdc || apt-cache search heimdal-kdc<span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda heimdal-kdc</li>
+            <li>apt -y install heimdal-kdc || apt-get -y install heimdal-kdc<span class='explicacion'> #Instalar o paquete heimdal-kdc, é dicir, instalar o servidor Kerberos. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+            <div class='explicacion3 pall'>
+              Default Kerberos version 5 realm:<br />
+              IES.LOCAL <span class='label'>#Indicar reino Kerberos (MAIÚSCULAS)</span><br />
+              Kerberos servers for your realm:<br />
+              kalia.ies.local <span class='label'>#Indicar servidor Kerberos (minúsculas)</span><br />
+              Administrative server for your Kerberos realm:<br />
+              kalia.ies.local <span class='label'>#Indicar servidor administrador do reino Kerberos (minúsculas)</span><br />
+            </div>
+            <div class='explicacion3 pall'>
+              <ul class='hashtag-kalia'>
+                <li>dpkg-reconfigure kbr5-config <span class='explicacion'>#Reconfigurar kerberos</span>
+                <li>apt -y install heimdal-docs <span class='explicacion'>#Instalar paquete documentación Heimdal Kerberos</span>
+                <li>dpkg -L heimdal-docs <span class='explicacion'>#Listar ficheiros pertencentes ao paquete heimdal-docs</span>
+              </ul>
+            </div>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Comprobar estado do Servidor Kerberos: 
+          <ul class='hashtag-kalia mleftsubs'>
+            <li>/etc/init.d/heimdal-kdc status <span class='explicacion'> #Comprobar o estado do servidor Kerberos, por defecto (logo de instalar o paquete) está arrancado.</span></li>
+            <li>nc -vz localhost 88 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 88 do servidor Kerberos está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 88 é o porto TCP a escanear.</span></li>
+            <li>nc -vz 192.168.120.100 88 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 88 do servidor Kerberos está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 88 é o porto TCP a escanear.</span></li>
+            <li>nc -vz kalia.ies.local 88 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 88 do servidor Kerberos está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 88 é o porto TCP a escanear.</span></li>
+            <li>netstat -natp | grep 88 <span class='explicacion'> #Mediante o comando netstat comprobar que o porto 88 do servidor Kerberos está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+            <li>ss -natp | grep 88 <span class='explicacion'> #Mediante o comando ss comprobar que o porto 88 do servidor Kerberos está en estado escoita(listen), esperando conexións. A opción -n permite non resolver nomes amosando así soamente as IPs e o comando ser máis rápido na execución. A opción -a equivale á opción all o que permite amosar todos os sockets (conectores) á escoita no servidor. A opción -t equivale a tcp o que permite buscar soamente información sobre o protocolo TCP. A opción -p equivale a program e amosa o PID e nome do programa ao cal pertence o socket.</span></li>
+          </ul>
+        </li>
+
+
+        <li class='mtop mleft mbottom'>Usuario e ticket. Autenticar como usuario en Kerberos, conseguir un ticket e ver a súa validez: 
+          <ul class='hashtag-kalia mleftsubs'>
+            <!--<li>apt -y install krb5-user || apt-get -y install krb5-user<span class='explicacion'> #Instalar o paquete krb5-user. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>-->
+            <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos</span></li>
+            <div class='explicacion3'>
+              root@kalia:~# kadmin -l<br />
+              kadmin> add user1 <span class='explicacion'><b>#Crear usuario user1 na bddd principal kerberos (base de datos de usuarios do KDC)</b></span><br /> 
+              Max ticket life [1 day]:<br />
+              Max renewable life [1 week]:<br />
+              Principal expiration time [never]:<br />
+              Password expiration time [never]:<br />
+              Attributes []:<br />
+              Policy [default]:<br />
+              user1@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir o contrasinal que queremos que posúa o usuario user1. Por exemplo abc123. (Ollo que o contrasinal ten un caracter punto final)</b></span><br /> 
+              Verify password - user1@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir de novo o contrasinal anterior (abc123.)</b></span><br />
+              kadmin> quit<br />
+              root@kalia:~#
+            </div>
+            <div class='explicacion3'>
+             Dentro de kadmin coa comando <span class='label'>list *</span> listamos todos os principales.
+            </div>
+            <!--<li>echo 'abc123.' | kinit user1 <span class='explicacion'> #Autenticar como usuario <b>user1</b> conseguindo un ticket TGT</span></li>-->
+            <li>kinit user1 <span class='explicacion'> #Autenticar como usuario <b>user1</b> e contrasinal <b>abc123.</b> conseguindo un ticket TGT</span><br />
+            user1@IES.LOCAL's Password:</li>
+            <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+ 
+     <div class='minindent'>&nbsp;</div>
+     <div class='label' style='page-break-before:always;font-size:20px;'><a  href='https://wiki.archlinux.org/index.php/Dnsmasq_(Espa%C3%B1ol)' target='_blank'>Apuntar ao DNS (dnsmasq en kaliA)</a></div>
+<img class='arriba' style="border-width:0;margin-top:0px;" src="images/mouse-pointer-mini.png" />
+     <div class='arriba contido'>
+     <ol>
+     <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Hostname. Pór kalib.ies.local como hostname: 
+          <ul class='hashtag-kaliB mleftsubs'>
+              <li>echo 'kalib.ies.local' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+              <li>sed -i 's/kaliB/kalib.ies.local/' /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+              <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+              <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Resolución DNS. Actualizar o arquivo /etc/hosts:
+          <ul class='hashtag-kalib mleftsubs'>
+<!--            <li>A=$(grep -n '^127.0.0.1' /etc/hosts | cut -d':' -f1 | xargs | awk '{print $NF}') <span class='explicacion'> #Atopar a liña onde aparece o patrón buscado no ficheiro /etc/hosts e gardalo na variable A</li> 
+            <li>sed -i "${A}s/localhost/kaliB.ies.local localhost/" /etc/hosts <span class='explicacion'> #Modificar a entrada localhost no ficheiro /etc/hosts para que resolva como primeira opción kaliB.ies.local</li> 
+            <li>A=$(grep -n '^::1' /etc/hosts | cut -d':' -f1 | xargs | awk '{print $NF}') <span class='explicacion'> #Atopar o número de liña onde aparece o patrón buscado no ficheiro /etc/hosts e gardalo na variable A</li> 
+            <li>sed -i "${A}s/localhost/kaliB.ies.local localhost/" /etc/hosts <span class='explicacion'> #Modificar a entrada localhost no ficheiro /etc/hosts para que resolva como primeira opción kaliB.ies.local</li> 
+-->
+            <li>echo '192.168.120.101 kalib.ies.local' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kalib.ies.local para que atenda á IP 192.168.120.101</li> 
+            <li>hostname -f <span class='explicacion'> #Comprobar que se responde ao nome FQDN: kalib.ies.local</li>
+            <li>sed -i 's/kaliA/kalia.ies.local/' /etc/hosts <span class='explicacion'> #Modificar a entrada de kaliA no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) para que o nome kalia.ies.local atenda á IP 192.168.120.100</li> 
+            <br />
+          </ul>
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Configurar /etc/resolv.conf para apuntar a dnsmasq como servidor DNS a empregar para as resolucións de nomes/IPs:
+          <div class='explicacion3 pall'>
+            <p><span class='label'>/etc/resolv.conf:</span> Arquivo onde se configuran os servidores DNS. Exemplo contido tipo:</p>
+            <ul>
+              <p>domain example.local <span class='explicacion'> #Dominio a engadir na procura de hostnames. Se o host a buscar é pepito, é a procura falla, intentariase de novo esta como pepito.example.local</span></li><br />
+              <p>search example.local<span class='explicacion'> #Lista de dominios a engadir na procura de hostnames.</span></li>
+              <p>nameserver 8.8.8.8 <span class='explicacion'> #Servidor DNS primario para resolución de nomes.</span></li><br />
+              <p>nameserver 8.8.4.4<span class='explicacion'> #Agregar servidor DNS secundario para resolución de nomes.</span></li>
+            </ul>
+            <p class='label'>domain e search son excluintes, a última directiva que apareza no ficheiro prevalece.</p>
+          </div>
+          <div class='minindent'>&nbsp;</div>
+          <ul class='hashtag-kalib mleftsubs'>
+            <li>echo -e 'nameserver 192.168.120.100\nnameserver 8.8.4.4' &gt; /etc/resolv.conf<span class='explicacion'> #Agregar servidor DNS para resolución de nomes.</span></li>
+            
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+
+     <div class='minindent'>&nbsp;</div>
+      <div class='pagebreak'>&nbsp;</div>
+      <div><span class='label'>Cliente Kerberos Heimdal na máquina virtual B</div>
+      <div class='arriba contido'>
+      <ol>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'>Instalar cliente Kerberos Heimdal e reino REALM: 
+          <ul class='hashtag-kalib mleftsubs'>
+            <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search heimdal-clients || apt-cache search heimdal-clients<span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda heimdal-clients</li>
+            <li>apt -y install heimdal-clients || apt-get -y install heimdal-clients<span class='explicacion'> #Instalar o paquete heimdal-clients, é dicir, instalar o cliente Kerberos. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+            <div class='explicacion3 pall'>
+              Default Kerberos version 5 realm:<br />
+              IES.LOCAL <span class='label'>#Indicar reino Kerberos (MAIÚSCULAS)</span><br />
+              Kerberos servers for your realm:<br />
+              kalia.ies.local <span class='label'>#Indicar servidor Kerberos (minúsculas)</span><br />
+              Administrative server for your Kerberos realm:<br />
+              kalia.ies.local <span class='label'>#Indicar servidor administrador do reino Kerberos (minúsculas)</span><br />
+            </div>
+            <div class='explicacion3 pall'>
+              <ul class='hashtag-kalib'>
+                <li>dpkg-reconfigure kbr5-config <span class='explicacion'>#Reconfigurar kerberos</span>
+              </ul>
+            </div>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Usuario e ticket. Autenticar como usuario en Kerberos, conseguir un ticket e ver a súa validez: 
+          <ul class='hashtag-kalib mleftsubs'>
+            <li>kinit user1 <span class='explicacion'> #Autenticar como usuario <b>user1</b> e contrasinal <b>abc123.</b> conseguindo un ticket TGT. Ter en conta que o usuario <i>user1</i> xa existe na bbdd principal de kerberos e foi xerado de forma local en kalia mediante o comando <i>kadmin -l</i></span><br />
+            user1@IES.LOCAL's Password:</li>
+            <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+          </ul>
+        </li>
+      </ol>
+     </div>
+
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'>&nbsp;</div>
+
+        <div class='mtop mleft mbottom'><span class='label'>Exemplo1. Máquina Virtual A: Kerberizar a Autenticación Local (pam-krb5)</span></div>
+        <div class='arriba contido'>
+          <div class='minindent'>&nbsp;</div>
+          <ul class='mleft'>
+            <li type='i' class='mtop mleftsubs mbottom'>Instalar módulo <span class='label'>libpam-krb5</span>:
+              <ul class='hashtag-kalia mleftsubs'>
+                <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                <li>apt search libpam-krb5 || apt-cache search libpam-krb5<span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda libpam-krb5</li>
+                <li>apt -y install libpam-krb5 || apt-get -y install libpam-krb5<span class='explicacion'> #Instalar o paquete libpam-krb5, é dicir, instalar o módulo PAM que permite aos usuarios locais autenticarse mediante o contrasinal de kerberos (e non a través de /etc/passwd) . Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              </ul>
+              <div class='explicacion3'>
+                <table cellspacing=9>
+                  <tr>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_pam_and_nss' target='_blank'>PAM y NSS</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_configuration_files_accessed_by_pam_and_nss' target='_blank'>Archivos de configuración utilizados por PAM y NSS</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-handbook/sect.user-group-databases.es.html' target='_blank'>Bases de datos de usuarios y grupos</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='http://openaccess.uoc.edu/webapps/o2/bitstream/10609/226/10/Administraci%c3%b3n%20avanzada%20del%20sistema%20operativo%20GNU_Linux_M%c3%b3dulo9_Administraci%c3%b3n%20de%20seguridad.pdf' target='_blank'>Módulos PAM (páxs 26,27)</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-handbook/sect.user-group-databases.es.html#sidebar.intro-nss' target='_blank'>YENDO MÁS ALLÁ NSS y bases de datos de sistema</a>
+                      <br />
+                      (getent)
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Autenticacion' target='_blank'>Práctica Seguridade Informática - PAM</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+
+            <li type='i' class='mtop mleftsubs mbottom'>Configurar PAM con Kerberos</span>:
+              <p><span class='label'>Xa está feito!</span> Unha vez instalado o paquete libpam-krb5 xa podemos autenticar mediante kerberos coas contas locais. Para iso, imos crear un usuario no sistema para validar con PAM auth (/etc/passwd) e imos crear un usuario co mesmo nome na bbdd principal de Kerberos con outro contrasinal. Veremos que podemos acceder co contrasinal de Kerberos á conta local.</p>
+              <ul class='hashtag-kalia mleftsubs'>
+                <li>pam-auth-update<span class='explicacion'> #Con esta comando podemos modificar/verificar os módulos de autenticación PAM activados.</span></li>
+                <div class='explicacion3'>
+                  <ul class='hashtag-kalia'>
+                    <li>apropos krb5<span class='explicacion'> #Buscar en que páxinas do man e descripcións existen referencias ao nome dado: krb5</li>
+                    <li>man pam_krb5<span class='explicacion'> #Ver as páxinas do manual para pma_krb5</li>
+                  </ul>
+                </div>
+                <li>groupadd -g 1050 testing<span class='explicacion'> #Crear o grupo de nome <i>testing</i> co GID de valor 1050.</span></li>
+                <li>useradd -m -u 1050 -g 1050 -d /home/testuser -p $(mkpasswd -m sha-512 abc123.) -s /bin/bash testuser<span class='explicacion'> #Crear o usuario <i>testuser</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -u &#10141; Establece o valor do UID, neste caso 1050</li>
+                  <li> -g &#10141; Establece o grupo principal, neste caso o valor GID 1050 que corresponde ao grupo <i>testing</i></li>
+                  <li> -d /home/testuser &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/testuser </li>
+                  <li> -p $(mkpasswd -m sha-512 abc123.) &#10141; Pon <i>abc123.</i> como contrasinal cifrado (sha-512) para o login do usuario <i>testing</i></li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> testuser &#10141; Establece como nome de autenticación de usuario o nome testuser</li>
+                </ul>
+                <img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini-rotate-180.png" /></li>
+                <li>getent passwd <span class='explicacion'> #Conseguir entradas de <a target='_blank' href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_pam_and_nss'>Name Service Switch libraries</a>, neste caso conseguir os usuarios de passwd</span>
+                <li>getent passwd | grep testuser<span class='explicacion'> #Filtrar o comando anterior co patrón <i>testuser</i>, é dicir, amosa información de autenticación do usuario <i>testuser</i></span></li>
+                <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos</span></li>
+                <div class='explicacion3'>
+                  root@kalia:~# kadmin -l<br />
+                  kadmin> add testuser <span class='explicacion'><b>#Crear usuario testuser na bddd principal kerberos (base de datos de usuarios do KDC)</b></span><br /> 
+                  Max ticket life [1 day]:<br />
+                  Max renewable life [1 week]:<br />
+                  Principal expiration time [never]:<br />
+                  Password expiration time [never]:<br />
+                  Attributes []:<br />
+                  Policy [default]:<br />
+                  testuser@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir o contrasinal que queremos que posúa na bbdd principal de Kerberos o usuario testuser. Por exemplo 123456</b></span><br /> 
+                  Verify password - testuser@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir de novo o contrasinal anterior (123456)</b></span><br />
+                  kadmin> quit<br />
+                  root@kalia:~#
+                </div>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <div class='mleftsubsx2'>
+                  <ul class='dashed-kalia mleftsubs'>
+                    <li>su - testuser<span class='explicacion'> #Acceder como usuario testuser pero <span class='label'>escribir o contrasinal kerberos de testuser: 123456</span></span>
+                    <ul class='dashed-testuser-kalia'>
+                      <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT do usuario <i>testuser</i>. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+<pre style='background:white;'>
+Name                 Cache name                     Expires              <br/>
+* testuser@IES.LOCAL   FILE:/tmp/krb5cc_1050_EbG96i   Dec 15 23:29:05 2020
+</pre>
+                     </ul>
+                </div>
+            </li>
+          </ul>
+         </div>
+        <div class='pagebreak'>&nbsp;</div>
+        
+        <div class='mtop mleft mbottom'><span class='label'>Exemplo2. Máquina Virtual B: Kerberizar a Autenticación Local (pam-krb5)</span></div>
+        <div class='arriba contido'>
+          <div class='minindent'>&nbsp;</div>
+          <ul class='mleft'>
+            <li type='i' class='mtop mleftsubs mbottom'>Instalar módulo <span class='label'>libpam-krb5</span>:
+              <ul class='hashtag-kalib mleftsubs'>
+                <li>apt update || apt-get update<span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                <li>apt search libpam-krb5 || apt-cache search libpam-krb5<span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda libpam-krb5</li>
+                <li>apt -y install libpam-krb5 || apt-get -y install libpam-krb5<span class='explicacion'> #Instalar o paquete libpam-krb5, é dicir, instalar o módulo PAM que permite aos usuarios locais autenticarse mediante o contrasinal de kerberos (e non a través de /etc/passwd) . Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              </ul>
+              <div class='explicacion3'>
+                <table cellspacing=9>
+                  <tr>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_pam_and_nss' target='_blank'>PAM y NSS</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_configuration_files_accessed_by_pam_and_nss' target='_blank'>Archivos de configuración utilizados por PAM y NSS</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-handbook/sect.user-group-databases.es.html' target='_blank'>Bases de datos de usuarios y grupos</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='http://openaccess.uoc.edu/webapps/o2/bitstream/10609/226/10/Administraci%c3%b3n%20avanzada%20del%20sistema%20operativo%20GNU_Linux_M%c3%b3dulo9_Administraci%c3%b3n%20de%20seguridad.pdf' target='_blank'>Módulos PAM (páxs 26,27)</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://www.debian.org/doc/manuals/debian-handbook/sect.user-group-databases.es.html#sidebar.intro-nss' target='_blank'>YENDO MÁS ALLÁ NSS y bases de datos de sistema</a>
+                      <br />
+                      (getent)
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                    <td>
+                      <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Autenticacion' target='_blank'>Práctica Seguridade Informática - PAM</a>
+                      <br />
+                      <img class='cfigure' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+
+            <li type='i' class='mtop mleftsubs mbottom'>Configurar PAM con Kerberos</span>:
+              <p><span class='label'>Xa está feito!</span> Unha vez instalado o paquete libpam-krb5 xa podemos autenticar mediante kerberos coas contas locais. Para iso, imos crear un usuario no sistema para validar con PAM auth (/etc/passwd) e imos crear un usuario co mesmo nome na bbdd principal de Kerberos con outro contrasinal. Veremos que podemos acceder co contrasinal de Kerberos á conta local.</p>
+              <ul class='hashtag-kalib mleftsubs'>
+                <li>pam-auth-update<span class='explicacion'> #Con esta comando podemos modificar/verificar os módulos de autenticación PAM activados.</span></li>
+                <div class='explicacion3'>
+                  <ul class='hashtag-kalib'>
+                    <li>apropos krb5<span class='explicacion'> #Buscar en que páxinas do man e descripcións existen referencias ao nome dado: krb5</li>
+                    <li>man pam_krb5<span class='explicacion'> #Ver as páxinas do manual para pma_krb5</li>
+                  </ul>
+                </div>
+                <li>groupadd -g 4000 untesting<span class='explicacion'> #Crear o grupo de nome <i>untesting</i> co GID de valor 4000.</span></li>
+                <li>useradd -m -u 4000 -g 4000 -d /home/testuser -p $(mkpasswd -m sha-512 abc123.) -s /bin/bash testuser<span class='explicacion'> #Crear o usuario <i>testuser</i> co comando <i>useradd</i>, onde:
+                <ul type='none'>
+                  <li> -m &#10141; Copia na casa do usuario o que exista no cartafol /etc/skel</li>
+                  <li> -u &#10141; Establece o valor do UID, neste caso 4000</li>
+                  <li> -g &#10141; Establece o grupo principal, neste caso o valor GID 4000 que corresponde ao grupo <i>untesting</i></li>
+                  <li> -d /home/testuser &#10141; Xera a casa do usuario, é dicir, o directorio de traballo do usuario, no cartafol /home/testuser </li>
+                  <li> -p $(mkpasswd -m sha-512 abc123.) &#10141; Pon <i>abc123.</i> como contrasinal cifrado (sha-512) para o login do usuario <i>testing</i></li>
+                  <li> -s /bin/bash &#10141; Establece como shell de traballo para o usuario a shell bash</li>
+                  <li> testuser &#10141; Establece como nome de autenticación de usuario o nome testuser</li>
+                </ul>
+                <img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini-rotate-180.png" /></li>
+                <li>getent passwd <span class='explicacion'> #Conseguir entradas de <a target='_blank' href='https://www.debian.org/doc/manuals/debian-reference/ch04.es.html#_pam_and_nss'>Name Service Switch libraries</a>, neste caso conseguir os usuarios de passwd</span>
+                <li>getent passwd | grep testuser<span class='explicacion'> #Filtrar o comando anterior co patrón <i>testuser</i>, é dicir, amosa información de autenticación do usuario <i>testuser</i></span></li>
+                <div class='explicacion3'>
+                  <b>IMPORTANTE:</b> 
+                    <ul>
+                      <li>Notar que o usuario debe existir localmente para que a autenticación poida realizarse, é dicir, o usuario existe e autentica pero neste caso na bbdd principal de Kerberos. 
+                      <li>Notar tamén que este usuario é local de kalib, polo que pode posuír outro uid, gid, grupos secundarios, contrasinal, casa de usuario... totalmente distintos ao usuario local de kalia.
+                    </ul>
+                </div>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <div class='mleftsubsx2'>
+                  <ul class='dashed-kalib mleftsubs'>
+                    <li>su - testuser<span class='explicacion'> #Acceder como usuario testuser pero <span class='label'>escribir o contrasinal kerberos de testuser: 123456</span></span>
+                    <ul class='dashed-testuser-kalib'>
+                      <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT do usuario <i>testuser</i>. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+<pre style='background:white;'>
+Name                 Cache name                     Expires              <br/>
+* testuser@IES.LOCAL   FILE:/tmp/krb5cc_4000_a57zUd   Dec 16 14:34:02 2020
+</pre>
+                     </ul>
+                </div>
+            </li>
+          </ul>
+        </div>
+
+      <div class='pagebreak'>&nbsp;</div>
+      <div class='mtop mleft mbottom'><span class='label'>Exemplo3. Acceso SSH: Autenticación Kerberos. Contas de usuario locais kerberizadas e Servizo SSH non Kerberizado</span></div>
+      <div class='arriba contido'>
+        <p class='mleft'><span class='label'>Xa está feito!</span> Unha vez instalado o paquete libpam-krb5 xa podemos autenticar mediante kerberos coas contas locais de forma local ou remota mediante conexións SSH. Para iso, imos comprobar que o usuario <i>testuser</i> pode autenticar con PAM auth (/etc/passwd) e tamén con Kerberos.</p>
+        <p><span class='label mleft'>Dende a máquina virtual A. Servidor SSH:</span></p>
+        <ul class='mleft'>
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Comprobar estado do Servidor SSH:</span> 
+            <ul class='hashtag-kalia mleftsubs'>
+              <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, por defecto non está arrancado.</span></li>
+              <li>nc -vz kalia.ies.local 22 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 22 do servidor ssh está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 22 é o porto TCP a escanear.</span></li>
+              <li>/etc/init.d/ssh start <span class='explicacion'> #Arrancar o servidor SSH.</span></li>
+              <li>/etc/init.d/ssh status <span class='explicacion'> #Comprobar o estado do servidor SSH, agora debe estar arrancado.</span></li>
+            </ul>
+
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Autenticación Kerberos sen servidor Kerberizado:</span> 
+            <ul class='hashtag-kalia mleftsubs'>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal PAM (/etc/passwd). Se é a primeira vez que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.</li>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal Kerberos. <span class='label'>Agora vemos que SI é posible a autenticación mediante Kerberos. Non fai falla configurar o servidor SSH para que o usuario testuser poida autenticar co seu contrasinal Kerberos.</span></li>
+            </ul>
+          </li>
+          </li>
+        </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <p><span class='label mleft'>Dende a máquina virtual B. Cliente SSH:</span></p>
+        <ul class='mleft'>
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Autenticación Kerberos sen servidor Kerberizado:</span> 
+            <ul class='hashtag-kalia mleftsubs'>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal PAM (/etc/passwd). Se é a primeira vez que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.</li>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal Kerberos. <span class='label'>Agora vemos que SI é posible a autenticación mediante Kerberos. Non fai falla configurar o servidor SSH para que o usuario testuser poida autenticar co seu contrasinal Kerberos.</span></li>
+            </ul>
+          </li>
+          </li>
+        </ul>
+      </div>
+
+        <div class='pagebreak'>&nbsp;</div>
+
+        <div class='mleft mbottom'><span class='label'>Exemplo4. Kerberizar a Autenticación en Servizos (<a href='https://kb.iu.edu/d/aumh#create' target='_blank'>keytab</a>)</span>
+          <img class='cfigure mleftsubsx2 mtop mbottom abaixo' src="images/mouse-pointer-mini-rotate-180.png" />
+        </div>
+
+        <div class='arriba contido'>
+
+          <p><span class='label mleft'>Dende a máquina virtual A. Servidor Kerberos kalia.ies.local:</span></p>
+          <ul class='mleft'>
+            <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Crear keytab para kalia.ies.local</span>:
+              <ul class='hashtag-kalia mleftsubs'>
+                <p><span class='label'>(1) Crear principal host/kalia.ies.local
+                  <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos</span></li>
+                  <div class='explicacion3'>
+                    root@kalia:~# kadmin -l<br />
+                    kadmin> add -r host/kalia.ies.local@IES.LOCAL <span class='explicacion'><b>#Crear principal para o host kalia na bddd kerberos (KDC)</b></span><br /> 
+                    Max ticket life [1 day]:<br />
+                    Max renewable life [1 week]:<br />
+                    Principal expiration time [never]:<br />
+                    Password expiration time [never]:<br />
+                    Attributes []:<br />
+                    Policy [default]:<br />
+                   <!-- host/kaliA.ies.local@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir o contrasinal que queremos que posúa o principal host/kaliA.ies.local. Por exemplo kaliA-abc123. (Ollo que o contrasinal ten un caracter punto final)</b></span><br /> 
+                    Verify password - host/kaliA.ies.local@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir de novo o contrasinal anterior (kaliA-abc123.)</b></span><br />-->
+                    kadmin> quit<br />
+                    root@kalia:~#
+                  </div>
+                  <!--<li>echo 'abc123.' | kinit user1 <span class='explicacion'> #Autenticar como usuario <b>user1</b> conseguindo un ticket TGT</span></li>-->
+<!--                  <li>kinit host/kaliA.ies.local <span class='explicacion'> #Autenticar como principal <b>host/kaliA.ies.local</b> e contrasinal <b>kaliA-abc123.</b> conseguindo un ticket TGT</span><br />
+                  host/kaliA.ies.local@IES.LOCAL's Password:</li>
+                  <li>klist -l <span class='explicacion'> #Listar ticket TGT existente na caché.</span></li>
+                </p>
+-->
+                <p><span class='label'><a href='https://www.freebsd.org/doc/es/books/handbook/kerberos5.html' target='_blank'>(2) Exportar keytab do principal host/kalia.ies.local</a>
+                  <img class='cfigure mleftsubsx2 mtop mbottom abaixo' src="images/mouse-pointer-mini-rotate-180.png" />
+                  <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos</span></li>
+                  <div class='explicacion3'>
+                    root@kalia:~# kadmin -l<br />
+                    kadmin> ext host/kalia.ies.local@IES.LOCAL <span class='explicacion'><b>#Exportar a clave ao ficheiro /etc/krb5.keytab</b></span><br /> 
+                    kadmin> quit<br />
+                    root@kalia:~#
+                  </div>
+                  <li>ls -l /etc/krb5.keytab <span class='explicacion'> #Listar de forma extendida o ficheiro /etc/krb5.keytab, o cal é o ficheiro por defecto onde se gardan as claves extraidas</span><br />
+ 
+<!--
+                <li>klist -v <span class='explicacion'> #Listar a validez do ticket TGT indicando a información en mode verbose (detallada). Na saída podemos ver o tipo de encriptación empregado para o ticket:<br />
+                    Ticket etype: aes256-cts-hmac-sha1-96, knvo 1</span></li>
+                <li>ktutil -k kaliA.keytab add -p testuser@IES.LOCAL -e aes256-cts-hmac-sha1-96, -V 1 <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+-->
+                  <li>ktutil -k /etc/krb5.keytab list <span class='explicacion'> #Listar o contido do ficheiro /etc/krb5.keytab</span></li>
+                  <div class='explicacion3'>
+                      O arquivo de claves keytab pode ser xerado en calquera computadora que sexa cliente Kerberos e non ten porque vincularse a esta computadora onde foi xerado. Estes arquivos poden xerarse nunha computadora e copiarse para que poidan ser empregados por outras computadoras.
+                  </div>
+                </p>
+              </ul>
+            </li>
+
+
+        <div class='minindent'>&nbsp;</div>
+            <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Crear keytab para kalib.ies.local</span>:
+              <ul class='hashtag-kalia mleftsubs'>
+                <p><span class='label'>(1) Crear principal host/kalib.ies.local
+                  <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos en kalia</span></li>
+                  <div class='explicacion3'>
+                    root@kalia:~# kadmin -l<br />
+                    kadmin> add -r host/kalib.ies.local@IES.LOCAL <span class='explicacion'><b>#Crear principal para o host kalib na bddd principal kerberos (KDC)</b></span><br /> 
+                    Max ticket life [1 day]:<br />
+                    Max renewable life [1 week]:<br />
+                    Principal expiration time [never]:<br />
+                    Password expiration time [never]:<br />
+                    Attributes []:<br />
+                    Policy [default]:<br />
+<!--                    host/kaliB.ies.local@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir o contrasinal que queremos que posúa o principal host/kaliB.ies.local. Por exemplo kaliB-abc123. (Ollo que o contrasinal ten un caracter punto final)</b></span><br /> 
+                    Verify password - host/kaliB.ies.local@IES.LOCAL's Password: <span class='explicacion'><b>#Introducir de novo o contrasinal anterior (kaliB-abc123.)</b></span><br />
+                    -->
+                    kadmin> quit<br />
+                    root@kalia:~#
+                  </div>
+ <!--                 <li>kinit host/kaliB.ies.local <span class='explicacion'> #Autenticar como principal <b>host/kaliB.ies.local</b> e contrasinal <b>kaliB-abc123.</b> conseguindo un ticket TGT</span><br />
+                  host/kaliB.ies.local@IES.LOCAL's Password:</li>
+                  <li>klist -l <span class='explicacion'> #Listar ticket TGT existente na caché.</span></li>
+-->
+                </p>
+                <p><span class='label'>(2) Exportar keytab do principal host/kalib.ies.local
+                  <li>kadmin -l <span class='explicacion'> #Administrar de forma local kerberos</span></li>
+                  <div class='explicacion3'>
+                    root@kalia:~# kadmin -l<br />
+                    kadmin> ext --keytab=/etc/krb5.keytab2 host/kalib.ies.local@IES.LOCAL <span class='explicacion'><b>#Exportar a clave ao ficheiro /etc/krb5.keytab2</b></span><br /> 
+                    kadmin> quit<br />
+                    root@kalia:~#
+                  </div>
+                  <li>ls -l /etc/krb5.keytab2 <span class='explicacion'> #Listar de forma extendida o ficheiro /etc/krb5.keytab2, o cal é o ficheiro onde eliximos gardar a clave extraida do principal hostB/kaliB.ies.local@IES.LOCAL</span>
+                  <li>ktutil -k /etc/krb5.keytab2 list <span class='explicacion'> #Listar o contido do ficheiro /etc/krb5.keytab2</span></li>
+                  <li>cp -v /etc/krb5.keytab2 /home/kali/ <span class='explicacion'> #Copiar (modo verbose) o ficheiro /etc/krb5.keytab2 dentro do directorio /home/kali</span></li>
+                  <li>chown kali /home/kali/krb5.keytab2 <span class='explicacion'> #Cambiar o usuario propietario do ficheiro /home/kali/krb5.keytab2 ao usuario kali</span></li>
+ 
+                <div class='explicacion3'>
+                    Agora debemos facer copia deste arquivo keytab de claves a kaliB para configurar os servizos que queiramos autenticar con Kerberos, no servidor Kerberos kalia.ies.local
+                </div>
+              </ul>
+            </li>
+        </li>
+      </ul>
+     </div>
+
+      <div class='arriba pagebreak'>&nbsp;</div>
+      <div class='mtop mleft mbottom'><span class='label'>Exemplo5. Kerberizar a Autenticación Remota SSH (/etc/ssh/sshd_config + <a href='https://kb.iu.edu/d/aumh#create' target='_blank'>keytab</a>)</span>
+      
+        <img class='cfigure mleftsubsx2 mtop mbottom abaixo' src="images/mouse-pointer-mini-rotate-180.png" />
+      </div>
+      <div class='arriba contido'>
+
+        <p><span class='label mleft bgy'>Dende a máquina virtual A. Servidor SSH:</span></p>
+        <ul class='mleft'>
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Autenticación Kerberos sen servidor Kerberizado:</span> 
+            <ul class='hashtag-kalia mleftsubs'>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal PAM (/etc/passwd). Se é a primeira vez que nos conectamos o servidor avísanos se estamos de acordo coa autenticación. Respostamos yes e pulsamos Enter. A opción -v (modo verbose) aporta información máis detallada da conexión.</li>
+              <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal Kerberos. <span class='label'>Agora vemos que SI é posible a autenticación mediante Kerberos. Non fai falla configurar o servidor SSH para que o usuario testuser poida autenticar co seu contrasinal Kerberos.</span></li>
+            </ul>
+          </li>
+
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Kerberizar Servidor SSH kalia.ies.local</span>:
+            <ul class='hashtag-kalia mleftsubs'>
+              <p><span class='label'>(1) Modificar permisos keytab (/etc/krb5.keytab) do principal host/kalia.ies.local
+                <li>chown sshd.ssh /etc/krb5.keytab <span class='explicacion'> #Cambiar usuario propietario sshd e grupo propietario ssh ao ficheiro /etc/krb5.keytab</span></li>
+                <li>chmod 640 /etc/krb5.keytab <span class='explicacion'>#Cambiar os permisos <b>ugo</b> do ficheiro krb5.keyta situado en /etc para establecer os permisos rw-r----- (lectura e escritura para o usuario propietario, soamente lectuar para o grupo propietario e ningún permiso para o resto do mundo)</span></li>
+              </p>
+
+              <p><span class='label'>(2) Modificar configuración Servidor SSH (/etc/ssh/sshd_config)
+    <!--#GSSAPIAuthentication no
+    #KerberosAuthentication no
+
+                <li>A=$(grep -n 'KerberosAuthentication' /etc/ssh/sshd_config | cut -d':' -f1 | xargs | awk '{print $NF}') 
+                <li>sed -i -e 's/KerberosAuthentication/##GSSAPIAuthentication/g' -e &quot;${A}a\GSSAPIAuthentication yes&quot; /etc/ssh/sshd_config <span class='explicacion'>#Cambiar a directiva a yes. Esta directiva permítenos realizar a autenticación mediante Kerberos</span>
+    -->
+                <li>A=$(grep -n 'GSSAPIAuthentication' /etc/ssh/sshd_config | cut -d':' -f1 | xargs | awk '{print $NF}')</li>
+                <li>sed -i -e 's/GSSAPIAuthentication/##GSSAPIAuthentication/g' -e &quot;${A}a\GSSAPIAuthentication yes&quot; /etc/ssh/sshd_config <span class='explicacion'>#Cambiar a directiva a yes. Esta directiva permítenos realizar a autenticación mediante Kerberos</span>
+                <li>/etc/init.d/ssh reload <span class='explicacion'> #Recargar o ficheiro de configuración do servidor SSH para que se activen os cambios realizados</span></li>
+              </p>
+
+
+              <p><span class='label'>(3) Conseguir ticket TGT para o usuario testuser
+                <li>kinit testuser <span class='explicacion'> #Autenticar en Kerberos como usuario <b>testuser</b> e contrasinal <b>123456</b> conseguindo un ticket TGT</span><br />
+                <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+              </p>
+<!--              <p><span class='label'>(3) Conexión mediante Autenticación Kerberos
+                <li>ssh -v testuser@kalia.ies.local<span class='explicacion'> #Comprobar se o servidor SSH está activo e podemos conectarnos a el co usuario testuser e o seu contrasinal Kerberos. <span class='label'>Agora vemos que SI é posible a autenticación mediante Kerberos xa que temos configurado o servidor SSH para que poida permitir a autenticación Kerberos.</span></li>
+-->
+              </p>
+            </ul>
+          </li>
+        </ul>
+
+        <p><span class='label mleft bgy'>Dende a máquina virtual B. Cliente SSH:</span></p>
+        <ul class='mleft'>
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Copia a keytab /etc/krb5.keytab2 correspondente ao principal host/kalib.ies.local:</span> 
+            <ul class='hashtag-kalib'>
+              <li> scp kali@kalia.ies.local:krb5.keytab2 .<span class='explicacion'> #Contrasinal de acceso <b>abc123.</b> (Autenticación PAM).Estando situado no HostB, copiar de A a B (do servidor ao cliente) o arquivo <span class='nome'>/home/kali/krb5.keytab2</span>, é dicir, copiar en B o ficheiro /home/kali/krb5.keytab2 existente no HostA, e copialo na ruta onde lanza o comando o usuario cliente <span class='nome'> que é o que simboliza o caracter '.' </span>. Neste caso a copia realizarase no $HOME(~) do usuario root <span class='nome'>(/root)</span>
+             </li>
+             <li>cp -v krb5.keytab2 /etc/krb5.keytab <span class='explicacion'> #Copiar (modo verbose) o ficheiro krb5.keytab2 dentro do directorio /etc co nome krb5.keytab</span></li>
+            </ul>
+
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Modificar permisos keytab /etc/krb5.keytab</span>:
+            <ul class='hashtag-kalib'>
+              <p><span class='label'>(1) Modificar permisos keytab (/etc/krb5.keytab) do principal host/kalib.ies.local
+                <li>chown sshd.ssh /etc/krb5.keytab <span class='explicacion'> #Cambiar usuario propietario sshd e grupo propietario ssh ao ficheiro /etc/krb5.keytab</span></li>
+                <li>chmod 640 /etc/krb5.keytab <span class='explicacion'>#Cambiar os permisos <b>ugo</b> do ficheiro krb5.keyta situado en /etc para establecer os permisos rw-r----- (lectura e escritura para o usuario propietario, soamente lectuar para o grupo propietario e ningún permiso para o resto do mundo)</span></li>
+              </p>
+
+              <p><span class='label'>(2) Modificar configuración Cliente SSH (/etc/ssh/ssh_config)
+        <!--#GSSAPIAuthentication no
+        #   GSSAPIDelegateCredentials no
+        -->
+
+
+                <li>A=$(grep -n 'GSSAPIAuthentication' /etc/ssh/sshd_config | cut -d':' -f1 | xargs | awk '{print $NF}') 
+                <li>sed -i -e 's/GSSAPIAuthentication/##GSSAPIAuthentication/g' -e &quot;${A}a\GSSAPIAuthentication yes&quot; /etc/ssh/sshd_config <span class='explicacion'>#Cambiar a directiva a yes. Esta directiva permítenos realizar a autenticación mediante Kerberos</span>
+                <li>A=$(grep -n 'GSSAPIDelegateCredentials' /etc/ssh/ssh_config | cut -d':' -f1 | xargs | awk '{print $NF}') 
+                <li>sed -i -e 's/GSSAPIDelegateCredentials/##GSSAPIDelegateCredentials/g' -e &quot;${A}a\GSSAPIDelegateCredentials yes&quot; /etc/ssh/ssh_config <span class='explicacion'>#Cambiar a directiva a yes. Esta directiva permítenos realizar a autenticación mediante Kerberos</span>
+              </p>
+
+
+              <p><span class='label'>(3) Conseguir ticket TGT para o usuario testuser
+                <li>kinit testuser <span class='explicacion'> #Autenticar en Kerberos como usuario <b>testuser</b> e contrasinal <b>123456</b> conseguindo un ticket TGT</span><br />
+                <li>klist -l <span class='explicacion'> #Listar a validez do ticket TGT. Este ticket é válido para acceder a calquera servizo de rede que empregue Kerberos para autenticación.</span></li>
+              </p>
+
+            </li>
+          </ul>
+
+          <li type='i' class='mtop mleftsubs mbottom'><span class='label'>Conexión mediante Autenticación Kerberos + Servizo SSH Kerberizado</span>
+            <ul class='hashtag-kalib'>
+                <li>ssh -K -v testuser@kalia.ies.local<span class='explicacion'> #Acceso sen contrasinal mediante autenticación servidor kerberizado, é dicir, o usuario testuser accede directamente sen escribir ningún contrasinal. A opción -K permite a autenticación Kerberos (basada en GSSAPI) e o reenvío de credenciais ao servidor.</span>
+                <ul class='dashed-testuser-kalia'>
+                  <li>
+                </ul>
+                </li>
+            </ul>
+          </li>
+
+
+    </ul>
+
+
+      </li>
+
+      </ol> 
+    </div>
+
+		<hr />
+	<div id="footer" style='margin-bottom:-20px;'>
+		<div class="nome">Ricardo Feijoo Costa</div>
+		<div class='.imgccbysa'>
+		   <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+		</div>
+	</div>
+  </div>
+</body>
+</html>
