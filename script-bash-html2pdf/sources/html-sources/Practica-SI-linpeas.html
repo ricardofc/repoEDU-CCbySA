@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>linpeas ➝ Auditoría sistema operativo GNU/Linux e UNIX</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'><span class='BookmarkTitle-Level-1'>Auditoría sistemas operativos GNU/Linux, UNIX: linpeas</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-linpeas.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li type='square'><a href='https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS' target='_blank'>[1] LinPEAS - Linux Privilege Escalation Awesome Script</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://book.hacktricks.xyz/linux-hardening/privilege-escalation' target='_blank'>[2] HackTricks - Linux Privilege Escalation</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtop'><br></div>
+          <li type='square'><a href='https://www.incibe-cert.es/seminarios-web/hardening-basico-linux' target='_blank'>[3] GNU/Linux Hardening básico</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SOM/GNU-Linux/Comandos_e_SHELL_bash_1_pageNumbers.pdf' target='_blank'>[4] sudo/visudo ➝ Xestión de usuarios (páx. 34)</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual Kali amd64</span></p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>linpeas (Auditar o sistema operativo)</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtopsubsmini'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li><span style='font-size:17.4px;'>curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh</span><span class='explicacion'> #Descargar linpeas dende github mediante curl. Unha vez descargado executar o script linpeas mediante a shell sh</span>.</li>
+                  <div class='explicacion3 pall justify'>
+LinPEAS é un script que busca posibles rutas para escalar privilexios en hosts Linux/Unix*/MacOS. As comprobacións explícanse en <a href='https://book.hacktricks.xyz/linux-hardening/privilege-escalation' target='_blank'>book.hacktricks.xyz</a>.<br />
+                    <img class='cfigure mleftplus240' src="images/mouse-pointer-mini.png" />
+                    <br />
+                    <p class='mtopsubsx2'><img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini-rotate-180.png" /></p>
+                    <p class='mtopsubsmini'>Consulte a lista de verificación de Escalada de privilexios de Linux local desde <a href='https://book.hacktricks.xyz/linux-hardening/privilege-escalation' target='_blank'>book.hacktricks.xyz</a></p>
+                      Na execución amosa en cores o nivel de escalada de privilexios. A maior posibilidade de escalada de privilexios posúe o fondo RED/YELLOW:
+                        <figure class='cfigure'>
+                          <img class='contido bfigure pall' src="images/linpeas1.png" width='104%' />
+                        </figure>
+
+                      Cada sección indica cos cores anteriores a posilibidade de escalada de privilexios. Tamén indica ligazóns informando sobre as posibles escaladas.
+
+                        <figure class='cfigure arribasubsmini1'>
+                          <img class='contido bfigure pall' src="images/linpeas2.png" width='104%'/>
+                        </figure>
+                  </div>
+                </ul>
+            </ul>
+          </p>
+        </li>      
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Explotar a escalada de privilexios atopada na sección Checking 'sudo -l'</span></span>
+          <p class='mtopplus'></p>
+            <ul class='dashed-kali'>
+              <li>sudo -l <span class='explicacion'> #Listar os comandos permitidos e prohibidos  a través de sudo do usuario que executa o comando, neste caso o usuario <i>kali</i></li>
+              <blockquote>
+                <pre class='mtopsubs arriba title14'>
+...
+User kali may run the following commands on localhost:
+    (ALL : ALL) ALL
+    (ALL) NOPASSWD: ALL
+                </pre>
+                  <div class='explicacion3 pall justify'>
+Podemos indicar o listado dos comandos sudo dun usuario en cuestión empregando a opción -U. Así, por exemplo:
+                    <ul class='dashed-kali'>
+                     <li>sudo -l -U ana<span class='explicacion'> #Listar os comandos permitidos e prohibidos  a través de sudo do usuario <i>ana</i></li>
+                    </ul>
+
+                  </div>
+                <p class='bglime pall justify'>Entón, como podemos comprobar en <b>[4]</b> o usuario kali pode executar calquera comando a través do propio comando <b>sudo</b> sen que se lle solicite un contrasinal. Así, executando o comando: <i class='bgsalmon'><b>&nbsp;sudo su -&nbsp</i></b>&nbsp;, o usuario <b>kali</b> pode acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)
+                </p>
+              </blockquote>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ul class='hashtag-kali mleftsubs arribasubs15'>
+              <li style='display:inline-block' class='bgred'></li>
+            </ul>
+          </ul>
+        </ul>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
