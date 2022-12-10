@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>lynis ➝ Auditoría sistema operativo GNU/Linux e UNIX</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'><span class='BookmarkTitle-Level-1'>Auditoría sistemas operativos GNU/Linux e UNIX: lynis</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-lynis.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li type='square'><a href='https://cisofy.com/lynis/' target='_blank'>[1] Lynis</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SI/Pentester/Practica-SI-Apache-WAF-ModSecurity_pageNumbers.pdf' target='_blank'>[2] Práctica SI Apache WAF-ModSecurity</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtop'><br></div>
+          <li type='square'><a href='https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SI/Criptografia/Practica-SI-Apache.pdf' target='_blank'>[3] Servidor Web Apache</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+        </ul>
+      </p>
+    </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual Kali amd64</span></p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>lynis (Auditar o sistema operativo)</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtopsubsmini'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kali mleftsubs'>
+                  <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i>
+                  <li>apt search lynis || apt-cache search lynis<span class='explicacion'> #Buscar nas anteriores listas descargadas en <i>/var/lib/apt/lists</i> paquetes que coincidan co patrón de búsqueda <i>lynis</i>. A saída do/s comando/s amosan o nome do/s paquete/s e unha pequena descrición do/s mesmo/s.</span>
+                  <li>apt show lynis || apt-cache show lynis <span class='explicacion'> #Amosa información sobre o paquete lynis, incluídas as súas dependencias, instalación e tamaño de descarga, fontes nas que está dispoñible o paquete, descrición do contido dos paquetes e moito máis. </span>
+                  <div class='explicacion3 pall justify'>
+Lynis é unha ferramenta de auditoría para reforzar os sistemas baseados en GNU/Linux e Unix.
+ Analiza a configuración do sistema e crea unha visión xeral da información do sistema
+ e cuestións de seguridade empregadas por auditores profesionais.
+ Pode axudar nas auditorías automatizadas.
+                  </div>
+                  <li>apt -y install lynis || apt-get -y install lynis<span class='explicacion'> #Instalar o paquete de nome <i>lynis</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>lynis audit system<span class='explicacion'> #Execución para auditar o sistema operativo. Ao final da execución amosa un resumo (-[ Lynis 3.0.8 Results ]-) onde podemos conseguir suxerencias para mellorar a seguridade (bastionado/hardening) do sistema operativo. 
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/lynis-modsecurity.png" />
+                    </figure>
+                                  Tamén amosa un número en porcentaxe indicando o nivel do hardening do sistema operativo (Lynis security scan details):</span>
+
+                    <figure class='cfigure'>
+                      <img class='contido bfigure pall' src="images/lynis-details.png" />
+                    </figure>
+                </ul>
+            </ul>
+          </p>
+        </li>      
+        <div class='pagebreak'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Solucionar Suxerencia auditada: Instalar ModSecurity [2]</span></span><br />
+          <p class='mtopplus'></p>
+            <ul class='hashtag-kali'>
+              <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+              <li>apt search modsecurity <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda modsecurity</li>
+              <li>apt -y install libapache2-mod-security2 <span class='explicacion'> #Instalar o paquete libapache2-mod-security2, é dicir, instalar o WAF modsecurity intregrado como módulo para o servidor web apache2. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+              <li>cat /etc/apache2/mods-available/security2.conf <span class='explicacion'>#Ver o contido do ficheiro security2.conf, o cal cargarase ao activar o módulo security2 (modsecurity)</span>
+              <blockquote>
+                <pre class='mtopsubs'>
+&lt;IfModule security2_module&gt;
+      # Default Debian dir for modsecurity's persistent data
+      SecDataDir /var/cache/modsecurity
+
+      # Include all the *.conf files in /etc/modsecurity.
+      # Keeping your local configuration in that directory
+      # will allow for an easy upgrade of THIS file and
+      # make your life easier
+      IncludeOptional /etc/modsecurity/*.conf
+
+      # Include OWASP ModSecurity CRS rules if installed
+      IncludeOptional /usr/share/modsecurity-crs/*.load
+&lt;/IfModule&gt;
+                </pre>
+              </blockquote>
+              <li class='mtopsubsx2'>mv /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Renomear o ficheiro necesario para cargar a configuración do módulo security2 (modsecurity).</span></li>
+              <li>sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Modificar a directiva <span class='label'>SecRuleEngine</span>. Por defecto configúrase modsecurity en modo detección <a href='https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-%28v2.x%29#SecRuleEngine' target='_blank'>(DetectionOnly)</a>, polo cal soamente detecta ataques pero non actúa sobre o detectado.</span>
+                <img class='cfigure mleftplus240' src="images/mouse-pointer-mini.png" />
+              </li>
+              <li>sed -i 's/SecAuditLogParts ABDEFHIJZ/SecAuditLogParts ABEFHIJKZ/' /etc/modsecurity/modsecurity.conf <span class='explicacion'>#Modificar a directiva <a href='https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-%28v2.x%29#SecAuditLogParts' target='_blank'>SecAuditLogParts</a>. 
+                <img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini.png" />
+                <p class='mtopplusx2'></p>
+                <p class='up'>Por defecto configúrase modsecurity coa opción D que non está implementada e sen a opción K, a cal permite ver nos logs unha lista completa de todas as regras que coincidían (unha por liña) na orde en que foron coincidentes. As regras están totalmente cualificadas e, polo tanto, mostrarán accións herdadas e operadores predeterminados. Compatible a partir da versión 2.5.0.</p></span>
+              </li>
+
+              <li>a2enmod security2 <span class='explicacion'>#Habilitar o módulo security2 que permite activar a configuración do WAF ModSecurity</span></li>
+              <li>/etc/init.d/apache2 restart <span class='explicacion'> #Reiniciar o servidor web Apache.</span></li>
+              <li>tail -f /var/log/apache2/modsec_audit.log <span class='explicacion'> #Deixar aberto o ficheiro /var/log/apache2/modsec_audit.log para lectura, comenzando a ver polas 10 últimas liñas.</span></li>
+            </ul>
+          </ul>
+          <p class='bglime pall'><b>Comprobar que a suxerencia auditada non aparece executando, nunha nova consola de <i>root</i>, unha nova auditoría do sistema operativo co comando <i class='bgsalmon'>&nbsp;lynis audit system&nbsp;</i></b></p>
+          </ul>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
