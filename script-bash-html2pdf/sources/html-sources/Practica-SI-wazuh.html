@@ -1,0 +1,275 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>wazuh ➝ Auditoría, monitorización e protección de sistemas finais (endpoints)</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'><span class='BookmarkTitle-Level-1'>Auditoría, monitorización e protección de sistemas finais (endpoints): wazuh</span></a></h1>
+    <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-wazuh.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+    </div>
+    <div class='pagebreak'></div>
+    <div class='explicacion4 pall'>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li type='square'><a href='https://wazuh.com/' target='_blank'>[1] wazuh (XDR, SIEM)</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://www.docker.com/' target='_blank'>[2] docker</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://hub.docker.com/' target='_blank'>[3] docker hub</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SOM/Cheat-Sheet-Docker_A3.pdf' target='_blank'>[4] Cheat Sheet Docker A3</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://documentation.wazuh.com/current/deployment-options/docker/index.html' target='_blank'>[5] wazuh - docker </a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+        </ul>
+      </p>
+    </div>
+
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleftsubs mbottom label'><span class='bgspringgreen'><span class='BookmarkTitle-Level-2'>Máquina virtual Debian amd64</span></span></p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Configuración da rede según o escenario</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-debian mleftsubs mtopsubsmini'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-debian mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>systemctl disable avahi-daemon<span class='explicacion'> #Impide que o servizo avahi-daemon sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>systemctl disable network-manager<span class='explicacion'> #Impide que o servizo network-manager sexa iniciado no arranque xerando os links K* nos runlevels (/etc/rcX.d)</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, as tarxetas de redes: loopback(lo) e a correspondente á Rede NAT(enp0s3)</span>.</li>
+                  <div class='explicacion3 pall'>
+                    <ul class='dashed'>
+                      <li>man interfaces <span class='explicacion'>#Ver ás páxinas de manual referente ao ficheiro de configuración de rede /etc/network/interfaces</span>
+                      <li>cat /etc/network/interfaces <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces</span>
+                      <li>ls -l /etc/network/interfaces.d <span class='explicacion'>#Listar de forma extendida o contido do directorio /etc/network/interfaces/setup</span>
+                      <li>cat /etc/network/interfaces.d/setup <span class='explicacion'>#Amosar o contido do ficheiro configuración de rede /etc/network/interfaces/setup</span>
+                    </ul>
+                  </div>
+                  <li>cat > /etc/network/interfaces.d/setup &lt;&lt;EOF <span class='explicacion'>#Comezo do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  <span class='code3'>auto lo<br />
+                  iface lo inet loopback<br />
+                  <br />
+                  auto enp0s3<br />
+                  iface enp0s3 inet static<br />
+                  &nbsp;&nbsp;address 10.10.10.10/24<br />
+                  <br />
+                  EOF <span class='explicacion'>#Fin do ficheiro a crear /etc/network/interfaces.d/setup</span><br />
+                  </li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking start <span class='explicacion'> #Arrancar o demo networking, é dicir, activar a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                <li>/etc/init.d/networking status <span class='explicacion'> #Comprobar o estado do demo networking, é dicir, comprobar se está activa a configuración de rede en /etc/network/interfaces (/etc/network/interfaces.d).</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, as tarxetas de redes: loopback(lo) e a correspondente á Rede NAT(enp0s3)</span>.</li>
+                  <li>ping -c4 10.10.10.10 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local enp0s3</span></li>
+                </ul>
+            </ul>
+          </p>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>docker: Instalación e arranque</span></span>
+          <p class='mtop mleft'>Executar no anterior terminal:
+            <ul class='hashtag-debian mtopsubsmini'>
+                  <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i>
+                  <li>apt -y install docker.io || apt-get -y install docker.io<span class='explicacion'> #Instalar o paquete de nome <i>docker.io</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>apt -y install docker-compose || apt-get -y install docker-compose<span class='explicacion'> #Instalar o paquete de nome <i>docker-compose</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>/etc/init.d/docker status || systemctl status docker <span class='explicacion'> #Comprobar o estado do demo docker</span></li>
+                  <li>/etc/init.d/docker start || systemctl start docker <span class='explicacion'> #Arrancar o demo docker</span></li>
+                </ul>
+            </ul>
+          </p>
+
+    <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>wazuh: Implantación en docker</span></span>
+          <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
+            <ul class='hashtag-debian mtopsubsmini'>
+              <li>git clone https://github.com/wazuh/wazuh-docker.git -b v4.3.10<span class='explicacion'> #Descargar wazuh dende github mediante git clone.</span></li>
+                  <div class='explicacion4 pall justify'>
+<span class='label'>Wazuh</span> permite auditar, monitorizar e protexer sistemas finais ou endpoints.<br />
+A solución Wazuh baséase no axente Wazuh, que se desprega nos puntos finais monitorizados, e en tres compoñentes centrais: o servidor Wazuh, o indexador de Wazuh e o panel de control de Wazuh:
+                    <ul type='square' class='arribasubsmini1'>
+                      <li>O indexador Wazuh é un motor de busca e análise de texto completo altamente escalable. Este compoñente central indexa e almacena as alertas xeradas polo servidor Wazuh.
+                      <li>O servidor Wazuh analiza os datos recibidos dos axentes. Procésao mediante decodificadores e regras, utilizando intelixencia sobre ameazas para buscar indicadores de compromiso (IOC) coñecidos. Un único servidor pode analizar datos de centos ou miles de axentes e escalar horizontalmente cando se configura como un clúster. Este compoñente central tamén se utiliza para xestionar os axentes, configurándoos e actualizándoos de forma remota cando sexa necesario.
+                      <li>O panel de control de Wazuh é a interface de usuario web para a visualización e análise de datos. Inclúe paneis listos para usar para eventos de seguridade, cumprimento normativo (por exemplo, PCI DSS, GDPR, CIS, HIPAA, NIST 800-53), aplicacións vulnerables detectadas, datos de seguimento da integridade dos ficheiros, resultados da avaliación da configuración, seguimento da infraestrutura na nube. eventos e outros. Tamén se usa para xestionar a configuración de Wazuh e supervisar o seu estado.
+                    </ul>
+                        <figure class='cfigure'>
+                          <img class='contido bfigure pall' src="images/wazuh2.png" width='64%' />
+                        </figure>
+Os axentes Wazuh instálanse en puntos finais(endpoints) como ordenadores portátiles, escritorios, servidores, instancias de nube ou máquinas virtuais. Ofrecen capacidades de prevención, detección e resposta de ameazas. Así, podemos desplegar <a href='https://wazuh.com/install/' target='_blank'>axentes wazuh (Single Universal Agent)</a> sobre sistemas operativos: GNU/Linux, Microsoft Windows, MacOs, Solaris, AIX, HP/UX.
+                    <img class='cfigure mleftplusx80' src="images/mouse-pointer-mini.png" />
+                        <figure class='cfigure arribasubsmini1'>
+                          <img class='contido bfigure pall' src="images/wazuh1.png" width='64%' />
+                        </figure>
+                  </div>
+
+              <li>cd wazuh-docker/single-node<span class='explicacion'> #Acceder ao cartafol wazuh-docker/single-node.</span></li>
+              <li>docker-compose -f generate-indexer-certs.yml run --rm generator<span class='explicacion'> #Xerar certificados para cada nodo para asegurar a comunicación entre os nodos.</span></li>
+<!--              <li>chmod 555 config/wazuh_indexer_ssl_certs/<span class='explicacion'> #Modificar permisos cartafol certificados no caso que ese cartafol non pertenza ao usuario root.</span></li>-->
+              <li>docker-compose up<span class='explicacion'> #Despregar os contenedores docker a través de docker-compose. Como non se indica coa opción -f un ficheiro, o ficheiro a interpretar será docker-compose.yml</span></li>
+                  <div class='explicacion4 pall justify'>
+                    <ul class='mleftsubs hashtag-debian'>
+                      <li>cat docker-compose.yml <span class='explicacion'> #Ver o contido do ficheiro wazuh-docker/single-node/docker-compose.yml</span></li>
+                    </ul>
+                  </div>
+              <li>docker container ls<span class='explicacion'> #Listar os contenedores docker activos.</span></li>
+                <pre class='mleftsubsx2 arribasubsmini1' style='font-size:8px'>
+CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS                                                                                        NAMES
+aa80dabad15c   wazuh/wazuh-dashboard:4.3.10   "/entrypoint.sh"         6 minutes ago   Up 6 minutes   443/tcp, 0.0.0.0:443->5601/tcp                                                               single-node_wazuh.dashboard_1
+d2dfe78c1add   wazuh/wazuh-indexer:4.3.10     "/entrypoint.sh open…"   6 minutes ago   Up 6 minutes   0.0.0.0:9200->9200/tcp                                                                       single-node_wazuh.indexer_1
+4351a01c6578   wazuh/wazuh-manager:4.3.10     "/init"                  6 minutes ago   Up 6 minutes   0.0.0.0:1514-1515->1514-1515/tcp, 0.0.0.0:514->514/udp, 0.0.0.0:55000->55000/tcp, 1516/tcp   single-node_wazuh.manager_1
+                </pre>
+
+              <li class='mtop'>firefox https://localhost:443 &<span class='explicacion'> #Lanzar o navegador firefox na URL https://localhost:443 no porto TCP 443, realizando a execución en segundo plano (&), é dicir, acceder ao dashboard(panel de control) de wazuh.</span>
+                  <div class='explicacion4 pall justify'>
+                    Credenciais de acceso predeterminadas: <span class='bgwhite nomefwn'>admin</span>/<span class='bgwhite nomefwn'>SecretPassword</span>
+                  </div>
+                  <figure class='cfigure arribasubsmini3'>
+                    <img class='contido bfigure pall' src="images/wazuh3.png" width='22%' />
+                  </figure>
+        <div class='pagebreak'></div>
+                  <figure class='cfigure arribasubsmini3'>
+                    <img class='contido bfigure pall' src="images/wazuh4.png" width='102%' />
+                  </figure>
+            </ul>
+          </p>
+        </li>      
+
+        <div class='pagebreak'></div>
+        <li class='mtopplusx2 mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Engadir axentes</span></span>
+          <p class='mtopplus'></p>
+          <ol type='A'>
+            <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>Debian GNU/Linux</span></span>
+            <ol>
+              <li class='mtop'>Acceder a Agents
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh5.png" />
+                  </figure>
+              <li class='mtop'>Acceder a Deploy new agent
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh6.png" />
+                  </figure>
+              <li class='mtop'>Elixir:
+                <ul typef='square'>
+                  <li class='mtopplus'>Sistema operativo: Debian/Ubuntu
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh7.png" />
+                  </figure>
+                  <li class='mtopplus'>Arquitectura: amd64
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh8.png" />
+                  </figure>
+                  <li class='mtopplus'>Dirección IP/FQDN servidor wazuh: wazuh.manager
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh9.png" />
+                  </figure>
+                  <li class='mtopplus'>Asignar un grupo ao axente: default
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh10.png" />
+                  </figure>
+        <div class='pagebreak'></div>
+                  <li class='mtopplus'>No apartado 5 (Instalar e engadir o axente) aparece un comando coas opcións escollidas. Este comando debe ser executado co usuario root no axente para engadilo como tal en wazuh:
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh11.png" />
+                  </figure>
+                  <li class='mtopplus'>No apartado 6 aparecen os comandos necesarios, según o sistema Systemd ou SysV init, para recargar o servizo pertencente ao axente (wazuh-agent) e así poidamos ver no dashboard a este novo axente agregado.
+                  <figure class='cfigure arribasubsmini3'>
+                    <img class='contido bfigure pall' src="images/wazuh12.png" />
+                  </figure>
+            </ol>
+            <div class='minindent'>&nbsp;</div>
+            <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-4'>Microsoft Windows</span></span>
+            <ol>
+              <li class='mtop'>Acceder a Agents
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh5.png" />
+                  </figure>
+              <li class='mtop'>Acceder a Deploy new agent
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh6.png" />
+                  </figure>
+              <li class='mtop'>Elixir:
+                <ul typef='square'>
+                  <li class='mtopplus'>Sistema operativo: Microsoft Windows
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh13.png" />
+                  </figure>
+        <div class='pagebreak'></div>
+                  <li class='mtopplus'>Dirección IP/FQDN servidor wazuh: 10.10.10.10
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh14.png" />
+                  </figure>
+                  <li class='mtopplus'>Asignar un grupo ao axente: default
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh15.png" />
+                  </figure>
+                  <li class='mtopplus'>No apartado 4 (Instalar e engadir o axente) aparece un comando coas opcións escollidas. Este comando debe ser executado co usuario administrador nunha consola de powershell no axente para engadilo como tal en wazuh:
+                  <figure class='cfigure'>
+                    <img class='contido bfigure pall' src="images/wazuh16.png" />
+                  </figure>
+                  <li class='mtopplus'>No apartado 6 aparecen os comandos necesarios, según o sistema Systemd ou SysV init, para recargar o servizo pertencente ao axente (wazuh-agent) e así poidamos ver no dashboard a este novo axente agregado.
+                  <figure class='cfigure arribasubsmini3'>
+                    <img class='contido bfigure pall' src="images/wazuh17.png" />
+                  </figure>
+            </ul>
+
+          </ol>
+        </ol>
+        <div class='pagebreak'></div>
+        <p class='mtop mleftsubs mbottom label'><span class='bgspringgreen'><span class='BookmarkTitle-Level-2'>Máquinas virtuais axentes</span></span></p>
+            <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Acceder ao axente Debian GNU/Linux: debianA</span></span>
+
+            <br />Executar nunha consola de comandos:
+            <ul class='dashed-debianA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, as tarxetas de redes: loopback(lo) e a correspondente á Rede NAT(enp0s3)</span>.</li>
+              <li>ping -c4 10.10.10.10 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co servidor wazuh</span></li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-debianA mleftsubs'>
+                <li>echo '10.10.10.10 wazuh.manager' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome wazuh.manager, para que atenda á IP 10.10.10.10</li>
+                <li>curl -so wazuh-agent-4.3.10.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.10-1_amd64.deb && sudo WAZUH_MANAGER='wazuh.manager' WAZUH_AGENT_GROUP='default' dpkg -i ./wazuh-agent-4.3.10.deb <span class='explicacion'>#Executar o comando do apartado 3.A.5 que nos ofrece wazuh para poder agregar este sistema operativo como axente de wazuh.</span>
+                <li>systemctl daemon-reload && systemctl enable wazuh-agent && systemctl start wazuh-agent <span class='explicacion'>Arrancar o servizo do axente para que poida ser visto no dashboard de wazuh.</span>
+              </ul>
+            </ul>
+            <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Acceder ao axente Microsoft Windows</span></span>
+            <br />Executar nun terminal:<br /><br />
+             <p class='mleft mtopsubsmini'>> systeminfo <span class='explicacion'> #Amosar información de configuración detallada sobre o equipo e o seu sistema operativo.</span></p>
+             <p class='mleft'>> ipconfig /all <span class='explicacion'> #Amosar a configuración TCP/IP completa de todas as interfaces de rede. </span></p>
+             <p class='mleft'>> ping -c4 10.10.10.10 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co servidor wazuh</span></p>
+            <br />Executar en powershell con permisos de administrador:<br /><br />
+
+            <p class='mleft mtopsubsmini'>> Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.3.10-1.msi -OutFile ${env:tmp}\wazuh-agent-4.3.10.msi; msiexec.exe /i ${env:tmp}\wazuh-agent-4.3.10.msi /q WAZUH_MANAGER='wazuh.manager' WAZUH_REGISTRATION_SERVER='wazuh.manager' WAZUH_AGENT_GROUP='default' <span class='explicacion'>#Executar o comando do apartado 3.B.3 que nos ofrece wazuh para poder agregar este sistema operativo como axente de wazuh.</span></p>
+            <p class='mleft'>> NET START WazuhSvc <span class='explicacion'>Arrancar o servizo do axente para que poida ser visto no dashboard de wazuh.</span></p>
+              </ul>
+            </ul>
+
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleftsubs mbottom label'><span class='bgspringgreen'><span class='BookmarkTitle-Level-2'>Dashboard: Máquina virtual Debian amd64</span></span></p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>wazuh: Dashboard</span></span>
+        <p class='mtop'>
+          Comprobar que os axentes engadidos aparecen no dashboard e que podemos acceder á súa monitorización. 
+        </p>
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
