@@ -252,7 +252,7 @@
               <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
                 <ul class='hashtag-kaliA mleftsubs'>
                   <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
-                  <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
                   <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
                   <li>ip addr add 192.168.120.100/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
                   <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
@@ -299,7 +299,7 @@
             <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
               <ul class='hashtag-kali mleftsubs'>
                 <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
-                <li>/etc/init.d/network-manager stop <span class='explicacion'> #Parar o demo network-manager(xestor de rede) para poder configurar de forma manual a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
                 <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
                 <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
                 <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
@@ -655,6 +655,13 @@
                      <li class='mleftsubs'>htpasswd -c /etc/apache2/web.htpasswd nome_usuario
                    </ul>
                 </blockquote>
+                <li>Crear o directorio /var/www/html/auth-empresa:
+                 <blockquote>
+                   <ul class='hashtag-kaliA mleftsubs'>
+                     <li class='mleftsubs'>mkdir /var/www/html/auth-empresa 
+                   </ul>
+                </blockquote>
+
                 <li>Configuralo servidor para o acceso sexa permitido mediante autenticación: usuario/contrasinal empregando un arquivo .htaccess: <br />
                   <div class='minindent'>&nbsp;</div>
                   <ul class='hashtag-kaliA'>
@@ -674,10 +681,9 @@
 
                 <div class='minindent'>&nbsp;</div>
 
-                <li>Xerar o directorio /var/www/html/auth-empresa, o ficheiro secret.txt dentro deste e establecer permisos para que Apache poida acceder a ese ficheiro secret.txt
+                <li>Xerar dentro do directorio /var/www/html/auth-empresa o ficheiro secret.txt e establecer permisos para que Apache poida acceder a ese ficheiro secret.txt
                   <div class='minindent'>&nbsp;</div>
                   <ul class='hashtag-kaliA'>
-                    <li>mkdir /var/www/html/auth-empresa <span class='explicacion'>#Crear o directorio /var/www/html/auth-empresa</span>
                     <li>echo 'S3c3eT contido' &gt; /var/www/html/auth-empresa/secret.txt <span class='explicacion'> Crear o ficheiro /var/www/html/auth-empresa/secret.txt co contido: <i>S3cr3T contido</i>
                     <li>chown -R www-data. /var/www/html/auth-empresa <span class='explicacion'>#Cambiar usuario propietario www-data e grupo propietario www-data a toda a árbore de ficheiros e directorios que colgan do directorio /var/www/html/auth-empresa</span></li>
                     <li>chmod 400 /var/www/html/auth-empresa/.htaccess <span class='explicacion'>#Cambiar a só lectura os permisos <b>ugo</b> do ficheiro .htaccess situado en /var/www/html/auth-empresa, é dicir, establecer os permisos r-------- (soamente lectura para o usuario propietario)</span></li>
