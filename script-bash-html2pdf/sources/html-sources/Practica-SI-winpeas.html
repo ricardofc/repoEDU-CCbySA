@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>winpeas ➝ Auditoría sistema operativo GNU/Linux e UNIX</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Pentester' target='_blank'><span class='BookmarkTitle-Level-1'>Auditoría sistemas operativos Microsoft Windows: winpeas</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-winpeas.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTAS</span></b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> Instalación por defecto</span>: A instalación do sistema operativo Microsoft Windows realizouse por defecto, é dicir, seguindo os pasos do instalador,</li>
+            <div class='mtopplus'><br></div>
+          <li class='colorblue'><span class='label'> Apagado normal do sistema operativo</span>: Para un correcto funcionamento da práctica o sistema operativo Microsoft Windows debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros NTFS.</span></li>
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS' target='_blank'>[1] WinPEAS - Windows Privilege Escalation Awesome Scripts</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation' target='_blank'>[2] HackTricks - Windows Local Privilege Escalation</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtop'><br></div>
+          <li type='square'><a href='https://github.com/carlospolop/PEASS-ng/releases' target='_blank'>[3] winpeas - releases</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://dotnet.microsoft.com/es-es/' target='_blank'>[4] .NET</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://dotnet.microsoft.com/es-es/download' target='_blank'>[5] Descargar .NET</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+          <li type='square'><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SI/Criptografia/Practica-SI-Funcions-Hash.pdf'>[6] Práctica SI Funcións Resumo (Funcións Hash)</a>
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+            <div class='mtopplus'><br></div>
+        </ul>
+      </p>
+    </div>
+                  <div class='explicacion3 pall justify'>
+WinPEAS é unha ferramenta que busca posibles rutas para escalar privilexios en hosts Microsoft Windows. As comprobacións explícanse en <a href='https://book.hacktricks.xyz/windows-hardening/checklist-windows-privilege-escalation' target='_blank'>book.hacktricks.xyz</a>.<br />
+                    <img class='cfigure mleftplus240' src="images/mouse-pointer-mini.png" />
+                    <br /><br />
+                    <p class='arribasubsmini2 mtopsubsx2'><img class='cfigure mleftplus280x2' src="images/mouse-pointer-mini-rotate-180.png" /></p>
+                    <p class='mtopsubsmini'>Consulte a lista de verificación de Escalada de privilexios de Windows local en <a href='https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation' target='_blank'>book.hacktricks.xyz</a></p>
+                    <p class='arribaplusx3 mleftplus'><img class='cfigure mleftplus280' src="images/mouse-pointer-mini-rotate-180.png" /></p>
+                    <p class='arriba mleftplusx8'><img class='cfigure mleftplus280' src="images/mouse-pointer-mini-rotate-180.png" /></p><br />
+                      Existen 2 proxectos(programas) winpeas: <a href='https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS/winPEASbat' target='_blank'>winpeas.bat</a> e <a href='https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS/winPEASexe' target='_blank'>winpeas.exe</a>. Se traballamos co executable (winpeas.exe), teremos como prerrequisito ter instalado .Net (>= 4.5.2), e se traballamos co arquivo por lotes (winpeas.bat) na saída da execución non teremos cores, os cales amosan o nivel de escalada de privilexios. 
+                  </div>
+
+    <div class='pagebreak'></div>
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleft mbottom label'>Máquina virtual Microsoft Windows</p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>winpeas.bat (Auditar o sistema operativo)</span></span>
+        <ol type='A'>
+          <li class='mtop mleft'>Arrancar a máquina virtual coa ISO Kali Live amd64 e na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtop'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li><span style='font-size:17.4px;'>curl -L https://github.com/carlospolop/PEASS-ng/releases/download/20221211/winPEAS.bat -o /tmp/winPEAS.bat</span><span class='explicacion'> #Descargar winPEAS.bat a /tmp dende github mediante curl. <span class='bgred'><b>NOTA: Verificar a ligazón de descarga en [3]</b></span></span></li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali'>
+                <li>fdisk -l /dev/sda <span class='explicacion'> #Lista a táboa de particións do disco /dev/sda e logo remata.</span></li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                <li>mount -t auto /dev/sda2 /mnt <span class='explicacion'> #Montar a partición 2 do disco duro /dev/sda no directorio da live /mnt. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe. Poderiamos tamén empregar o comando <b>ntfs-3g /dev/sda2 /mnt </b>, o cal xa traballa directamente co sistema de ficheiros NTFS.</span>.</li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali. Neste caso verificamos que a última liña refírese ao punto de montaxe /mnt onde podemos traballar coa partición /dev/sda2.</li>
+                <li>cp -pv /tmp/winPEAS.bat /mnt/Windows/System32/spool/drivers/color/ <span class='explicacion'> #Copiar winPEAS.bat nunha ruta dentro do sistema operativo Microsoft Windows</span>
+                <li>umount /mnt<span style='font-size:14px;color:#0F18A0;'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda2 que estaba montada en /mnt</span></li>
+                <li>init 0 <span class='explicacion'> #Apagar a máquina enviando o sinal de apagado mediante o runlevel 0</span></li>
+              </ul>
+            </ul>
+            <div class='mtopplus'><br></div>
+          <li class='mtop mleft'>Acceder á configuración da máquina virtual e poñer como primeira opción de arranque o disco duro, para que arranque o sistema operativo Microsoft Windows. Unha vez arrancado o sistema operativo:
+            <ol>
+              <li>Acceder cun usuario sen permisos de administrador.
+              <li>Abrir unha consola de comandos <b>cmd</b> e executar:
+              <pre>
+> cd C:\Windows\System32\spool\drivers\color 
+> winPEAS.bat
+              </pre>
+              <figure class='cfigure mtopsubs'>
+                <img class='contido bfigure pall' src="images/winpeas1.png"  />
+              </figure>
+            </ol>
+        </ol>
+ 
+    <div class='pagebreak'></div>
+        <p class='mtop mleft mbottom label'>Máquina virtual Microsoft Windows</p>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>winpeas.exe (Auditar o sistema operativo)</span></span>
+        <ol type='A'>
+          <li class='mtop mleft'>Arrancar a máquina virtual coa ISO Kali Live amd64 e na contorna gráfica abrir un terminal e executar:
+            <ul class='dashed-kali mleftsubs mtop'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li><span style='font-size:17.4px;'>curl -L https://github.com/carlospolop/PEASS-ng/releases/download/20221211/winPEASx64.exe -o /tmp/winpeas.exe</span><span class='explicacion'> #Descargar winPEASx64.exe a /tmp/winpeas.exe dende github mediante curl. <span class='bgred'><b>NOTA: Verificar a ligazón de descarga en [3]</b></span></span></li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali'>
+                <li>fdisk -l /dev/sda <span class='explicacion'> #Lista a táboa de particións do disco /dev/sda e logo remata.</span></li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                <li>mount -t auto /dev/sda2 /mnt <span class='explicacion'> #Montar a partición 2 do disco duro /dev/sda no directorio da live /mnt. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe. Poderiamos tamén empregar o comando <b>ntfs-3g /dev/sda2 /mnt </b>, o cal xa traballa directamente co sistema de ficheiros NTFS.</span>.</li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali. Neste caso verificamos que a última liña refírese ao punto de montaxe /mnt onde podemos traballar coa partición /dev/sda2.</li>
+                <li>cp -pv /tmp/winpeas.exe /mnt/Windows/System32/spool/drivers/color/ <span class='explicacion'> #Copiar winpeas.exe nunha ruta dentro do sistema operativo Microsoft Windows</span>
+                <li>umount /mnt<span style='font-size:14px;color:#0F18A0;'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda2 que estaba montada en /mnt</span></li>
+                <li>init 0 <span class='explicacion'> #Apagar a máquina enviando o sinal de apagado mediante o runlevel 0</span></li>
+              </ul>
+            </ul>
+            <div class='mtopplus'><br></div>
+          <li class='mtop mleft'>Acceder á configuración da máquina virtual e poñer como primeira opción de arranque o disco duro, para que arranque o sistema operativo Microsoft Windows. Unha vez arrancado o sistema operativo:
+            <ol>
+              <li>Descargar[5] e instalar .NET (Lembrar que é un prerrequisito para que se poida executar winPEAS.exe)
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net1.png"  />
+                <figcaption>
+                  Fig A. Descargar .NET
+                </figcaption>
+              </figure>
+
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net2.png"  />
+                <figcaption>
+                  Fig B. Guardar
+                </figcaption>
+              </figure>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net3.png"  />
+                <figcaption>
+                  Fig C. Ejecutar
+                </figcaption>
+              </figure>
+
+                  <div class='explicacion3 pall justify'>
+                    <span class='label'>Comprobar hash SHA512 [6]:</span><br />
+                    <pre>
+> certutil -hashfile dotnet-sdk-6.0.404-win-x64.exe SHA512
+                    </pre>
+                  </div>
+    <div class='pagebreak'></div>
+        <table>
+          <tr>
+            <td style='vertical-align:bottom;'>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net4.png"  />
+                <figcaption>
+                  Fig D. Ejecutar
+                </figcaption>
+              </figure>
+            </td>
+            <td style='vertical-align:bottom;'>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net5.png"  />
+                <figcaption>
+                  Fig E. Instalar
+                </figcaption>
+              </figure>
+            </td>
+          </tr>
+          <tr>
+            <td style='vertical-align:bottom;'>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net6.png"  />
+                <figcaption>
+                  Fig F. Sí
+                </figcaption>
+              </figure>
+            </td>
+            <td style='vertical-align:bottom;'>
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net7.png"  />
+                <figcaption>
+                  Fig G. Progreso de la instalación
+                </figcaption>
+              </figure>
+            </td>
+          </tr>
+        </table>
+
+              <figure class='cfigure'>
+                <img class='contido bfigure pall' src="images/.net8.png"  />
+                <figcaption>
+                  Fig H. Cerrar
+                </figcaption>
+              </figure>
+              <li>Acceder cun usuario sen permisos de administrador.
+              <li>Abrir unha consola de comandos <b>cmd</b> e executar:
+              <pre>
+> REG ADD HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
+> exit
+              </pre>
+              <li>Abrir unha nova consola de comandos <b>cmd</b> e executar:
+              <pre>
+> cd C:\Windows\System32\spool\drivers\color 
+> winpeas.exe
+              </pre>
+    <div class='pagebreak'></div>
+              <figure class='cfigure mtopsubs'>
+                <img class='contido bfigure pall' src="images/winpeas2.png" width='102%' />
+              </figure>
+            </ol>
+        </ol>
+ 
+                  <div class='explicacion3 pall justify'>
+                      <figure class='cfigure'>
+                        <img class='contido bfigure pall' src="images/winpeas3.png" width='102%'  />
+                      </figure>
+                      A cor <span style='color:red;'><b>Red</b></span> indica unha maior posibilidade de escalada de privilexios:<br />
+                      Cada sección indica cos cores anteriores a posibilidade de escalada de privilexios. Tamén indica ligazóns informando sobre as posibles escaladas.
+                  </div>
+                </ul>
+            </ul>
+          </p>
+        </li>      
+
+        <div class='mtopplusx4'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-2'>Razoa e contesta brevemente</span>:</span>
+          <p class='mtopplus'>Se se realizan de novo os apartados anteriores 1 e 2, pero:</p>
+          <ol type='a' class='mbottom'>
+            <li>Descargando os executables winPEAS.bat e winPEASx64.exe dende o propio sistema operativo Microsoft Windows.
+            <li>Executando os programas descargados dende a propia contorna gráfica. 
+          </ol>
+          Que acontece? Por que?
+
+      </ol>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
