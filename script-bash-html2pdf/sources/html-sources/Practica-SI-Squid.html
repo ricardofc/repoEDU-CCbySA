@@ -1,0 +1,377 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Servizo Proxy Caché: Squid</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Servizos' target='_blank'>Servizo Proxy Caché: Squid</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-squid-rede-interna_NAT.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      </p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul>
+          <li class='colorblue'>Documentación oficial sobre o Servidor Proxy Caché <span class='label'> <a href='http://www.squid-cache.org/' target='_blank'>Squid</a></span>
+          <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+          <div class='minindent'>&nbsp;</div>
+            <ul>
+              <li type='square'>Paquete squid (# apt update && apt -y install squid).</span>
+              <li type='square'>Configuración en: <span class='label'>/etc/squid/ (man squid)</span>
+                <p><span class='label'>squid.conf</span> &#10140; Ficheiro de configuración principal. Non debería modificarse con novas directivas. Así, se se quere extender a configuración global de Squid deberianse incluír noutros ficheiros de configuración coa extensión <b>.conf</b> dentro do directorio <b>/etc/squid/conf.d</b> 
+                <p>Aparecen por liña valores: directiva e argumentos. As directivas poder consultarse en <a href='http://www.squid-cache.org/Doc/config/' target='_blank'>Reference</a>. 
+                <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /><br />
+                <br />
+                <p>Directivas de vital importancia son:
+                  <ul class='mtopsubs mleftsubsx2'>
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arriba'><span class='label'><a href='http://www.squid-cache.org/Doc/config/acl/' target='_blank'>acl</a></span> &#10140; Definir listas de control de acceso (ACLs). ACLs: all, manager, localhost, to_localhost, to_linklocal e CONNECT están predefinidas. </p> 
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arriba'><span class='label'><a href='http://www.squid-cache.org/Doc/config/http_access/' target='_blank'>http_access</a></span> &#10140; Permitir/Denegar lista de control de acceso (ACLs). NOTA sobre os valores predeterminados:
+
+Se non hai liñas "allow", o predeterminado é denegar a solicitude.
+
+Se ningunha das liñas de "allow" provoca unha coincidencia, o predeterminado é o oposto á última liña da lista. Se a última liña fose "deny", o valor predeterminado é "allow". Pola contra, se a última liña é "allow", o valor predeterminado será "deny". Por estes motivos, trátase dunha boa idea ter unha entrada "deny all" ao final das liñas http_access para evitar posibles confusións.</p> 
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arriba'><span class='label'><a href='http://www.squid-cache.org/Doc/config/include/' target='_blank'>include</a></span> &#10140; Engadir ficheiros de configuración.</p>
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arriba'><span class='label'><a href='http://www.squid-cache.org/Doc/config/http_port/' target='_blank'>http_port</a></span> &#10140; Onde se configura o hostname/IP e o porto TCP de acceso. Por defecto soamente aparece o porto: <b>3128</b>, o cal indica que calquera hostname/IP que posúa o sistema estará a escoita nese porto.</p>
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arriba'><span class='label'><a href='http://www.squid-cache.org/Doc/config/coredump_dir/' target='_blank'>coredump_dir</a></span> &#10140; Especificar o directorio para gardar os volcados de memoria. <p class='mleftplusx8 arribaplusx2'>&nbsp;Por defecto: <b>/var/spool/squid/</b></p></p>
+                    <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini-rotate-180.png" />
+                    <p class='arribaplus'><span class='label'><a href='http://www.squid-cache.org/Doc/config/refresh_pattern/' target='_blank'>refresh_pattern</a></span> &#10140; Definir expresión regular(regex).</p>
+                  </ul>
+                </p>
+              <div class='mtopplusx2'>&nbsp;</div>
+              <li type='square'><a href='http://wiki.squid-cache.org/SquidFaq/SquidLogs' target='_blank'>Squid Log Files: /var/log/squid/</a></span><br />
+                <img class='cfigure mleftplusx4' src="images/mouse-pointer-mini.png" />
+              </ul>
+              <div class='mtopplusx8'>&nbsp;</div>
+                  <div class='indent explicacion3'>
+                    <p>Configuración por defecto <b>squid.conf</b>:</p>
+                    <ul class='dashed-kali'>
+                       <li><span class='label'>grep -v '^#' /etc/squid/squid.conf | sed '/^$/d'</span>
+                       <pre>
+acl localnet src 0.0.0.1-0.255.255.255  # RFC 1122 "this" network (LAN)
+acl localnet src 10.0.0.0/8             # RFC 1918 local private network (LAN)
+acl localnet src 100.64.0.0/10          # RFC 6598 shared address space (CGN)
+acl localnet src 169.254.0.0/16         # RFC 3927 link-local (directly plugged) machines
+acl localnet src 172.16.0.0/12          # RFC 1918 local private network (LAN)
+acl localnet src 192.168.0.0/16         # RFC 1918 local private network (LAN)
+acl localnet src fc00::/7               # RFC 4193 local private network range
+acl localnet src fe80::/10              # RFC 4291 link-local (directly plugged) machines
+acl SSL_ports port 443
+acl Safe_ports port 80          # http
+acl Safe_ports port 21          # ftp
+acl Safe_ports port 443         # https
+acl Safe_ports port 70          # gopher
+acl Safe_ports port 210         # wais
+acl Safe_ports port 1025-65535  # unregistered ports
+acl Safe_ports port 280         # http-mgmt
+acl Safe_ports port 488         # gss-http
+acl Safe_ports port 591         # filemaker
+acl Safe_ports port 777         # multiling http
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost manager
+http_access deny manager
+include /etc/squid/conf.d/*.conf
+http_access allow localhost
+http_access deny all
+http_port 3128
+coredump_dir /var/spool/squid
+refresh_pattern ^ftp:           1440    20%     10080
+refresh_pattern ^gopher:        1440    0%      1440
+refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
+refresh_pattern .               0       20%     4320
+</pre>
+                       <li><span class='label'>cat /etc/squid/conf.d/debian.conf</span>
+                       <pre>
+#
+# Squid configuration settings for Debian
+#
+
+# Logs are managed by logrotate on Debian
+logfile_rotate 0
+
+# For extra security Debian packages only allow
+# localhost to use the proxy on new installs
+#
+#http_access allow localnet
+</pre>
+                    </ul>
+                  </div>
+              <div class='indent'>&nbsp;</div>
+          <li type='square'>URL de interese: 
+              <a href='https://www.debian.org/doc/manuals/securing-debian-manual/ch05s02.es.html' target='_blank'>Asegurando Squid</a></li>
+                <img class='cfigure mleftplusx8' src="images/mouse-pointer-mini.png" />
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+        <div class='fright'><span class='label'>Servizo proxy caché - Squid</div>
+        <div class='minindent'>&nbsp;</div>
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual A: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> NAT -> 10.0.2.15/24)<br />(eth1 -> Rede Interna -> 192.168.120.100/24)</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth1<span class='explicacion'> #Configurar a tarxeta de rede interna eth1, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip route<span class='explicacion'> #Amosar a táboa de rutas do sistema.</span></li>
+                  <li>cat /etc/resolv.conf<span class='explicacion'> #Ver o contido do ficheiro /etc/resolv.conf, o cal contén a configuración os servidores DNS a empregar para a resolución de nomes.</span></li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth1</span></li>
+                  <li>ping -c4 www.google.es <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co dominio www.google.es</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                </ul>
+              </ul>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Proxy Caché Squid: 
+          <ul class='hashtag-kaliA'>
+            <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search squid <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda squid</li>
+            <li>apt -y install squid <span class='explicacion'> #Instalar o paquete squid, é dicir, instalar o servidor proxy caché squid. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+            <li>/etc/init.d/squid status <span class='explicacion'> #Comprobar o estado do servidor proxy caché Squid.</span></li>
+            <li>/etc/init.d/squid start <span class='explicacion'> #Iniciar o servidor proxy caché Squid.</span></li>
+            <li>/etc/init.d/squid status <span class='explicacion'> #Comprobar o estado do servidor proxy caché Squid.</span></li>
+            <li>nc -vz 192.168.120.100 3128 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 3128 do servidor proxy caché Squid está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 3128 é o porto TCP a escanear.</span></li>
+          </ul>
+
+
+   
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual A (kaliA) un navegador e visitar a URL http://www.google.es<p> Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois que é posible navegar e ver a URL http://www.google.es no navegador xa que a configuración de rede permite saír a Internet e resolver o dominio www.google.es, e a petición HTTP é redireccionada a HTTPS. Aínda non temos configurado no navegador a saída a través dun proxy.
+        </div>
+
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'>Na máquina virtual A (kaliA) configurar o navegador para que o acceso a Internet sexa a través do servidor proxy caché 192.168.120.100 no porto TCP 3128 para calquera petición HTTP ou HTTPS:
+      <img class='contido bfigure pall' src="images/proxy1.png" width='80%' />
+      <img class='contido bfigure pall' src="images/proxy2.png" width='80%' />
+                  </li>
+
+        <li class='mtop mleft mbottom'>Na máquina virtual A (kaliA) abrir unha nova lapela na URL http://www.google.com<p>Que acontece? Por que?</li>
+        <img class='contido bfigure pall' src="images/proxy4.png" />
+        <div class='explicacion3 mbottom'>
+          Agora temos configurado un proxy no navegador: 192.168.120.100(eth1), co cal a petición de saída faise á NIC eth1, e esta non ten permitido o acceso no proxy, é dicir, non existe ningunha ACL na configuración do proxy caché Squid que permita o acceso á NIC eth1 coa IP 192.168.120.100 ou ben a rede 192.168.120.0/24
+        </div><br />
+        <li class='mtopplus mleft mbottom'>Actualizar na máquina virtual A (kaliA) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+          <img class='pall' src="images/proxy6.png" width='56%' /><br />
+        <div class='explicacion3'>
+        Pois se nos fixamos a petición anterior http://www.google.es redireccionou a https://www.google.es, e agora o proxy está a rexeitar esta  petición HTTPS polo mesmo que comentamos antes: non existe ningunha ACL na configuración do proxy caché Squid que permita o acceso á NIC eth1 coa IP 192.168.120.100 ou ben a rede 192.168.120.0/24.
+               </div><br />
+
+        <li class='mtop mleft mbottom'>Na máquina virtual A (kaliA) configurar o navegador para que o acceso a Internet sexa a través do servidor proxy caché 127.0.0.1 no porto TCP 3128:
+
+      <img class='contido bfigure pall' src="images/proxy1.png" width='68%' />
+      <img class='contido bfigure pall' src="images/proxy3.png" width='68%' />
+                  </li>
+
+        <li class='mtop mleft mbottom'>Na máquina virtual A (kaliA) abrir unha nova lapela na URL http://www.google.com<p>Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois se nos fixamos a petición http://www.google.com redireccionou a https://www.google.com, e agora temos configurado un proxy no navegador: 127.0.0.1(lo), co cal a petición de saída faise á NIC loopback, e esta ten permitido o acceso no proxy, é dicir, existe algunha ACL na configuración do proxy caché Squid que permite o acceso a localhost (NIC lo):
+          <pre>
+$ grep 127.0.0.1 /etc/hosts
+127.0.0.1       localhost kali
+$ grep localhost /etc/squid/squid.conf | grep -v '^#'
+http_access allow localhost manager
+http_access allow localhost
+</pre>
+          Ademais é posible navegar e ver a URL https://www.google.com no navegador xa que agora estamos a solicitar na NIC loopback o proxy, co cal, está pode comunicarse coa NIC eth0, e polo tanto enrutar a Internet resolvendo o dominio www.google.com. 
+        </div><br />
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual A (kaliA) a primeira lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois, igual que no paso anterior se nos fixamos a petición http://www.google.es redireccionouse a https://www.google.es, e agora temos configurado un proxy no navegador: 127.0.0.1(lo), co cal a petición de saída faise á NIC loopback, e esta ten permitido o acceso no proxy, é dicir, existe algunha ACL na configuración do proxy caché Squid que permite o acceso a localhost (NIC lo):
+          <pre>
+$ grep 127.0.0.1 /etc/hosts
+127.0.0.1       localhost kali
+$ grep localhost /etc/squid/squid.conf | grep -v '^#'
+http_access allow localhost manager
+http_access allow localhost
+</pre>
+          Ademais é posible navegar e ver a URL https://www.google.es no navegador xa que agora estamos a solicitar na NIC loopback o proxy, co cal, está pode comunicarse coa NIC eth0, e polo tanto enrutar a Internet resolvendo o dominio www.google.es. 
+
+        </div><br />
+
+        <li class='mtop mleft mbottom'>Reconfigurar Squid para permitir o acceso dende 192.168.120.100(rede Interna)(eth1):
+          <ul class='dashed-kaliA mleftsubs'>
+            <ul class='hashtag-kaliA mleftsubs'>
+              <li class='mtop mleft mbottom'>sed -i 's/#http_access/http_access/' /etc/squid/conf.d/debian.conf <span class='explicacion'> #Descomentar a directiva <span class='label'>http_access allow localnet</span> no ficheiro de configuración /etc/squid/conf.d/debian.conf</span>
+                <div class='explicacion3'>
+                Coa directiva anterior estamos a permitir todas as <span class='label'>acl localnet</span> seguintes:
+<pre>
+$ grep 'acl localnet' /etc/squid/squid.conf
+acl localnet src 0.0.0.1-0.255.255.255  # RFC 1122 "this" network (LAN)
+acl localnet src 10.0.0.0/8             # RFC 1918 local private network (LAN)
+acl localnet src 100.64.0.0/10          # RFC 6598 shared address space (CGN)
+acl localnet src 169.254.0.0/16         # RFC 3927 link-local (directly plugged) machines
+acl localnet src 172.16.0.0/12          # RFC 1918 local private network (LAN)
+acl localnet src 192.168.0.0/16         # RFC 1918 local private network (LAN)
+acl localnet src fc00::/7               # RFC 4193 local private network range
+acl localnet src fe80::/10              # RFC 4291 link-local (directly plugged) machines
+</pre>
+É dicir, estamos a permitir a todas esas redes, e polo tanto, estamos a permitir á IP 192.168.120.100
+                </div>
+              </li>
+              <li class='mtop mleft mbottom'>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid</span>
+            <p>Reconfigurar o proxy no navegador:
+              <img class='contido bfigure pall' src="images/proxy1.png" />
+              <img class='contido bfigure pall' src="images/proxy2.png" />
+            </p>
+          </ul>
+        </ul>
+
+        <li class='mtop mleft mbottom'>Na máquina virtual A (kaliA) abrir unha nova lapela na URL http://www.edu.xunta.gal<p>Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois, se nos fixamos a petición http://www.edu.xunta.gal redireccionouse a http://www.edu.xunta.gal/portal/, e agora temos configurado un proxy no navegador: 192.168.120.100(eth1), co cal a petición de saída faise á NIC eth1, e esta ten permitido o acceso no proxy, é dicir, existe algunha ACL na configuración do proxy caché Squid que permite o acceso á NIC eth1:
+          <pre>
+$ grep 'acl localnet' /etc/squid/squid.conf | head -1
+acl localnet src 0.0.0.1-0.255.255.255  # RFC 1122 "this" network (LAN)
+</pre>
+          Ademais é posible navegar e ver a URL http://www.edu.xunta.gal/portal/ no navegador xa que agora estamos a solicitar na NIC eth1 o proxy, e según a táboa de rutas a través da NIC eth0 o sistema pode enrutar a Internet resolvendo o dominio www.edu.xunta.gal 
+
+        </div><br />
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual A (kaliA) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois, como comentamos anteriormente agora é posible a sáida a Internet a través do proxy ➝ eth1 ➝ eth0 ➝ Internet.
+        </div><br />
+
+
+            </ul>
+          </ul>
+      </ul>
+        <div class='minindent'>&nbsp;</div>
+        <div class='pagebreak'></div>
+
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual B: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.101/24)</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Lanzar na máquina virtual B (kaliB) un navegador e visitar a URL http://www.google.es<p> Que acontece? Por que?</li>
+
+        <img class='contido bfigure pall' src="images/proxy7.png" width='80%' /><br />
+        <div class='explicacion3'>
+          Pois que non é posible navegar e ver a URL http://www.google.es no navegador xa que a NIC eth0 está configurada en VirtualBox como rede interna, polo cal non ten acceso a Internet.
+        </div>
+        <li class='mtop mleft mbottom'>Na máquina virtual B (kaliB) configurar o navegador para que o acceso a Internet sexa a través do servidor proxy caché 192.168.120.100 no porto TCP 3128:
+              <img class='contido bfigure pall' src="images/proxy1.png" />
+              <img class='contido bfigure pall' src="images/proxy2.png" />
+                  </li>
+
+        <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (kaliB) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+        <div class='explicacion3'>
+          Pois que é posible navegar e ver a URL http://www.google.es no navegador xa que aínda que en kaliB a  NIC eth0 está configurada en VirtualBox como rede interna, polo cal non ten acceso a Internet, a solicitude faise ao proxy configurado na NIC eth1 de kaliA, e xa vimos antes que esta NIC xa permitía o acceso a Internet. Así, a petición http://www.google.es redirecciónase a https://www.google.es, e agora temos configurado un proxy no navegador: 192.168.120.100(eth1 de kaliA), co cal a petición de saída faise á NIC eth1 de kaliA, e esta ten permitido o acceso no proxy, é dicir, existe algunha ACL na configuración do proxy caché Squid que permite o acceso á NIC eth1 de kaliA:
+          <pre>
+$ grep 'acl localnet' /etc/squid/squid.conf | head -1
+acl localnet src 0.0.0.1-0.255.255.255  # RFC 1122 "this" network (LAN)
+</pre>
+          Ademais é posible navegar e ver a URL https://www.google.es no navegador xa que agora estamos a solicitar na NIC eth1 de kaliA o proxy, e según a táboa de rutas a través da NIC eth0 de kaliA o sistema pode enrutar a Internet resolvendo o dominio www.google.es 
+        </div><br />
+    <div class='pagebreak'></div>
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual A: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> NAT -> 10.0.2.15/24)<br />(eth1 -> Rede Interna -> 192.168.120.100/24)</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li class='mtop mleft mbottom'>sed -i 's/http_access/http_deny/' /etc/squid/conf.d/debian.conf <span class='explicacion'> #Modificar no ficheiro de configuración /etc/squid/conf.d/debian.conf</span> a directiva <span class='nome'>http_access allow localnet</span> por <span class='nome'>http_access deny localnet</span> 
+              </ul>
+            </ul>
+          </li>
+
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual B: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.101/24)</p>
+          <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (kaliB) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+          <div class='mtopplusx2'>&nbsp;</div>
+
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual A: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> NAT -> 10.0.2.15/24)<br />(eth1 -> Rede Interna -> 192.168.120.100/24)</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                <li class='mtop mleft mbottom'>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid</span>
+              </ul>
+            </ul>
+          </li>
+
+        <p class='mtop mleftsubs mbottom label'>Máquina virtual B: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.101/24)</p>
+          <li class='mtop mleft mbottom'>Actualizar de novo na máquina virtual B (kaliB) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
+    </div>
+
+
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
