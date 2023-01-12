@@ -341,14 +341,22 @@ acl localnet src 0.0.0.1-0.255.255.255  # RFC 1122 "this" network (LAN)
               <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
               <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
               <ul class='hashtag-kaliA mleftsubs'>
-                <li class='mtop mleft mbottom'>sed -i 's/http_access/http_deny/' /etc/squid/conf.d/debian.conf <span class='explicacion'> #Modificar no ficheiro de configuración /etc/squid/conf.d/debian.conf</span> a directiva <span class='nome'>http_access allow localnet</span> por <span class='nome'>http_access deny localnet</span> 
+                <li class='mtop mleft mbottom'>sed -i 's/http_access allow/http_access deny/' /etc/squid/conf.d/debian.conf <span class='explicacion'> #Modificar no ficheiro de configuración /etc/squid/conf.d/debian.conf</span> a directiva <span class='nome'>http_access allow localnet</span> por <span class='nome'>http_access deny localnet</span> 
               </ul>
             </ul>
           </li>
 
         <p class='mtop mleftsubs mbottom label'>Máquina virtual B: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.101/24)</p>
-          <li class='mtop mleft mbottom'>Actualizar na máquina virtual B (kaliB) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?</li>
-          <div class='mtopplusx2'>&nbsp;</div>
+          <li class='mtop mleft mbottom'>
+          Actualizar na máquina virtual B (kaliB) a lapela referente á URL http://www.google.es<p>Que acontece? Por que?
+            <div class='explicacion3'>
+            Pois se nos fixamos a petición anterior http://www.google.es redireccionou a https://www.google.es, e agora o proxy está a rexeitar tanto as peticións HTTP como HTTPS para a acl de nome localnet, pero segue sendo posible seguir vendo a URL solicitada no navegador xa que o navegador posúe a súa propia caché e segue amosando a páxina anterior sen realizar saída a Internet.<br />
+              Se limparamos a caché premendo ao mesmo tempo as teclas: &lt;Shift&gt;, &lt;Ctrl&gt; e &lt;Supr&gt;:
+              <img class='pall' src="images/proxy5.png" /><br />
+              E voltaramos a actualizar a lapela a URL http://www.google.es non se resolve.
+            </div><br />
+          Abrir unha nova lapela na URL http://github.com<p>Que acontece? Por que?</p>
+          </li>
 
         <p class='mtop mleftsubs mbottom label'>Máquina virtual A: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> NAT -> 10.0.2.15/24)<br />(eth1 -> Rede Interna -> 192.168.120.100/24)</p>
           <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
