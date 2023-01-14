@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Servizo Proxy Caché Squid: Tipos de ACLs</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Servizos' target='_blank'><span class='BookmarkTitle-Level-1'>Servizo Proxy Caché Squid: Tipos de ACLs</span></a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-squid-rede-interna_NAT-Tipos-ACLs.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      </p>
+      <p class='pall arriba'><b><span class='BookmarkTitle-Level-2'>NOTA</span></b>: URLs de interese
+        <ul type='square'><br />
+          <li><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SI/Servizos/Practica-SI-Squid.pdf' target='_blank'>Práctica SI Squid</a><br />
+                <img class='cfigure mleftplusx8' src="images/mouse-pointer-mini.png" /><br />
+          <li><a href='http://www.squid-cache.org/Doc/config/' target='_blank'>Reference (Directivas)</a><br />
+                <img class='cfigure mleftplusx8' src="images/mouse-pointer-mini.png" />
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='indent'>&nbsp;</div>
+    <div class='label'><span class='BookmarkTitle-Level-2'>Resumo Prácticas Exemplos</span></div>
+    <div class='justify pall'>
+      <ul type='square'>
+        <li>No <strong>Exemplo1. ACL: Orixe MAC Address (OSI - Capa 2)</strong>, veremos como poder permitir/denegar o acceso a Internet según a Mac Address de orixe da solicitude.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>No <strong>Exemplo2. ACL: Orixe IP (OSI - Capa 3)</strong>, veremos como poder permitir/denegar o acceso a Internet según a IP de orixe da solicitude.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>No <strong>Exemplo3. ACL: Orixe Rede (OSI - Capa 3)</strong>, veremos como poder permitir/denegar o acceso a Internet según a rede de orixe da solicitude.
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo4. ACL: Listas brancas e negras de dominios (OSI - Capa 7)</strong> veremos como poder permitir/denegar o acceso a Internet según o dominio destino da solicitude. 
+        </li>
+        <div class='minindent'>&nbsp;</div>
+        <li>
+          No <strong>Exemplo5. ACL: Control de acceso mediante HTTP Basic (OSI - Capa 7)</strong> imos tratar a autentificación http basic.
+          <ul>
+            <p>
+            HTTP proporciona un método de autenticación básico de usuarios: basic. Este método ante unha petición do cliente(navegador web) ao servidor cando se solicita unha URL amosará un diálogo pedindo usuario e contrasinal. Unha vez autenticado o usuario, o cliente volverá facer a petición ao servidor pero agora enviando o usuario e contrasinal, en texto claro (sen cifrar) proporcionados no diálogo. É recomendable entón se se emprega este método que se faga combinado con conexión SSL (HTTPS).
+            </p>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class='pagebreak'></div>
+
+
+    <div class='contido'>
+      <ol>
+        <p class='mtop mleftsubs mbottom label'><span class='BookmarkTitle-Level-2'>Configuración máquina virtual A</span>: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> NAT -> 10.0.2.15/24)<br />(eth1 -> Rede Interna -> 192.168.120.100/24)</p>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>passwd kali <span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b> (Ollo que o contrasinal ten un caracter punto final)</span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+
+
+        <li class='mtop mleft mbottom'>Configurar a rede: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth1<span class='explicacion'> #Configurar a tarxeta de rede interna eth1, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip route<span class='explicacion'> #Amosar a táboa de rutas do sistema.</span></li>
+                  <li>cat /etc/resolv.conf<span class='explicacion'> #Ver o contido do ficheiro /etc/resolv.conf, o cal contén a configuración os servidores DNS a empregar para a resolución de nomes.</span></li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth1</span></li>
+                  <li>ping -c4 www.google.es <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co dominio www.google.es</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                </ul>
+              </ul>
+
+        <li class='mtop mleft mbottom'>Activar Servidor Proxy Caché Squid: 
+          <ul class='hashtag-kaliA'>
+            <li>apt update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+            <li>apt search squid <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda squid</li>
+            <li>apt -y install squid <span class='explicacion'> #Instalar o paquete squid, é dicir, instalar o servidor proxy caché squid. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+            <li>/etc/init.d/squid status <span class='explicacion'> #Comprobar o estado do servidor proxy caché Squid.</span></li>
+            <li>/etc/init.d/squid start <span class='explicacion'> #Iniciar o servidor proxy caché Squid.</span></li>
+            <li>/etc/init.d/squid status <span class='explicacion'> #Comprobar o estado do servidor proxy caché Squid.</span></li>
+            <li>nc -vz 192.168.120.100 3128 <span class='explicacion'> #Mediante o comando nc(netcat) comprobar se o porto 3128 do servidor proxy caché Squid está en estado escoita(listen), esperando conexións. A opción -v corresponde á opción verbose, o que permite amosar información máis detallada na saída do comando. A opción -z permite devolver PROMPT do sistema e de igual xeito facer o escaneo ao/s porto/s solicitados. O número 3128 é o porto TCP a escanear.</span></li>
+          </ul>
+
+
+          <div class='pagebreak'></div>
+
+        <p class='mtop mleftsubs mbottom label'><span class='BookmarkTitle-Level-2'>Configuración máquina virtual B</span>: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.101/24)</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>cat /sys/class/net/eth0/address <span class='explicacion'> #Amosar o valor da MAC Address da NIC eth0</span>.
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Na máquina virtual B (kaliB) configurar o navegador firefox:
+          <ol type='A'>
+            <li>Para que non posúa caché e así as páxinas non sexan gardadas na caché do navegador:
+              <img class='contido bfigure pall' src="images/proxy8.png" width='40%' />
+              <img class='contido bfigure pall' src="images/proxy9.png" width='40%' />
+            </li>
+            <li>Para que o acceso a Internet sexa a través do servidor proxy caché 192.168.120.100(kaliA) no porto TCP 3128:
+              <img class='contido bfigure pall' src="images/proxy1.png" width='50%' />
+              <img class='contido bfigure pall' src="images/proxy2.png" width='60%' />
+            </li>
+          </ol>
+        </li>
+
+
+          <div class='pagebreak'></div>
+
+        <p class='mtop mleftsubs mbottom label'><span class='BookmarkTitle-Level-2'>Configuración máquina virtual C</span>: Kali amd64<br />(lo -> loopback -> 127.0.0.1/8)<br />(eth0 -> Rede Interna -> 192.168.120.102/24)</p>
+   
+        <li class='mtop mleft mbottom'>Configuración da rede. Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>/etc/init.d/avahi-daemon stop <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ip addr add 192.168.120.102/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.102 e máscara de subrede: 255.255.255.0</span>.</li>
+                <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                <li>ping -c4 192.168.120.102 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>echo '192.168.120.100 kaliA' >> /etc/hosts <span class='explicacion'> #Engadir no ficheiro /etc/hosts, é dicir, na táboa estática de búsqueda para nomes de host (DNS) o nome kaliA, para que atenda á IP 192.168.120.100</li> 
+                <li>ping -c4 kaliA <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede da máquina virtual A</span></li>
+                <li>cat /sys/class/net/eth0/address <span class='explicacion'> #Amosar o valor da MAC Address da NIC eth0</span>.
+             </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Cambiar hostname da máquina virtual C. Por kaliC como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+              <ul class='hashtag-kali mleftsubs'>
+                <li>echo 'kaliC' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                <li>echo 'kernel.hostname=kaliC' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+              </ul>
+              <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+            </ul>
+          </ul>
+        </li>
+
+        <li class='mtop mleft mbottom'>Na máquina virtual C (kaliC) configurar o navegador firefox:
+          <ol type='A'>
+            <li>Para que non posúa caché e así as páxinas non sexan gardadas na caché do navegador:
+              <img class='contido bfigure pall' src="images/proxy8.png" width='40%' />
+              <img class='contido bfigure pall' src="images/proxy9.png" width='40%' />
+            </li>
+            <li>Para que o acceso a Internet sexa a través do servidor proxy caché 192.168.120.100(kaliA) no porto TCP 3128:
+              <img class='contido bfigure pall' src="images/proxy1.png" width='50%' />
+              <img class='contido bfigure pall' src="images/proxy2.png" width='60%' />
+            </li>
+          </ol>
+        </li>
+
+        <div class='pagebreak'></div>
+        <div class='label'><span class='BookmarkTitle-Level-2'>Exemplos</span>:</div>
+        <div class='minindent'>&nbsp;</div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Exemplo1. ACL: Orixe MAC Address (OSI - Capa 2) (acl name arp mac-address).</span></span>
+           <div class='pall explicacion3'>
+          Sustituir 01:02:03:04:05:06 pola mac-address correspondente á NIC eth0 de kaliB e kaliC según corresponda.<br />
+          Lembrar que podedes recoller os valores desas mac-address executando en kaliB e kaliC o seguinte comando:
+          <ul class='dashed'>
+            <li>cat /sys/class/net/eth0/address</li>
+          </ul>
+          </div>
+         <p>Executar en kaliA:
+            <ul class='dashed-kaliA mleftsubsx4'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                 <li>echo -e 'acl arpOK arp 01:02:03:04:05:06\nhttp_access allow arpOK' > /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf, que contén unha acl de nome arpOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB.</span>
+                 <li>echo -e 'acl arpKO arp 01:02:03:04:05:06\nhttp_access deny arpKO' > /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf, que contén unha acl de nome arpKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliC.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta as acls definidas: arpOK e arpKO.</span>
+              </ul>
+            </ul>
+            <ol type='A'>
+                <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://book.hacktricks.xyz<p> Que acontece? Por que?</li>
+                <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://book.hacktricks.xyz<p> Que acontece? Por que?</li>
+           </ol>
+           </p>
+          <div class='indent'>&nbsp;</div>
+
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Exemplo2. ACL: Orixe IP (OSI - Capa 3) (acl name src IP).</span></span>
+          <p>Executar en kaliA:
+            <ul class='dashed-kaliA mleftsubsx4'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                 <li>rm -f /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf xerado no Exemplo1.</span>
+                 <li>echo -e 'acl ipOK src 192.168.120.101\nhttp_access allow ipOK' > /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf, que contén unha acl de nome ipOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB.</span>
+                 <li>echo -e 'acl ipKO src 192.168.120.102\nhttp_access deny ipKO' > /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf, que contén unha acl de nome ipKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliC.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta as acls definidas: ipOK e ipKO.</span>
+              </ul>
+            </ul>
+            <ol type='A'>
+                <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://www.google.es<p> Que acontece? Por que?</li>
+                <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://www.google.es<p> Que acontece? Por que?</li>
+           </ol>
+          </p>
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Exemplo3. ACL: Orixe Rede (OSI - Capa 3) (acl name src Rede).</span></span>
+          <p>Executar en kaliA:
+            <ul class='dashed-kaliA mleftsubsx4'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                 <li>rm -f /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf xerado no Exemplo1.</span>
+
+                 <li>rm -f /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo2.</span>
+                 <li>rm -f /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf xerado no Exemplo2.</span>
+                 <li><span style='font-size:16px;'>echo -e 'acl redeOK src 192.168.120.0/24\nhttp_access allow redeOK' > /etc/squid/conf.d/redes.conf</span> <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/redes.conf, que contén unha acl de nome redeOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB e kaliC.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: redeOK.</span>
+                 <div class='minindent'>&nbsp;</div>
+                 <ol type='A'>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
+                 </ol>
+                 <div class='indent'>&nbsp;</div>
+                 <li><span style='font-size:16px;'>echo -e 'acl redeKO src 192.168.120.0/24\nhttp_access deny redeKO' > /etc/squid/conf.d/redes.conf</span> <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/redes.conf, que contén unha acl de nome redeKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliB e kaliC.</span>
+                 <div class='minindent'>&nbsp;</div>
+                 <ol type='A'>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
+                 </ol>
+              </ul>
+            </ul>
+          </p>
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Exemplo4. ACL: Listas brancas e negras de dominios (OSI - Capa 7) (acl name dstdomain dominio).</span></span>
+          <p>Executar en kaliA:
+            <ul class='dashed-kaliA mleftsubsx2'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                 <li>rm -f /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf xerado no Exemplo2.</span>
+                 <li>rm -f /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo2.</span>
+                 <li>rm -f /etc/squid/conf.d/redes.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo3.</span>
+                 <li>echo -e 'acl whitelist dstdomain .edu.xunta.gal .youtube.com\nhttp_access allow whitelist' > /etc/squid/conf.d/whitelist.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/whitelist.conf, que contén unha acl de nome whitelist, á cal se lle permite o acceso a Internet, é dicir, se lle permite no acceso a Internet visitar os dominios e subdominios pertencentes a edu.xunta.gal e youtube.com en kaliB e kaliC.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
+                 <div class='indent'>&nbsp;</div>
+                 <ol type='A'>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar as URL http://edu.xunta.gal e http://youtube.com<p> Que acontece? Por que?</li>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar as URL http://edu.xunta.gal e http://youtube.com<p> Que acontece? Por que?</li>
+                 </ol>
+                 <div class='indent'>&nbsp;</div>
+                 <li>echo -e 'acl blacklist dstdomain .marca.com .mundodeportivo.com\nhttp_access deny blacklist' > /etc/squid/conf.d/blacklist.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/blacklist.conf, que contén unha acl de nome blacklist, á cal se lle denega o acceso a Internet, é dicir, se lle denega no acceso a Internet visitar os dominios e subdominios pertencentes a marca.com e mundodeportivo.com en kaliB e kaliC.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
+                 <div class='indent'>&nbsp;</div>
+                 <ol type='A'>
+                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar as URLs http://marca.com e http://mundodeportivo.com<p> Que acontece? Por que?</li>
+                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar as URLs http://marca.com e http://mundodeportivo.com<p> Que acontece? Por que?</li>
+                 </ol>
+              </ul>
+            </ul>
+           </p>
+        <div class='pagebreak'></div>
+        <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Exemplo5. ACL: Control de acceso mediant HTTP Basic (OSI - Capa 7) (acl name dstdomain dominio).</span></span>
+          <div class='pall explicacion3'>
+            <ul class='dashed'>
+              <li>tail +$(grep -n 'OPTIONS FOR AUTHENTICATION' /etc/squid/squid.conf | cut -d ':' -f1) /etc/squid/squid.conf | less <span class='explicacion'> #Ver información sobre como configurar a autenticación en squid. Aquí atoparemos a seguinte ligazón: <a href='http://wiki.squid-cache.org/Features/AddonHelpers' target='_blank'>AddonHelpers</a> pero está "rota", sendo as URLs de interese para atopar información sobre os distintos tipos de autenticación as seguintes:
+<ul type='square'>
+  <li><a href='https://wiki.squid-cache.org/Features/Authentication' target='_blank'>Authentication</a><br />
+    <img class='cfigure mleft' src="images/mouse-pointer-mini.png" />
+  <li><a href='http://www.squid-cache.org/Doc/man/' target='_blank'>Squid helpers</a><br />
+    <img class='cfigure mleft' src="images/mouse-pointer-mini.png" />
+</ul>
+Tamén podemos atopar información sobre o tipo de autenciación HTTP Basic a través das páxinas do manual co comando:
+<ul class='dashed'>
+  <li>man basic_ncsa_auth
+</ul>
+            </ul>
+          </span>
+
+          </li>
+        </ul>
+          <p>Executar en kaliA:
+            <ul class='dashed-kaliA mleftsubsx2'>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag-kaliA mleftsubs'>
+                 <li>rm -f /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf xerado no Exemplo1.</span>
+                 <li>rm -f /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf xerado no Exemplo2.</span>
+                 <li>rm -f /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo2.</span>
+                 <li>rm -f /etc/squid/conf.d/redes.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo3.</span>
+                 <li>rm -f /etc/squid/conf.d/whitelist.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/whitelist.conf xerado no Exemplo4.</span>
+                 <li>rm -f /etc/squid/conf.d/blacklist.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/blacklist.conf xerado no Exemplo4.</span>
+                 <li>echo 'auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/squid.htpasswd' > /etc/squid/conf.d/users.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/users.conf, que permite o tipo de autenticación HTTP Basic para permitir o acceso a Internet, é dicir, permitir o acceso a Internet según usuarios coas credenciais definidas no arquivo /etc/squid/squid.htpasswd</span>
+                 <li>echo -e 'acl allowUsers proxy_auth REQUIRED\nhttp_access allow allowUsers' >> /etc/squid/conf.d/users.conf <span class='explicacion'>#Modificar o ficheiro de configuración, /etc/squid/conf.d/users.conf, para engadirlle unha acl de nome allowusers, á cal se lle permite o acceso a Internet, é dicir, permitir o acceso a Internet según usuarios coas credenciais definidas no arquivo /etc/squid/squid.htpasswd.</span>
+                 <li>htpasswd -c /etc/squid/squid.htpasswd ana <span class='explicacion'>#Crear o contrasinal para o usuario ana no ficheiro de contrasinais /etc/squid/squid.htpasswd. Pór <b>123456</b> como contrasinal do usuario <i>ana</i></span>
+                 <li>htpasswd /etc/squid/squid.htpasswd brais <span class='explicacion'>Crear o contrasinal para o usuario brais no ficheiro de contrasinais /etc/squid/squid.htpasswd. Pór <b>654321</b> como contrasinal do usuario <i>brais</i></span>
+                 <li>chmod 600 /etc/squid/squid.htpasswd && chown proxy /etc/squid/squid.htpasswd <span class='explicacion'>#Configurar os permisos ugo(600=rw- --- ---) e a pertenza do usuario propietario ao arquivo de credenciais HTTP Basic /etc/squid/squid.htpasswd</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a autenticación HTTP Basic, e así permitir que soamente os usuarios ana e brais poidan acceder a Internet.</span>
+                 <div class='minindent'>&nbsp;</div>
+                 <ol type='A'>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://www.hackthebox.com <p>Que acontece? Por que?</li>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://www.hackthebox.com <p>Que acontece? Por que?</li>
+                 </ol>
+                 <div class='indent'>&nbsp;</div>
+                 <li>sed -i 's/http_access allow allowUsers/http_access deny allowUsers/' /etc/squid/conf.d/users.conf <span class='explicacion'>#Modificar no ficheiro de configuración, /etc/squid/conf.d/users.conf, a acl de nome allowusers, para denegar o acceso a Internet, é dicir, denegar o acceso a Internet aos usuarios coas credenciais definidas no arquivo /etc/squid/squid.htpasswd.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
+                 <div class='indent'>&nbsp;</div>
+                 <ol type='A'>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
+                   <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
+                 </ol>
+              </ul>
+            </ul>
+           </p>
+    </div>
+    <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
+
