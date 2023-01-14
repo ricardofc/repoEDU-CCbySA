@@ -230,7 +230,8 @@
               <ul class='hashtag-kaliA mleftsubs'>
                  <li>echo -e 'acl arpOK arp 01:02:03:04:05:06\nhttp_access allow arpOK' > /etc/squid/conf.d/arpsOK.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/arpsOK.conf, que contén unha acl de nome arpOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB.</span>
                  <li>echo -e 'acl arpKO arp 01:02:03:04:05:06\nhttp_access deny arpKO' > /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf, que contén unha acl de nome arpKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliC.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta as acls definidas: arpOK e arpKO.</span>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta as acls definidas: arpOK e arpKO.</span>
               </ul>
             </ul>
             <ol type='A'>
@@ -249,7 +250,8 @@
                  <li>rm -f /etc/squid/conf.d/arpsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/arpsKO.conf xerado no Exemplo1.</span>
                  <li>echo -e 'acl ipOK src 192.168.120.101\nhttp_access allow ipOK' > /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf, que contén unha acl de nome ipOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB.</span>
                  <li>echo -e 'acl ipKO src 192.168.120.102\nhttp_access deny ipKO' > /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf, que contén unha acl de nome ipKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliC.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta as acls definidas: ipOK e ipKO.</span>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta as acls definidas: ipOK e ipKO.</span>
               </ul>
             </ul>
             <ol type='A'>
@@ -269,7 +271,8 @@
                  <li>rm -f /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo2.</span>
                  <li>rm -f /etc/squid/conf.d/ipsKO.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsKO.conf xerado no Exemplo2.</span>
                  <li><span style='font-size:16px;'>echo -e 'acl redeOK src 192.168.120.0/24\nhttp_access allow redeOK' > /etc/squid/conf.d/redes.conf</span> <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/redes.conf, que contén unha acl de nome redeOK, á cal se lle permite o acceso a Internet, é dicir, se lle permite o acceso a Internet a kaliB e kaliC.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: redeOK.</span>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: redeOK.</span>
                  <div class='minindent'>&nbsp;</div>
                  <ol type='A'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
@@ -297,7 +300,8 @@
                  <li>rm -f /etc/squid/conf.d/ipsOK.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo2.</span>
                  <li>rm -f /etc/squid/conf.d/redes.conf <span class='explicacion'>#Eliminar o ficheiro de configuración, /etc/squid/conf.d/ipsOK.conf xerado no Exemplo3.</span>
                  <li>echo -e 'acl whitelist dstdomain .edu.xunta.gal .youtube.com\nhttp_access allow whitelist' > /etc/squid/conf.d/whitelist.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/whitelist.conf, que contén unha acl de nome whitelist, á cal se lle permite o acceso a Internet, é dicir, se lle permite no acceso a Internet visitar os dominios e subdominios pertencentes a edu.xunta.gal e youtube.com en kaliB e kaliC.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: whitelist.</span>
                  <div class='indent'>&nbsp;</div>
                  <ol type='A'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar as URL http://edu.xunta.gal e http://youtube.com<p> Que acontece? Por que?</li>
@@ -305,7 +309,8 @@
                  </ol>
                  <div class='indent'>&nbsp;</div>
                  <li>echo -e 'acl blacklist dstdomain .marca.com .mundodeportivo.com\nhttp_access deny blacklist' > /etc/squid/conf.d/blacklist.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/blacklist.conf, que contén unha acl de nome blacklist, á cal se lle denega o acceso a Internet, é dicir, se lle denega no acceso a Internet visitar os dominios e subdominios pertencentes a marca.com e mundodeportivo.com en kaliB e kaliC.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: whitelist.</span>
                  <div class='indent'>&nbsp;</div>
                  <ol type='A'>
                     <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar as URLs http://marca.com e http://mundodeportivo.com<p> Que acontece? Por que?</li>
@@ -350,17 +355,17 @@ Tamén podemos atopar información sobre o tipo de autenciación HTTP Basic a tr
                  <li>htpasswd -c /etc/squid/squid.htpasswd ana <span class='explicacion'>#Crear o contrasinal para o usuario ana no ficheiro de contrasinais /etc/squid/squid.htpasswd. Pór <b>123456</b> como contrasinal do usuario <i>ana</i></span>
                  <li>htpasswd /etc/squid/squid.htpasswd brais <span class='explicacion'>Crear o contrasinal para o usuario brais no ficheiro de contrasinais /etc/squid/squid.htpasswd. Pór <b>654321</b> como contrasinal do usuario <i>brais</i></span>
                  <li>chmod 600 /etc/squid/squid.htpasswd && chown proxy /etc/squid/squid.htpasswd <span class='explicacion'>#Configurar os permisos ugo(600=rw- --- ---) e a pertenza do usuario propietario ao arquivo de credenciais HTTP Basic /etc/squid/squid.htpasswd</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a autenticación HTTP Basic, e así permitir que soamente os usuarios ana e brais poidan acceder a Internet.</span>
-                 <div class='minindent'>&nbsp;</div>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a autenticación HTTP Basic, e así permitir que soamente os usuarios ana e brais poidan acceder a Internet.</span>
                  <ol type='A'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://www.hackthebox.com <p>Que acontece? Por que?</li>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://www.hackthebox.com <p>Que acontece? Por que?</li>
                  </ol>
-                 <div class='indent'>&nbsp;</div>
+                 <div class='minindent'>&nbsp;</div>
                  <li>sed -i 's/http_access allow allowUsers/http_access deny allowUsers/' /etc/squid/conf.d/users.conf <span class='explicacion'>#Modificar no ficheiro de configuración, /etc/squid/conf.d/users.conf, a acl de nome allowusers, para denegar o acceso a Internet, é dicir, denegar o acceso a Internet aos usuarios coas credenciais definidas no arquivo /etc/squid/squid.htpasswd.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Web Squid para ter en conta a acl definida: whitelist.</span>
-                 <div class='indent'>&nbsp;</div>
-                 <ol type='A'>
+                 <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: whitelist.</span>
+                 <ol type='A' class='arribasubsmini'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
                  </ol>
@@ -377,4 +382,3 @@ Tamén podemos atopar información sobre o tipo de autenciación HTTP Basic a tr
   </div>
 </body>
 </html>
-
