@@ -281,7 +281,7 @@
                  <div class='indent'>&nbsp;</div>
                  <li><span style='font-size:16px;'>echo -e 'acl redeKO src 192.168.120.0/24\nhttp_access deny redeKO' > /etc/squid/conf.d/redes.conf</span> <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/redes.conf, que contén unha acl de nome redeKO, á cal se lle denega o acceso a Internet, é dicir, se lle denega o acceso a Internet a kaliB e kaliC.</span>
                  <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: redeOK.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: redeKO.</span>
                  <div class='minindent'>&nbsp;</div>
                  <ol type='A'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://github.com<p> Que acontece? Por que?</li>
@@ -312,7 +312,7 @@
                  <div class='indent'>&nbsp;</div>
                  <li>echo -e 'acl blacklist dstdomain .marca.com .mundodeportivo.com\nhttp_access deny blacklist' > /etc/squid/conf.d/blacklist.conf <span class='explicacion'>#Xerar un novo ficheiro de configuración, /etc/squid/conf.d/blacklist.conf, que contén unha acl de nome blacklist, á cal se lle denega o acceso a Internet, é dicir, se lle denega no acceso a Internet visitar os dominios e subdominios pertencentes a marca.com e mundodeportivo.com en kaliB e kaliC.</span>
                  <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: whitelist.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: blacklist.</span>
                  <div class='indent'>&nbsp;</div>
                  <ol type='A'>
                     <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar as URLs http://marca.com e http://mundodeportivo.com<p> Que acontece? Por que?</li>
@@ -366,7 +366,7 @@ Tamén podemos atopar información sobre o tipo de autenciación HTTP Basic a tr
                  <div class='minindent'>&nbsp;</div>
                  <li>sed -i 's/http_access allow allowUsers/http_access deny allowUsers/' /etc/squid/conf.d/users.conf <span class='explicacion'>#Modificar no ficheiro de configuración, /etc/squid/conf.d/users.conf, a acl de nome allowusers, para denegar o acceso a Internet, é dicir, denegar o acceso a Internet aos usuarios coas credenciais definidas no arquivo /etc/squid/squid.htpasswd.</span>
                  <li>squid -k parse <span class='explicacion'> #Analizar a configuración do Servidor Proxy Caché Squid. No caso de ser incorrecta amosa o/s erro/s e onde existe/n o/s erro/s na configuración.</span>
-                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a acl definida: whitelist.</span>
+                 <li>/etc/init.d/squid reload <span class='explicacion'> #Recargar a configuración do Servidor Proxy Caché Squid para ter en conta a autenticación HTTP Basic, e así denegar aos usuarios ana e brais, e que agora non poidan acceder a Internet.</span>
                  <ol type='A' class='arribasubsmini'>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual B (kaliB) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
                    <li class='mtop mleftsubs mbottom'>Lanzar na máquina virtual C (kaliC) o navegador firefox e visitar a URL http://picoctf.org <p>Que acontece? Por que?</li>
