@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Taller SI - Práctica 23d - Allow Boot CD/DVD/USB - chntpw - MS Windows</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot' target='_blank'>Práctica Seguridade Informática<br /> Allow Boot dispositivo extraíble: CD/DVD/USB - chntpw</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-SI-Allow-Boot-CD-USB-Windows-chntpw-anyone.png" />
+    </figure>
+   
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall arriba'><b>NOTAS</b>:
+        <ul type='square'>
+          <li class='colorblue'><span class='label'> Instalación por defecto</span>: A instalación do sistema operativo Microsoft Windows realizouse por defecto, é dicir, seguindo os pasos do instalador.</li>
+          Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>1</sub></span><br /><br />
+          <li class='colorblue'><span class='label'> Apagado normal do sistema operativo</span>: Para un correcto funcionamento da práctica o sistema operativo Microsoft Windows debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros NTFS.</span></li>
+          Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>2</sub></span><br /><br />
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='contido'>
+      <ol>
+        <li class='mtop mleft mbottom'><span class='label'>Arrancar coa distro Live amd64 baseada en Debian</span></li>
+        <li class='mtop mleft mbottom'>Abrir un terminal e executar: 
+          <ul class='dashed mleftsubs'><br />
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag'>
+                <li>fdisk -l /dev/sda <span class='explicacion'> #Lista a táboa de particións do disco /dev/sda e logo remata.</span></li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                <li>mount -t auto /dev/sda2 /mnt <span class='explicacion'> #Montar a partición 2 do disco duro /dev/sda no directorio da live /mnt. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe. Poderiamos tamén empregar o comando <b>ntfs-3g /dev/sda2 /mnt </b>, o cal xa traballa directamente co sistema de ficheiros NTFS.</span>.</li>
+                <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali. Neste caso verificamos que a última liña refírese ao punto de montaxe /mnt onde podemos traballar coa partición /dev/sda2.</li>
+                <li>cd /mnt/Windows/System32/config <span class='explicacion'> #Acceder ao directorio do sistema operativo Microsoft Windows C:\Windows\System32\config, o cal está montado en /mnt/Windows/System32/config</li>
+                <li>ls -l SAM <span class='explicacion'> #Listar de forma extendida o ficheiro SAM, o cal é o administrador de contas de seguridade (SAM): unha base de datos que atópase en equipos que executan sistemas operativos Microsoft Windows e que almacenan as contas de usuario e os descriptores de seguridade dos usuarios no equipo local.</li>
+                <li>file SAM <span class='explicacion'> #Determinar que tipo de ficheiro é o ficheiro SAM. Neste caso é un ficheiro de rexistro Microsoft Windows, NT/2000 ou superior.</li>
+                <br />
+                <li>dhclient -v eth0<span style='font-size:14px;color:#0F18A0;'> #Solicitar a configuración de rede por DHCP para a interface eth0. A opción -v(verbose) amosa a saída do comando en modo detallado.</li>
+                <li>apt-get update <span class='explicacion'> #Actualizar o listado de paquetes dos repositorios (/etc/apt/sources.list, /etc/apt/sources.list.d/)</li>
+                <li>apt-cache search chntpw <span class='explicacion'> #Buscar calquera paquete que coincida co patrón de búsqueda chntpw</li>
+                <li>apt-get -y install chntpw <span class='explicacion'> #Instalar o paquete chntpw, é dicir, instalar o programa chntpw. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.</li>
+                <li>chntpw -l SAM <span class='explicacion'> #Listar todos os usuarios da base de datos SAM e saír. O comando <i>chtnpw</i> é unha utilidade que permite sobreescribir contrasinais de sistemas operativos Microsoft Windows</li>
+                <br />Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>3</sub></span><br /><br />
+                <li>chntpw -u Administrador SAM <span class='explicacion'> #Modificar o usuario Administrador, o cal debe existir na SAM, é dicir, debe existir na saída do comando anterior.</li>
+                <p class='explicacion2'>No menú que aparece escollemos as opcións <span class='label title24'>1 &#10141;  q &#10141 y</span> para pór o contrasinal en branco, e grabar os cambios á SAM. Poderiamos tamén executar o comando <span class='label title24'>chntpw -i SAM</span>, o que nos permite interactuar co programa e elixir distintas opcións de menú.</p>
+              <li>cd <span class='explicacion'> #Acceder ao directorio de traballo do usuario, neste caso, acceder a /root</li>
+              <li>umount /mnt<span style='font-size:14px;color:#0F18A0;'> #Desmontar (deixar de facer uso) a partición primaria /dev/sda2 que estaba montada en /mnt</span></li>
+                <br />Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>4</sub></span><br /><br />
+              <li>init 0 <span class='explicacion'> #Apagar a máquina enviando o sinal de apagado mediante o runlevel 0</span></li>
+              </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'><span class='label'>Arrancar a máquina Windows sen o dispositivo extraíble conectado</span></li>
+        <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario de nome <span class='label'>Administrador</span> foi modificada, é dicir, comprobar que o usuario <i>Administrador</i> accede sen contrasinal.</li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>5</sub></span></li>
+        <li class='mtop mleft mbottom'>Que é o que acontece se o sistema operativo Microsoft Windows é un servidor de dominio? Por que?</li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>6</sub></span></li>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
