@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Taller SI - Práctica 22b - Allow Boot GRUB disco duro - GNU/Linux</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot' target='_blank'>Taller SI - Práctica 22b<br /> Allow Boot GRUB disco duro - GNU/Linux</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Taller-SI-Practica-22b.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      </p>
+    </div>
+
+   <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+       <li class='mtop mleft mbottom'>Realizar a práctica <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot/Practica2-SI-Allow-Boot-GRUB-HD-GNU-Linux.pdf' target='_blank'>Practica2-SI-Allow-Boot-GRUB-HD-GNU-Linux.pdf</a>
+         <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+       </li>
+       <li class='mtop mleft mbottom'>Crear unha máquina virtual en cada equipo do alumnado coa seguinte configuración (ver escenario):
+         <ul type='square'>
+           <li>Nome: Practica22b</li>
+           <li>Tipo: Linux</li>
+           <li>Versión: Debian (64-bit)</li>
+           <li>RAM ≥ 2048MB</li>
+           <li>Orde de arranque: Óptica/Disco duro
+           <li>CPU ≥ 2</li>
+           <li>PAE/NX habilitado</li>
+           <li>Almacenamento: 
+             <ul>
+               <li>Unidade óptica(ISO): Debian Install amd64 DVD-1 (preguntar ao docente)</li>
+               <li>Disco duro dinámico de 20GB</li>
+             </ul>
+           </li>
+           <li>Rede: Soamente unha tarxeta activada en modo NAT</li>
+         </ul>
+       </li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>1</sub></span></li>
+       <li class='mtop mleft mbottom'>Instalar o sistema operativo Debian GNU/Linux amd64 seguindo os pasos do instalador de texto (non gráfico) coas seguintes características:
+            <ul>
+              <li>Idioma/Teclado: Spanish</li>
+              <li>Particionamento (sen cifrar): 
+                <ul type='circle'>
+                  <li>Método de particionamento: Guiado - utilizar el disco completo y configurar LVM 
+                  <li>Esquema de particionado: Separar particiones /home, /var y /tmp
+                </ul>
+                O particionado quedaría así:
+                <ul>
+                  <li>Boot do sistema: /dev/sda1 (/boot). Formato: Linux ext2
+                  <li>LVM: /dev/sda5 (Contén os volumes lóxicos). Formato: Linux LVM
+                </ul>
+              <li>Nome de usuario: usuario</li>
+              <li>Nome computador: debian</li>
+              <li>Contrasinal: abc123. (Ollo que o contrasinal ten un caracter punto final)</li>
+              <li>Activar a xestión de paquetes por rede (apt). Escoller o repositorio por defecto que ofrece o instalador</li>
+              <li>Escritorio gráfico: xfce</li>
+              <li>Servidor SSH
+              <li>GRUB en /dev/sda sen contrasinal</li>
+            </ul>
+       </li>
+       <li class='mtop mleft mbottom'>Unha vez instalado o sistema operativo avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>2</sub></span></li>
+
+       <li class='mtop mleft mbottom'>Arrancar co sistema operativo GNU/Linux instalado no disco duro.</li>
+       <li class='mtop mleft mbottom'>Abrir sesión de usuario na contorna gráfica coas credencias: <span class='label'>usuario</span>/<span class='label'>abc123.</span></li>
+       <li class='mtop mleft mbottom'>Abrir unha consola de comandos e executar:
+         <ul class='dashed'>
+           <li>su - <span class='explicacion'> #Acceder á consola de root(administrador) a través do comando <em>su</em>, o cal solicita o contrasinal do usuario <em>root</em>. Escribir o contrasinal de <em>root</em> para acceder.</li>
+           <ul class='hashtag'>
+             <li></li>
+           </ul>
+         </ul>
+       </li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>3</sub></span></li>
+       <li class='mtop mleft mbottom'><span class='label'> Apagado normal do sistema operativo</span>: Para un correcto funcionamento da práctica o sistema operativo GNU/Linux debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros ext4.</span></li>
+       <img class='cfigure mleftplus280 arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+       <li class='mtop mleft mbottom'>O xestor de arranque: <a href='https://www.gnu.org/software/grub/' target='_blank'>GRUB versión 2 ou GRUB 2</a>
+         arranca por defecto na súa primeira opción en 5segundos. Entón, parar o arranque deste primeira opción premendo as teclas frechas abaixo &#x2193, arriba &#x2191.</li>
+       <li class='mtop mleft mbottom'>Seleccionar a primeira opción de arranque.</li>
+       <li class='mtop mleft mbottom'>Premer a tecla <span class='label'>e</span> (edit) para poder editar os parámetros de arranque do kernel.</li>
+
+       <div class='pagebreak'>&nbsp;</div>
+
+       <li class='mtop mleft mbottom'>Moverse coa tecla frecha abaixo &#x2193 ata chegar á liña onde aparecen os parámetros <span class='label'>ro quiet</span> ou <span class='label'>ro quiet splash</span></li>
+       <li class='mtop mleft mbottom'>Unha vez instalado o sistema operativo avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>4</sub></span></li>
+       <li class='mtop mleft mbottom'>Sustituír os parámetros <span class='label'>ro quiet</span> ou <span class='label'>ro quiet splash</span> polos parámetros <span class='label'>rw init=/bin/bash</span>. e premer as teclas <span class='label'>&lt;Ctrl&gt; + x</span>, é dicir,  &#x2303x, para arrancar a opción escollida con novos parámetros do kernel. Agora no arranque veremos que non chegamos a arrancar o sistema operativo porque o primeiro proceso a chamar (init ou systemd) está modificado a /bin/bash, co cal en vez de facer unha chamada ao arranque do sistema operativo facemos unha chamada a unha consola de comandos, polo que, accedemos a unha consola onde temos permisos de root (administrador). <span class='label'>Ollo!: Non está cargado completamente o sistema operativo, pero si está recoñecido o hardware.</span></li>
+       <li class='mtop mleft mbottom'>Executar:
+         <ul class='hashtag'><br />
+           <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo instalado.</span></li>
+           <li >cat /proc/cmdline<span class='explicacion'> #Amosar o contido de /proc/cmdline que parámetros cos cales o kernel foi arrancado.</li>
+           <li >passwd usuario<span class='explicacion'> #Modificar o contrasinal do usuario de nome <i>usuario</i>. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+           <li >passwd root<span class='explicacion'> #Modificar o contrasinal do usuario <i>root</i>. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+          </ul>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>5</sub></span></li>
+       <li class='mtop mleft mbottom'>Executar:
+         <ul class='hashtag'><br />
+          <li >reboot -f<span class='explicacion'> #Reiniciar de forma forzosa.</span></li>
+        </ul>
+       </li>
+
+       <div class='indent'>&nbsp;</div>
+
+       <p class='mtop mleft mbottom label'>Deixar arrancar o sistema operativo GNU/Linux dende disco duro</p>
+       <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario de nome <span class='label'>usuario</span> foi modificada iniciando sesión no sistema.</li>
+       <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario <span class='label'>root</span> foi modificada iniciando sesión no sistema.</li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>6</sub></span></li>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>

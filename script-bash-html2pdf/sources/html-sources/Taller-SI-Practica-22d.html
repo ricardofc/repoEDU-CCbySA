@@ -1,0 +1,244 @@
+<!DOCTYPE HTML>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Taller SI - Práctica 22d - Allow Boot CD USB - GNU/Linux</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='arriba'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot' target='_blank'>Taller SI - Práctica 22d<br />Allow Boot CD USB GNU-Linux</a></h1>
+    <img class='cfigure mleft arriba' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure'>
+      <img class='contido bfigure pall' src="images/Escenario-Taller-SI-Practica-22d.bmp" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      </p>
+    </div>
+
+   <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <ol>
+       <li class='mtop mleft mbottom'>Realizar a práctica <a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/BIOS-Allow-Boot/Practica2-SI-Allow-Boot-CD-USB-GNU-Linux.pdf' target='_blank'>Practica2-SI-Allow-Boot-CD-USB-GNU-Linux.pdf</a>
+         <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" />
+       </li>
+       <li class='mtop mleft mbottom'>Crear unha máquina virtual en cada equipo do alumnado coa seguinte configuración (ver escenario):
+         <ul type='square'>
+           <li>Nome: Practica22d</li>
+           <li>Tipo: Linux</li>
+           <li>Versión: Debian (64-bit)</li>
+           <li>RAM ≥ 2048MB</li>
+           <li>Orde de arranque: Óptica/Disco duro
+           <li>CPU ≥ 2</li>
+           <li>PAE/NX habilitado</li>
+           <li>Almacenamento: 
+             <ul>
+               <li>Unidade óptica(ISO): Debian Install amd64 DVD-1 (preguntar ao docente)</li>
+               <li>Disco duro dinámico de 80GB</li>
+             </ul>
+           </li>
+           <li>Rede: Soamente unha tarxeta activada en modo NAT</li>
+         </ul>
+       </li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>1</sub></span></li>
+       <li class='mtop mleft mbottom'>Instalar o sistema operativo Debian GNU/Linux amd64 seguindo os pasos do instalador de texto (non gráfico) coas seguintes características:
+            <ul>
+              <li>Idioma/Teclado: Spanish</li>
+              <li>Particionamento (sen cifrar): 
+                <ul type='circle'>
+                  <li>Método de particionamento: Guiado - utilizar el disco completo y configurar LVM 
+                  <li>Esquema de particionado: Separar particiones /home, /var y /tmp
+                </ul>
+                O particionado quedaría así:
+                <ul>
+                  <li>Boot do sistema: /dev/sda1 (/boot). Formato: Linux ext2
+                  <li>LVM: /dev/sda5 (Contén os volumes lóxicos). Formato: Linux LVM
+                </ul>
+              <li>Nome de usuario: usuario</li>
+              <li>Nome computador: debian</li>
+              <li>Contrasinal: abc123. (Ollo que o contrasinal ten un caracter punto final)</li>
+              <li>Activar a xestión de paquetes por rede (apt). Escoller o repositorio por defecto que ofrece o instalador</li>
+              <li>Escritorio gráfico: xfce</li>
+              <li>Servidor SSH
+              <li>GRUB en /dev/sda sen contrasinal</li>
+            </ul>
+       </li>
+       <li class='mtop mleft mbottom'>Unha vez instalado o sistema operativo avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>2</sub></span></li>
+
+       <li class='mtop mleft mbottom'>Arrancar co sistema operativo GNU/Linux instalado no disco duro.</li>
+       <li class='mtop mleft mbottom'>Abrir sesión de usuario na contorna gráfica coas credencias: <span class='label'>usuario</span>/<span class='label'>abc123.</span></li>
+
+       <li class='mtop mleft mbottom'>Abrir un terminal e executar:
+         <ul class='dashed-debian-usuario mleftsubs'>
+           <li>su - <span class='explicacion'> #Acceder á consola de root(administrador) a través do comando <em>su</em>, o cal solicita o contrasinal do usuario <em>root</em></li>
+             <ul class='hashtag-debian mleftsubs'>
+               <li>fdisk -l /dev/sda <span class='explicacion'> #Amosar a táboa de particións do disco <em>/dev/sda</em></span><br /><br />
+                 <pre class='code3 mleft mtopsubsmini'>
+Disco /dev/sda: 80 GiB, 85899345920 bytes, 167772160 sectores
+Modelo de disco: VBOX HARDDISK   
+Unidades: sectores de 1 * 512 = 512 bytes
+Tamaño de sector (lógico/físico): 512 bytes / 512 bytes
+Tamaño de E/S (mínimo/óptimo): 512 bytes / 512 bytes
+Tipo de etiqueta de disco: dos
+Identificador del disco: 0x00f71fcd
+
+Disposit.  Inicio Comienzo     Final  Sectores Tamaño Id Tipo
+/dev/sda1  *          2048    999423    997376   487M 83 Linux
+/dev/sda2          1001470 167770111 166768642  79,5G  5 Extendida
+/dev/sda5          1001472 167770111 166768640  79,5G 8e Linux LVM
+                 </pre>
+               </li>
+               <li class='mtopsubs'>mount | grep sda<span class='explicacion'> #Amosar os sistemas de ficheiros montados correspondentes ao patrón buscado: <em>sda</em></span><br /><br />
+                 <pre class='code3 mleft mtopsubsmini'>
+/dev/sda1 on /boot type ext2 (rw,relatime)
+                  </pre>
+               </li>
+       <div class='pagebreak'>&nbsp;</div>
+               <li class='mtopsubs'>mount | grep debian <span class='explicacion'> #Amosar os sistemas de ficheiros montados correspondentes ao patrón buscado: <em>debian</em></span><br /></br>
+                 <pre class='code3 mleft mtopsubsmini'>
+/dev/mapper/debian--vg-root on / type ext4 (rw,relatime,errors=remount-ro)
+/dev/mapper/debian--vg-tmp on /tmp type ext4 (rw,relatime)
+/dev/mapper/debian--vg-var on /var type ext4 (rw,relatime)
+/dev/mapper/debian--vg-home on /home type ext4 (rw,relatime)
+                 </pre>
+               </li>
+               <div class='explicacion3 pall mtopsubs'>
+                 <img class='cfigure arriba' src="images/mouse-pointer-mini-rotate-180.png" />
+                 <h3><a href='https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/SI/RAID_e_LVM/LVM2.pdf' target='_blank'>Práctica LVM2</a></h3>
+                 <ul type='square'>
+                   <li>pvscan; vgscan; lvscan<span class='explicacion'> #Permiten escanear respectivamente: volumes físicos, grupos de volumes e volumes lóxicos existentes.</span></li><br />
+                   <li>pvdisplay; vgdisplay; lvdisplay<span class='explicacion'> #Amosa respectivamente información das propiedades dos volumes físicos, grupos de volumes e volumes lóxicos.</span></li><br />
+                   <li>pvs; vgs; lvs<span class='explicacion'> #Amosa respectivamente información resumida sobre volumes físicos, grupos de volumes e volumes lóxicos.</span></li>
+                 </ul>
+               </div><br />
+               <li class='mtopsubs'>pvscan<span class='explicacion'> #Amosar os volumes físicos recoñecidos no sistema.</span><br /></br>
+                 <pre class='code3 mleft mtopsubs arriba'>
+  PV /dev/sda5   VG debian-vg       lvm2 [<79,52 GiB / 0    free]
+  Total: 1 [<79,52 GiB] / in use: 1 [<79,52 GiB] / in no VG: 0 [0   ]
+                  </pre>
+               </li>
+               <li class='mtopsubs'>vgscan<span class='explicacion'> #Amosar os grupos de volumes recoñecidos no sistema.</span><br /></br>
+                 <pre class='code3 mleft mtopsubsmini'>
+  Found volume group "debian-vg" using metadata type lvm2
+                 </pre>
+               </li>
+               <li class='mtopsubs'>lvscan<span class='explicacion'> #Amosar os volumes lóxicos recoñecidos no sistema.</span><br /></br>
+                 <pre class='code3 mleft mtopsubsmini'>
+  ACTIVE            '/dev/debian-vg/root' [15,05 GiB] inherit
+  ACTIVE            '/dev/debian-vg/var' [5,32 GiB] inherit
+  ACTIVE            '/dev/debian-vg/swap_1' [976,00 MiB] inherit
+  ACTIVE            '/dev/debian-vg/tmp' [992,00 MiB] inherit
+  ACTIVE            '/dev/debian-vg/home' [57,22 GiB] inherit
+                 </pre>
+               </li>
+               <div class='explicacion3 pall mtopsubs'>
+                 <b>NOTA:</b> Temos que ter en mente esta estrutura de particionamento para montala do mesmo xeito á hora de realizar a práctica a través de GRUB para o cambio de contrasinais.
+               </div><br />
+         Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>3</sub></span>
+         <br /><br />
+               <li>init 0 <span class='explicacion'> #Comando para enviar o runlevel (nivel de execución) do sistema operativo ao nivel 0, equivalente a apagar o sistema. </span><br /><br />
+               </li>
+               <div class='explicacion3 pall mtopsubs'>
+                 <b>NOTA:</b> Apagado normal do sistema operativo: Para un correcto funcionamento da práctica o sistema operativo GNU/Linux debe ser apagado sen inconsistencias evitando problemas no sistema de ficheiros ext4.
+               </div>
+             </ul>
+           </ul>
+         </li>
+
+        <li class='mtop mleft mbottom'><span class='label'>Arrancar coa Kali Live amd64</span></li>
+        <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+          <ul class='dashed mleftsubs'><br />
+            <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+              <ul class='hashtag'>
+                <li>mount | grep sda<span class='explicacion'> #Amosar os sistemas de ficheiros montados correspondentes ao patrón buscado: <em>sda</em>. <b>Neste caso non atopamos nada, é dicir, non temos montada /boot no sistema de ficheiros. Deberemos montala.</b></span><br /><br />
+                </li>
+                <li>mount | grep debian <span class='explicacion'> #Amosar os sistemas de ficheiros montados correspondentes ao patrón buscado: <em>debian</em>. <b>Neste caso non atopamos nada, é dicir, non temos montado os volumes lóxicos /tmp, /var e /home dentro de /. Deberemos montar estes volumes.</b></span><br /></br>
+                </li>
+                <li>pvscan<span class='explicacion'> #Amosar os volumes físicos recoñecidos no sistema. <b>Neste caso a saída é a mesma que se arrancaramos por defecto dende disco duro o sistema operativo, é dicir, recoñecemos os mesmos volumes físicos.</b></span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini arribasubsmini1'>
+  PV /dev/sda5   VG debian-vg       lvm2 [<79,52 GiB / 0    free]
+  Total: 1 [<79,52 GiB] / in use: 1 [<79,52 GiB] / in no VG: 0 [0   ]
+                  </pre>
+                </li>
+                <li>vgscan<span class='explicacion'> #Amosar os grupos de volumes recoñecidos no sistema. <b>Neste caso a saída é a mesma que se arrancaramos por defecto dende disco duro o sistema operativo, é dicir, recoñecemos os mesmos grupos de volumes.</b></span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini'>
+  Found volume group "debian-vg" using metadata type lvm2
+                  </pre>
+                </li>
+                <li>lvscan<span class='explicacion'> #Amosar os volumes lóxicos recoñecidos no sistema. <b>Neste caso a saída é a mesma que se arrancaramos por defecto dende disco duro o sistema operativo, é dicir, recoñecemos os mesmos volumes lóxicos.</b></span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini'>
+  ACTIVE            '/dev/debian-vg/root' [15,05 GiB] inherit
+  ACTIVE            '/dev/debian-vg/var' [5,32 GiB] inherit
+  ACTIVE            '/dev/debian-vg/swap_1' [976,00 MiB] inherit
+  ACTIVE            '/dev/debian-vg/tmp' [992,00 MiB] inherit
+  ACTIVE            '/dev/debian-vg/home' [57,22 GiB] inherit
+                  </pre>
+                </li>
+                <li>ls -1 /dev/mapper/debian*<span class='explicacion'> #Listar os volumes lóxicos recoñecidos no sistema. A opción <em>-1</em> permite listar por liña cada concurrencia atopada.</span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini'>
+/dev/mapper/debian--vg-home
+/dev/mapper/debian--vg-root
+/dev/mapper/debian--vg-swap_1
+/dev/mapper/debian--vg-tmp
+/dev/mapper/debian--vg-var
+                  </pre>
+
+                <li>mkdir /mnt/recuperar <span class='explicacion'> #Crear o directorio /mnt/recuperar</span>.<br /><br /></li>
+                <li>mount -t auto /dev/mapper/debian--vg-root /mnt/recuperar<span class='explicacion'> #Montar o volume lóxico debian--vg-root no directorio /mnt/recuperar. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span><br /><br />
+                <li>mount -t auto /dev/mapper/debian--vg-home /mnt/recuperar/home<span class='explicacion'> #Montar o volume lóxico debian--vg-home no directorio /mnt/recuperar/home. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span><br /><br />
+                <li>mount -t auto /dev/mapper/debian--vg-var /mnt/recuperar/var<span class='explicacion'> #Montar o volume lóxico debian--vg-var no directorio /mnt/recuperar/var. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span><br /><br />
+                <li>mount -t auto /dev/mapper/debian--vg-tmp /mnt/recuperar/tmp<span class='explicacion'> #Montar o volume lóxico debian--vg-var no directorio /mnt/recuperar/tmp. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span><br /><br /><br />
+                <li>ls /dev/sda*<span class='explicacion'> #Listar os dispositivos de bloques <em>/dev/sda</em> recoñecidos no sistema.</span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini'>
+      /dev/sda /dev/sda1 /dev/sda2 /dev/sda5
+                  </pre>
+                <li>mount -t auto /dev/sda1 /mnt/recuperar/boot<span class='explicacion'> #Montar a partición primaria <em>/dev/sda1</em> no directorio <em>/mnt/recuperar/boot</em>. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span><br /><br />
+                <li>mount | tail -5<span class='explicacion'> #Amosar as últimas 5 liñas da lista dos dispositivos montados.</span><br /></br>
+                  <pre class='code3 mleft mtopsubsmini'>
+      /dev/mapper/debian--vg-root on /mnt/recuperar type ext4 (rw,relatime)
+      /dev/mapper/debian--vg-home on /mnt/recuperar/home type ext4 (rw,relatime)
+      /dev/mapper/debian--vg-var on /mnt/recuperar/var type ext4 (rw,relatime)
+      /dev/mapper/debian--vg-tmp on /mnt/recuperar/tmp type ext4 (rw,relatime)
+      /dev/sda1 on /mnt/recuperar/boot type ext2 (rw,relatime)
+                  </pre>
+
+                <li>mount --bind /dev /mnt/recuperar/dev <span class='explicacion'> # Montar o cartafol /dev dentro de /mnt/recuperar/dev para poder ter acceso a todos os dispositivos recoñecidos pola distribución live. </span></li>
+                <div class='explicacion2'> A opción --bind permite facer uso do mesmo sistema de ficheiros en 2 lugares distintos. Por exemplo, /dev pode ser empregado en /dev e en /mnt/recuperar/dev</div>
+                <li>mount --bind /proc /mnt/recuperar/proc <span class='explicacion'> #Montar o cartafol /proc dentro de /mnt/recuperar/proc para poder ter acceso ao kernel grazas a distribución live. </span></li>
+                <li>mount --bind /sys /mnt/recuperar/sys <span class='explicacion'> #Montar o cartafol /sys dentro de /mnt/recuperar/sys para poder ter acceso ao kernel grazas a distribución live. </span></li><br />
+                Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>4</sub></span><br /><br />
+                <li>chroot /mnt/recuperar /bin/bash <span class='explicacion'> #Crear a xaula chroot. Con este comando creamos unha xaula: un entorno pechado para a distribución Linux dentro de recuperar, de tal xeito, que unha vez dentro da xaula soamente existe ésta, e dicir, soamente existe a distribución Linux instalada no disco duro /dev/sda a recuperar, xa non estamos traballando na Live.</span></li>
+                <ul class='hashtag'>
+                    <li>passwd usuario<span class='explicacion'> #Modificar o contrasinal do usuario de nome usuario. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+                    <li>passwd root<span class='explicacion'> #Modificar o contrasinal do usuario root. Pór como contrasinal 1234. Repetir o contrasinal. Ollo: Non aparecen asteriscos nin outro tipo de caracteres para impedir saber cantos e cales caracteres estamos a escribir.</span></li>
+                    <li>exit <span class='explicacion'> #Saír da xaula chroot para voltar á consola local do usuario root.</span></li>
+                </ul><br />
+            <li>umount /mnt/recuperar/dev /mnt/recuperar/proc /mnt/recuperar/sys /mnt/recuperar/boot /mnt/recuperar/home /mnt/recuperar/var /mnt/recuperar/tmp /mnt/recuperar<span class='explicacion'> #Desmontar as unidades montadas.</span></li>
+            <br />Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>5</sub></span><br /><br />
+
+            <li>init 0 <span class='explicacion'> #Comando para enviar o runlevel (nivel de execución) do sistema operativo ao nivel 0, equivalente a apagar o sistema. </span></li>
+          </ul>
+        </ul>
+
+        <div class='indent'>&nbsp;</div>
+
+       <p class='mtop mleft mbottom label'>Deixar arrancar o sistema operativo GNU/Linux dende disco duro</p>
+       <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario de nome <span class='label'>usuario</span> foi modificada iniciando sesión no sistema.</li>
+       <li class='mtop mleft mbottom'>Comprobar que agora o contrasinal do usuario <span class='label'>root</span> foi modificada iniciando sesión no sistema.</li>
+       <li class='mtop mleft mbottom'>Avisar ao docente para a revisión <span style='font-size:24px'>□</span><span style='font-size:12px'><sub>6</sub></span></li>
+      </ol>
+    </div>
+  </div>
+  <hr />
+  <div id="footer">
+    <div class="nome">Ricardo Feijoo Costa</div>
+    <div class='.imgccbysa arriba'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+    </div>
+  </div>
+</body>
+</html>
