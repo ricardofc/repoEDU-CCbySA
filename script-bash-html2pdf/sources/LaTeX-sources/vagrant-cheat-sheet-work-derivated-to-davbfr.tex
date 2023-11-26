@@ -1,0 +1,300 @@
+\documentclass[10pt,a4paper]{article}
+
+
+% Packages
+\usepackage{fancyhdr}           % For header and footer
+\usepackage{multicol}           % Allows multicols in tables
+\usepackage{tabularx}           % Intelligent column widths
+\usepackage{tabulary}           % Used in header and footer
+\usepackage{hhline}             % Border under tables
+\usepackage{graphicx}           % For images
+\usepackage{xcolor}             % For hex colours
+%\usepackage[utf8x]{inputenc}    % For unicode character support
+\usepackage[T1]{fontenc}        % Without this we get weird character replacements
+\usepackage{colortbl}           % For coloured tables
+\usepackage{setspace}           % For line height
+\usepackage{lastpage}           % Needed for total page number
+\usepackage{seqsplit}           % Splits long words.
+%\usepackage{opensans}          % Can't make this work so far. Shame. Would be lovely.
+\usepackage[normalem]{ulem}     % For underlining links
+% Most of the following are not required for the majority
+% of cheat sheets but are needed for some symbol support.
+\usepackage{amsmath}            % Symbols
+\usepackage{MnSymbol}           % Symbols
+\usepackage{wasysym}            % Symbols
+%\usepackage[english,german,french,spanish,italian]{babel}              % Languages
+
+% Document Info
+\author{DavBfr}
+%%\pdfinfo{
+%%  /Title (vagrant-cheat-sheet.pdf)
+%%  /Creator (Cheatography)
+%%  /Author (DavBfr)
+%%  /Subject (Vagrant Cheat Sheet)
+%%}
+\usepackage[
+  hidelinks,
+  breaklinks,
+  pdftitle={vagrant-cheat-sheet.pdf},
+  pdfcreator={Cheatography},
+  pdfauthor={DavBfr},
+  pdfsubject={Vagrant Cheat Sheet},
+]{hyperref}
+
+% Lengths and widths
+\addtolength{\textwidth}{6cm}
+\addtolength{\textheight}{-1cm}
+\addtolength{\hoffset}{-3cm}
+\addtolength{\voffset}{-2cm}
+\setlength{\tabcolsep}{0.2cm} % Space between columns
+\setlength{\headsep}{-12pt} % Reduce space between header and content
+\setlength{\headheight}{85pt} % If less, LaTeX automatically increases it
+\renewcommand{\footrulewidth}{0pt} % Remove footer line
+\renewcommand{\headrulewidth}{0pt} % Remove header line
+\renewcommand{\seqinsert}{\ifmmode\allowbreak\else\-\fi} % Hyphens in seqsplit
+% This two commands together give roughly
+% the right line height in the tables
+\renewcommand{\arraystretch}{1}
+\onehalfspacing
+
+% Commands
+\newcommand{\SetRowColor}[1]{\noalign{\gdef\RowColorName{#1}}\rowcolor{\RowColorName}} % Shortcut for row colour
+\newcommand{\mymulticolumn}[3]{\multicolumn{#1}{>{\columncolor{\RowColorName}}#2}{#3}} % For coloured multi-cols
+\newcolumntype{x}[1]{>{\raggedright}p{#1}} % New column types for ragged-right paragraph columns
+\newcommand{\tn}{\tabularnewline} % Required as custom column type in use
+
+% Font and Colours
+\definecolor{HeadBackground}{HTML}{333333}
+\definecolor{FootBackground}{HTML}{666666}
+\definecolor{TextColor}{HTML}{333333}
+\definecolor{DarkBackground}{HTML}{60AEE0}
+\definecolor{LightBackground}{HTML}{EBF4FB}
+\renewcommand{\familydefault}{\sfdefault}
+\color{TextColor}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhead{} % Set header to blank
+\fancyfoot{} % Set footer to blank
+\fancyhead[L]{
+\noindent
+\begin{multicols}{3}
+\begin{tabulary}{5.8cm}{C}
+    \SetRowColor{DarkBackground}
+    \vspace{-14pt}
+    {\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\noindent
+        %\hspace*{-6pt}\includegraphics[width=5.8cm]{/web/www.cheatography.com/public/images/cheatography_logo.pdf}}
+        \hspace*{-6pt}\href{http://www.cheatography.com/}{\includegraphics[width=5.8cm]{cheatography_logo.pdf}}}
+    }
+\end{tabulary}
+\columnbreak
+\begin{tabulary}{12.6cm}{L}
+    \vspace{-16pt}\large{\bf{\textcolor{DarkBackground}{\textrm{Vagrant Cheat Sheet}}}} \\
+    \vspace{-14pt}\normalsize{This work is a derivative of work by 
+    \href{http://www.cheatography.com/davbfr/}{\textcolor{DarkBackground}{DavBfr}} via \href{http://www.cheatography.com/davbfr/cheat-sheets/vagrant-cheat-sheet}{\textcolor{DarkBackground}{\uline{cheatography.com/26961/cs/7685/}}} using the public {\LaTeX} code downloaded from \textcolor{DarkBackground}{\href{https://cheatography.com/davbfr/cheat-sheets/vagrant-cheat-sheet/tex/}{here}} } \\
+    This work, updated in text(VAGRANT\_HOME, section Vagrantfile), footer and \textcolor{blue}{\href{https://github.com/ricardofc/repoEDU-CCbySA/tree/main/script-bash-html2pdf/sources/LaTeX-sources}{{\LaTeX} code}} for correct compilation, by \href{https://github.com/ricardofc}{\textcolor{DarkBackground}{ricardofc}} \small{(25th Nov, 2023)}
+\end{tabulary}
+\end{multicols}}
+
+%\fancyfoot[L]{ \footnotesize
+%\noindent
+%\begin{multicols}{3}
+%\begin{tabulary}{5.8cm}{LL}
+%  \SetRowColor{FootBackground}
+%  \mymulticolumn{2}{p{5.377cm}}{\bf\textcolor{white}{Cheatographer}}  \\
+%  \vspace{-2pt}DavBfr \\
+%  \href{http://www.cheatography.com/davbfr/}{\uline{cheatography.com/davbfr}} \\
+%  \end{tabulary}
+%\vfill
+%\columnbreak
+%\begin{tabulary}{5.8cm}{L}
+%  \SetRowColor{FootBackground}
+%  \mymulticolumn{1}{p{5.377cm}}{\bf\textcolor{white}{Cheat Sheet}}  \\
+%   \vspace{-2pt}Published 30th March, 2016.\\
+%   Updated 11th May, 2016.\\
+%   Page {\thepage} of \pageref{LastPage}.
+%\end{tabulary}
+%\vfill
+%\columnbreak
+%\begin{tabulary}{5.8cm}{L}
+%  \SetRowColor{FootBackground}
+%  \mymulticolumn{1}{p{5.377cm}}{\bf\textcolor{white}{Sponsor}}  \\
+%  \SetRowColor{white}
+%  \vspace{-5pt}
+%  %\includegraphics[width=48px,height=48px]{dave.jpeg}
+%  Measure your website readability!\\
+%  \href{http://crosswordcheats.com/}{www.readability-score.com}
+%\end{tabulary}
+%\end{multicols}}
+
+
+
+
+\begin{document}
+\raggedright
+\raggedcolumns
+
+% Set font size to small. Switch to any value
+% from this page to resize cheat sheet text:
+% www.emerson.emory.edu/services/latex/latex_169.html
+\footnotesize % Small font.
+
+\begin{multicols*}{2}
+
+\begin{tabularx}{8.4cm}{x{2.64 cm} x{5.36 cm} }
+\SetRowColor{DarkBackground}
+\mymulticolumn{2}{x{8.4cm}}{\bf\textcolor{white}{Creating the Vagrantfile}}  \tn
+% Row 0
+\SetRowColor{LightBackground}
+vagrant init & Initialize Vagrant with a Vagrantfile and ./.vagrant directory, using no specified base image. Before you can do vagrant up, you'll need to specify a base image in the Vagrantfile. \tn 
+% Row Count 7 (+ 7)
+% Row 1
+\SetRowColor{white}
+vagrant init boxpath & Initialize Vagrant with a specific box. To find a box, go shopping. When you find one you like, just replace it's name with boxpath. For example,\newline vagrant init chef/centos-6.5. \tn 
+% Row Count 14 (+ 7)
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\end{tabularx}
+\par\addvspace{1.3em}
+
+\begin{tabularx}{8.4cm}{X}
+\SetRowColor{DarkBackground}
+\mymulticolumn{1}{x{8.4cm}}{\bf\textcolor{white}{Vagrantfile customizations}}  \tn
+\SetRowColor{LightBackground}
+\mymulticolumn{1}{x{8.4cm}}{vagrant.configure("2") do |config| \vspace{0.04cm} 
+  \begin{minipage}{\linewidth} \hspace{1em} config.vm.box = "chef/centos-6.5" \vspace{0.04cm} \end{minipage}
+  \begin{minipage}{\linewidth} \hspace{1em} config.vm.boot\_timeout = 1800 \vspace{0.04cm} \end{minipage}
+  \begin{minipage}{\linewidth} \hspace{1em} \# guest is the VM; host is your computer end \vspace{0.04cm} \end{minipage}
+  \begin{minipage}{\linewidth} \hspace{1em} config.vm.network "forwarded\_port", guest: 80, host: 8080 \vspace{0.04cm} \end{minipage}
+  \begin{minipage}{\linewidth} \hspace{1em} config.vm.provision :shell, path: "my\_bash\_script.sh" \vspace{0.04cm} \end{minipage}
+  \begin{minipage}{\linewidth} \hspace{1em} \# path is relative to your Vagrantfile \end{minipage}
+end} \tn 
+\hhline{>{\arrayrulecolor{DarkBackground}}-}
+\SetRowColor{LightBackground}
+\mymulticolumn{1}{x{8.4cm}}{By default ./ on your computer is shared as /vagrant on the VM. Letting other people access your VM's}  \tn 
+\hhline{>{\arrayrulecolor{DarkBackground}}-}
+\SetRowColor{white}
+\mymulticolumn{1}{x{8.4cm}}{\textcolor{blue}{\href{https://gist.github.com/ricardofc/df16041f117a409f19930720b2eb8048}{Example1}}}  \tn 
+\hhline{>{\arrayrulecolor{DarkBackground}}-}
+\end{tabularx}
+\par\addvspace{1.3em}
+
+\begin{tabularx}{8.4cm}{x{4.24 cm} x{3.76 cm} }
+\SetRowColor{DarkBackground}
+\mymulticolumn{2}{x{8.4cm}}{\bf\textcolor{white}{Boxes}}  \tn
+% Row 0
+\SetRowColor{LightBackground}
+vagrant box list & List the installed boxes \tn 
+% Row Count 2 (+ 2)
+% Row 1
+\SetRowColor{white}
+vagrant box add \textless{}name\textgreater{} \textless{}box path/HTTP URI\textgreater{} & Add the box for later use \tn 
+% Row Count 4 (+ 2)
+% Row 2
+\SetRowColor{LightBackground}
+vagrant box remove \textless{}name\textgreater{} virtualbox & delete a box \tn 
+% Row Count 6 (+ 2)
+% Row 3
+\SetRowColor{white}
+vagrant box outdated & Check for updates vagrant box update \tn 
+% Row Count 8 (+ 2)
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\SetRowColor{LightBackground}
+\mymulticolumn{2}{x{8.4cm}}{Boxes are prebuilt VM images. You never modify your box images}  \tn 
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\end{tabularx}
+\par\addvspace{1.3em}
+
+\begin{tabularx}{9.1cm}{x{3.42 cm} x{4.88 cm} }
+\SetRowColor{DarkBackground}
+\mymulticolumn{2}{x{8.7cm}}{\bf\textcolor{white}{Common Vagrant Commands}}  \tn
+% Row 0
+\SetRowColor{LightBackground}
+vagrant up & starts vagrant environment (also provisions only on the FIRST vagrant up) Equivalent to pressing the power buttons on your servers. \tn 
+% Row Count 6 (+ 6)
+% Row 1
+\SetRowColor{white}
+vagrant status & outputs status of the vagrant machine \tn 
+% Row Count 8 (+ 2)
+% Row 2
+\SetRowColor{LightBackground}
+vagrant halt & stops the vagrant machine \tn 
+% Row Count 10 (+ 2)
+% Row 3
+\SetRowColor{white}
+vagrant reload & restarts vagrant machine, loads new Vagrantfile configuration \tn 
+% Row Count 13 (+ 3)
+% Row 4
+\SetRowColor{LightBackground}
+vagrant provision & forces reprovisioning of the vagrant machine \tn 
+% Row Count 15 (+ 2)
+% Row 5
+\SetRowColor{white}
+vagrant ssh & connects to machine via SSH \tn 
+% Row Count 17 (+ 2)
+% Row 6
+\SetRowColor{LightBackground}
+vagrant destroy & stops and deletes all traces of the vagrant machine \tn 
+% Row Count 20 (+ 3)
+% Row 7
+\SetRowColor{white}
+vagrant suspend & Suspends a virtual machine (remembers state) \tn 
+% Row Count 22 (+ 2)
+% Row 8
+\SetRowColor{LightBackground}
+vagrant resume & Resume a suspended machine (vagrant up works just fine for this as well) \tn 
+% Row Count 25 (+ 3)
+% Row 9
+\SetRowColor{white}
+vagrant reload -\hspace{0.13em}-provision & Restart the virtual machine and force provisioning \tn 
+% Row Count 28 (+ 3)
+% Row 10
+\SetRowColor{LightBackground}
+vagrant provision -\hspace{0.13em}-debug & Use the debug flag to increase the verbosity of the output \tn 
+% Row Count 31 (+ 3)
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\SetRowColor{LightBackground}
+\mymulticolumn{2}{x{8.4cm}}{Be sure that you are in the same directory as the Vagrantfile when running these commands!}  \tn 
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\end{tabularx}
+\par\addvspace{1.3em}
+
+\begin{tabularx}{8.4cm}{x{4 cm} x{4 cm} }
+\SetRowColor{DarkBackground}
+\mymulticolumn{2}{x{8.4cm}}{\bf\textcolor{white}{Tips}}  \tn
+% Row 0
+\SetRowColor{LightBackground}
+vagrant -v & Get the vagrant version \tn 
+% Row Count 2 (+ 2)
+% Row 1
+\SetRowColor{white}
+vagrant global-status & outputs status of all vagrant machines \tn 
+% Row Count 4 (+ 2)
+% Row 2
+\SetRowColor{LightBackground}
+vagrant global-status -\hspace{0.13em}-prune & same as above, but prunes invalid entries \tn 
+% Row Count 7 (+ 3)
+% Row 3
+\SetRowColor{white}
+vagrant push & Vagrant can be configured to \href{http://docs.vagrantup.com/v2/push/index.html}{deploy code}! \tn 
+% Row Count 13 (+ 6)
+% Row 4
+\SetRowColor{LightBackground}
+vagrant up -\hspace{0.13em}-provision | tee provision.log & Runs `vagrant up`, forces provisioning and logs all output to a file \tn 
+% Row Count 17 (+ 4)
+% Row 5
+\SetRowColor{white}
+VAGRANT\_LOG=info vagrant up & Use the environment variable VAGRANT\_LOG to set verbosity \tn 
+% Row Count 18 (+ 4)
+% Row 5
+\SetRowColor{LightBackground}
+VAGRANT\_HOME=define new directory \%HOMEPATH\%\textbackslash{}.vagrant.d \\or\\ \$HOME\textbackslash{}.vagrant.d & setx VAGRANT\_HOME "F:\textbackslash{}path\textbackslash{}to\textbackslash{}directory\textbackslash{}vagrant" \\or\\ export \mbox{VAGRANT\_HOME}=/path/to/directory/vagrant \tn 
+% Row Count 20 (+ 3)
+\hhline{>{\arrayrulecolor{DarkBackground}}--}
+\end{tabularx}
+\par\addvspace{1.3em}
+
+
+% That's all folks
+\end{multicols*}
+
+\end{document}

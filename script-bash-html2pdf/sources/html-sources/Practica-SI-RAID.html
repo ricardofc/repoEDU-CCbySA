@@ -103,6 +103,16 @@
                     <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
                   </tr>
                 </table>
+              <li>
+                <table class='arribaplus links'>
+                  <tr>
+                    <td><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SOM/vagrant-cheat-sheet-work-derivated-to-davbfr.pdf' target='_blank'>Cheat Sheet Vagrant</a></td>
+                  </tr>
+                  <tr>
+                    <td class='fright'><img  class='cfigure arriba' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+
             </ul>
         </ul>
       </p>
@@ -244,7 +254,7 @@
             </td>
             <td class="tdP tdPDocumentRoot up">
               <div> SI (Mirror)</div><div class='arribaplus'><a title="Wheart, based on image File:RAID 0.svg by Cburnett, CC BY-SA 3.0 &lt;https://creativecommons.org/licenses/by-sa/3.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAID_10.svg"><img width="224" alt="RAID 10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/RAID_10.svg/256px-RAID_10.svg.png"></a></div>
-              <div class='arribaplusx7'><img height='22' class='cfigure mleft' src="images/mouse-pointer-mini.png" /></div>
+              <div><img height='22' class='cfigure mleft' src="images/mouse-pointer-mini.png" /></div>
             </td>
             <td class="tdP tdPDocumentRoot up">
               <div class='mtopsubsx2 arribaplusx7'>
@@ -1715,8 +1725,10 @@ drwx------ 2 root root 16384 Jan 2 20:39 lost+found
       <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
     </div>
   </div>
+</div>
 
 <div class='indent pagebreak'>&nbsp;</div>
+<div class='nota w80 fright'>
 <div class='infindent'>
   <table>
     <tbody><tr><td class="tdP tdPHeader"><b>Imaxe Wikimedia Commons</b></td><td class="tdP tdPHeader"><b>Licenza</b></td></tr>
@@ -1783,9 +1795,10 @@ drwx------ 2 root root 16384 Jan 2 20:39 lost+found
       </td>
     </tr>
   </table>
+ </div>
 </div>
 <div class='indent pagebreak'>&nbsp;</div>
-<div>
+<div class='nota w80 fright'>
 <table>
     <tbody><tr><td class="tdP tdPHeader"><b>Mathjax</b></td><td class="tdP tdPHeader"><b>Licenza</b></td></tr>
     </tbody>
@@ -1809,5 +1822,155 @@ drwx------ 2 root root 16384 Jan 2 20:39 lost+found
       </td>
     </tr>
 </table>
+</div>
+
+<div class='indent pagebreak'>&nbsp;</div>
+
+<div class='nota w80 fright' style='width:97%'>
+<div class='explicacion6 pall8 mtopsubs' style='margin-left:-40px !important;padding-left:16px !important;margin-bottom:-20px !important;'>
+  <h1>Anexo <a href='https://developer.hashicorp.com/vagrant/docs' target='_blank'>Vagrant</a>: Creación do Escenario e Configuración Inicial</h1>
+  <img class='cfigure mleftplusx8' src="images/mouse-pointer-mini.png" /><br />
+  <img class='cfigure' style='margin-left: 680px; margin-top:-20px;' src="images/mouse-pointer-mini-rotate-180.png" /><br />
+  O escenario da práctica e as configuracións das máquinas xa estarían realizadas no ficheiro <a href='https://gist.github.com/ricardofc/df16041f117a409f19930720b2eb8048#file-vagrantfile-practica-si-raid' target='_blank'>Vagrantfile</a> seguinte, tendo en conta que:
+
+
+ <ul>
+   <li type='square'>No Vagrantfile:
+     <ol>
+       <li>En debianA: eth0(NAT) e eth1(Rede Interna, IP:192.168.120.100)<br />
+       <li>En kaliB: eth0(NAT) e eth1(Rede Interna, IP:192.168.120.101)<br />
+       <li>debianA recibe o nome Practica-SI-RAID-debianA en VirtualBox<br />
+       <li>kaliB recibe o nome Practica-SI-RAID-kaliB en VirtualBox<br />
+     </ol>
+   <li type='square'>Débese ter instalado Vagrant<br />
+   <li type='square'>Débese posuír conexión a Internet para descargar o ficheiro Vagrantfile<br />
+   <li type='square'>Débense executar os seguintes comandos. Lembrar que os comandos Vagrant, deben executarse na mesma ruta onde existe o ficheiro Vagrantfile:
+     <pre class='mleftsubsx2 pall8 pleft arriba' style='font-size:0.8em;'>
+$ wget https://gist.githubusercontent.com/ricardofc/df16041f117a409f19930720b2eb8048/raw/3b5545d1fbaf57217e8d94eb950839439cc4b208/Vagrantfile-Practica-SI-RAID \
+-O Vagrantfile
+$ mkdir RAID && cp -pv Vagrantfile RAID && cd RAID 
+$ vagrant up
+     </pre>
+ </ul>
+</div>
+<div class='indent'>&nbsp;</div>
+<style>
+<!--
+#vimCodeElement { font-size: 12px; }
+.LineNr { color: #af5f00; }
+-->
+</style>
+
+<pre id='vimCodeElement'>
+<span id="L1" class="LineNr">  1 </span>Vagrant.configure(&quot;2&quot;) do |config|
+<span id="L2" class="LineNr">  2 </span>
+<span id="L3" class="LineNr">  3 </span>  # Máquina virtual debianA
+<span id="L4" class="LineNr">  4 </span>  config.vm.define &quot;debianA&quot; do |debian|
+<span id="L5" class="LineNr">  5 </span>    # Caixa virtual
+<span id="L6" class="LineNr">  6 </span>    debian.vm.box = &quot;debian/bookworm64&quot;
+<span id="L7" class="LineNr">  7 </span>
+<span id="L8" class="LineNr">  8 </span>    # Nome do hostname da máquina virtual
+<span id="L9" class="LineNr">  9 </span>    debian.vm.hostname = &quot;debianA&quot;
+<span id="L10" class="LineNr"> 10 </span>
+<span id="L11" class="LineNr"> 11 </span>    # Tempo de espera para o arranque da máquina virtual
+<span id="L12" class="LineNr"> 12 </span>    debian.vm.boot_timeout = 1800
+<span id="L13" class="LineNr"> 13 </span>
+<span id="L14" class="LineNr"> 14 </span>    # Fornecedor VirtualBox
+<span id="L15" class="LineNr"> 15 </span>    debian.vm.provider &quot;virtualbox&quot; do |vb|
+<span id="L16" class="LineNr"> 16 </span>
+<span id="L17" class="LineNr"> 17 </span>      # Habilitar interface gráfica do VirtualBox
+<span id="L18" class="LineNr"> 18 </span>      vb.gui = true
+<span id="L19" class="LineNr"> 19 </span>
+<span id="L20" class="LineNr"> 20 </span>      # Definir a memória RAM da máquina virtual (2048 MB)
+<span id="L21" class="LineNr"> 21 </span>      vb.memory = &quot;2048&quot;
+<span id="L22" class="LineNr"> 22 </span>
+<span id="L23" class="LineNr"> 23 </span>      # Definir o número de CPUs da máquina virtual (2)
+<span id="L24" class="LineNr"> 24 </span>      vb.cpus = 2
+<span id="L25" class="LineNr"> 25 </span>
+<span id="L26" class="LineNr"> 26 </span>      # Nome da máquina virtual no VirtualBox
+<span id="L27" class="LineNr"> 27 </span>      vb.name = &quot;Practica-SI-RAID-debianA&quot;
+<span id="L28" class="LineNr"> 28 </span>
+<span id="L29" class="LineNr"> 29 </span>      # Definir a orde de arranque do BIOS
+<span id="L30" class="LineNr"> 30 </span>      vb.customize [&quot;modifyvm&quot;, :id, &quot;--boot1&quot;, &quot;dvd&quot;, &quot;--boot2&quot;, &quot;disk&quot;, &quot;--boot3&quot;, &quot;none&quot;, &quot;--boot4&quot;, &quot;none&quot;]
+<span id="L31" class="LineNr"> 31 </span>
+<span id="L32" class="LineNr"> 32 </span>    end
+<span id="L33" class="LineNr"> 33 </span>
+<span id="L34" class="LineNr"> 34 </span>    # Engadir 4 discos duros dinámicos de 10 GB cada un (executar soamente unha vez)
+<span id="L35" class="LineNr"> 35 </span>    (1..4).each do |i|
+<span id="L36" class="LineNr"> 36 </span>      debian.vm.provider &quot;virtualbox&quot; do |vb|
+<span id="L37" class="LineNr"> 37 </span>
+<span id="L38" class="LineNr"> 38 </span>        # Arquivo do disco virtual
+<span id="L39" class="LineNr"> 39 </span>        file_for_disk = &quot;./disk#{i}.vdi&quot;
+<span id="L40" class="LineNr"> 40 </span>
+<span id="L41" class="LineNr"> 41 </span>        # Verificar se o arquivo do disco xa existe
+<span id="L42" class="LineNr"> 42 </span>        unless File.exist?(file_for_disk)
+<span id="L43" class="LineNr"> 43 </span>
+<span id="L44" class="LineNr"> 44 </span>          # Crear o disco duro dinámico
+<span id="L45" class="LineNr"> 45 </span>          vb.customize [&quot;createhd&quot;, &quot;--filename&quot;, &quot;disk#{i}.vdi&quot;, &quot;--size&quot;, 10 * 1024]
+<span id="L46" class="LineNr"> 46 </span>
+<span id="L47" class="LineNr"> 47 </span>          # Conectar o disco duro dinámico ao controlador SATA
+<span id="L48" class="LineNr"> 48 </span>          vb.customize [&quot;storageattach&quot;, :id, &quot;--storagectl&quot;, &quot;SATA Controller&quot;, &quot;--port&quot;, i, &quot;--device&quot;, 0, &quot;--type&quot;, &quot;hdd&quot;, &quot;--medium&quot;, &quot;disk#{i}.vdi&quot;]
+<span id="L49" class="LineNr"> 49 </span>
+<span id="L50" class="LineNr"> 50 </span>        end
+<span id="L51" class="LineNr"> 51 </span>      end
+<span id="L52" class="LineNr"> 52 </span>    end
+<span id="L53" class="LineNr"> 53 </span>
+<span id="L54" class="LineNr"> 54 </span>    # Configurar a rede interna (eth1)
+<span id="L55" class="LineNr"> 55 </span>    debian.vm.network &quot;private_network&quot;, ip: &quot;192.168.120.100&quot;, virtualbox__intnet: &quot;raid&quot;, adapter: 2
+<span id="L56" class="LineNr"> 56 </span>
+<span id="L57" class="LineNr"> 57 </span>    # Aprovisionamento:
+<span id="L58" class="LineNr"> 58 </span>
+<span id="L59" class="LineNr"> 59 </span>    # Instalar o ambiente de desktop XFCE e paquetes necesarios
+<span id="L60" class="LineNr"> 60 </span>    debian.vm.provision &quot;shell&quot;, inline: &lt;&lt;-SHELL
+<span id="L61" class="LineNr"> 61 </span>      # Actualizar o sistema
+<span id="L62" class="LineNr"> 62 </span>      apt update
+<span id="L63" class="LineNr"> 63 </span>      apt upgrade -y
+<span id="L64" class="LineNr"> 64 </span>
+<span id="L65" class="LineNr"> 65 </span>      # Instalar o ambiente de desktop XFCE e outros paquetes
+<span id="L66" class="LineNr"> 66 </span>      apt -y install xfce4 xfce4-terminal vim terminator
+<span id="L67" class="LineNr"> 67 </span>
+<span id="L68" class="LineNr"> 68 </span>      # Configurar o XFCE como ambiente de desktop predeterminado
+<span id="L69" class="LineNr"> 69 </span>      echo &quot;startxfce4&quot; &gt;&gt; ~/.xsession
+<span id="L70" class="LineNr"> 70 </span>
+<span id="L71" class="LineNr"> 71 </span>      # Crear o usuario &quot;usuario&quot;
+<span id="L72" class="LineNr"> 72 </span>      apt -y install whois &amp;&amp; useradd -m -d /home/usuario -s /bin/bash -p $(mkpasswd abc123.) usuario &amp;&amp; usermod -aG sudo usuario
+<span id="L73" class="LineNr"> 73 </span>
+<span id="L74" class="LineNr"> 74 </span>      # Configurar o teclado español
+<span id="L75" class="LineNr"> 75 </span>      echo &quot;setxkbmap es&quot; &gt;&gt; /home/usuario/.bashrc
+<span id="L76" class="LineNr"> 76 </span>
+<span id="L77" class="LineNr"> 77 </span>      # Habilitar o acesso por contrasinal e a root mediante SSH
+<span id="L78" class="LineNr"> 78 </span>      sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+<span id="L79" class="LineNr"> 79 </span>      sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+<span id="L80" class="LineNr"> 80 </span>
+<span id="L81" class="LineNr"> 81 </span>      # Reiniciar a máquina virtual
+<span id="L82" class="LineNr"> 82 </span>      reboot
+<span id="L83" class="LineNr"> 83 </span>    SHELL
+<span id="L84" class="LineNr"> 84 </span>  end
+<span id="L85" class="LineNr"> 85 </span>
+<span id="L86" class="LineNr"> 86 </span>
+<span id="L87" class="LineNr"> 87 </span>  # Máquina virtual KaliB
+<span id="L88" class="LineNr"> 88 </span>  config.vm.define &quot;kaliB&quot; do |kali|
+<span id="L89" class="LineNr"> 89 </span>    kali.vm.box = &quot;kalilinux/rolling&quot;
+<span id="L90" class="LineNr"> 90 </span>    kali.vm.hostname = &quot;kaliB&quot;
+<span id="L91" class="LineNr"> 91 </span>    kali.vm.boot_timeout = 1800
+<span id="L92" class="LineNr"> 92 </span>
+<span id="L93" class="LineNr"> 93 </span>    kali.vm.provider &quot;virtualbox&quot; do |vb|
+<span id="L94" class="LineNr"> 94 </span>      vb.gui = true
+<span id="L95" class="LineNr"> 95 </span>      vb.memory = &quot;2048&quot;
+<span id="L96" class="LineNr"> 96 </span>      vb.cpus = 2
+<span id="L97" class="LineNr"> 97 </span>      vb.name = &quot;Practica-SI-RAID-kaliB&quot;
+<span id="L98" class="LineNr"> 98 </span>    end
+<span id="L99" class="LineNr"> 99 </span>
+<span id="L100" class="LineNr">100 </span>    kali.vm.network &quot;private_network&quot;, ip: &quot;192.168.120.101&quot;, virtualbox__intnet: &quot;raid&quot;, adapter: 2
+<span id="L101" class="LineNr">101 </span>
+<span id="L102" class="LineNr">102 </span>    kali.vm.provision &quot;shell&quot;, inline: &lt;&lt;-SHELL
+<span id="L103" class="LineNr">103 </span>      apt update
+<span id="L104" class="LineNr">104 </span>      apt -y install whois &amp;&amp; useradd -m -d /home/kali -s /usr/bin/zsh -p $(mkpasswd kali) kali &amp;&amp; usermod -aG kali-trusted kali
+<span id="L105" class="LineNr">105 </span>      echo &quot;setxkbmap es&quot; &gt;&gt; /home/kali/.zshrc
+<span id="L106" class="LineNr">106 </span>    SHELL
+<span id="L107" class="LineNr">107 </span>  end
+<span id="L108" class="LineNr">108 </span>end
+</pre>
+</div>
 </body>
 </html>
