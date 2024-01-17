@@ -38,6 +38,10 @@
             <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /></a>
             <div class='mtopplus'><br></div>
           </li>
+          <li type='square'><a href='https://old.kali.org/kali-images/kali-2021.4a/kali-linux-2021.4a-live-amd64.iso' target='_blank'>[7] kali-linux-2021.4a-live-amd64.iso
+            <img class='cfigure mleftsubs arribaplus' src="images/mouse-pointer-mini.png" /></a>
+            <div class='mtopplus'><br></div>
+          </li>
         </ul>
       </p>
     </div>
@@ -46,10 +50,11 @@
 
     <div class='contido'>
       <ol>
-        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual Kali amd64 <i>(kali-linux-2021.4a-live-amd64.iso)</i></span></p>
+        <p class='mtop mleft mbottom label'><span class='BookmarkTitle-Level-2'>Máquina virtual Kali amd64 <i>(kali-linux-2021.4a-live-amd64.iso [7])</i></span></p>
         <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>exploit (Explotar a vulnerabilidade CVE-2021-4034)</span></span>
           <ol type='A'>
-            <li class='mtop'>Arrancar coa Kali Live amd64</li>
+            <li class='mtop'>Descargar [7]</li>
+            <li class='mtop'>Arrancar coa Kali Live amd64 descargada</li>
             <li class='mtop'>Na contorna gráfica abrir un terminal e executar:</li>
             <ul class='dashed-kali mleftsubs'>
               <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
@@ -73,7 +78,17 @@
               <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
               <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
                 <ul class='hashtag-kali mleftsubs'>
-                  <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i>
+                  <li>apt update || apt-get update<span class='explicacion'> #Actualizar repositorios declarados no ficheiro <i>/etc/apt/souces.list</i> e nos ficheiros existentes no directorio <i>/etc/apt/sources.list.d</i><br /> Así, unha vez realizada a consulta dos ficheiros existentes nas rutas anteriores, descárganse uns ficheiros coas listas de paquetes posibles a instalar. Estes ficheiros son gardados en <i>/var/lib/apt/lists</i></span>
+                  <div class='explicacion3 pall justify'>O comando non se executa correctamente. Isto é debido a que hoxe en día a distribución 2021.4a está desactualizada, polo cal os repositorios xa non se atopan onde se esperan no arquivo <i>/etc/apt/sources.list</i>, polo cal temos que modificar este arquivo para que apunte aos repositorios "<b>old</b>" de Kali. Así, modificamos o ficheiro para que posúa o seguinte contido:
+<pre>
+deb http://old.kali.org/kali 2022.1 main contrib non-free
+deb-src http://old.kali.org/kali 2022.1 main contrib non-free
+</pre>
+E temos que executar o comando anterior modificado para que poida funcionar a actualización de repositorios non asinados por sen antigos:
+<pre>
+# apt update --allow-insecure-repositories || apt-get update --allow-insecure-repositories
+</pre>
+</div>
                   <li>apt search debsecan || apt-cache search debsecan<span class='explicacion'> #Buscar nas anteriores listas descargadas en <i>/var/lib/apt/lists</i> paquetes que coincidan co patrón de búsqueda <i>debsecan</i>. A saída do/s comando/s amosan o nome do/s paquete/s e unha pequena descrición do/s mesmo/s.</span>
                   <li>apt show debsecan || apt-cache show debsecan <span class='explicacion'> #Amosa información sobre o paquete debsecan, incluídas as súas dependencias, instalación e tamaño de descarga, fontes nas que está dispoñible o paquete, descrición do contido dos paquetes e moito máis. </span>
                   <div class='explicacion3 pall justify'>
@@ -81,7 +96,13 @@ debsecan é unha ferramenta para xerar unha lista de vulnerabilidades que afecta
 debsecan execútase no  sistema que se vai a analizar, e descarga da internet información sobre vulnerabilidades. Pode enviar correos electrónicos ás partes
  interesadas cando se descubran novas vulnerabilidades ou cando as actualizacións de seguridade estean dispoñibles.
                   </div>
-                  <li>apt -y install debsecan || apt-get -y install debsecan<span class='explicacion'> #Instalar o paquete de nome <i>debsecan</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>apt -y install debsecan --allow-unauthenticated || apt-get -y install debsecan --allow-unauthenticated<span class='explicacion'> #Instalar o paquete de nome <i>debsecan</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete. A opción --allow-unauthenticated é necesaria para poder instalar a través destes respositorios antigos.</span>
+                  <div class='explicacion3 pall justify'>Pode chegar a ser necesario executar o seguinte comando:
+<pre>
+# apt -y install debsecan --allow-unauthenticated --fix-missing
+</pre>
+</div>
+                  <div class='pagebreak'></div>
                   <li>debsecan <span class='explicacion'> #Execución para auditar e conseguir as vulnerabilidades existentes no noso sistema operativo</span></li>
                   <li>debsecan | grep -i cve-2021-4034 <span class='explicacion'> #Filtrar a saída da execución do comando debsecan para revisar se o sistema operativo é vulnerable ao CVE-2021-4034</span>
                     <pre>
@@ -95,7 +116,6 @@ CVE-2021-4034 policykit-1</pre>
               <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
           </ul>
 
-        <div class='pagebreak'></div>
         <li class='mtop mleft mbottom'><span class='label'><span class='BookmarkTitle-Level-3'>Corrixir vulnerabilidades (Actualización de paquetes do sistema operativo)</span></span>
           <p class='mtop mleft'>Na contorna gráfica abrir un terminal e executar:
             <ul class='dashed-kali mleftsubs mtopsubsmini'>
@@ -109,13 +129,12 @@ policykit-1:
   Candidate: 0.105-31.1+kali1
   Version table:
      0.105-31.1+kali1 500
-        500 http://http.kali.org/kali kali-rolling/main amd64 Packages
+        500 http://old.kali.org/kali 2022.1/main amd64 Packages
  *** 0.105-31+kali1 100
-        100 /var/lib/dpkg/status
-                     </pre>
+        100 /var/lib/dpkg/status</pre>
                   </li>
 
-                  <li>apt -y install policykit-1 || apt-get -y install policykit-1<span class='explicacion'> #Instalar o paquete de nome <i>policykit-1</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete.
+                  <li>apt -y install policykit-1 --allow-unauthenticated || apt-get -y install policykit-1 --allow-unauthenticated<span class='explicacion'> #Instalar o paquete de nome <i>policykit-1</i>. Co parámetro -y automaticamente asumimos yes a calquera pregunta que ocorra na instalación do paquete. A opción --allow-unauthenticated é necesaria para poder instalar a través destes respositorios antigos.
                   <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
                 </ul>
             <p class='bglime pall'><b>Comprobar que a vulnerabilidade está corrixida realizando de novo o apartado 1B.</b></p>
