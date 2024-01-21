@@ -1,0 +1,411 @@
+<!DOCTYPE HTML><br />
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Práctica Seguridade Informática: Volcados de memoria RAM</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+</head>
+
+<body>
+  <div id='autocentrado'>
+    <h1 class='mtopsubs'><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/SI/Forense/RAMdump' target='_blank'>Práctica Seguridade Informática:<br />Volcados de memoria RAM</a></h1>
+    <img class='cfigure' src="images/mouse-pointer-mini.png" />
+    <figure class='cfigure mtopsubs'>
+      <img class='contido bfigure pall' src="images/Escenario-Forense-Volcados-RAM.svg" />
+    </figure>
+
+    <div class='nota w80 fright'>
+      <p class='justify pall'><b>LIMITACIÓN DE RESPONSABILIDADE</b> O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel ou que esté enlazada dende ou hacia el, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+      <p class='pall'><b>NOTA</b>:
+        <ul type='square mtopsubs'>
+          <li>Documentación de interese:
+            <br />
+            <br />
+            <ul type='none'>
+              <br />
+              <li>
+                <table class='arriba links'>
+                  <tr>
+                    <td colspan=5 width=100%><a href='https://github.com/504ensicsLabs/LiME' target='_blank'>[1] LiME</a></td>
+                  </tr>
+                  <tr>
+                    <td colspan=5 width=100%><img class='cfigure' style='margin-top:-10px;margin-left:40px;'src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan=2 width='35%'><a href='https://winpmem.velocidex.com/' target='_blank'>[2] winpmem</a></td>
+                    <td colspan=3 width='65%'><a href='https://github.com/Velocidex/WinPmem/releases/download/v4.0.rc1/winpmem_mini_x64_rc2.exe' target='_blank'>[3] winpmem download release</a></td>
+                  </tr>
+                  <tr>
+                    <td colspan=2 width='35%'><img  class='cfigure' style='margin-top:-10px;margin-left:40px;' src="images/mouse-pointer-mini.png" /></td>
+                    <td colspan=3 width='65%'><img  class='cfigure' style='margin-left:180px;margin-top:-40px !important;' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+                <table class='mtopplus'>
+                  <tr>
+                    <td><a href='https://youtu.be/7kL0ZoKuo_0?feature=shared' target='_blank'>[4] <span class='title16'>Extracción y análisis de malware desde volcados de memoria - Ricardo J. Rodríguez (UNIZAR)</span></a>
+                    <img  class='cfigure arribaplus' style='margin-left:-760px;' src="images/mouse-pointer-mini.png" /><br /><br /></td>
+                  </tr>
+                </table>
+                <div class='indent'>&nbsp;</div>
+                <table class='links'>
+                  <tr>
+                    <td width='16%'><a href='https://www.volatilityfoundation.org/' target='_blank'>[5] Volatility</a></td>
+                    <td>&nbsp;</td>
+                    <td width='35%'><a href='https://github.com/volatilityfoundation/volatility' target='_blank'>[6] Volatility2 GitHub</a></td>
+                    <td>&nbsp;</td>
+                    <td width='34%'><a href='https://github.com/volatilityfoundation/volatility3' target='_blank'>[7] Volatility3 GitHub</a></td>
+                  </tr>
+                  <tr>
+                    <td width='16%'><img  class='cfigure' style='margin-top:-10px;margin-left:40px;' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td width='35%'><img  class='cfigure' style='margin-top:-10px;margin-left:40px;' src="images/mouse-pointer-mini.png" /></td>
+                    <td>&nbsp;</td>
+                    <td width='34%'><img  class='cfigure' style='margin-top:-10px;margin-left:40px;' src="images/mouse-pointer-mini.png" /></td>
+                  </tr>
+                </table>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+
+    <div class='indent explicacion3 pall title16imp justify'>
+      <b><span class='BookmarkTitle-Level-2'>IMPORTANTE</span>!:</b>
+      <ul type='square'>
+        <li><b>En sistemas operativos non virtualizados o volcado de memoria RAM é unha técnica invasiva</b>, é dicir, nos datos volcados tamén apareceran os do propio programa de volcado. Isto é debido a que calquera programa debe ser executado en RAM, polo tanto, se queremos facer un volcado da RAM debemos executar un programa que á súa vez debe estar executándose na RAM.
+        <li><b>LiME [1]</b> → Permite volcados RAM de sistemas operativos GNU/Linux e Android. Podemos facer o volcado dos datos no sistema de arquivos do dispositivo, nun dispositivo externo conectado ou directamente por rede.
+        <li><b>winpmem [2]</b> → Permite volcados RAM de sistemas operativos MS Windows.
+        <li><b>Máquinas virtuais</b> → O xestor de máquinas virtuais (VirtualBox, VMWare, etc) xa permiten de por si, coas súas propias ferramentas(comandos) facer un volcado da memoria RAM, sendo <b>o volcado de memoria RAM unha técnica non invasiva</b>, posto que no sistema operativo virtualizado non executamos o programa de volcado de memoria. Esta faise dendo o equipo anfitrión (onde está instalado o programa de virtualización). 
+      </ul>
+    </div>
+
+
+    <div class='pagebreak'>&nbsp;</div>
+
+    <div class='contido'>
+      <p class='mtop mbottom label'><span class='BookmarkTitle-Level-1'>Volcados de memoria RAM</span><p>
+      Imos realizar volcados de memoria RAM en:
+<ol>
+  <li>Sistemas operativos GNU/Linux
+  <li>Sistemas operativos MS Windows
+  <li>Máquinas virtuais Oracle VirtualBox
+</ol>
+    <div class='indent'>&nbsp;</div>
+      <p class='mtop mbottom label bfigure'><span class='BookmarkTitle-Level-2'>Volcado de memoria RAM en sistemas GNU/Linux</span></p>
+      <p class='justify pright pall mtopsubs'>Imos facer un volcado da memoria RAM dunha distro GNU/Linux de 2 xeitos: a través dun disco duro (externo) que non contén o propio sistema operativo e a través da rede dende outra máquina conectada no mesmo segmento de rede. Basicamente:
+        <ol>
+          <li>Instalar o programa para volcar a memoria RAM no equipo do cal queremos volcar a memoria.
+          <li>Realizar o volcado en local ou remoto.
+        </ol>
+      </p>
+
+    <div class='indent'>&nbsp;</div>
+    <div class='mtop mbottom label'><span class='BookmarkTitle-Level-3'>Máquina virtual B: Kali amd64</span></p></div>
+      <ol>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #<span class='BookmarkTitle-Level-4'>Cambiar o mapa de teclado ao idioma español</span></span>.</li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'><span class='BookmarkTitle-Level-4'>Cambiar hostname</span> da máquina virtual B. Por kaliB como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ol>
+              <span class='label mleftsubsx2'>Opción A:</span>
+                <ul class='hashtag-kali mleftsubsx3'>
+                  <li>echo 'kaliB' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                  <li>echo 'kernel.hostname=kaliB' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                  <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <ul class='dashed-kali mleftsubsx4'>
+                <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+                </ul>
+              <span class='label mleftsubsx2'>Opción B:</span>
+                <ul class='hashtag-kali mleftsubsx3'>
+                  <li>hostnamectl hostname kaliB <span class='explicacion'> #Modificar o valor do hostname a kaliB.</span></li>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <ul class='dashed-kali mleftsubsx4'>
+                <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+                </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'><span class='BookmarkTitle-Level-4'>Configurar a rede</span>: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliB mleftsubs mtopsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliB mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop || systemctl stop avahi-daemon <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ip addr add 192.168.120.101/24 dev eth0<span class='explicacion'> #Configurar a tarxeta de rede interna eth0, coa IP: 192.168.120.101 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina B, as tarxetas de redes: loopback(lo) e interna(eth0)</span>.</li>
+                  <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth0</span></li>
+                </ul>
+              </ul>
+
+              <div class='pagebreak'>&nbsp;</div>
+              <li class='mtop mbottom'><span class='BookmarkTitle-Level-4'>Montar o disco onde gardar os volcados de memoria RAM</span>:<br />
+                  <ul class='dashed-kaliB'>
+                      <ul class='hashtag-kaliB mleftsubs'>
+                        <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                        <li>fdisk -l /dev/sdb <span class='explicacion'> #Lista a táboa de particións do disco /dev/sdb e logo remata.</span></li>
+                        <pre>
+Disk /dev/sdb: 80 GiB, 85899345920 bytes, 167772160 sectors
+Disk model: VBOX HARDDISK
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xa944796c
+
+Device     Boot Start       End   Sectors Size Id Type
+/dev/sdb1        2048 167772159 167770112  80G  7 HPFS/NTFS/exFAT</pre>
+                        <li>mkdir /mnt/remoto <span class='explicacion'> #Crear o directorio /mnt/volcar</span>.</li>
+                        <li>mount -t auto /dev/sdb1 /mnt/remoto <span class='explicacion'> #Montar a partición 1 do disco duro /dev/sdb no directorio da live /mnt/remoto. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span>.</li>
+                        <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                      </ul>
+                      <li>
+                  </ul>        
+                </p>        
+              </li>
+            </ol>
+
+
+    <div class='pagebreak'>&nbsp;</div>
+    <div class='mtopsubs mbottom label'><span class='BookmarkTitle-Level-3'>Máquina virtual A: Kali amd64</span></p></div>
+      <p class='mtop mbottom'>Procedemento:</p>
+      <ol>
+          <li class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kali mleftsubs'>
+              <li>setxkbmap es <span class='explicacion'> #<span class='BookmarkTitle-Level-4'>Cambiar o mapa de teclado ao idioma español</span></span>.</li>
+              <li>passwd kali || (echo -e 'kali\nabc123.\nabc123.' | passwd)<span class='explicacion'> #Cambiar o contrasinal do usuario kali. Por como contrasinal <b>abc123.</b>(Ollo que o contrasinal ten un caracter punto final)</span></li>
+            </ul>
+          </li>
+
+        <li class='mtop mleft mbottom'><span class='BookmarkTitle-Level-4'>Cambiar hostname</span> da máquina virtual A. Por kaliA como hostname: 
+          <ul class='dashed-kali mleftsubs'>
+            <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+            <ol>
+              <span class='label mleftsubsx2'>Opción A:</span>
+                <ul class='hashtag-kali mleftsubsx3'>
+                  <li>echo 'kaliA' > /etc/hostname <span class='explicacion'> #Indicar ao sistema o valor do hostname.</span></li>
+                  <li>echo 'kernel.hostname=kaliA' >> /etc/sysctl.conf <span class='explicacion'> #Indicar ao kernel o valor do hostname.</span></li>
+                  <li>sysctl -p <span class='explicacion'> #Activar o cambio de hostname sen ter que pechar sesión nin reiniciar</span></li>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <ul class='dashed-kali mleftsubsx4'>
+                <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+                </ul>
+              <span class='label mleftsubsx2'>Opción B:</span>
+                <ul class='hashtag-kali mleftsubsx3'>
+                  <li>hostnamectl hostname kaliA <span class='explicacion'> #Modificar o valor do hostname a kaliA.</span></li>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <ul class='dashed-kali mleftsubsx4'>
+                <li>exit <span class='explicacion'> #Pechar o terminal saíndo da consola local do usuario <b>kali</b>.</span></li>
+                </ul>
+          </ul>
+
+        <li class='mtop mleft mbottom'><span class='BookmarkTitle-Level-4'>Configurar a rede</span>: 
+          <p class='mtop mleft mbottom'>Na contorna gráfica abrir un terminal e executar: 
+            <ul class='dashed-kaliA mleftsubs mtopsubs'>
+              <li>setxkbmap es <span class='explicacion'> #Cambiar o mapa de teclado ao idioma español</span>.</li>
+              <li>sudo su - <span class='explicacion'> #Acceder á consola de root(administrador) a través dos permisos configurados co comando sudo (/etc/sudoers, visudo)</li>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>/etc/init.d/avahi-daemon stop || systemctl stop avahi-daemon <span class='explicacion'> #Parar o demo avahi-daemon(control resolución de nomes) para poder configurar de forma manual a configuración de rede e non ter conflicto con este demo.</span></li>
+                  <li>/etc/init.d/network-manager stop || pkill NetworkManager<span class='explicacion'> #Parar o demo network-manager(xestor de rede) ou o script NetworkManager (executado sen ser demo) para poder configurar doutro xeito (co comando ip(ifconfig) de forma manual ou mediante networking (ficheiros /etc/init.d/networking, /etc/init.d/networking.d) a configuración de rede e non ter conflicto con este xestor.</span></li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip addr add 192.168.120.100/24 dev eth1<span class='explicacion'> #Configurar a tarxeta de rede interna eth1, coa IP: 192.168.120.100 e máscara de subrede: 255.255.255.0</span>.</li>
+                  <li>ip addr show<span class='explicacion'> #Amosar a configuración de todas as tarxetas de rede. Nesta caso, na máquina A, as tarxetas de redes: loopback(lo), NAT(eth0) e interna(eth1)</span>.</li>
+                  <li>ip route<span class='explicacion'> #Amosar a táboa de rutas do sistema.</span></li>
+                  <li>cat /etc/resolv.conf<span class='explicacion'> #Ver o contido do ficheiro /etc/resolv.conf, o cal contén a configuración os servidores DNS a empregar para a resolución de nomes.</span></li>
+                  <li>ping -c4 192.168.120.100 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface de rede local eth1</span></li>
+                  <li>ping -c4 www.google.es <span class='explicacion'> #Comprobar mediante o comando ping a conectividade co dominio www.google.es</span></li>
+                  <li>ping -c4 192.168.120.101 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade con kaliB</span></li>
+                </ul>
+              </ul>
+
+        <li class='mtop mbottom'><span class='BookmarkTitle-Level-4'>Montar o disco onde gardar os volcados de memoria RAM</span>:<br />
+            <ul class='dashed-kaliA'>
+                <ul class='hashtag-kaliA mleftsubs'>
+                  <li>mount <span class='explicacion'> #Amosar os sistemas de ficheiros montados, é dicir, os que está a usar e podemos empregar neste sistema operativo live Kali.</li>
+                  <li>fdisk -l /dev/sdb <span class='explicacion'> #Lista a táboa de particións do disco /dev/sdb e logo remata.</span></li>
+                  <pre>
+Disk /dev/sdb: 80 GiB, 85899345920 bytes, 167772160 sectors
+Disk model: VBOX HARDDISK
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xa944796c
+
+Device     Boot Start       End   Sectors Size Id Type
+/dev/sdb1        2048 167772159 167770112  80G  7 HPFS/NTFS/exFAT</pre>
+                  <li>mkdir /mnt/volcar <span class='explicacion'> #Crear o directorio /mnt/volcar</span>.</li>
+                  <li>mount -t auto /dev/sdb1 /mnt/volcar <span class='explicacion'> #Montar a partición 1 do disco duro /dev/sdb no directorio da live /mnt/volcar. Coa opción -t auto solicitamos ao comando mount a autodetección do sistema de ficheiros de montaxe.</span>.</li>
+                  <li>exit <span class='explicacion'> #Saír da consola local sudo na que estabamos a traballar para voltar á consola local de <b>kali</b>.</span></li>
+                </ul>
+                <li>
+            </ul>        
+          </p>        
+        </li>
+
+        <div class='pagebreak'>&nbsp;</div>
+        <li class='mbottom'><span class='BookmarkTitle-Level-4'>Programa de volcado (LiME [1])</span>:
+            <ul class='dashed-kaliA mtop'>
+              <li>git clone https://github.com/504ensicsLabs/LiME.git <span class='explicacion'> #Descargar o repositorio LiME de git de 504ensicsLabs</li>
+              <li>cd LiME/src <span class='explicacion'> #Acceder ao directorio LiME/src</span></li>
+            <ul class='dashed-kaliA-src mtop mleftsubsx2'>
+              <li>make <span class='explicacion'> #Compilar para crear o modulo lime.ko</span></li>
+            </ul>
+          </ul>
+
+        <li class='mtop mbottom'><span class='BookmarkTitle-Level-5'>Realizar volcado en local (LiME [1])</span>:
+            <ul class='dashed-kaliA-src mtop'>
+              <li>sudo insmod ./lime*.ko "path=/mnt/volcar/RAMdump-local.mem format=lime timeout=0"<span class='explicacion'> #Facer o volcado de memoria RAM e gardalo no ficheiro /mnt/volcar/RAMdump-local.mem. A opción lime indica ese formato de copia, o cal e totalmente compatible co programa <i>volatility</i> [5][6][7]. A opción timeout=0 permite deshabilitar o "timeout" permitindo realizar unha copia máis fiable das páxinas de memoria.</span></li>
+              <div class='explicacion3 pall justify'>
+                <ul type='square'>
+                  <li>O comando <i>sudo</i> é necesario porque precisamos permisos de <i>root</i> para poder cargar un módulo no kernel.
+                  <li>Non debemos facer nada no equipo ata que o comando remate, xa que senón estariamos "modificando" a estática da memoria RAM que pretendemos volcar. 
+                  <li>Agora xa dispoñemos dunha copia do que está a acontecer no volcado na memoria RAM no instante do volcado.
+                </ul>
+              </div>
+            </ul>
+
+        <li class='mtop mbottom'><span class='BookmarkTitle-Level-5'>Realizar volcado en remoto (LiME [1])</span>:
+           <br /><span class='label'>En kaliA(máquina local)</span>
+           <ul class='dashed-kaliA-src mtop'>
+              <li>sudo rmmod lime <span class='explicacion'>Eliminar o módulo lime do kernel. Necesario para poder executar de nome un volcado de memoria, xa que temos que insertar de novo o módulo lime no kernel.</span>
+              <li>sudo insmod ./lime*.ko "path=tcp:4444 format=lime timeout=0"<span class='explicacion'> #Neste volcado de memoria RAM ábrese unha conexión en kaliA no porto TCP 4444 para que de forma remota establecendo conexión con ese porto gárdese o volcado nun ficheiro na máquina remota. A opción lime indica ese formato de copia, o cal e totalmente compatible co programa <i>volatility</i> [5][6][7]. A opción timeout=0 permite deshabilitar o "timeout" permitindo realizar unha copia máis fiable das páxinas de memoria.</span></li>
+              <div class='explicacion3 pall justify'>
+                <ul type='square'>
+                  <li>O comando <i>sudo</i> é necesario porque precisamos permisos de <i>root</i> para poder cargar un módulo no kernel.
+                  <li>Non debemos facer nada no equipo ata que o comando remate, xa que senón estariamos "modificando" a estática da memoria RAM que pretendemos volcar. 
+                </ul>
+              </div>
+            </ul>
+           <span class='label'>En kaliB(máquina remota)</span>
+           <ul class='dashed-kaliB mtop'>
+              <li>nc 192.168.120.100 4444 > /mnt/remoto/RAMdump-remoto.mem<span class='explicacion'> #Facer o volcado de memoria RAM de forma remota e gardalo no ficheiro /mnt/remoto/RAMdump-remoto.mem. A opción lime indica ese formato de copia, o cal e totalmente compatible co programa <i>volatility</i> [5][6][7]. A opción timeout=0 permite deshabilitar o "timeout" permitindo realizar unha copia máis fiable das páxinas de memoria.</span></li>
+              <div class='explicacion3 pall justify'>
+                <ul type='square'>
+                  <li>Agora xa dispoñemos dunha copia do que está a acontecer no volcado na memoria RAM no instante do volcado.
+                </ul>
+              </div>
+            </ul>
+
+        <li class='mtop mbottom'><span class='BookmarkTitle-Level-5'>Tamaño dos ficheiros volcados (LiME [1])</span>:
+           <br /><span class='label'>En kaliA(máquina local)</span>
+           <ul class='dashed-kaliA mtop'>
+            <li>free -m <span class='explicacion'># Indicar a memoria RAM que dispón o sistema (neste caso 2GB)</span>
+<pre>
+               total        used        free      shared  buff/cache   available
+Mem:            1967         795          92         128        1373        1171
+Swap:              0           0           0
+</pre></li>
+            <li>ls -lh /mnt/volcar/RAMdump-local.mem <span class='explicacion'>Listar en formato extendido o ficheiro que contén o volcado de memoria realizado. Podemos comprobar que ocupa 2.0G de espazo, que é o tamaño da mamoria RAM que posúe kaliA. </span>
+              <pre>
+-rwxrwxrwx 1 root root 2.0G Jan 18 20:34 /mnt/volcar/RAMdump-local.mem
+</pre></li>
+              <li>file /mnt/volcar/RAMdump-local.mem<span class='explicacion'> #Ver o tipo de ficheiro para RAMdump-local.mem (neste caso data=binario)</span>
+              <pre>
+/mnt/volcar/RAMdump-local.mem: data
+</pre></li>
+          </ul>
+           <span class='label'>En kaliB(máquina remota)</span>
+           <ul class='dashed-kaliB mtop'>
+            <li>ls -lh /mnt/remoto/RAMdump-remoto.mem <span class='explicacion'>Listar en formato extendido o ficheiro que contén o volcado de memoria realizado. Podemos comprobar que ocupa 2.0G de espazo, que é o tamaño da mamoria RAM que posúe kaliA. </span>
+              <pre>
+-rwxrwxrwx 1 root root 2.0G Jan 18 20:44 /mnt/remoto/RAMdump-remoto.mem
+</pre></li>
+              <li>file /mnt/volcar/RAMdump-remoto.mem<span class='explicacion'> #Ver o tipo de ficheiro para RAMdump-remoto.mem (neste caso data=binario)</span>
+              <pre>
+/mnt/remoto/RAMdump-remoto.mem: data
+</pre></li>
+          </ul>
+
+
+        <li class='mtop mbottom'><span class='BookmarkTitle-Level-5'>Desmontar os discos empregados para gardar o volcado de memoria RAM</span>:
+           <br /><span class='label'>En kaliA(máquina local)</span>
+           <ul class='dashed-kaliA mtop'>
+              <li>sudo umount /mnt/volcar<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sdb1 que estaba montada en /mnt/volcar</span></li>
+          </ul>
+           <span class='label'>En kaliB(máquina remota)</span>
+           <ul class='dashed-kaliB mtop'>
+              <li>sudo umount /mnt/remoto<span class='explicacion'> #Desmontar (deixar de facer uso) a partición primaria /dev/sdb1 que estaba montada en /mnt/remoto</span></li>
+          </ul>
+        </ol>
+
+<div class='pagebreak'>&nbsp;</div>
+      <p class='mtopsubs mbottom label bfigure'><span class='BookmarkTitle-Level-2'>Volcado de memoria RAM en sistemas MS Windows</span></p>
+      <p class='justify pright pall mtopsubs'>Imos facer un volcado da memoria RAM dun sistema operativo MS Windows no propio disco que contén o sistema operativo. Tamén podería facerse a través dun disco duro (externo) que non contén o propio sistema operativo. Basicamente:
+        <ol>
+          <li>Instalar o programa para volcar a memoria RAM no equipo do cal queremos volcar a memoria.
+          <li>Realizar o volcado en local.
+        </ol>
+      </p>
+
+    <div class='mtop mbottom label'><span class='BookmarkTitle-Level-3'>Máquina virtual C: MS Windows 1X x64</span></p></div>
+      <ol>
+          <li class='mtop mleft mbottom'>Dirixirse á url [3] e descargar o ficheiro winpmem 64bits:
+          <li class='mtop mleft mbottom'>Executar unha consola con permisos de administrador e executar o ficheiro descargado para obter un volcado de memoria RAM:
+            <table>
+              <tr>
+                <td valign='bottom'><figure><img width=70% class='bfigure' src='images/winpmem3.png'><figcaption class='label title14'>Fig. 1: cmd → Abrir como administrador</figcaption></figure></td>
+                <td></td>
+                <td><figure><img width=70% class='bfigure' src='images/winpmem4.png'><figcaption class='label title14'>Fig. 2: Permitir abrir como administrador</figcaption></figure></td>
+              </tr>
+              <tr>
+                <td valign='bottom'><figure><img width=100% class='bfigure' src='images/winpmem5.png'><figcaption class='label title14'>Fig. 3: Ver axuda do comando</figcaption></figure></td>
+                <td></td>
+                <td><figure><img width=100% class='bfigure' src='images/winpmem6.png'><figcaption class='label title14'>Fig. 4: Crear volcado da RAM no ficheiro RAMdump-windows.raw</figcaption></figure></td>
+              </tr>
+              <tr>
+                <td valign='bottom'><figure><img width=100% class='bfigure' src='images/winpmem7.png'><figcaption class='label title14'>Fig. 5: Proceso de volcado</figcaption></figure></td>
+                <td></td>
+                <td valign='bottom'><figure><img width=100% class='bfigure' src='images/winpmem8.png'><figcaption class='label title14'>Fig. 6: Proceso rematado. Listado do ficheiro xerado</figcaption></figure></td>
+              </tr>
+            </table>
+          </ol>
+
+<div class='pagebreak'>&nbsp;</div>
+      <p class='mtopsubs mbottom label bfigure'><span class='BookmarkTitle-Level-2'>Volcado de memoria RAM en Máquinas virtuais Oracle VirtualBox</span></p>
+        <p class='justify'>Basicamente dende a máquina anfitrión(neste caso unha distro GNU/Linux) executamos o comando <i>VboxManage</i> coa opción <i>debugvm</i> indicando o nome da máquina virtual da cal imos facer o volcado de memoria RAM e o nome do ficheiro onde imos gardar o volcado xerado:
+        <pre class='code3 bfigure'>
+$ VBoxManage debugvm <uuid|vmname> dumpvmcore [--filename=name]</pre><br />
+      <p class='justify pright pall mtopsubs'>Imos facer 2 volcados de memoria RAM:
+        <ol>
+          <li>Un volcado dunha máquina virtual cunha distro GNU/Linux arrancada: <span class='BookmarkTitle-Level-3'>KaliA-XY</span>
+          <pre class='code3'>
+$ VBoxManage debugvm KaliA-XY dumpvmcore --filename=RAMdump-MV.elf
+
+$ ls -lh RAMdump-MV.elf
+-rwxrwxrwx 1 usuario usuario 2,1G ene 18 22:23 RAMdump-MV.elf</pre>
+          </li>
+          <div class='indent'>&nbsp;</div>
+          <li>Un volcado dunha máquina virtual cun sistema operativo MS Windows arrancado: <span class='BookmarkTitle-Level-3'>Windows64</span>
+        <pre class='code3'>
+$ VBoxManage debugvm Windows64 dumpvmcore --filename=RAMdump-MV-Windows64.elf
+
+$ ls -lh RAMdump-MV-Windows64.elf
+-rwxrwxrwx 1 usuario usuario 2,2G ene 18 22:26 RAMdump-MV-Windows64.elf</pre>
+          </li>
+        </ol>
+      </p>
+    </p>
+
+    </div>
+    <hr />
+    <div id="footer">
+      <div class="nome">Ricardo Feijoo Costa</div>
+      <div class='.imgccbysa arriba'>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+      </div>
+    </div>
+  </div
+</body>
+</html>
