@@ -618,7 +618,7 @@
               <ul class='hashtag-kaliA'>
                 <li>ping -c4 192.168.120.102 <span class='explicacion'> #Comprobar mediante o comando ping a conectividade coa interface eth0 de kaliB</span></li>
                 <li>arp <span class='explicacion'>#Revisar a táboa arp, é dicir, visualizar a caché arp do sistema: asignación IP coa súa correspondente dirección física (MAC Address). Podemos observar si existe unha entrada para kaliB, onde se asigna a IP 192.168.120.102 a súa dirección física (MAC Address ou HWaddress).</span></li>
-                <li>MAC_kaliB=$(arp -n | grep 192.168.120.102 | awk 'print $3}')<span class='explicacion'>#Gardar a MAC-Address atopada na variable MAC_kaliB</span>
+                <li>MAC_kaliB=$(arp -n | grep 192.168.120.102 | awk '{print $3}')<span class='explicacion'>#Gardar a MAC-Address atopada na variable MAC_kaliB</span>
                 <div class='explicacion3 pall'>
                   # dpkg -l | grep net-tools ; [ $(echo $?) -eq '1' ] && apt update && apt -y install net-tools <span class='explicacion'> #Verificar se o paquete net-tools está instalado. Se non está instalado, actualízase a lista de paquetes dos repositorios e instálase. O paquete net-tools é necesario para poder empregar comandos coma: ifconfig, netstat, route e arp.</span>
                 </div>
@@ -860,7 +860,7 @@
             </li>
             <div class='minindent'>&nbsp;</div>
             <li>Configurar a rede en kaliB: táboa de enrutamento e configuración DNS
-              <ul class='hashtag-kaliA'>
+              <ul class='hashtag-kaliB'>
                 <li>ip route add default via 192.168.120.100 dev eth0 <span class='explicacion'>#Pór a IP de kaliA como gateway por defecto na táboa de rutas de kaliB</span>
                 <li>echo 'nameserver 8.8.8.8' >> /etc/resolv.conf <span class='explicacion'>#Pór como servidor DNS primario 8.8.8.8 en kaliB</span>
               </ul>
@@ -913,15 +913,9 @@
 
             </li>
             <div class='minindent'>&nbsp;</div>
-            <li>Configurar a rede en kaliB: táboa de enrutamento e configuración DNS
-              <ul class='hashtag-kaliA'>
-                <li>ip route add default via 192.168.120.100 dev eth0 <span class='explicacion'>#Pór a IP de kaliA como gateway por defecto na táboa de rutas de kaliB</span>
-                <li>echo 'nameserver 8.8.8.8' >> /etc/resolv.conf <span class='explicacion'>#Pór como servidor DNS primario 8.8.8.8 en kaliB</span>
-              </ul>
-            <div class='minindent'>&nbsp;</div>
             <li>Probar o acceso dende o equipo cliente kaliB á URL http://192.168.120.100:8080
             <div class='explicacion3 pall'>
-              <p class='label'>kaliB accede á paxina web http://192.168.120.100:80 xa que realizouse a redirección do porto TCP 8080 ao porto TCP 80.
+              <p class='label'>Realmente kaliB accede á paxina web http://192.168.120.100:80 xa que realizouse a redirección do porto TCP 8080 ao porto TCP 80.
             </div>
           </ol>
 
