@@ -96,7 +96,7 @@
           </ul>
             <div class='explicacion3 pall'>
               <ul class='hashtag'>
-                <li>nmap -sCV nmap -sCV -p88,139,389,445,5985,5986 192.168.120.100 -oN targeted -oX targeted.xml
+                <li>nmap -sCV -p88,139,389,445,5985,5986 192.168.120.100 -oN targeted -oX targeted.xml
                 <li>xsltproc targeted.xml -o targeted.html
               </ul>
             </div>
@@ -164,12 +164,11 @@
                   <br />
                   <br />
                   <li class='mtopsubsmini'>rpcclient -U 'guest%abc123.' 192.168.120.100 -c  'enumdomusers' <span class='explicacion'># Lista usuarios do dominio</span>
-                  <li class='mbottom'>rpcclient -U 'guest%abc123.' 192.168.120.100 -c  'enumdomusers' | grep -oP '\[.*?\]' | grep -v 'ox' | tr -d '[] | sort -u | sponge usersFile.txt <span class='explicacion'># Gardar a lista usuarios do dominio no ficheiro usersFile.txt</span>
-                  <li class='mtop'>for rid in $(rpcclient -U 'empresa.local\guest%abc123.' 192.168.120.100 -c  'enumdomusers' | grep -oP '\[.*?\]' | grep 'ox' | tr -d '[]); do
-        echo -e '\n[+] Para o $rid facer:\n";  rpcclient -U 'empresa.local\guest%abc123.' 192.168.120.100 -c  "queryuser $rid" | grep -Ei 'user name|description'; done <span class='explicacion'># Lista usuarios/descrición do dominio polo seu RID</span>
+                  <li class='mbottom'>rpcclient -U 'guest%abc123.' 192.168.120.100 -c  'enumdomusers' | grep -oP '\[.*?\]' | grep -v '0x' | tr -d '[]' | sort -u | sponge usersFile.txt <span class='explicacion'># Gardar a lista usuarios do dominio no ficheiro usersFile.txt</span>
+                  <div class='pagebreak'>&nbsp;</div>
+                  <li class='mtopsubsx2 mleftsubsx4'>for rid in $(rpcclient -U 'empresa.local\guest%abc123.' 192.168.120.100 -c  'enumdomusers' | <br />grep -oP '\[.*?\]' | grep '0x' | tr -d '[]'); do<br />echo -e "\n[+] Para o $rid facer:\n";  rpcclient -U 'empresa.local\guest%abc123.' 192.168.120.100 -c  "queryuser $rid" | grep -Ei 'user name|description'; <br />done <span class='explicacion'># Lista usuarios/descrición do dominio polo seu RID</span>
                 </ul>
 
-      <div class='indent'>&nbsp;</div>
                 
               <li class='mtop mbottom'><span class='label'>ldapdomaindump</span>
                 <ul class='dashed mleftsubsx2'>
@@ -225,7 +224,7 @@
               <p class='mtop'><span class='label'>GUI bloodhound</span></p>
                 <ul class='dashed mleftsubsx2 mtopsubs'>    
                   <li>sudo apt -y install neo4j bloodhound
-                  <li>update-alternatives --config java
+                  <li>sudo update-alternatives --config java
                   <br />...<br />Java11<br />...<br />
                   <li>sudo neo4j console
                   <li>bloodhound &>/dev/null &
