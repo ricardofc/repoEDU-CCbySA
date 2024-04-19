@@ -15,7 +15,8 @@ testear() {             #Definimos a función testear
 if test -d /home/$user  #Comeza condición: Si existe o directorio /home/$user
 then                    #entón
     echo O directorio /home/$user existe     #Mensaxe por pantalla
-    tar -czvf /home/$user                    #Empaquetar-Comprimir o directorio /home/$user
+    tar -czvf /home/$user                    #Comando incorrecto para: Empaquetar-Comprimir o directorio /home/$user
+    ##tar -czvf $user-backup.tar.bz2 /home/$user    #Comando correcto para: Empaquetar-Comprimir o directorio /home/$user
 else                    #senón
     echo O directorio /home/$user non existe #Mensaxe por pantalla
     echo O contido de /home é o seguinte `ls /home` #Ensina o directorio /home para escollera ben o usuario
