@@ -1,0 +1,808 @@
+<meta charset="UTF-8">
+</head>
+<!-- Engadir estilos personalizados para eliminar o margin-top -->
+<style>
+  .md .longTOC .level1 {
+    margin-top: -30px !important; /* Elimina o espazo superior */
+  }
+</style>
+
+<h1>Laboratorio de VLAN</h1>
+<p>
+
+
+</p><div style="border:dashed 1px;background-color:yellow"><b>NOTA:</b> Este laboratorio é unha modificación do laboratorio Taller de diseño de redes universitarias <a href="https://nsrc.org/workshops/2016/reduniv/networking/cnd/es/labs/4.13_layer_2_vlan_lab.md.html" target="_blank">4.13_layer2_vlan_lab</a>, onde o diseño con switchs 2960-24TT e a estrutura de preguntas e respostas foi modificado por <a href="https://github.com/ricardofc/repoEDU-CCbySA" target="_blank">Ricardo Feijoo Costa</a>.</div>
+
+<p></p>
+<a class="target" name="topolox%C3%ADa">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/topolox%C3%ADa">&nbsp;</a><a class="target" name="toc1.1">&nbsp;</a><h2>Topoloxía</h2>
+<p>
+
+
+</p><center><img src="images/cnd-campus-lag-int-BRS_2.png"></center><center><br></center><center><br></center><center><div class="table" style="text-align: justify;"><br><table class="table" style="line-height: 22.4px;"><tbody><tr><th style="text-align: center;"><strong class="asterisk">Switch 2960-24TT</strong></th><th style="text-align: center;"><strong class="asterisk">MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">Ports</strong></th><th style="text-align: center;"><strong class="asterisk">vlan1 MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">IPv4/MS</strong></th></tr>
+
+<tr><td style="text-align: center;"><p></p>
+<p style="word-break: keep-all; hyphens: none;">core1-campusX</p></td><td style="text-align: center;">0002.4a19.ed01<br>0002.4a19.ed02&nbsp;</td><td style="text-align: center;">Fa0/1<br>Fa0/2</td><td style="text-align: center;">00e0.b061.6333&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.0.1/16</p></td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b1-campusX</p></td><td style="text-align: center;">0030.f294.3e0c<br>0030.f294.3e0d<br>0030.f294.3e0e<br>0030.f294.3e0f</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">0004.9a07.2be4&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.2/16</p></td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0c<br>0010.1146.8b0d<br>0010.1146.8b0e<br>0010.1146.8b0f&nbsp;</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">0002.1722.9dc3&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.2.2/16</p></td></tr>
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b1-campusX</p></td><td style="text-align: center;">0002.178c.b50e<br>0002.178c.b50f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">000a.4181.09d5&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.3/16</p></td></tr>
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b1-campusX</p></td><td style="text-align: center;">0030.a393.710e<br>0030.a393.710f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">000c.cf40.4cdb</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.4/16</p></td></tr>
+
+<tr><td style="text-align: center;">
+
+<p style="word-break: keep-all; hyphens: none;">edge1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0e&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">00d0.ff01.3b7b</td><td style="text-align: center;">172.20.2.3/16</td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b2-campusX</p></td><td style="text-align: center;">0001.9719.ad0f&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">000d.bde6.e5c1&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.2.4/16</p></td></tr>
+
+</tbody></table></div></center>
+<p></p>
+<h2>Introdución</h2>
+<p>O propósito deste exercicio é crear VLAN separadas para diferentes grupos de usuarios en cada edificio. Nun exercicio posterior configuraremos o enrutador principal para que cada VLAN use unha subrede IP diferente.</p>
+
+<p>Este laboratorio é unha continuación do <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/BRS/Taller/Segmentacion/nsrc.org/labs/lab-4.12_layer_2_stp-switchs-2960_final_BRS.pka" target="_blank">Laboratorio de Spanning Tree Protocol</a> e a configuración do laboratorio é idéntica (var apartado Topoloxía).</p>
+<p></p>
+<a class="target" name="introducci%C3%B3n">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/introducci%C3%B3n">&nbsp;</a><a class="target" name="toc1.2">&nbsp;</a><h2>VLANs</h2>
+<p>Agora queremos segmentar a rede para separar o tráfico de xestión da rede do tráfico de usuarios finais (persoal e estudantes).</p>
+<p>Executar unha gran rede plana en todo o campus simplemente non se escala como se cubriu durante a presentación. Cada un destes segmentos será unha subrede separada.</p><p>Temos que adoptar un enfoque estruturado con esta migración. Aínda que estamos a traballar nun laboratorio para este obradoiro, unha migración da rede de campus dunha rede plana a outra redireccionada necesita atención e planificación.</p><p>O proceso será o seguinte:</p><p></p><ol><li>&nbsp;Crear unha VLAN para cada persoal (chamada STAFF)</li><li>&nbsp;Crear unha VLAN para estudantes (chamada ESTUDANTE)</li><li>&nbsp;Crear unha VLAN para a xestión de dispositivos (chamada MGMT)</li><li>&nbsp;Apagado de VLAN1: a VLAN1 é a predeterminada de Cisco, ten moitos riscos de seguridade e nunca se debe usar.
+
+<div style="border:dashed 1px;background-color:yellow;text-align:justify;padding:2px;" '=""><b>NOTA:</b> A VLAN 1 non debe usarse para a administración e debe crearse outra VLAN por motivos de seguridade. A VLAN 1 é a VLAN predeterminada na maioría dos switches e está asociada con outros servizos predeterminados. Isto significa que calquera dispositivo conectado a calquera porto de switch pode comunicarse con outros dispositivos noutros portos de switch.
+
+<p>Usar VLAN 1 para a xestión faino vulnerable aos ataques. Un atacante que obteña acceso á VLAN 1 podería acceder á configuración do switch e, potencialmente, a toda a rede.</p>
+
+<p>A creación dunha VLAN separada para a xestión permite illar o tráfico de xestión do resto da rede, o que dificulta o acceso dos atacantes aos dispositivos de xestión. Tamén lle permite aplicar políticas de seguridade específicas á VLAN de xestión, como o control de acceso baseado en roles, que limita o acceso aos usuarios autorizados.</p>
+
+Polo tanto, é unha boa práctica de seguridade crear unha VLAN separada para a xestión e non usar a VLAN 1 para este fin.</div>
+</li></ol><p></p>
+<a class="target" name="estadoinicialdelstp">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/estadoinicialdelstp">&nbsp;</a><a class="target" name="toc1.3">&nbsp;</a>
+
+<h3>VLANs e plan de direccionamento</h3>
+<p>Agora imos crear as VLAN descritas nos pasos anteriores. Dado que cada VLAN é unha rede diferente, necesitan o seu propio enderezo de subrede (IPv4 e IPv6; neste caso soamente configuraremos IPv4). O switch do núcleo do campus enrutará entre cada VLAN (chamado L3-switch: un switch Ethernet que ten algunha capacidade de enrutamento de capa 3 (L3).</p>
+
+<p><table class="table"><tbody><tr><th style="text-align: left;"> <strong class="asterisk">Nombre</strong>            </th><th style="text-align: center;"> <strong class="asterisk">VLAN</strong> </th><th style="text-align: center;"> <strong class="asterisk">IPv4/MS</strong></th></tr><tr><td style="text-align:left">Building 1 Management </td><td style="text-align: center;"> 10       </td><td style="text-align:left"> 172.20.10.0/24 </td></tr>
+<tr><td style="text-align:left"> Building 1 Staff      </td><td style="text-align: center;"> 11       </td><td style="text-align:left"> 172.20.11.0/24 </td></tr>
+<tr><td style="text-align:left"> Building 1 Student    </td><td style="text-align: center;"> 12       </td><td style="text-align:left"> 172.20.12.0/24 </td></tr>
+<tr><td style="text-align:left"> Building 2 Management </td><td style="text-align: center;"> 20       </td><td style="text-align:left"> 172.20.20.0/24 </td></tr>
+<tr><td style="text-align:left"> Building 2 Staff      </td><td style="text-align: center;"> 21       </td><td style="text-align:left"> 172.20.21.0/24 </td></tr>
+<tr><td style="text-align:left"> Building 2 Student    </td><td style="text-align: center;"> 22       </td><td style="text-align:left"> 172.20.22.0/24 </td></tr>
+</tbody></table></p>
+
+
+<h3>Deshabilitando VTP</h3>
+<p>VTP (VLAN Trunking Protocol) é unha tecnoloxía propietaria de Cisco que permite o aprovisionamento dinámico de VLAN. Non o usaremos aquí.</p>
+
+Execute os seguintes comandos na CLI de todos os switchs:
+<pre class="listing tilde"><code><span class="hljs-meta prompt_"><br>&gt; <font color="#5c2699">enable</font></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">configure terminal</span>
+<span class="hljs-meta prompt_">(config)# </span><span class="language-bash">vtp mode transparent</span></code></pre>
+
+<h3>Configure os portos troncais</h3>
+<p>O switch de núcleo conéctase aos switchs de distribución de cada edificio, os cales á súa vez conéctanse a dous switchs de borde en cada edificio. Para permitir o paso de etiquetas VLAN entre switchs, é necesario configurar as interfaces que os conectan como portos troncais. (A configuración predeterminada de Cisco é que as interfaces pasen tramas Ethernet sen etiquetar).</p>
+
+<p>Facendo referencia ao diagrama de rede anterior, configure o seguinte para cada porto que necesite etiquetar tramas VLAN. Por exemplo, no switch de distribución en Building 1 no CampusX <span style="color:blue">dist1-b1-campusX</span>:</p>
+<p></p>
+
+<pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;"><span class="line"></span>&gt; enable
+# configure terminal
+(config)# interface fastEthernet 0/13
+(config-if)# description Trunk Link to edge1-b1-campusX
+(config-if)# switchport mode trunk
+(config-if)# exit
+(config)# interface fastEthernet 0/12
+(config-if)# description Trunk Link to edge1-b1-campusX
+(config-if)# switchport mode trunk
+(config-if)# end
+#</code></pre>
+<p></p>
+
+<p><b>Nota: </b>A configuración predeterminada de Cisco é usar a encapsulación dot1q (en lugar de ISL propietario de Cisco).</p>
+<p><b>Recordatorio: </b>Comprobe o diagrama para ver cales son os portos que precisa modificar.</p><p>E non esqueza poñer as descricións nas interfaces!</p>
+
+<h3>Configure os switchs coas VLANs; MGMT, STAFF e STUDENT.</h3>
+<p>Engade as VLAN á base de datos de VLAN en cada switch e dálles nomes para identificalas mellor. Se non fai isto, os switchs non saberán que VLAN están presentes na rede.</p><p>No switch de núcleo <span style="color:blue;">core1-campusX:</span></p><pre class="listing tilde"><code><span class="hljs-comment">&gt; enable</span>
+# configure terminal
+(config)# vlan 10
+(config-vlan)# name MGMT1
+(config-vlan)# exit
+(config)# vlan 11
+(config-vlan)# name STAFF1
+(config-vlan)# exit
+(config)# vlan 12
+(config-vlan)# name STUDENT1
+(config-vlan)# exit
+(config)# vlan 20
+(config-vlan)# name MGMT2
+(config-vlan)# exit
+(config)# vlan 21
+(config-vlan)# name STAFF2
+(config-vlan)# exit
+(config)# vlan 22
+(config-vlan)# name STUDENT2
+(config-vlan)# end
+#</code></pre><p>
+
+En todos os switchs Building 1:&nbsp;</p><p><span class="md"></span></p><pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# vlan 10
+(config-vlan)# name MGMT1
+(config-vlan)# exit
+(config)# vlan 11
+(config-vlan)# name STAFF1
+(config-vlan)# exit
+(config)# vlan 12
+(config-vlan)# name STUDENT1
+(config-vlan)# end
+#</code></pre>
+
+<p></p>
+
+En todos os switchs Building 2:&nbsp;<p></p><p><span class="md"></span></p><pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# vlan 20
+(config-vlan)# name MGMT2
+(config-vlan)# exit
+(config)# vlan 21
+(config-vlan)# name STAFF2
+(config-vlan)# exit
+(config)# vlan 22
+(config-vlan)# name STUDENT2
+(config-vlan)# end
+#</code></pre>
+
+<h4>Revisar a configuración actual</h4>
+<p>
+
+En todos os switchs:</p><p><span class="md"></span></p><pre class="listing tilde"><code>&gt; enable
+# show interfaces trunk
+# show vlan</code></pre>
+
+
+<h3>Configure STP para cada VLAN</h3>
+<p>
+
+
+Verifique o estado de Spanning Tree:</p>
+<pre class="listing tilde"><code>&gt; enable
+# show spanning-tree</code></pre>
+
+<span class="md"><p>Teña en conta as prioridades raíz e ponte en cada VLAN (1,10,11,12) e (1,20,21,22).</p><p>Son as mesmas? <b>SI</b>. Imos reflexalas na seguinte táboa:</p>
+<p></p>
+<table class="table"><tbody><tr><th style="text-align:left"> <strong class="asterisk">Switch</strong> </th><th style="text-align:left"> <strong class="asterisk">VLAN</strong> </th><th style="text-align:left"> <strong class="asterisk">Prioridade Raíz</strong></th><th style="text-align:left"> <strong class="asterisk">Prioridade Ponte</strong></th></tr>
+<tr><td> core1-campusX  </td><td> 1<br>10<br>11<br>12<br>20<br>21<br>22</td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td></tr>
+<tr><td> dist1-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td></tr>
+<tr><td> edge-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td></tr>
+<tr><td> edge2-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32778 = 32768+10<br>
+32779 = 32768+11<br>
+32780 = 32768+12<br>
+</td></tr>
+<tr><td> dist1-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td></tr>
+<tr><td> edge1-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td></tr>
+<tr><td> edge2-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+32788 = 32768+20<br>
+32789 = 32768+21<br>
+32790 = 32768+22<br>
+</td></tr>
+</tbody></table>
+
+<p>Copie a prioridade de conexión que configurou anteriormente na VLAN 1 nas novas VLAN que creou. (Isto foi da táboa do Apéndice A do exercicio Spanning Tree, tamén reflexada neste lab no Apéndice A)</p><p><b>Nota:</b>&nbsp;Isto chámase "Spanning tree Per-VLAN" ou PVST. Isto significa que os switchs están creando 4 árbores separadas, cada unha cos seus propios parámetros, estado, cálculos, etc. Imaxina se tiveras varios centos de VLAN! Isto certamente non é o ideal. Existen mellores estándares, como Multiple Spanning Tree (MST), que permiten á xestión crear só o número desexado de árbores e asignar grupos de VLAN a cada árbore. Desafortunadamente, este dispositivo Cisco non é compatible con MST.</p>
+
+<p>Por exemplo (ver Apéndice A):
+
+</p><ul>
+  <li>Para o switch de núcleo <span style="color:blue;">core1-campusX</span>:<p></p>
+
+<pre class="listing tilde"><code>
+&gt; enable
+# configure terminal
+(config)# spanning-tree vlan 10 priority 0
+(config)# spanning-tree vlan 11 priority 0
+(config)# spanning-tree vlan 12 priority 0
+(config)# spanning-tree vlan 20 priority 0
+(config)# spanning-tree vlan 21 priority 0
+(config)# spanning-tree vlan 22 priority 0
+</code></pre>
+  </li>
+<p></p>
+  <li>Para o switch de distribución en Building1 <span style="color:blue;">dist1-b1-campusX</span>:<p></p>
+
+<pre class="listing tilde"><code>
+&gt; enable
+# configure terminal
+(config)# spanning-tree vlan 10 priority 12288
+(config)# spanning-tree vlan 11 priority 12288
+(config)# spanning-tree vlan 12 priority 12288
+</code></pre>
+  </li>
+<p></p>
+  <li>Para o switch de acceso en Building1 <span style="color:blue;">edge1-b1-campusX</span>:<p></p>
+
+<pre class="listing tilde"><code>
+&gt; enable
+# configure terminal
+(config)# spanning-tree vlan 10 priority 24576
+(config)# spanning-tree vlan 11 priority 24576
+(config)# spanning-tree vlan 12 priority 24576
+</code></pre>
+  </li>
+</ul>
+
+
+<p><span class="md">Unha vez configuradas as prioridades, verifique de novo o estado de Spanning Tree:
+</span></p><pre class="listing tilde"><code>&gt; enable
+# show spanning-tree</code></pre>
+
+<ul><li>Cal é agora a prioridade raíz e a prioridade ponte para cada VLAN?
+<p></p>
+<p>Imos reflexalas na seguinte táboa:</p>
+<p></p>
+<table class="table"><tbody><tr><th style="text-align:left"> <strong class="asterisk">Switch</strong> </th><th style="text-align:left"> <strong class="asterisk">VLAN</strong> </th><th style="text-align:left"> <strong class="asterisk">Prioridade Raíz</strong></th><th style="text-align:left"> <strong class="asterisk">Prioridade Ponte</strong></th></tr>
+<tr><td> core1-campusX  </td><td> 1<br>10<br>11<br>12<br>20<br>21<br>22</td>
+<td>
+1<br>
+10<br>
+11<br>
+12<br>
+20<br>
+21<br>
+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+10 = 0+10<br>
+11 = 0+11<br>
+12 = 0+12<br>
+20 = 0+20<br>
+21 = 0+21<br>
+22 = 0+22<br>
+</td></tr>
+<tr><td> dist1-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+1<br>
+10<br>
+11<br>
+12<br>
+</td>
+<td>
+32769 = 32768+1<br>
+12298 = 12288+10<br>
+12299 = 12288+11<br>
+12300 = 12288+12<br>
+</td></tr>
+<tr><td> edge-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+1<br>
+10<br>
+11<br>
+12<br>
+</td>
+<td>
+32769 = 32768+1<br>
+24586 = 24576+10<br>
+24587 = 24576+11<br>
+24588 = 24576+12<br>
+</td></tr>
+<tr><td> edge2-b1-campusX </td><td> 1<br>10<br>11<br>12<br></td>
+<td>
+1<br>
+20<br>
+21<br>
+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+24586 = 24576+10<br>
+24587 = 24576+11<br>
+24588 = 24576+12<br>
+</td></tr>
+<tr><td> dist1-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+1<br>
+20<br>
+21<br>
+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+12308 = 12288+20<br>
+12309 = 12288+21<br>
+12310 = 12288+22<br>
+</td></tr>
+<tr><td> edge1-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+1<br>
+20<br>
+21<br>
+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+24596 = 24576+20<br>
+24597 = 24576+21<br>
+24598 = 24576+22<br>
+</td></tr>
+<tr><td> edge2-b2-campusX </td><td> 1<br>20<br>21<br>22<br></td>
+<td>
+1<br>
+20<br>
+21<br>
+22<br>
+</td>
+<td>
+32769 = 32768+1<br>
+24596 = 24576+20<br>
+24597 = 24576+21<br>
+24598 = 24576+22<br>
+</td></tr>
+</tbody></table>
+
+
+
+<h3>Direccionamento IP para a VLAN MGMT</h3>
+<div style="text-align:justify">
+<p>Inicialmente configuramos os switchs de xeito que estabamos usando a VLAN 1 para xestionalos (e proporcionar acceso ao usuario final a toda a rede universitaria!). E o bloque de enderezos IPv4 que usamos ata agora era todo 172.20.0.0/16 xa que tiñamos un gran dominio de difusión para toda a rede universitaria.</p><p>Temos que afastarnos disto agora.</p>
+
+<p>Non podemos asignar direccións ás VLANs que creamos utilizando unha subrede do rango 172.20.0.0/16, xa que todo o bloque de direccionamento está a ser utilizado pola VLAN 1. O IOS de Cisco non permite que esas subredes sexan configuradas nos dispositivos de enrutamento. (O switch <b>core1-campusX</b> será o encargado de enrutar o tráfico entre VLANs).</p>
+
+<p>Para este exercicio simplemente eliminaremos os enderezos IP de xestión da VLAN 1 e configuraremos novas subredes na VLAN 10 (MGMT para o Building 1) e na VLAN 20 (MGMT para o Building 2).</p>
+
+<p>(<b>Nota:</b> Se realizas isto nunha rede activa, eliminando o enderezo IP e desactivando a VLAN 1 eliminarase toda a conectividade a Internet de todos os usuarios conectados aos switchs, polo que esta actividade é mellor facela cando a rede non estea en uso, normalmente pola mañá ou na fin de semana, dependendo de cando a rede universitaria non estea moi activa.). Lembra que, aínda que podemos eliminar un enderezo IPv4 simplemente facendo "no ip address", temos que escribir todo o enderezo IPv6 para borralo, "no ipv6 address 2001:db8:X:0::1:1/64", porque IPv6 permite varios enderezos por interfaces, a diferenza de IPv4).</p>
+
+<p><span class="md"></span></p><p><b>Nota:</b>&nbsp;É moi importante eliminar todos os enderezos IP (IPv4 e IPv6) da VLAN 1 e pechar a VLAN 1 antes de configurar calquera cousa nas novas VLAN de xestión (VLAN 10 ou VLAN 20).</p><p>A seguinte táboa amosa os enderezos IP que se asignan ás interfaces de xestión do núcleo, de distribución e dos switchs de acceso. </p>
+
+<p></p><table class="table"><tbody><tr><th style="text-align:left"> <strong class="asterisk">Building 1 Management​</strong> </th><th style="text-align:left"> <strong class="asterisk">VLAN</strong> </th><th style="text-align:left"> <strong class="asterisk">IPv4/MS</strong></th></tr>
+<tr><td> core1-campusX             </td><td> 10       </td><td> 172.20.10.1/24 </td></tr>
+<tr><td> dist1-b1-campusX          </td><td> 10       </td><td> 172.20.10.2/24 </td></tr>
+<tr><td> edge1-b1-campusX          </td><td> 10       </td><td> 172.20.10.3/24 </td></tr>
+<tr><td> edge2-b1-campusX          </td><td> 10       </td><td> 172.20.10.4/24 </td></tr>
+<tr><th style="text-align:left"> <strong class="asterisk"> <strong class="asterisk">Building 2 Management​</strong> </strong></th><th> <strong class="asterisk">VLAN</strong> </th><th> <strong class="asterisk">IPv4/MS</strong>       </th></tr>
+<tr><td> core1-campusX             </td><td> 20       </td><td> 172.20.20.1/24 </td></tr>
+<tr><td> dist1-b2-campusX          </td><td> 20       </td><td> 172.20.20.2/24 </td></tr><tr><td>edge1-b2-campusX          </td><td> 20       </td><td> 172.20.20.3/24 </td></tr><tr><td>edge2-b2-campusX          </td><td> 20       </td><td> 172.20.20.4/24 </td></tr></tbody></table>
+<br>
+<p>No switch de núcleo <span style="color:blue;">core1-campusX</span>:</p>
+<pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 1
+(config-if)# no ip address
+(config-if)# shutdown
+(config-if)# exit
+(config)# interface vlan 10
+(config-if)# description Management VLAN Building 1
+(config-if)# ip address 172.20.10.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 20
+(config-if)# description Management VLAN Building 2
+(config-if)# ip address 172.20.20.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit</code></pre>
+
+<br><p>En todos os switch de Building 1:</p>
+<p style="margin-left:20px;">Substitúe na configuración IP o <b>Y</b> polos números axeitados da táboa:</p>
+<pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 1
+(config-ig)# no ip address
+(config-if)# shutdown
+(config-if)# exit
+(config)# interface vlan 10
+(config-if)# description Management VLAN Building 1
+(config-if)# ip address 172.20.10.<b>Y</b> 255.255.255.0
+(config-if)# no shutdown</code></pre>
+
+<br>
+<p>En todos os switch de Building 2:</p>
+<p style="margin-left:20px;">Substitúe na configuración IP o <b>Y</b> polos números axeitados da táboa:</p>
+<pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 1
+(config-ig)# no ip address
+(config-if)# shutdown
+(config-if)# exit
+(config)# interface vlan 20
+(config-if)# description Management VLAN Building 2
+(config-if)# ip address 172.20.20.<b>Y</b> 255.255.255.0
+(config-if)# no shutdown</code></pre>
+
+
+<p><br>Verifica a conectividade entre os switchs. Podes facer ping?</p>
+<p style="margin-left:20px;">Pódese facer ping entre os switchs nas mesmas VLANs, como se aprecia na seguinte imaxe:</p>
+<center><img src="images/ping3-vlan10-si-outras-vlan-non.png"></center>
+
+
+<span class="md"><p><b>Nota:</b> É difícil cambiar as VLAN de xestión se accedes ao switch de forma remota, normalmente faise accedendo ao porto de consola do switch. Cisco IOS require que se peche a VLAN 1 antes de que os paquetes se movan a VLAN 10 ou VLAN 20, polo que nin sequera podemos usar o truco de acceder ao switch a través de IPv6 mentres o enderezo IPv4 está en uso.</p><p>
+
+
+
+</p><p>
+</p></span></div>
+
+<a name="configureladirecccionipparalavlanstaffystudent."></a><a name="toc1.3.7"></a><p></p><h3>Configure a direccion IP para as VLANs STAFF e STUDENT.</h3>
+
+<p>A seguinte táboa amosa os enderezos IP que se asignan ás interfaces de xestión do núcleo, de distribución e dos switchs de acceso para as VLANs 1Z e 2Z, é dicir, para as VLAN 11,12 e 21,22 </p>
+<p><b>Nota: </b>Substitúe <b>Z</b> polo número 1 ou 2 para se correspondan coas VLAN: 11, 12, 21 ou 22</p>
+
+<p></p><table class="table"><tbody><tr><th style="text-align:left"> <strong class="asterisk">Building 1 Management​</strong> </th><th style="text-align:left"> <strong class="asterisk">VLAN</strong> </th><th style="text-align:left"> <strong class="asterisk">IPv4/MS</strong></th></tr>
+<tr><td> core1-campusX             </td><td> 1Z       </td><td> 172.20.1Z.1/24 </td></tr>
+<tr><td> dist1-b1-campusX          </td><td> 1Z       </td><td> 172.20.1Z.2/24 </td></tr>
+<tr><td> edge1-b1-campusX          </td><td> 1Z       </td><td> 172.20.1Z.3/24 </td></tr>
+<tr><td> edge2-b1-campusX          </td><td> 1Z       </td><td> 172.20.1Z.4/24 </td></tr>
+<tr><th style="text-align:left"> <strong class="asterisk"> <strong class="asterisk">Building 2 Management​</strong> </strong></th><th> <strong class="asterisk">VLAN</strong> </th><th> <strong class="asterisk">IPv4/MS</strong>       </th></tr>
+<tr><td> core1-campusX             </td><td> 2Z       </td><td> 172.20.2Z.1/24 </td></tr>
+<tr><td> dist1-b2-campusX          </td><td> 2Z       </td><td> 172.20.2Z.2/24 </td></tr><tr><td>edge1-b2-campusX          </td><td> 2Z       </td><td> 172.20.2Z.3/24 </td></tr><tr><td>edge2-b2-campusX          </td><td> 2Z      </td><td> 172.20.2Z.4/24 </td></tr></tbody></table>
+
+
+<p>Agora configuramos os enderezos IP das VLANs STAFF(11,21) e STUDENT(12,22):
+</p><p>No switch de núcleo <span style="color:blue;">core1-campusX</span>:</p>
+<pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 11
+(config-if)# description STAFF VLAN of Building 1
+(config-if)# ip address 172.20.11.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 12
+(config-if)# description STUDENT VLAN of Building 1
+(config-if)# ip address 172.20.12.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 21
+(config-if)# description STAFF VLAN of Building 2
+(config-if)# ip address 172.20.21.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 22
+(config-if)# description STUDENT VLAN of Building 2
+(config-if)# ip address 172.20.22.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit</code></pre>
+
+<div style="text-align:justify;">
+<p>Unha vez completado, o switch de núcleo deberá ter as VLANs 11, 12, 21 e 22 configuradas con direccionamiento IPv4. 
+
+</p><p><b>Pregunta:</b> Que é significativo sobre o enderezo IP configurado en cada VLAN?</p><p><b>Resposta:</b> Este enderezo IP serve agora como pasarela predeterminada para todos os dispositivos conectados a esta VLAN. Polo tanto, un usuario na VLAN 11 terá a pasarela 172.20.11.1, etc.</p>
+
+<p>En todos os switch de Building 1:</p>
+<p style="margin-left:20px;">Substitúe na configuración IP o <b>W</b> por 2, 3, 4 según corresponda (ver a Táboa anterior):</p>
+  <p></p>
+  <pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 11
+(config-if)# description STAFF VLAN of Building 1
+(config-if)# ip address 172.20.11.<b>W</b> 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 12
+(config-if)# description STUDENT VLAN of Building 1
+(config-if)# ip address 172.20.12.<b>W</b> 255.255.255.0
+(config-if)# no shutdown
+</code></pre>
+
+<br>
+<p>En todos os switch de Building 2:</p>
+<p style="margin-left:20px;">Substitúe na configuración IP o <b>W</b> por 2, 3, 4 según corresponda (ver a Táboa anterior):</p>
+  <p></p>
+  <pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface vlan 21
+(config-if)# description STAFF VLAN of Building 2
+(config-if)# ip address 172.20.21.<b>W</b> 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 22
+(config-if)# description STUDENT VLAN of Building 2
+(config-if)# ip address 172.20.22.<b>W</b> 255.255.255.0
+(config-if)# no shutdown
+</code></pre>
+
+<br>
+
+<p></p><h3>Designación de portos nos switchs de acceso</h3><p></p>
+<p>Agora que se crearon as VLAN de STAFF e STUDENT e asignáronselles un enderezo IPv4 a cada unha, podemos trasladar os usuarios finais a estas VLAN.</p><p>Agora designe 6 portos de acceso para as VLAN STAFF e STUDENT só nos switches de borde (o exemplo é para o Building 1):</p>
+  <p></p>
+  <pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface range fastEthernet 0/1-6
+(config-if-range)# description Access Port VLAN 11 STAFF
+(config-if-range)# switchport mode access
+(config-if-range)# switchport access vlan 11
+(config-if-range)# exit
+(config)# interface range fastEthernet 0/7-12
+(config-if-range)# description Access Port VLAN 12 STUDENT
+(config-if-range)# switchport mode access
+(config-if-range)# switchport access vlan 12
+(config-if-range)# end</code></pre>
+
+ <p>Comprobe que portos son membros ou troncais de cada vlan:</p>
+ <pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 640px;"><code style="font-size: 11.56px; line-height: 16.184px;">&gt; enable
+# show vlan id 1
+# show vlan id 20
+# show vlan id 21
+# show vlan id 22
+# show interfaces trunk</code></pre>
+
+ <p>Imaxina que hai ordenadores conectados á VLAN STAFF. Serían capaces de facer ping ao switch? Explica a túa resposta</p>
+ <b>Resposta</b>: Si, sempre e cando esté conectado nun porto en modo access da VLAN STAFF, é dicir, sempre e cando conectemos o computador nun dos portos Fa0/1-6 do switch.
+
+ <p>Agora executa os comandos:</p>
+ <p><span class="md"></span></p>
+ <pre class="listing tilde"><code># show <span class="hljs-keyword">interfaces</span>
+# show interfaces | include Description</code></pre>
+ <p>Que ves?</p>
+ <p>O comando <i>show interfaces</i> proporciona unha visión detallada de todas as interfaces, incluíndo o estado (up/down), estatísticas de tráfico, erros e configuración básica; mentres que o comando <i>show interfaces | include Description</i> filtra a saída para mostrar só as liñas relacionadas coas descricións das interfaces, permitindo localizar rapidamente a información sobre as descricións configuradas sen ter que revisar toda a saída completa.</p>
+ <p>É por iso que é importante asegurarse de que todas as interfaces teñan unha liña de descrición configurada: xa que os comandos de diagnóstico anterior permiten que calquera operador vexa dunha ollada que interfaces do switch se usan para que función.</p>
+ <p><span class="md"></span></p>
+
+ <h3>Verificación da conectividade</h3>
+ <ol>
+   <li><p style="text-align:justify">Tentando facer ping dun switch a outro dentro de cada edificio. É posible? <b>SI</b></p>
+      <img src="images/ping4-vlan20-entre switchs.png"><br><br>
+</li>
+   <li>
+     <p style="text-align:justify">Agora proba tamén a facer ping aos enderezos de subrede STAFF e STUDENT configurados no switch do núcleo tamén.
+     É posible? <b>NON</b>, porque non lle asignamos portos a cada VLAN no switch de núcleo, co cal todos os portos están asignados á VLAN 1. Deberiamos executar no switch de nucleo para as interfaces Fa0/1 e Fa0/2: '<span style="font-family: Menlo, Consolas, monospace; font-size: 11.56px; text-align: left; background-color: rgb(252, 252, 252);">switchport trunk allowed vlan 10,11,12,20,21,22'</span></p></li>
+   <li>
+     <p style="text-align:justify">Podes facer ping a algún dos switchs dos outros edificios da túa rede universitaria. É dicir, podes facer ping dende algún switch de Building1 a alǵun switch de Building2? <b>NON</b></p>
+     <p style="text-align:justiry">Que está pasando? Pois 2 cousas: primeiro que non non somos quen de chegar ao switch de núcleo(explicado no apartado anterior) e segundo que o switch de núcleo non está a facer de gateway para poder redireccionar os paquetes ICMP do ping.</p></li>
+ </ol>
+ <div style="text-align:justify;border:dashed 1px;background-color:yellow;padding:2px;">
+ <p><b>NOTA:</b> Para poder solucionar que todos os switchs entre si tiveran conectividade habería que realizar o comanentado no Apéndice B - Switch L3 - Enrutamento:</p>
+</div><br>
+
+
+<h2>Apéndice A - Configuracion de Spanning Tree</h2>
+<p>
+
+
+T<span style="text-align: center; background-color: rgb(255, 255, 255);">áboa</span>&nbsp;de prioridade para cada switch
+</p><div class="table"><table class="table"><tbody><tr><th style="text-align:left">  <strong class="asterisk">Prioridade</strong> </th><th style="text-align:left"> <strong class="asterisk">Descrición</strong> </th><th style="text-align:left"> <strong class="asterisk">Notas</strong>                                                                                                                                                                                                                                           </th></tr>
+<tr><td style="text-align:left">  0 </td><td style="text-align:left"> Switch de núcleo </td><td style="text-align:left"> Para o switch (core1-campusX)                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align:left">  4096 </td><td style="text-align:left"> Switch de núcleo redundante </td><td style="text-align:left"> Para casos onde temos un 2do swtich de núcleo  (redundancia)                                                                         </td></tr>
+<tr><td style="text-align:left">  8192 </td><td style="text-align:left"> Reservado </td><td style="text-align:left">  </td></tr>
+<tr><td style="text-align:left">  12288 </td><td style="text-align:left"> Distribucion no<br>edificio </td><td style="text-align:left"> (dist1-b1-campusX; dist1-b2-campusX)                                                                                                                                                                                                                </td></tr>
+<tr><td style="text-align:left">  16384 </td><td style="text-align:left"> Distribucion redundante no<br>edificio </td><td style="text-align:left"> Para casos onde temos un switch redundante para a distribución do edificio                                                                                                                                                                                    </td></tr>
+<tr><td style="text-align:left">  20480 </td><td style="text-align:left"> Backbone secundario </td><td style="text-align:left"> Este&nbsp;<span style="text-align: justify;">é&nbsp;</span>un complexo de edificios, onde hai backbones de edificios separados (secundarios) que terminan no backbone do complexo.                                                                                                                     </td></tr>
+<tr><td style="text-align:left">  24576 </td><td style="text-align:left"> Switches de acceso </td><td style="text-align:left"> Esta&nbsp;<span style="text-align: justify;">é</span>&nbsp;a prioridade normal acceso-dispositivo  (edge1-b1-campusX; edge2-b1-campusX; edge1-b2-campusX; edge2-b2-campusX)                                                                                                                                    </td></tr>
+<tr><td style="text-align:left">  28672 </td><td style="text-align:left"> Switches de acceso </td><td style="text-align:left"> Usado por switches de acceso que est<span style="background-color: rgb(255, 255, 255);">án&nbsp;</span>en cadea dende outro switch de acceso. Usamos esta terminoloxía en vez de “switch de agregación” porque e difícil de definir cando un switch deixa de ser un switch de acceso para volverse un switch de agregación.   </td></tr>
+<tr><td style="text-align:left">  32768 </td><td style="text-align:left"> Default </td><td style="text-align:left">Dispositivos de rede non administrables deberán ter esa prioridade.                                                                                                                                                                                                </td></tr>
+</tbody></table></div>
+
+<p><br></p>
+<h2>Apéndice B - Switch L3 - Enrutamento</h2>
+<p>
+Neste caso, dado que as VLAN dos switches de Building1 e Building2  pertencen a subredes diferentes (<b>172.20.1X.0/24</b> e <b>172.20.2X.0/24</b>, respectivamente), non habería conectividade directa entre elas sen unha intervención adicional. O switch de núcleo <span style="color:blue;">core1-campusX</span> está configurado como un simple switch en modo <b>Layer 2</b>, e non pode enrutar tráfico entre VLANs ou subredes.
+</p>
+
+<p><b>Por que non hai conectividade actualmente?</b>
+</p><ol>
+  <li style="text-align:justify">Os switches de Building1 e Building2 teñen redes diferentes, e o tráfico entre subredes distintas require un dispositivo de <b>Capa 3</b> (como un router ou un switch configurado para facer enrutamento inter-VLAN).
+  </li>
+  <li style="text-align:justify">O switch core1-campusX, ao ser un 2960, necesita configuración adicional para realizar enrutamento inter-VLAN, xa que por defecto é un dispositivo de capa 2.
+  </li>
+</ol>
+<p></p>
+
+<p><b>Que habería que facer no switch <span style="color:blue">core1-campusX</span>?</b>
+</p><ol>
+  <li style="text-align:justify"><b>Habilitar o enrutamento inter-VLAN</b>: Como o switch 2960 non está deseñado para ser un router, deberíamos sustituilo por outro modelo, como o <span style="color:blue;">Cisco Catalyst 3560</span> que pode configurarse para manexar tráfico entre VLANs, de tal forma que deberiamos neste switch activar o enrutamento inter-VLAN e asignarlle unha IP a cada interface VLAN.
+  </li>
+  <li style="text-align:justify"><b>Configurar as interfaces VLAN no switch</b>: 
+    <ul>
+      <li style="text-align:justify">Asegúrate de que as interfaces VLAN no switch teñan direccións IP asignadas ás subredes respectivas e estean en estado <b>up</b>.
+      </li>
+      <li style="text-align:justify">Configura as VLAN que correspondan ao tráfico entre os switches de Building1 e Building2.
+      </li>
+    </ul>
+  </li>
+  <li><b>Verificar as configuracións de trunking</b>: Asegúrate de que os portos Fa0/1 e Fa0/2 do switch core1-campusX están correctamente configurados como <b>trunk</b> para transportar todas as VLANs.
+  </li>
+  <li><b>Configurar rutas predeterminadas nos switches de Building1 e Building2</b>:
+   <p>En cada switch, configura como <b>gateway predeterminado</b> a dirección IP da interface VLAN correspondente ao switch de núcleo.</p>
+  </li>
+</ol>
+<p></p>
+
+<div style="margin-left:40px;">
+<p><b>Configuración de exemplo para o switch <span style="color:blue">core1-campusX (modelo Cisco Catalyst 3560)</span></b>:
+</p><pre class="listing tilde" style="max-width:96.8%"><code>&gt; enable
+# configure terminal
+(config)# hostname core1-campusX
+
+! Deshabilitar VTP
+(config)# vtp mode transparent
+
+! Configurar VLANs
+(config)# vlan 10
+(config-vlan)# name MGMT1
+(config-vlan)# exit
+(config)# vlan 11
+(config-vlan)# name STAFF1
+(config-vlan)# exit
+(config)# vlan 12
+(config-vlan)# name STUDENT1
+(config-vlan)# exit
+(config)# vlan 20
+(config-vlan)# name MGMT2
+(config-vlan)# exit
+(config)# vlan 21
+(config-vlan)# name STAFF2
+(config-vlan)# exit
+(config)# vlan 22
+(config-vlan)# name STUDENT2
+
+! Configurar os portos trunk
+(config)# interface fastEthernet 0/1
+(config-if)# description Trunk Link to core1-campusX
+(config-if)# switchport trunk encapsulation dot1q
+(config-if)# switchport mode trunk
+(config-if)# switchport trunk allowed vlan 10,11,12,20,21,22
+(config-if)# exit
+(config)# interface fastEthernet 0/2
+(config-if)# description Trunk Link to core1-campusX
+(config-if)# switchport trunk encapsulation dot1q
+(config-if)# switchport mode trunk
+(config-if)# switchport trunk allowed vlan 10,11,12,20,21,22
+(config-if)# exit
+
+! Configurar STP
+(config)# spanning-tree vlan 10 priority 0
+(config)# spanning-tree vlan 11 priority 0
+(config)# spanning-tree vlan 12 priority 0
+(config)# spanning-tree vlan 20 priority 0
+(config)# spanning-tree vlan 21 priority 0
+(config)# spanning-tree vlan 22 priority 0
+
+! Configurar direccionamento IP para as VLAN MGMT, STAFF e STUDENT
+(config)# interface vlan 1
+(config-if)# no ip address
+(config-if)# shutdown
+(config-if)# exit
+(config)# interface vlan 10
+(config-if)# description Management VLAN Building 1
+(config-if)# ip address 172.20.10.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 20
+(config-if)# description Management VLAN Building 2
+(config-if)# ip address 172.20.20.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 11
+(config-if)# description STAFF VLAN of Building 1
+(config-if)# ip address 172.20.11.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 12
+(config-if)# description STUDENT VLAN of Building 1
+(config-if)# ip address 172.20.12.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 21
+(config-if)# description STAFF VLAN of Building 2
+(config-if)# ip address 172.20.21.1 255.255.255.0
+(config-if)# no shutdown
+(config-if)# exit
+(config)# interface vlan 22
+(config-if)# description STUDENT VLAN of Building 2
+(config-if)# ip address 172.20.22.1 255.255.255.0
+(config-if)# no shutdown
+
+! Habilitar o enrutamento IP
+(config)# ip routing</code></pre>
+<p></p>
+</div>
+<br>
+
+<div style="margin-left:40px;">
+<p><b>Configuración de exemplo para o switch <span style="color:blue">dist1-b1-campusX (modelo 2960)</span></b>:
+</p><pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# ip default-gateway 172.20.10.1</code></pre>
+<p></p>
+</div>
+<br>
+
+
+<div style="margin-left:40px;">
+<p><b>Configuración de exemplo para o switch <span style="color:blue">dist2-b1-campusX (modelo 296)0</span></b>:
+</p><pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# ip default-gateway 172.20.20.1</code></pre>
+<p></p>
+</div>
+<br>
+
+<b>Resultados esperados</b>
+<p>
+</p><ul>
+  <li>Unha vez completada a configuración, o switch de núcleo poderá encamiñar tráfico entre as VLANs dos switches de Building1 e Building2.
+  </li>
+  <li>Será posible realizar un <b>ping</b> dende un switch de Bulding1 a un switch de Building2, xa que o switch de núcleo actuará como ponte entre as redes.
+    <center><img src="images/ping5-routing-ok.png"></center>
+  </li>
+</ul>
+<p></p>
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="js/markdeep.min.js" charset="utf-8"></script><script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>

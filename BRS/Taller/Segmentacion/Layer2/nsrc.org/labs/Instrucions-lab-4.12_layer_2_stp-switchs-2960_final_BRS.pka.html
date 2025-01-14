@@ -1,0 +1,297 @@
+<head>
+<meta charset="UTF-8">
+</head>
+<!-- Engadir estilos personalizados para eliminar o margin-top -->
+<style>
+  .md .longTOC .level1 {
+    margin-top: -30px !important; /* Elimina o espazo superior */
+  }
+</style>
+
+<h1>Laboratorio de Spanning Tree Protocol</h1>
+<p>
+
+
+</p><div style="border:dashed 1px;background-color:yellow"><b>NOTA:</b> Este laboratorio é unha modificación do laboratorio Taller de diseño de redes universitarias <a href="https://nsrc.org/workshops/2016/reduniv/networking/cnd/es/labs/4.12_layer_2_stp_lab.md.html" target="_blank">4.12_layer2_stp_lab</a>, onde o diseño con switchs 2960-24TT e a estrutura de preguntas e respostas foi modificado por <a href="https://github.com/ricardofc/repoEDU-CCbySA" target="_blank">Ricardo Feijoo Costa</a>.</div>
+
+<p></p>
+<a class="target" name="topolox%C3%ADa">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/topolox%C3%ADa">&nbsp;</a><a class="target" name="toc1.1">&nbsp;</a><h2>Topoloxía</h2>
+<p>
+
+
+</p><center><img src="images/cnd-campus-lag-int-BRS_2.png"></center><center><br></center><center><br></center><center><div class="table" style="text-align: justify;"><br><table class="table" style="line-height: 22.4px;"><tbody><tr><th style="text-align: center;"><strong class="asterisk">Switch 2960-24TT</strong></th><th style="text-align: center;"><strong class="asterisk">MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">Ports</strong></th><th style="text-align: center;"><strong class="asterisk">vlan1 MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">IP/MS</strong></th></tr>
+
+<tr><td style="text-align: center;"><p></p>
+<p style="word-break: keep-all; hyphens: none;">core1-campusX</p></td><td style="text-align: center;">0002.4a19.ed01<br>0002.4a19.ed02&nbsp;</td><td style="text-align: center;">Fa0/1<br>Fa0/2</td><td style="text-align: center;">00e0.b061.6333&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.0.1/16</p></td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b1-campusX</p></td><td style="text-align: center;">0030.f294.3e0c<br>0030.f294.3e0d<br>0030.f294.3e0e<br>0030.f294.3e0f</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">0004.9a07.2be4&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.2/16</p></td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0c<br>0010.1146.8b0d<br>0010.1146.8b0e<br>0010.1146.8b0f&nbsp;</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">0002.1722.9dc3&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.2.2/16</p></td></tr>
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b1-campusX</p></td><td style="text-align: center;">0002.178c.b50e<br>0002.178c.b50f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">000a.4181.09d5&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.3/16</p></td></tr>
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b1-campusX</p></td><td style="text-align: center;">0030.a393.710e<br>0030.a393.710f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">000c.cf40.4cdb</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.1.4/16</p></td></tr>
+
+<tr><td style="text-align: center;">
+
+<p style="word-break: keep-all; hyphens: none;">edge1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0e&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">00d0.ff01.3b7b</td><td style="text-align: center;">172.20.2.3/16</td></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b2-campusX</p></td><td style="text-align: center;">0001.9719.ad0f&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">000d.bde6.e5c1&nbsp;</td><td style="text-align: center;"><p style="white-space: pre-wrap; color: rgb(0, 0, 0); text-align: start; margin: 0px;">172.20.2.4/16</p></td></tr>
+
+</tbody></table></div></center>
+
+<p></p>
+<a class="target" name="introducci%C3%B3n">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/introducci%C3%B3n">&nbsp;</a><a class="target" name="toc1.2">&nbsp;</a><h2>Introdución</h2>
+<p>O propósito deste laboratorio e introducir o STP e cómo configurar as
+prioridades dos switches de núcleo, distribución e acceso apropiadamente.
+
+</p>
+<a class="target" name="estadoinicialdelstp">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/estadoinicialdelstp">&nbsp;</a><a class="target" name="toc1.3">&nbsp;</a><h2>Estado inicial del STP</h2>
+<p>
+
+
+Antes de continuar coa configuración do STP imos revisar a situación 
+actual da rede. Para iso, primeiro espere a que todos os enlaces est<span style="background-color: rgb(255, 255, 255);">én activos agas o porto Fa0/15 de <i>edge1-b1-campusX</i> e o porto Fa0/15 de&nbsp;<i>edge1-b2-campusX</i></span></p><p>
+
+Execute os seguintes comandos na la CLI de todos os switchs e preste moita atención a sa<span style="text-align: left;">í</span>da:</p><pre class="listing tilde"><code><span class="line"></span><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">enable</span></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">show spanning-tree</span></code></pre><p>
+
+
+</p><ol start="1">
+<li class="number">Cal&nbsp;<span style="text-align: justify;"><span style="background-color: rgb(255, 255, 255);">é</span></span>&nbsp;a prioridade en cada switch?</li></ol>
+
+<p></p><p>
+
+</p><p style="margin-left: 40px;">En todos&nbsp;<span style="background-color: rgb(255, 255, 255);">é</span>&nbsp;a mesma: <b>32769</b></p>
+
+<p></p><p>
+
+</p><ol start="2">
+<li class="number">Cal switch<span style="text-align: justify;">&nbsp;</span><span style="text-align: justify; background-color: rgb(255, 255, 255);">é</span><span style="text-align: justify;">&nbsp;o</span>&nbsp;raíz? Por que?</li></ol>
+
+<p></p><p>
+
+</p><p style="margin-left: 40px;">Pois, como en todos a prioridade&nbsp;<span style="background-color: rgb(255, 255, 255);">é</span>&nbsp;a mesma debemos verificar que switch ten a dirección MAC Address máis pequena. <br>Execute os seguintes comandos na CLI de todos os switchs e verifique as MAC-Address das interfaces:</p>
+
+<p></p><pre class="listing tilde"><code><span class="line"></span>&gt; show interfaces | <span class="hljs-keyword">include</span> (is up|address)
+<span class="line"></span>&gt; show interfaces vlan1 | <span class="hljs-keyword">include</span> address</code></pre><p>
+
+</p><p style="margin-left: 40px;">Así, na seguinte t<span style="background-color: rgb(255, 255, 255);"><span style="text-align: center;">áboa</span>&nbsp;</span>refl<span style="background-color: rgb(255, 255, 255);">é</span>xanse as MAC Address das interfaces e podemos determinar que switch&nbsp;&nbsp;<span style="background-color: rgb(255, 255, 255);">é</span>&nbsp;<b>root switch</b></p><div class="table"><table class="table"><tbody><tr><th style="text-align:center">  <strong class="asterisk">Switch</strong> </th><th style="text-align:center"> <strong class="asterisk">MAC Address</strong> </th><th style="text-align:center"> <strong class="asterisk">Ports</strong> </th><th style="text-align:center"> <strong class="asterisk">vlan1 MAC Address</strong> </th><th style="text-align:center"> <strong class="asterisk">Root Switch</strong> </th></tr>
+<tr><td style="text-align:center">  <p></p><p style="word-break: keep-all; hyphens: none;">core1-campusX</p> </td><td style="text-align:center"> 0002.4a19.ed01<br>0002.4a19.ed02 </td><td style="text-align:center"> Fa0/1<br>Fa0/2 </td><td style="text-align:center"> 00e0.b061.6333 </td><td style="text-align:center">  </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">dist1-b1-campusX</p> </td><td style="text-align:center"> 0030.f294.3e0c<br>0030.f294.3e0d<br>0030.f294.3e0e<br>0030.f294.3e0f </td><td style="text-align:center"> Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15 </td><td style="text-align:center"> 0004.9a07.2be4 </td><td style="text-align:center">  </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">dist1-b2-campusX</p> </td><td style="text-align:center"> 0010.1146.8b0c<br>0010.1146.8b0d<br>0010.1146.8b0e<br>0010.1146.8b0f </td><td style="text-align:center"> Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15 </td><td style="text-align:center"> 0002.1722.9dc3 </td><td style="text-align:center"> <b style="color:red;">SI</b><br>(Debido a que a MAC da vlan1 é a máis pequena) </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">edge1-b1-campusX</p> </td><td style="text-align:center"> 0002.178c.b50e<br>0002.178c.b50f </td><td style="text-align:center"> Fa0/14<br>Fa0/15 </td><td style="text-align:center"> 000a.4181.09d5 </td><td style="text-align:center">  </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">edge2-b1-campusX</p> </td><td style="text-align:center"> 0030.a393.710e<br>0030.a393.710f </td><td style="text-align:center"> Fa0/14<br>Fa0/15 </td><td style="text-align:center"> 000c.cf40.4cdb </td><td style="text-align:center">  </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">edge1-b2-campusX</p> </td><td style="text-align:center"> 0010.1146.8b0e </td><td style="text-align:center"> Fa0/15 </td><td style="text-align:center"> 00d0.ff01.3b7b </td><td style="text-align:center">  </td></tr>
+<tr><td style="text-align:center">  <p style="word-break: keep-all; hyphens: none;">edge2-b2-campusX</p> </td><td style="text-align:center"> 0001.9719.ad0f </td><td style="text-align:center"> Fa0/15 </td><td style="text-align:center"> 000d.bde6.e5c1 </td><td style="text-align:center">  </td></tr>
+</tbody></table></div>
+
+<p></p><p>
+
+
+
+</p><p>
+
+Verifica o <b>root switch</b> executando en todos os switchs os seguintes comandos na CLI:
+
+</p><pre class="listing tilde"><code><span class="line"></span><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">enable</span></span>
+<span class="line"></span><span class="hljs-meta prompt_"># </span><span class="language-bash">show spanning-tree</span></code></pre><p>
+
+No switch <b style="color:blue;">dist1-b2-campusX</b>&nbsp;a saída debería ser similar á&nbsp;seguinte:
+
+</p><pre class="listing tilde"><code><span class="line"></span>VLAN0001
+<span class="line"></span>  Spanning tree enabled protocol ieee
+<span class="line"></span>  Root ID    Priority    <span class="hljs-number">32769</span>
+<span class="line"></span>             Address     <span class="hljs-number">0002.1722</span><span class="hljs-number">.9</span>DC3
+<span class="line"></span>             This bridge <span class="hljs-keyword">is</span> the root
+<span class="line"></span>             ...</code></pre><p>
+
+
+
+</p><ol start="3">
+<li class="number"> ¿Cal é o "costo" en cada porto? Cales portos estan bloqueados e por que?<br>Execute os seguintes comandos na CLI de todos os switchs e verifique os "costos" dos seus portos:<p style="text-align: justify;"></p><pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;"><span class="line"></span>&gt; enable
+# show spanning-tree</code></pre><p style="text-align: justify;"></p><p style="text-align: justify; ">Así, na seguinte t<span style="background-color: rgb(255, 255, 255);"><span style="text-align: center;">áboa</span>&nbsp;</span>refl<span style="background-color: rgb(255, 255, 255);">é</span>xanse os "costos" dos portos das interfaces dos switchs</p>
+
+<div class="table" style="text-align: justify;"><table class="table" style="line-height: 22.4px;"><tbody><tr><th style="text-align: center;"><strong class="asterisk">Switch</strong></th><th style="text-align: center;"><strong class="asterisk">MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">Ports</strong></th>
+<th style="text-align: center;"><strong class="asterisk">Cost</strong></th>
+<th style="text-align: center;"><strong class="asterisk">vlan1 MAC Address</strong></th><th style="text-align: center;">Cost vlan1 to root swtich</th></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">core1-campusX</p></td><td style="text-align: center;">0002.4a19.ed01<br>0002.4a19.ed02&nbsp;</td><td style="text-align: center;">Fa0/1<br>Fa0/2</td><td style="text-align: center;">19<br>19</td><td style="text-align: center;">00e0.b061.6333&nbsp;</td><td style="text-align: center;">19 dende Fa0/2</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b1-campusX</p></td><td style="text-align: center;">0030.f294.3e0c<br>0030.f294.3e0d<br>0030.f294.3e0e<br>0030.f294.3e0f</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br>19<br>19<br></td><td style="text-align: center;">0004.9a07.2be4&nbsp;</td><td style="text-align: center;">38 dende Fa0/15</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0c<br>0010.1146.8b0d<br>0010.1146.8b0e<br>0010.1146.8b0f&nbsp;</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br>19<br>19<br></td><td style="text-align: center;">0002.1722.9dc3&nbsp;</td><td style="text-align: center;"><b style="color: red;">0</b><br>(Debido a que este e o root switch)</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b1-campusX</p></td><td style="text-align: center;">0002.178c.b50e<br>0002.178c.b50f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br></td><td style="text-align: center;">000a.4181.09d5&nbsp;</td><td style="text-align: center;">57 dende Fa0/14<br>57 dende Fa0/15<br>Entón temos redundancia, co cal a MAC mais baixa e a do porto Fa014, co cal <font color="#ff0000">bloquease a Fa0/15</font></td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b1-campusX</p></td><td style="text-align: center;">0030.a393.710e<br>0030.a393.710f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br></td><td style="text-align: center;">000c.cf40.4cdb</td><td style="text-align: center;">57 dende Fa0/15</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0e&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">19<br></td><td style="text-align: center;">00d0.ff01.3b7b</td><td style="text-align: center;">19 dende Fa0/14<br>19 dende Fa0/15<br>Entón temos redundancia, co cal a MAC mais baixa e a do porto Fa014, co cal <font color="#ff0000">bloquease a Fa0/15</font></td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b2-campusX</p></td><td style="text-align: center;">0001.9719.ad0f&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">19</td><td style="text-align: center;">000d.bde6.e5c1&nbsp;</td><td style="text-align: center;">19 dende Fa0/15</td></tr></tbody></table></div></li></ol>
+
+<p></p><p>Que está sucedendo en&nbsp;<font color="#5500ff">edge1-bY-campusX</font>?&nbsp;</p><pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;">edge1-b1-campusX#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0002.1722.9DC3
+             Cost        57
+             Port        14(FastEthernet0/14)
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     000A.4181.09D5
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/14           Root FWD 19        128.14   P2p
+Fa0/15           Altn BLK 19        128.15   P2p</code></pre><p>Actualmente hai dous enlaces dende edge1 a dist1 en cada Edificio. Usaremos estos 2 enlaces logo neste exercicio de laboratorio.</p><p>Note como un enlace(Fa=/14)(Porto root) está en modo de reenvío(FWD=Forwarding), e o outro enlace(Fa0/15)(Porto alternativo) está en modo de bloqueo(BLK=Blocking). Desta forma non temos un bucle entre o edge1 e os switches dist1. Se o Spanning Tree está&nbsp;apagado entre estos dous switches, terminamos cun bucle, o tráfico non poderá ser reenviado, e a carga da CPU nos switches podería irse ao 100%.</p><p>
+
+</p><div style="border:dashed 1px;background-color:yellow">NOTA: Compararemos estas respostas coas que faremos no seguinte paso.</div>
+
+<h2>Desactivando STP</h2>
+<p>Podemos desactivar STP para ver que efecto ten.</p>
+<div style="text-align: left;">Execute&nbsp;<span style="text-align: left;">os seguintes comandos na CLI de todos os switchs e fixese nos enlaces dos switchs.</span></div>
+<p></p>
+<pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;"><span class="line"></span>&gt; enable
+# show spanning-tree
+# configure terminal
+(config)# no spanning tree vlan 1
+(config)# end
+# show spanning-tree</code></pre>
+<p></p><p>Que acontece?&nbsp;</p><p>Ao desactivar STP, eliminas a protección contra bucles na rede. Isto pode levar a bucles de retransmisión, o que é crítico en redes de gran escala.</p> 
+
+<p>É isto é o que está a acontecer: unha tormenta de broadcast. Agora as luces dos enlaces están activas(parpadeando) continuamente. Podes observar no modo simulación o que acontece se envías un único PDU de edge1-b1-campusX a edge2-b2-campusX (e que se reflexa na seguinte imaxe), nunca se acaba o envío de paquetes ARP.</p>
+
+<p><img src="images/tormenta-broadcast-stp.png"></p>
+<p><br></p>
+<p>Tamén podes observar o que acontece (e que se reflexa na seguinte imaxe) cando envías un ping entre eses 2 hosts: nunca responde, non chega, entón timeout.<br><img src="images/ping-tormenta-broadcast-stp.png"><span class="md"></span></p><p><br></p>
+<p>A tormenta de paquetes está a provocar unha sobrecarga na CPU, polo que o packettracer ralentízase moito. Podes revisalo vendo como o packettracer na máquina anfitrión é un dos procesos que máis carga a CPU.</p><p><img src="images/top-tormenta-broadcast-stp.png"></p>
+
+<h2>Configuración de STP</h2>
+<p>
+Configure as prioridades STP explicitamente para cada switch, de acordo co plan
+do Apéndice A.
+
+</p><p>
+
+Por exemplo, en dist1-b1-campusX:
+
+</p><pre class="listing tilde"><code>
+<span class="line"></span>dist1-b1-campusX(config)<span class="hljs-comment">#spanning-tree vlan 1 </span>
+<span class="line"></span>dist1-b1-campusX(config)<span class="hljs-comment">#spanning-tree vlan 1 priority 12288</span>
+</code></pre><p>
+
+Verifique:
+
+</p><pre class="listing tilde"><code><span class="line"></span><span class="hljs-keyword"># show</span> spanning<span class="hljs-operator">-</span>tree vlan1</code></pre><p>Por que é tan importante configurar as prioridades explicitamente?</p><p>É importante establecer prioridades en STP de forma explícita para evitar bucles e garantir que a rede funciona correctamente. Se as prioridades non están configuradas, o protocolo STP pode escoller unha ruta subóptima, o que pode provocar un rendemento de rede deficiente.</p><p>
+
+Comprobe en todos os switchs a saída do comando:</p><pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;"><span class="hljs-keyword"># show</span> spanning<span class="hljs-operator">-</span>tree </code></pre><div><code style="font-size: 11.56px; line-height: 16.184px;"><br></code></div>
+
+<ul>
+<li class="minus">Cal switch&nbsp;<span style="text-align: justify;">é</span>&nbsp;o raíz agora?
+<br>O <b>core1-campusX</b> xa que ten a prioridade máis baixa das que definimos:
+<pre><code>core1-campusX#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    1
+             Address     00E0.B061.6333
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    1  (priority 0 sys-id-ext 1)
+             Address     00E0.B061.6333
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/2            Desg FWD 19        128.2    P2p
+Fa0/1            Desg FWD 19        128.1    P2p</code></pre>
+<p></p><p>
+
+</p></li>
+<li class="minus">  Verifique o rol e o estado dos portos.<div class="table" style="text-align: justify;"><table class="table" style="line-height: 22.4px;"><tbody><tr><th style="text-align: center;"><strong class="asterisk">Switch</strong></th><th style="text-align: center;"><strong class="asterisk">MAC Address</strong></th><th style="text-align: center;"><strong class="asterisk">Ports</strong></th>
+<th style="text-align: center;"><strong class="asterisk">Cost</strong></th>
+<th style="text-align: center;"><strong class="asterisk">vlan1 MAC Address</strong></th><th style="text-align: center;">Cost vlan1 to root swtich</th></tr>
+
+<tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">core1-campusX</p></td><td style="text-align: center;">0002.4a19.ed01<br>0002.4a19.ed02&nbsp;</td><td style="text-align: center;">Fa0/1<br>Fa0/2</td><td style="text-align: center;">19<br>19</td><td style="text-align: center;">00e0.b061.6333&nbsp;</td><td style="text-align: center;"><b style="color: red;">0</b><br>(Debido a que este e o root switch)</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b1-campusX</p></td><td style="text-align: center;">0030.f294.3e0c<br>0030.f294.3e0d<br>0030.f294.3e0e<br>0030.f294.3e0f</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br>19<br>19<br></td><td style="text-align: center;">0004.9a07.2be4&nbsp;</td><td style="text-align: center;">19 dende Fa0/15</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">dist1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0c<br>0010.1146.8b0d<br>0010.1146.8b0e<br>0010.1146.8b0f&nbsp;</td><td style="text-align: center;">Fa0/12<br>Fa0/13<br>Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br>19<br>19<br></td><td style="text-align: center;">0002.1722.9dc3&nbsp;</td><td style="text-align: center;">19 dende Fa0/15</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b1-campusX</p></td><td style="text-align: center;">0002.178c.b50e<br>0002.178c.b50f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br></td><td style="text-align: center;">000a.4181.09d5&nbsp;</td><td style="text-align: center;">38 dende Fa0/14<br>38 dende Fa0/15<br>Entón temos redundancia, co cal a MAC mais baixa e a do porto Fa014, co cal <font color="#ff0000">bloquease a Fa0/15</font></td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b1-campusX</p></td><td style="text-align: center;">0030.a393.710e<br>0030.a393.710f&nbsp;</td><td style="text-align: center;">Fa0/14<br>Fa0/15&nbsp;</td><td style="text-align: center;">19<br>19<br></td><td style="text-align: center;">000c.cf40.4cdb</td><td style="text-align: center;">38 dende Fa0/15</td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge1-b2-campusX</p></td><td style="text-align: center;">0010.1146.8b0e&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">19<br></td><td style="text-align: center;">00d0.ff01.3b7b</td><td style="text-align: center;">38 dende Fa0/14<br>38 dende Fa0/15<br>Entón temos redundancia, co cal a MAC mais baixa e a do porto Fa014, co cal <font color="#ff0000">bloquease a Fa0/15</font></td></tr><tr><td style="text-align: center;"><p style="word-break: keep-all; hyphens: none;">edge2-b2-campusX</p></td><td style="text-align: center;">0001.9719.ad0f&nbsp;</td><td style="text-align: center;">Fa0/15&nbsp;</td><td style="text-align: center;">19</td><td style="text-align: center;">000d.bde6.e5c1&nbsp;</td><td style="text-align: center;">38 dende Fa0/15</td></tr></tbody></table>
+
+<p></p><p>Que está sucedendo en&nbsp;<font color="#5500ff">edge1-bY-campusX</font>?&nbsp;</p><pre class="listing tilde" style="font-size: 13.6px; line-height: 19.04px; width: 680px;"><code style="font-size: 11.56px; line-height: 16.184px;">edge1-b1-campusX#show spanning-tree 
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    1
+             Address     00E0.B061.6333
+             Cost        38
+             Port        14(FastEthernet0/14)
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24577  (priority 24576 sys-id-ext 1)
+             Address     000A.4181.09D5
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/14           Root FWD 19        128.14   P2p
+Fa0/15           Altn BLK 19        128.15   P2p</code></pre><p>Pois segue acontecendo o mesmo de antes pero con outros "costos", seguen existindo dous enlaces dende edge1 a dist1 en cada Edificio.</p><p>Note como un enlace(Fa=/14)(Porto root) está en modo de reenvío(FWD=Forwarding), e o outro enlace(Fa0/15)(Porto alternativo) está en modo de bloqueo(BLK=Blocking). Desta forma non temos un bucle entre o edge1 e os switches dist1. Se o Spanning Tree está&nbsp;apagado entre estos dous switches, terminamos cun bucle, o tráfico non poderá ser reenviado, e a carga da CPU nos switches podería irse ao 100%.</p><p>
+
+</p></div></li><li>Verifique a conectividade co ping.&nbsp;<br>
+<br>Agora é posible os ping entre todos os switchs.<img src="images/ping2-sen-tormenta-broadcast-stp.png"></li>
+                                  
+
+<p></p>
+
+<p></p>
+
+<h2>Simular unha falla do Backbone</h2>
+<p>
+
+
+Desconecte o core1-campusX dende o resto da rede:
+
+
+
+</p><pre class="listing tilde"><code>&gt; enable
+# configure terminal
+(config)# interface range fastethernet 0/1-2
+(config-if)# shutdown
+(config-if)# end
+#</code>
+</pre><ul><br></ul>
+
+Mentras está desconectado do resto, verifique o estado do spanning tree nos outros switches.
+
+<p></p><p>
+
+</p>
+<li style="margin-left:20px">Cal switch&nbsp;<span style="text-align: justify;">é</span>&nbsp;o raíz agora?
+<br><br>Pois agora existen<b> 2 root switch</b>, xa que agora os 2 edificios están aillados entre si, tal que <b>para o Edificio1 o root switch é o dist1-b1-campusX</b> e <b>para o Edificio2 o root switch é o dist1-b2-campusX</b>.&nbsp;</li></ul><ul>
+
+<li style="margin-left:20px">Verifique o rol e o estado dos portos.<br><br>
+
+Agora segue acontecendo o mesmo que antes. Así, no edge1-b1 o porto Fa0/14 segue en estado Forwarding e o Fa0/15 en estado Blocking, e igual no edge1-b2</li><ul> 
+<br>
+</ul><li style="margin-left:20px">Verifique a conectividade co ping.<br><br>
+
+Agora soamente existe conectividades entre os hosts de cada Edificio, non existindo conectividade entre os 2 edificios.</li><p></p>
+<p>Reconecte o core1-campusX:
+</p><pre class="listing tilde"><code>
+&gt; enable
+# configure terminal
+(config)# interface range fastethernet 0/1-2
+(config-if)# no shutdown
+(config-if)# end
+#
+</code></pre>
+
+
+<p>Que pasa no spanning tree cando o switch volve a estar en liña?&nbsp;</p><p>Pois voltamos á situación de partida antes de desconectar este switch.</p><p><span class="line"></span></p>
+<a class="target" name="ap%C3%A9ndicea-configuraciondespanningtree">&nbsp;</a><a class="target" name="laboratoriodespanningtreeprotocol/ap%C3%A9ndicea-configuraciondespanningtree">&nbsp;</a><a class="target" name="toc1.7">&nbsp;</a><h2>Apéndice A - Configuracion de Spanning Tree</h2>
+<p>
+
+
+T<span style="text-align: center; background-color: rgb(255, 255, 255);">áboa</span>&nbsp;de prioridade para cada switch
+</p><div class="table"><table class="table"><tbody><tr><th style="text-align:left">  <strong class="asterisk">Prioridade</strong> </th><th style="text-align:left"> <strong class="asterisk">Descrición</strong> </th><th style="text-align:left"> <strong class="asterisk">Notas</strong>                                                                                                                                                                                                                                           </th></tr>
+<tr><td style="text-align:left">  0 </td><td style="text-align:left"> Switch de núcleo </td><td style="text-align:left"> Para o switch (core1-campusX)                                                                                                                                                                                                                       </td></tr>
+<tr><td style="text-align:left">  4096 </td><td style="text-align:left"> Switch de núcleo redundante </td><td style="text-align:left"> Para casos onde temos un 2do swtich de núcleo  (redundancia)                                                                         </td></tr>
+<tr><td style="text-align:left">  8192 </td><td style="text-align:left"> Reservado </td><td style="text-align:left">  </td></tr>
+<tr><td style="text-align:left">  12288 </td><td style="text-align:left"> Distribucion no<br>edificio </td><td style="text-align:left"> (dist1-b1-campusX; dist1-b2-campusX)                                                                                                                                                                                                                </td></tr>
+<tr><td style="text-align:left">  16384 </td><td style="text-align:left"> Distribucion redundante no<br>edificio </td><td style="text-align:left"> Para casos onde temos un switch redundante para a distribución do edificio                                                                                                                                                                                    </td></tr>
+<tr><td style="text-align:left">  20480 </td><td style="text-align:left"> Backbone secundario </td><td style="text-align:left"> Este&nbsp;<span style="text-align: justify;">é&nbsp;</span>un complexo de edificios, onde hai backbones de edificios separados (secundarios) que terminan no backbone do complexo.                                                                                                                     </td></tr>
+<tr><td style="text-align:left">  24576 </td><td style="text-align:left"> Switches de acceso </td><td style="text-align:left"> Esta&nbsp;<span style="text-align: justify;">é</span>&nbsp;a prioridade normal acceso-dispositivo  (edge1-b1-campusX; edge2-b1-campusX; edge1-b2-campusX; edge2-b2-campusX)                                                                                                                                    </td></tr>
+<tr><td style="text-align:left">  28672 </td><td style="text-align:left"> Switches de acceso </td><td style="text-align:left"> Usado por switches de acceso que est<span style="background-color: rgb(255, 255, 255);">án&nbsp;</span>en cadea dende outro switch de acceso. Usamos esta terminoloxía en vez de “switch de agregación” porque e difícil de definir cando un switch deixa de ser un switch de acceso para volverse un switch de agregación.   </td></tr>
+<tr><td style="text-align:left">  32768 </td><td style="text-align:left"> Default </td><td style="text-align:left">Dispositivos de rede non administrables deberán ter esa prioridade.                                                                                                                                                                                                </td></tr>
+</tbody></table></div>
+
+<p></p>
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="js/markdeep.min.js" charset="utf-8"></script><script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
