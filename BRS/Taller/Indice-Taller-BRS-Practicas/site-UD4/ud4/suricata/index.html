@@ -1,0 +1,1630 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../wazuh/">
+      
+      
+        <link rel="next" href="../viper/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
+    
+    
+      
+        <title>Suricata - Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../css/print.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#suricata" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../.." title="Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas" class="md-header__button md-logo" aria-label="Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Suricata
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../clasificacion-ferramentas/" class="md-tabs__link">
+          
+  
+  Prácticas Taller UD4
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas" class="md-nav__button md-logo" aria-label="Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Bastionado de redes e sistemas - Prácticas Taller UD4 - Monitorización de redes e sistemas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    De interese
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD4
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD4
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clasificacion-ferramentas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clasificación ferramentas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    NMS/ITIM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            NMS/ITIM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nagios/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nagios
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    SIEM/IDS/IPS
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            SIEM/IDS/IPS
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wazuh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wazuh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    IDS/IPS
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            IDS/IPS
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Suricata
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Suricata
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquinas-virtuais-virtualbox-debian-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquinas virtuais (VirtualBox) Debian 12
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vm1-configuracion-de-suricata" class="md-nav__link">
+    <span class="md-ellipsis">
+      VM1: Configuración de Suricata
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagrama-de-funcionamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagrama de funcionamento
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suricata-regras-personalizadas-e-probas-de-deteccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Suricata: Regras Personalizadas e Probas de Detección
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suricata: Regras Personalizadas e Probas de Detección">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-esenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos Esenciais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pasos Esenciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-evitar-sobrescricion-de-regras" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Evitar sobrescrición de regras
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-lanza-suricata-en-modo-manual" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Lanza Suricata en modo manual
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-verifica-as-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Verifica as alertas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nota-sobre-regras-e-home_net" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nota sobre regras e HOME_NET
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicacion-da-estrutura-dunha-regra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicación da estrutura dunha regra
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-1-suricata-como-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo 1: Suricata como IDS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 1: Suricata como IDS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vm2-xeracion-dunha-alerta-en-vm1-suricata" class="md-nav__link">
+    <span class="md-ellipsis">
+      VM2: Xeración dunha alerta en VM1 (Suricata)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-2-suricata-como-ips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo 2: Suricata como IPS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 2: Suricata como IPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#podese-reaccionar-desde-vm1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pódese reaccionar desde VM1?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion-adicional-importante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión adicional importante:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Bastionado e simulación de ataques (Red Team)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Bastionado e simulación de ataques (Red Team)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viper/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VIPER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquinas-virtuais-virtualbox-debian-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquinas virtuais (VirtualBox) Debian 12
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vm1-configuracion-de-suricata" class="md-nav__link">
+    <span class="md-ellipsis">
+      VM1: Configuración de Suricata
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagrama-de-funcionamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagrama de funcionamento
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suricata-regras-personalizadas-e-probas-de-deteccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Suricata: Regras Personalizadas e Probas de Detección
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suricata: Regras Personalizadas e Probas de Detección">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-esenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos Esenciais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pasos Esenciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-evitar-sobrescricion-de-regras" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Evitar sobrescrición de regras
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-lanza-suricata-en-modo-manual" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Lanza Suricata en modo manual
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-verifica-as-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Verifica as alertas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nota-sobre-regras-e-home_net" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nota sobre regras e HOME_NET
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicacion-da-estrutura-dunha-regra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicación da estrutura dunha regra
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-1-suricata-como-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo 1: Suricata como IDS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 1: Suricata como IDS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vm2-xeracion-dunha-alerta-en-vm1-suricata" class="md-nav__link">
+    <span class="md-ellipsis">
+      VM2: Xeración dunha alerta en VM1 (Suricata)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-2-suricata-como-ips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo 2: Suricata como IPS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 2: Suricata como IPS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#podese-reaccionar-desde-vm1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pódese reaccionar desde VM1?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion-adicional-importante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión adicional importante:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="suricata">Suricata</h1>
+<h2 id="introducion">Introdución</h2>
+<p>Neste documento describirase como implementar e integrar Suricata nun escenario con máquinas virtuais usando VirtualBox. Este escenario permite a detección, análise, e visualización de tráficos de rede sospeitosos con Suricata incluíndo accións automáticas en resposta a alertas críticas.</p>
+<div class="admonition tip">
+<p class="admonition-title">Que son IDS, IPS e resposta a incidentes?</p>
+<ul>
+<li>
+<p><strong>IDS (Intrusion Detection System):</strong>
+  Un sistema de detección de intrusións que monitorea o tráfico de rede ou os eventos dun sistema para identificar actividades maliciosas ou anomalías.<br />
+<strong>Tipos de IDS:</strong></p>
+<ul>
+<li><strong>NIDS (Network IDS):</strong> Monitoriza o tráfico da rede en tempo real.<ul>
+<li><strong>Suricata</strong> → Motor de detección baseado en sinaturas (modo IDS por defecto).</li>
+<li><strong>Zeek</strong> → Analiza e rexistra o comportamento da rede.</li>
+</ul>
+</li>
+<li><strong>HIDS (Host IDS):</strong> Monitoriza eventos en dispositivos individuais (hosts).<ul>
+<li><strong>Elastic Agent (Fleet)</strong> → Analiza rexistros do sistema e eventos de seguridade nos hosts.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>IPS (Intrusion Prevention System):</strong>
+  Un sistema que <strong>non só detecta ataques (como un IDS), senón que tamén pode bloquear ou mitigar automaticamente as ameazas</strong> antes de que afecten o sistema.<br />
+<strong>Tipos de IPS:</strong>  </p>
+<ul>
+<li><strong>NIPS (Network-based IPS):</strong> Monitoriza e bloquea tráfico malicioso na rede antes de que chegue aos hosts.  <ul>
+<li><strong>Suricata</strong> en modo inline (AF_PACKET ou NFQUEUE)  </li>
+<li><strong>Snort</strong> configurado como IPS  </li>
+</ul>
+</li>
+<li><strong>HIPS (Host-based IPS):</strong> Funciona directamente en dispositivos finais (hosts), bloqueando procesos ou conexións perigosas.  <ul>
+<li><strong>Windows Defender</strong> con políticas de prevención  </li>
+<li><strong><a href="https://github.com/ricardofc/repoEDU-CCbySA/blob/main/BRS/Taller/Mecanismos-de-Control/Firewall/Layer4/1-Practica-BRS-Firewall-iptables_pageNumbers.pdf" target="_blank">iptables</a></strong> con regras de detección automatizadas  </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Diferencias entre IDS e IPS:</strong><br />
+- <strong>IDS:</strong> Só detecta ataques e xera alertas, pero <strong>non bloquea o tráfico</strong>.<br />
+- <strong>IPS:</strong> Detecta e <strong>bloquea tráfico malicioso en tempo real</strong>.  </p>
+<p><strong>Suricata pode funcionar como IDS ou IPS segundo a súa configuración:</strong><br />
+- Por defecto actúa como <strong>IDS</strong> (modo pasivo, só xera alertas).<br />
+- En modo inline (por exemplo con <code>NFQUEUE</code>), pode funcionar como <strong>IPS</strong>, bloqueando tráfico malicioso segundo as regras configuradas.  </p>
+</div>
+<hr />
+<h2 id="escenario">Escenario</h2>
+<h3 id="maquinas-virtuais-virtualbox-debian-12">Máquinas virtuais (VirtualBox) Debian 12</h3>
+<ul>
+<li><strong>VM1:</strong> Suricata (Detector de tráfico e xerador de logs)  </li>
+<li><strong>VM2:</strong> Escaneo de portos mediante nmap</li>
+<li><strong>Rede:</strong>  <ul>
+<li>NIC1 (enp0s3): NAT (conectividade á Internet)  </li>
+<li>NIC2 (enp0s8): Rede Interna "intnet" para comunicación entre VM1 e VM2 → 192.168.120.0/24  </li>
+<li>VM1 (Suricata): IP estática <code>192.168.120.100/24</code>  </li>
+<li>VM2 (nmap): IP estática <code>192.168.120.200/24</code>  </li>
+</ul>
+</li>
+<li><strong>CPU:</strong> 2  </li>
+<li><strong>RAM:</strong> 4GB  </li>
+<li><strong>Disco duro:</strong> 20GB dinámico</li>
+</ul>
+<hr />
+<h2 id="vm1-configuracion-de-suricata">VM1: Configuración de Suricata</h2>
+<ul>
+<li>
+<p><strong>Configuración básica:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>apt<span class="w"> </span>install<span class="w"> </span>suricata<span class="w"> </span>-y
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>suricata-update
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>ls<span class="w"> </span>/var/lib/suricata/rules/
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>sed<span class="w"> </span>-E<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|(default-rule-path:).*|\1 /var/lib/suricata/rules|&#39;</span><span class="w"> </span>/etc/suricata/suricata.yaml
+</span></code></pre></div>
+Editar en <code>/etc/suricata/suricata.yaml</code>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>af-packet:
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>-<span class="w"> </span>interface:<span class="w"> </span>enp0s8<span class="w">  </span><span class="c1"># substitúe &quot;eth0&quot; pola interface correcta</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>threads:<span class="w"> </span>auto
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span>cluster-id:<span class="w"> </span><span class="m">99</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span>cluster-type:<span class="w"> </span>cluster_flow
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span>defrag:<span class="w"> </span>yes
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">#Activar IPS en Suricata</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>action-order:
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span>-<span class="w"> </span>pass<span class="w">   </span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span>-<span class="w"> </span>drop
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span>-<span class="w"> </span>reject
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span>-<span class="w"> </span>alert
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Configuración de rede:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pkill<span class="w"> </span>NetworkManager
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ip<span class="w"> </span>addr<span class="w"> </span>add<span class="w"> </span><span class="m">192</span>.168.120.100/24<span class="w"> </span>dev<span class="w"> </span>enp0s8
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>enp0s8<span class="w"> </span>up
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Logs:</strong>
+Executar noutra consola de <code>root</code>:<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>tail<span class="w"> </span>-f<span class="w"> </span>/var/log/suricata/fast.log
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Reiniciar Suricata para aplicar os cambios</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>systemctl<span class="w"> </span>restart<span class="w"> </span>suricata<span class="w"> </span><span class="o">||</span><span class="w"> </span>suricata<span class="w"> </span>-c<span class="w"> </span>/etc/suricata/suricata.yaml<span class="w"> </span>-i<span class="w"> </span>enp0s8
+</span></code></pre></div></p>
+</li>
+</ul>
+<hr />
+<h2 id="diagrama-de-funcionamento">Diagrama de funcionamento</h2>
+<!--
+<pre class="mermaid"><code>graph TD
+    T1["&lt;b&gt;VM2:&lt;/b&gt; Atacante"]:::etiqueta
+    T2["&lt;b&gt;VM1:&lt;/b&gt; Suricata IDS/IPS"]:::etiqueta
+
+    A[&lt;b&gt;Envía tráfico sospeitoso&lt;/b&gt;&lt;br&gt;nmap]
+    A --&gt; B[&lt;b&gt;Suricata&lt;/b&gt;&lt;br&gt;Analiza tráfico na rede interna]
+    B --&gt; C[&lt;b&gt;Regras activadas&lt;/b&gt;&lt;br&gt;alert/drop]
+    C --&gt; D[&lt;b&gt;fast.log&lt;/b&gt;&lt;br&gt;rexistro de alertas]
+    C --&gt; E[&lt;b&gt;Accións automáticas IPS&lt;/b&gt;&lt;br&gt;drop con NFQUEUE de iptables]
+
+    %% Posicionamento visual das etiquetas (opcional)
+    T1 --&gt; A
+    T2 --&gt; B
+
+    %% Estilos
+    classDef atacante fill:red,stroke:#cc0000,stroke-width:2px;
+    classDef suricata fill:#eaf4ff,stroke:#1e90ff,stroke-width:2px;
+    classDef etiqueta fill:#ffffff,stroke:none,font-weight:bold;
+
+    class A atacante
+    class B,C,D,E suricata
+    class T1,T2 etiqueta</code></pre>
+-->
+
+<h2 id="_1"><img alt="suricata" src="../images/suricata.png" width="70%" /></h2>
+<h2 id="suricata-regras-personalizadas-e-probas-de-deteccion">Suricata: Regras Personalizadas e Probas de Detección</h2>
+<p>Esta sección recolle os pasos e boas prácticas para traballar con regras personalizadas en Suricata, evitando sobrescricións por parte de <code>suricata-update</code>, e asegurando a correcta detección de eventos durante as probas de seguridade.</p>
+<hr />
+<h3 id="obxectivo">Obxectivo</h3>
+<ul>
+<li>Configurar regras personalizadas sen que se borren ao actualizar.</li>
+<li>Verificar que as regras se cargan e funcionan correctamente.</li>
+</ul>
+<hr />
+<h3 id="pasos-esenciais">Pasos Esenciais</h3>
+<h4 id="1-evitar-sobrescricion-de-regras">1. Evitar sobrescrición de regras</h4>
+<p>O ficheiro <code>suricata.rules</code> pode ser sobrescrito por <code>suricata-update</code>. Para evitar isto:</p>
+<ul>
+<li>Crea o teu ficheiro personalizado: <code>/var/lib/suricata/rules/custom.rules</code></li>
+<li>Define no <code>suricata.yaml</code>:
+  <div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">rule-files</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">suricata.rules</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom.rules</span>
+</span></code></pre></div></li>
+<li>Asegúrate de que <code>custom.rules</code> vai <strong>despois</strong> de <code>suricata.rules</code>.</li>
+</ul>
+<h4 id="2-lanza-suricata-en-modo-manual">2. Lanza Suricata en modo manual</h4>
+<p>Desactiva o servizo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>systemctl<span class="w"> </span>stop<span class="w"> </span>suricata
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>systemctl<span class="w"> </span>status<span class="w"> </span>suricata<span class="w"> </span>--no-pager
+</span></code></pre></div></p>
+<p>Lanza Suricata directamente sobre a interface:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>suricata<span class="w"> </span>-i<span class="w"> </span>enp0s8<span class="w"> </span>-c<span class="w"> </span>/etc/suricata/suricata.yaml<span class="w"> </span>-v
+</span></code></pre></div></p>
+<h4 id="3-verifica-as-alertas">3. Verifica as alertas</h4>
+<p>Noutro terminal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tail<span class="w"> </span>-f<span class="w"> </span>/var/log/suricata/fast.log
+</span></code></pre></div></p>
+<p>Verifica que aparecen alertas no log (<code>fast.log</code>) cando executas accións dende outras máquinas.</p>
+<hr />
+<h3 id="nota-sobre-regras-e-home_net">Nota sobre regras e HOME_NET</h3>
+<p>Moitas regras usan variables como <code>$HOME_NET</code>, definidas en <code>suricata.yaml</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">vars</span><span class="p">:</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">address-groups</span><span class="p">:</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">HOME_NET</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">192.168.120.0/24</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p>Se estás traballando nun contorno <strong>de laboratorio</strong> onde o tráfico é <strong>interno</strong>, e non se detectan alertas, pode ser útil crear regras máis abertas:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>alert tcp any any -&gt; any any (msg:&quot;NMAP Scan Detectado&quot;; flags:S; threshold:type threshold, track by_src, count 5, seconds 60; sid:1000002; rev:1;)
+</span></code></pre></div>
+<p>En vez de:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>alert tcp any any -&gt; $HOME_NET any (msg:&quot;NMAP Scan Detectado&quot;; flags:S; threshold:type threshold, track by_src, count 5, seconds 60; sid:1000002; rev:1;)
+</span></code></pre></div></p>
+<p>A primeira regra captura escaneos en <strong>calquera dirección</strong>, mentres que a segunda só o fará se o destino é a rede definida como <code>$HOME_NET</code>.</p>
+<hr />
+<h3 id="explicacion-da-estrutura-dunha-regra">Explicación da estrutura dunha regra</h3>
+<p>Exemplo:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>alert tcp any any -&gt; $HOME_NET any (msg:&quot;NMAP Scan Detectado&quot;; flags:S; threshold:type threshold, track by_src, count 5, seconds 60; sid:1000002; rev:1;)
+</span></code></pre></div></p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alert</code></td>
+<td>Acción: xerar unha alerta</td>
+</tr>
+<tr>
+<td><code>tcp</code></td>
+<td>Protocolo TCP (podería ser udp, icmp...)</td>
+</tr>
+<tr>
+<td><code>any</code> (IP orixe)</td>
+<td>Calquera IP de orixe</td>
+</tr>
+<tr>
+<td><code>any</code> (porto orixe)</td>
+<td>Calquera porto de orixe</td>
+</tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td>Dirección do fluxo do tráfico</td>
+</tr>
+<tr>
+<td><code>$HOME_NET</code> (IP dest.)</td>
+<td>Rede interna definida no <code>suricata.yaml</code></td>
+</tr>
+<tr>
+<td><code>any</code> (porto destino)</td>
+<td>Calquera porto de destino</td>
+</tr>
+<tr>
+<td><code>msg:"..."</code></td>
+<td>Mensaxe da alerta</td>
+</tr>
+<tr>
+<td><code>flags:S</code></td>
+<td>Coincidencia con paquetes SYN (inicio de conexión TCP)</td>
+</tr>
+<tr>
+<td><code>threshold</code></td>
+<td>Regras de frecuencia: se detecta 5 SYNs en 60 segundos do mesmo orixe, lanza alerta</td>
+</tr>
+<tr>
+<td><code>sid:1000002</code></td>
+<td>ID único da regra (Suricata ID)</td>
+</tr>
+<tr>
+<td><code>rev:1</code></td>
+<td>Revisión da regra</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="conclusion">Conclusión</h3>
+<p>Unha correcta definición de regras, xestión do seu ficheiro, e interpretación da rede (<code>$HOME_NET</code>) é esencial para que Suricata funcione correctamente.</p>
+<p>A combinación de <code>suricata -i ...</code> + <code>tail -f fast.log</code> é clave nas fases de desenvolvemento e probas.</p>
+<blockquote>
+<p>Unha vez verificado que todo funciona correctamente, podes volver a arrancar o servizo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>systemctl<span class="w"> </span>start<span class="w"> </span>suricata
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>systemctl<span class="w"> </span>status<span class="w"> </span>suricata<span class="w"> </span>--no-pager
+</span></code></pre></div></p>
+</blockquote>
+<hr />
+<h2 id="exemplo-1-suricata-como-ids">Exemplo 1: Suricata como IDS</h2>
+<p>Para ilustrar este proceso, suporemos que Suricata en VM1 detecta un escaneo de portos realizado desde VM2 (a cal simula unha máquina externa).</p>
+<h3 id="vm2-xeracion-dunha-alerta-en-vm1-suricata">VM2: Xeración dunha alerta en VM1 (Suricata)</h3>
+<p>Executa os seguintes comandos dende VM2 para simular un escaneo de portos:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>nmap
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>pkill<span class="w"> </span>NetworkManager
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>ip<span class="w"> </span>addr<span class="w"> </span>add<span class="w"> </span><span class="m">192</span>.168.120.200/24<span class="w"> </span>dev<span class="w"> </span>enp0s8
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>enp0s8<span class="w"> </span>up
+</span></code></pre></div></p>
+<div class="admonition info">
+<p class="admonition-title">VM1: Regras que detectan nmap</p>
+<p><strong>Suricata está cargando regras que detectan <code>nmap</code>, pero están desactivadas</strong> (comentadas con <code>#</code>). As regras comentadas non se aplican, polo que hai que activalas:  </p>
+<p><strong>1. Definir <code>$HOME_NET</code> en <code>/etc/suricata/suricata.yaml</code>:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>HOME_NET:<span class="w"> </span><span class="s2">&quot;[192.168.120.0/24]&quot;</span>
+</span></code></pre></div></p>
+<p><strong>2. Regras nmap:</strong>
+<br></p>
+<p><strong>OPCIÓN 1: Editar o ficheiro de regras <code>suricata.rules</code></strong></p>
+<p>Abre o ficheiro de regras para edición <code>/var/lib/suricata/rules/suricata.rules</code>.<br />
+Busca e descomenta as liñas que teñen que ver con <code>NMAP</code> ou <code>SCAN</code>. As máis importantes son:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="l l-Scalar l-Scalar-Plain">alert tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;ET SCAN NMAP -sS window 2048&quot;; fragbits:!D; dsize:0; flags:S,12; ack:0; window:2048; threshold</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type both, track by_dst, count 1, seconds 60; classtype:attempted-recon; sid:2000537; rev:8;)</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="l l-Scalar l-Scalar-Plain">alert ip $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;ET SCAN NMAP -sO&quot;; dsize:0; ip_proto:21; threshold</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type both, track by_dst, count 1, seconds 60; classtype:attempted-recon; sid:2000536; rev:7;)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="l l-Scalar l-Scalar-Plain">alert tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;ET SCAN NMAP -sA (1)&quot;; fragbits:!D; dsize:0; flags:A,12; window:1024; threshold</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type both, track by_dst, count 1, seconds 60; classtype:attempted-recon; sid:2000538; rev:8;)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="l l-Scalar l-Scalar-Plain">alert tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;ET SCAN NMAP -f -sF&quot;; fragbits:!M; dsize:0; flags:F,12; ack:0; window:2048; threshold</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type both, track by_dst, count 1, seconds 60; classtype:attempted-recon; sid:2000543; rev:7;)</span>
+</span></code></pre></div>
+<p>Asegúrate de que estas liñas <strong>NON teñen <code>#</code> diante</strong>.</p>
+<p>Podes realizar os seguintes comandos para a edición automática:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="w">   </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>moreutils
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">   </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;et scan nmap&#39;</span><span class="w"> </span>/var/lib/suricata/rules/suricata.rules<span class="w">  </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s|^# | |&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sponge<span class="w"> </span>/var/lib/suricata/rules/suricata.rules
+</span></code></pre></div></p>
+<div class="admonition warning">
+<p class="admonition-title"><code>suricata-update</code> sobreescribe o ficheiro <code>/var/lib/suricata/rules/suricata.rules</code></p>
+</div>
+<p><br></p>
+<p><strong>OPCIÓN 2: Xerar o ficheiro <code>custom.rules</code></strong>  </p>
+<ul>
+<li>Define no <code>suricata.yaml</code>:
+  <div class="language-yaml highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">rule-files</span><span class="p">:</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">suricata.rules</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom.rules</span>
+</span></code></pre></div></li>
+<li>
+<p>Asegúrate de que <code>custom.rules</code> vai <strong>despois</strong> de <code>suricata.rules</code>.</p>
+</li>
+<li>
+<p>Crea o teu ficheiro personalizado <code>/var/lib/suricata/rules/custom.rules</code> co seguinte contido:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># alert tcp any any -&gt; any any (msg:&quot;NMAP Scan Detectado&quot;; flags:S; threshold:type threshold, track by_src, count 5, seconds 60; sid:1000002; rev:1;)</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>alert<span class="w"> </span>tcp<span class="w"> </span>any<span class="w"> </span>any<span class="w"> </span>-&gt;<span class="w"> </span><span class="nv">$HOME_NET</span><span class="w"> </span>any<span class="w"> </span><span class="o">(</span>msg:<span class="s2">&quot;NMAP Scan Detectado&quot;</span><span class="p">;</span><span class="w"> </span>flags:S<span class="p">;</span><span class="w"> </span>threshold:type<span class="w"> </span>threshold,<span class="w"> </span>track<span class="w"> </span>by_src,<span class="w"> </span>count<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>seconds<span class="w"> </span><span class="m">60</span><span class="p">;</span><span class="w"> </span>sid:1000002<span class="p">;</span><span class="w"> </span>rev:1<span class="p">;</span><span class="o">)</span>
+</span></code></pre></div></p>
+</li>
+</ul>
+<p><strong>3. Actualizar as regras de Suricata e reiniciar</strong></p>
+<p>Executa unicamente o seguinte comando se estás a empregar a anterior <strong>OPCIÓN 2</strong>: 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>suricata-update
+</span></code></pre></div></p>
+<p>Independentemente da opción escollida executa:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>systemctl<span class="w"> </span>stop<span class="w"> </span>suricata
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>systemctl<span class="w"> </span>status<span class="w"> </span>suricata<span class="w"> </span>--no-pager
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>suricata<span class="w"> </span>-c<span class="w"> </span>/etc/suricata/suricata.yaml<span class="w"> </span>-i<span class="w"> </span>enp0s8
+</span></code></pre></div>
+<p>Suricata detectará isto e rexistrará a alerta no ficheiro <code>/var/log/suricata/fast.log</code>.</p>
+</div>
+<p><strong>VM2</strong><br />
+Executa:<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>nmap<span class="w"> </span>-sS<span class="w"> </span><span class="m">192</span>.168.120.100
+</span></code></pre></div></p>
+<p><strong>VM1</strong>  </p>
+<ul>
+<li>Agora Suricata debería detectar o escaneo de <code>nmap</code> (<code>-sS</code>) e rexistralo en <code>fast.log</code> e <code>eve.json</code>.  </li>
+<li>Tamén deberías ver as regras aplicadas en <code>suricata.log</code> (verificar que cargou as regras correctamente).</li>
+<li>Agora que están funcionando as novas regras executa:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>pkill<span class="w"> </span>suricata
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>systemctl<span class="w"> </span>start<span class="w"> </span>suricata
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>systemctl<span class="w"> </span>status<span class="w"> </span>suricata<span class="w"> </span>--no-pager
+</span></code></pre></div></li>
+</ul>
+<h2 id="exemplo-2-suricata-como-ips">Exemplo 2: Suricata como IPS</h2>
+<h3 id="podese-reaccionar-desde-vm1">Pódese reaccionar desde VM1?</h3>
+<div class="admonition tip">
+<p class="admonition-title">NIDS vs NIPS</p>
+<ol>
+<li>
+<p><strong>Detección ≠ Prevención (por defecto)</strong><br />
+   Suricata é por defecto un <strong>NIDS</strong> (sistema de detección), non <strong>NIPS</strong> (sistema de prevención). Aínda que detecta o tráfico, <strong>non o bloquea</strong> salvo que estea funcionando en modo <strong>inline</strong>.</p>
+</li>
+<li>
+<p><strong>É Suricata un NIDS ou NIPS na túa configuración?</strong>
+   Para que <code>drop</code> funcione, Suricata <strong>ten que estar en modo inline (IPS)</strong>. Para iso, debe estar nunha interface con soporte a <strong>NFQUEUE</strong> (en Linux) e cunha regra de iptables que reenvíe paquetes a esa cola.</p>
+</li>
+</ol>
+</div>
+<p>Si, configurando Suricata en modo IPS pode bloquear paquetes directamente, permitindo reacción inmediata:</p>
+<ul>
+<li>
+<p><strong>Activar IPS en Suricata:</strong></p>
+<ol>
+<li>
+<p>Engadir regra de <code>iptables</code> para reenviar os paquetes ao motor de <code>suricata</code> para que poida bloquear:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>iptables
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>iptables<span class="w"> </span>-L<span class="w"> </span>-v<span class="w"> </span>-n
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>iptables<span class="w"> </span>-I<span class="w"> </span>INPUT<span class="w"> </span>-j<span class="w"> </span>NFQUEUE<span class="w"> </span>--queue-num<span class="w"> </span><span class="m">0</span><span class="w"> </span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>iptables<span class="w"> </span>-I<span class="w"> </span>FORWARD<span class="w"> </span>-j<span class="w"> </span>NFQUEUE<span class="w"> </span>--queue-num<span class="w"> </span><span class="m">0</span><span class="w"> </span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>iptables<span class="w"> </span>-I<span class="w"> </span>OUTPUT<span class="w"> </span>-j<span class="w"> </span>NFQUEUE<span class="w"> </span>--queue-num<span class="w"> </span><span class="m">0</span><span class="w"> </span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>iptables<span class="w"> </span>-L<span class="w"> </span>-v<span class="w"> </span>-n
+</span></code></pre></div>
+<code>A opción --queue-num 0 debe coincidir co que indicarás ao lanzar Suricata.</code> 
+Facer que as regras <code>iptables</code> sexan persistentes tras un reinicio:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>iptables-persistent
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>netfilter-persistent<span class="w"> </span>save
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Asegurar que as regras relevantes en <code>custom.rules</code> din <code>drop</code> e non any. Por exemplo:
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>drop tcp any any -&gt; any any (msg:&quot;NMAP Scan Detectado&quot;; sid:1000002; ...)
+</span></code></pre></div>
+   Así, podes executar o comando:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1">#sed -i &#39;s|^alert|drop|&#39; /var/lib/suricata/rules/custom.rules</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|^alert|#alert|&#39;</span><span class="w"> </span>/var/lib/suricata/rules/custom.rules
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="nb">echo</span><span class="w"> </span><span class="err">&#39;</span>drop<span class="w"> </span>tcp<span class="w"> </span>any<span class="w"> </span>any<span class="w"> </span>-&gt;<span class="w"> </span><span class="nv">$HOME_NET</span><span class="w"> </span>any<span class="w"> </span><span class="o">(</span>flags:S<span class="p">;</span><span class="w"> </span>msg:<span class="s2">&quot;Bloqueo total de SYN&quot;</span><span class="p">;</span><span class="w"> </span>sid:1000003<span class="p">;</span><span class="w"> </span>rev:1<span class="p">;</span><span class="o">)</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>&gt;&gt;<span class="w"> </span>/var/lib/suricata/rules/custom.rules
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Asegúrate de que <code>action-order</code> está correctamente configurado no <code>suricata.yaml</code>:
+   <div class="language-yaml highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nt">action-order</span><span class="p">:</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">drop</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reject</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">alert</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Lanzar Suricata así:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>systemctl<span class="w"> </span>stop<span class="w"> </span>suricata
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>systemctl<span class="w"> </span>status<span class="w"> </span>suricata<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>suricata<span class="w"> </span>-c<span class="w"> </span>/etc/suricata/suricata.yaml<span class="w"> </span>-q<span class="w"> </span><span class="m">0</span><span class="w"> </span>-i<span class="w"> </span>enp0s8
+</span></code></pre></div></p>
+</li>
+</ol>
+<p>Agora Suricata bloqueará automaticamente tráfico malicioso segundo as regras configuradas. Así, <strong>se executamos de novo o comando nmap en VM2 deberían filtrarse os portos</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>nmap<span class="w"> </span>-sS<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>Starting<span class="w"> </span>Nmap<span class="w"> </span><span class="m">7</span>.93<span class="w"> </span><span class="o">(</span><span class="w"> </span>https://nmap.org<span class="w"> </span><span class="o">)</span><span class="w"> </span>at<span class="w"> </span><span class="m">2025</span>-04-11<span class="w"> </span><span class="m">00</span>:13<span class="w"> </span>CEST
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>Nmap<span class="w"> </span>scan<span class="w"> </span>report<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="m">192</span>.168.120.100<span class="w"> </span><span class="o">(</span><span class="m">192</span>.168.120.100<span class="o">)</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>Host<span class="w"> </span>is<span class="w"> </span>up<span class="w"> </span><span class="o">(</span><span class="m">0</span>.0011s<span class="w"> </span>latency<span class="o">)</span>.
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>All<span class="w"> </span><span class="m">1000</span><span class="w"> </span>scanned<span class="w"> </span>ports<span class="w"> </span>on<span class="w"> </span><span class="m">192</span>.168.120.100<span class="w"> </span><span class="o">(</span><span class="m">192</span>.168.120.100<span class="o">)</span><span class="w"> </span>are<span class="w"> </span><span class="k">in</span><span class="w"> </span>ignored<span class="w"> </span>states.
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>Not<span class="w"> </span>shown:<span class="w"> </span><span class="m">1000</span><span class="w"> </span>filtered<span class="w"> </span>tcp<span class="w"> </span>ports<span class="w"> </span><span class="o">(</span>no-response<span class="o">)</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>MAC<span class="w"> </span>Address:<span class="w"> </span><span class="m">08</span>:00:27:F7:D7:80<span class="w"> </span><span class="o">(</span>Oracle<span class="w"> </span>VirtualBox<span class="w"> </span>virtual<span class="w"> </span>NIC<span class="o">)</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>Nmap<span class="w"> </span><span class="k">done</span>:<span class="w"> </span><span class="m">1</span><span class="w"> </span>IP<span class="w"> </span>address<span class="w"> </span><span class="o">(</span><span class="m">1</span><span class="w"> </span>host<span class="w"> </span>up<span class="o">)</span><span class="w"> </span>scanned<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">22</span>.05<span class="w"> </span>seconds
+</span></code></pre></div>
+E <strong>non se filtrará</strong> tráfico non malicioso, como o comando <strong>ping</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>ping<span class="w"> </span>-c2<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>PING<span class="w"> </span><span class="m">192</span>.168.120.100<span class="w"> </span><span class="o">(</span><span class="m">192</span>.168.120.100<span class="o">)</span><span class="w"> </span><span class="m">56</span><span class="o">(</span><span class="m">84</span><span class="o">)</span><span class="w"> </span>bytes<span class="w"> </span>of<span class="w"> </span>data.
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.120.100:<span class="w"> </span><span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">ttl</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">time</span><span class="o">=</span><span class="m">1</span>.05<span class="w"> </span>ms
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="m">64</span><span class="w"> </span>bytes<span class="w"> </span>from<span class="w"> </span><span class="m">192</span>.168.120.100:<span class="w"> </span><span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">ttl</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">time</span><span class="o">=</span><span class="m">1</span>.22<span class="w"> </span>ms
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>---<span class="w"> </span><span class="m">192</span>.168.120.100<span class="w"> </span>ping<span class="w"> </span>statistics<span class="w"> </span>---
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="m">2</span><span class="w"> </span>packets<span class="w"> </span>transmitted,<span class="w"> </span><span class="m">2</span><span class="w"> </span>received,<span class="w"> </span><span class="m">0</span>%<span class="w"> </span>packet<span class="w"> </span>loss,<span class="w"> </span><span class="nb">time</span><span class="w"> </span>1001ms
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>rtt<span class="w"> </span>min/avg/max/mdev<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>.045/1.130/1.216/0.085<span class="w"> </span>ms
+</span></code></pre></div></p>
+</li>
+</ul>
+<h3 id="conclusion-adicional-importante">Conclusión adicional importante:</h3>
+<ul>
+<li><strong>Si</strong>, Suricata <strong>pode reaccionar directamente desde VM1</strong>, sempre que as regras necesarias estean configuradas e activas, permitindo bloquear inmediatamente intentos coñecidos como escaneos realizados con nmap desde máquinas externas (por exemplo, VM2).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+        <script src="../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../js/opera.js"></script>
+      
+        <script src="../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

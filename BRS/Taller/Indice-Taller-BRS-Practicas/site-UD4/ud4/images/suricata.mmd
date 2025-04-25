@@ -1,0 +1,18 @@
+graph TD
+    T1["<b>VM2:</b> Atacante"]:::etiqueta
+    T2["<b>VM1:</b> Suricata IDS/IPS"]:::etiqueta
+    A[<b>Envía tráfico sospeitoso</b><br>nmap]
+    A --> B[<b>Suricata</b><br>Analiza tráfico na rede interna]
+    B --> C[<b>Regras activadas</b><br>alert/drop]
+    C --> D[<b>fast.log</b><br>rexistro de alertas]
+    C --> E[<b>Accións automáticas IPS</b><br>drop con NFQUEUE de iptables]
+    %% Posicionamento visual das etiquetas (opcional)
+    T1 --> A
+    T2 --> B
+    %% Estilos
+    classDef atacante fill:red,stroke:#cc0000,stroke-width:2px;
+    classDef suricata fill:#eaf4ff,stroke:#1e90ff,stroke-width:2px;
+    classDef etiqueta fill:#ffffff,stroke:none,font-weight:bold;
+    class A atacante
+    class B,C,D,E suricata
+    class T1,T2 etiquetav
