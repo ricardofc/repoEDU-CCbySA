@@ -1,0 +1,2152 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../practica1a-bruteforce-manual/">
+      
+      
+        <link rel="next" href="../dvwa_brute_force_report/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Con HexStrike AI - Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#practica-1b-ataque-de-forza-bruta-con-hexstrike-ai-sobre-dvwa" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web" class="md-header__button md-logo" aria-label="Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Con HexStrike AI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/hexstrike-instalacion/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../indice-practica-bruteforce-dvwa/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web" class="md-nav__button md-logo" aria-label="Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - Documentación Complementaria UD5 - O hacking ético nas aplicacións web
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ferramentas de Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Ferramentas de Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/hexstrike-instalacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HexStrike AI + Claude Code
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/claude-limits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Límites de uso de Claude
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Brute Force
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Brute Force
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indice-practica-bruteforce-dvwa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica1a-bruteforce-manual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica sen AI — Con hydra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_3" id="__nav_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Práctica con AI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Práctica con AI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Con HexStrike AI
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Con HexStrike AI
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#obxectivo-desta-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo desta práctica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parámetros do laboratorio
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-funciona-hexstrike-ai-nesta-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona HexStrike AI nesta práctica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificacion-inicial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verificación inicial
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verificación inicial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-comprobar-que-o-servidor-hexstrike-esta-en-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Comprobar que o servidor HexStrike está en execución
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comprobar-que-dvwa-esta-accesible" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Comprobar que DVWA está accesible
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-arrancar-claude-code-con-hexstrike-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Arrancar Claude Code con HexStrike MCP
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-formular-os-prompts-a-hexstrike-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como formular os prompts a HexStrike AI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-low-ataque-directo-sen-proteccions" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL LOW — Ataque directo sen proteccións
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL LOW — Ataque directo sen proteccións">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado-esperado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado esperado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-medium-adaptacion-ao-retardo-de-2-segundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL MEDIUM — Adaptación ao retardo de 2 segundos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL MEDIUM — Adaptación ao retardo de 2 segundos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-high-token-anti-csrf-renovado-por-peticion" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL HIGH — Token anti-CSRF renovado por petición
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL HIGH — Token anti-CSRF renovado por petición">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-impossible-confirmar-que-non-e-explotable" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL IMPOSSIBLE — Confirmar que non é explotable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL IMPOSSIBLE — Confirmar que non é explotable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado-esperado_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado esperado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actividade-de-consolidacion-informe-comparativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actividade de consolidación — Informe comparativo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actividade de consolidación — Informe comparativo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glosario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Glosario
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dvwa_brute_force_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Informe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#obxectivo-desta-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo desta práctica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parámetros do laboratorio
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-funciona-hexstrike-ai-nesta-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona HexStrike AI nesta práctica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificacion-inicial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verificación inicial
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verificación inicial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-comprobar-que-o-servidor-hexstrike-esta-en-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Comprobar que o servidor HexStrike está en execución
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comprobar-que-dvwa-esta-accesible" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Comprobar que DVWA está accesible
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-arrancar-claude-code-con-hexstrike-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Arrancar Claude Code con HexStrike MCP
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-formular-os-prompts-a-hexstrike-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como formular os prompts a HexStrike AI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-low-ataque-directo-sen-proteccions" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL LOW — Ataque directo sen proteccións
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL LOW — Ataque directo sen proteccións">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado-esperado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado esperado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-medium-adaptacion-ao-retardo-de-2-segundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL MEDIUM — Adaptación ao retardo de 2 segundos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL MEDIUM — Adaptación ao retardo de 2 segundos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-high-token-anti-csrf-renovado-por-peticion" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL HIGH — Token anti-CSRF renovado por petición
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL HIGH — Token anti-CSRF renovado por petición">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nivel-impossible-confirmar-que-non-e-explotable" class="md-nav__link">
+    <span class="md-ellipsis">
+      NIVEL IMPOSSIBLE — Confirmar que non é explotable
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NIVEL IMPOSSIBLE — Confirmar que non é explotable">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contexto_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contexto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prompt-para-claude-code_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prompt para Claude Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado-esperado_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado esperado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actividade-de-consolidacion-informe-comparativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actividade de consolidación — Informe comparativo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actividade de consolidación — Informe comparativo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-fara-hexstrike-internamente_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que fará HexStrike internamente
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultado_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resultado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glosario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Glosario
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="practica-1b-ataque-de-forza-bruta-con-hexstrike-ai-sobre-dvwa">Práctica 1b — Ataque de Forza Bruta con HexStrike AI sobre DVWA</h1>
+<div class="admonition info">
+<p class="admonition-title">Información da práctica</p>
+<p><strong>Sección:</strong> Prácticas Taller<br />
+<strong>Módulo:</strong> O hacking ético nas aplicacións web<br />
+<strong>Práctica:</strong> 1b — Forza Bruta con HexStrike AI + Claude Code<br />
+<strong>Prerrequisito obrigatorio:</strong><br />
+    - <a href="../../apuntamentos/hexstrike-instalacion/" target="_blank">Instalación HexStrike AI</a><br />
+    - <a href="../indice-practica-bruteforce-dvwa/" target="_blank">Índice da práctica — conceptos e configuración</a><br />
+    - <a href="../practica1a-bruteforce-manual/" target="_blank">1a — Forza Bruta con hydra</a></p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Aviso legal</p>
+<p>Todo o contido desta práctica é para uso exclusivamente educativo nun contorno de laboratorio controlado e legal. Está terminantemente prohibido aplicar estas técnicas en sistemas reais sen autorización explícita e por escrito do propietario do sistema. O uso non autorizado destas técnicas pode constituír un delito penal.</p>
+</div>
+<hr />
+<h2 id="obxectivo-desta-practica">Obxectivo desta práctica</h2>
+<p>Na práctica 1a realizaches o ataque de forma manual, entendendo cada paso: obtención da sesión, estrutura da petición HTTP, papel do token anti-CSRF e limitacións de cada nivel.</p>
+<p>Nesta práctica repetirás o mesmo ataque delegando o traballo en <strong>HexStrike AI</strong>, que operará a través de Claude Code usando o protocolo MCP. O obxectivo é comparar os dous enfoques e entender que fai HexStrike internamente en cada caso.</p>
+<hr />
+<h2 id="parametros-do-laboratorio">Parámetros do laboratorio</h2>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>URL DVWA</strong></td>
+<td><code>http://10.0.2.100/dvwa/</code></td>
+</tr>
+<tr>
+<td><strong>Credenciais DVWA</strong></td>
+<td><code>admin</code> / <code>password</code></td>
+</tr>
+<tr>
+<td><strong>IP Atacante (Kali)</strong></td>
+<td><code>10.0.2.250</code></td>
+</tr>
+<tr>
+<td><strong>IP Obxectivo (DVWA)</strong></td>
+<td><code>10.0.2.100</code></td>
+</tr>
+<tr>
+<td><strong>Wordlist</strong></td>
+<td><code>/usr/share/wordlists/seclists/Passwords/Common-Credentials/2020-200_most_used_passwords.txt</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="como-funciona-hexstrike-ai-nesta-practica">Como funciona HexStrike AI nesta práctica</h2>
+<p><img alt="Fluxo HexStrike AI" src="../images/hexstrike_fluxo_practica1b.svg" /></p>
+<p>HexStrike xestiona automaticamente o login en DVWA, a obtención do <code>PHPSESSID</code>, a configuración do nivel e o lanzamento do ataque axeitado para cada nivel.</p>
+<hr />
+<h2 id="verificacion-inicial">Verificación inicial</h2>
+<h3 id="1-comprobar-que-o-servidor-hexstrike-esta-en-execucion">1. Comprobar que o servidor HexStrike está en execución</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>http://localhost:8888/health
+</span></code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">Resultado esperado</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HexStrike AI Tools API Server is operational&quot;</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6.0.0&quot;</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">&quot;total_tools_available&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">78</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&quot;total_tools_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">127</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">&quot;all_essential_tools_available&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Se non responde, arranca o servidor segundo a opción de instalación que fixeches:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Opción A (apt)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>hexstrike_server
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Opción B (GitHub)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">cd</span><span class="w"> </span>~/hexstrike-ai<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>hexstrike-env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>hexstrike_server.py
+</span></code></pre></div>
+</div>
+<h3 id="2-comprobar-que-dvwa-esta-accesible">2. Comprobar que DVWA está accesible</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;HTTP Status DVWA: %{http_code}\n&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>http://10.0.2.100/dvwa/login.php
+</span></code></pre></div>
+<div class="admonition success">
+<p class="admonition-title">Resultado esperado</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>HTTP Status DVWA: 200
+</span></code></pre></div>
+</div>
+<h3 id="3-arrancar-claude-code-con-hexstrike-mcp">3. Arrancar Claude Code con HexStrike MCP</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>~/dvwa-lab
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>claude
+</span></code></pre></div>
+<p>Dentro de Claude Code, verifica que HexStrike está conectado:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>/mcp
+</span></code></pre></div>
+<p>Debe aparecer <code>hexstrike-ai</code> con estado <code>connected</code>.</p>
+<hr />
+<h2 id="como-formular-os-prompts-a-hexstrike-ai">Como formular os prompts a HexStrike AI</h2>
+<div class="admonition tip">
+<p class="admonition-title">Estrutura dun bo prompt para HexStrike</p>
+<p>Para que HexStrike opere correctamente dentro de DVWA, o prompt debe incluír sempre:</p>
+<ol>
+<li><strong>O teu rol</strong> e o contexto legal do laboratorio</li>
+<li><strong>A URL de DVWA</strong> e as credenciais de acceso</li>
+<li><strong>O nivel de seguridade</strong> a configurar</li>
+<li><strong>O obxectivo</strong> concreto (usuario a atacar, wordlist a usar)</li>
+<li><strong>Que HexStrike xestione o login</strong> ou facilitar o PHPSESSID se xa o tes</li>
+</ol>
+<p>Omitir calquera destes puntos pode facer que HexStrike non consiga acceder á zona protexida de DVWA.</p>
+</div>
+<hr />
+<h2 id="nivel-low-ataque-directo-sen-proteccions">NIVEL LOW — Ataque directo sen proteccións</h2>
+<h3 id="contexto">Contexto</h3>
+<p>No nivel Low non hai token anti-CSRF nin retardo. </p>
+<h3 id="prompt-para-claude-code">Prompt para Claude Code</h3>
+<p>Copia e pega este prompt dentro de <code>claude</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Son un estudante de ciberseguridade traballando nun laboratorio
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>controlado e legal. A aplicación DVWA en http://10.0.2.100/dvwa/
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>pertence ao contorno de prácticas do meu curso.
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Quero realizar un ataque de forza bruta contra o formulario de
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>autenticación de DVWA usando as ferramentas hexstrike-ai MCP.
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>Pasos que necesito que fagas:
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>1. Fai login en DVWA (http://10.0.2.100/dvwa/login.php) coas
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>   credenciais admin/password e obtén o PHPSESSID.
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>2. Configura o nivel de seguridade en Low.
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>3. Verifica que a sección Brute Force é accesible con esa sesión.
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>4. Executa un ataque de forza bruta contra o usuario admin usando
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>   a wordlist /usr/share/wordlists/seclists/Passwords/Common-Credentials/2020-200_most_used_passwords.txt
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>5. Informa do contrasinal atopado.
+</span></code></pre></div>
+<h3 id="que-fara-hexstrike-internamente">Que fará HexStrike internamente</h3>
+<p>O proceso real que executa automaticamente é o seguinte:</p>
+<p><strong>Paso 1 — Login en DVWA con xestión do token CSRF</strong></p>
+<p>O formulario de login de DVWA require un token CSRF. HexStrike detecta isto e fai primeiro un GET para obtelo, e despois o POST de login:</p>
+<p><img alt="Fig. HexStrike fai POST de login" src="../images/exemplo1-1.png" />
+<img alt="Fig. HexStrike detecta o token CSRF e fai GET previo" src="../images/exemplo1-2.png" />
+<img alt="Fig. Token CSRF obtido e POST de login con credenciais" src="../images/exemplo1-3.png" /></p>
+<p><strong>Paso 2 — Detección do nivel de seguridade e cambio a Low</strong></p>
+<p>Tras o login exitoso como <code>admin</code>, HexStrike detecta que o nivel actual é <code>impossible</code> e procede a cambialo a <code>low</code>. Isto require tamén xestionar tokens CSRF no formulario de seguridade:</p>
+<p><img alt="Fig. Login exitoso, nivel impossible detectado, cambio a low" src="../images/exemplo1-4.png" />
+<img alt="Fig. Script bash para xestionar cookies e token CSRF do formulario de seguridade" src="../images/exemplo1-5.png" />
+<img alt="Fig. Obtención do token CSRF de security.php e cambio de nivel" src="../images/exemplo1-6.png" />
+<img alt="Fig. Verificación do cambio de nivel a low" src="../images/exemplo1-7.png" />
+<img alt="Fig. Confirmación do nivel low con nova petición" src="../images/exemplo1-8.png" />
+<img alt="Fig. Verificación final do estado da sesión" src="../images/exemplo1-9.png" /></p>
+<p><strong>Paso 3 — Verificación do acceso á sección Brute Force</strong></p>
+<p>HexStrike confirma que a sección é accesible e identifica a mensaxe de fallo que usará para filtrar os intentos incorrectos:</p>
+<p><img alt="Fig. Nivel low confirmado, verificación do acceso á sección Brute Force" src="../images/exemplo1-10.png" />
+<img alt="Fig. Identificación da mensaxe de fallo: Username and/or password incorrect" src="../images/exemplo1-11.png" /></p>
+<p><strong>Paso 4 — Ataque de forza bruta con Hydra (e adaptación ao problema do separador)</strong></p>
+<p>HexStrike verifica a wordlist (197 contrasinais) e decide lanzar <strong>Hydra</strong>. Durante a execución atopa un problema coa sintaxe do parámetro <code>H=Cookie:</code> xa que o carácter <code>:</code> é o separador do módulo <code>http-get-form</code> de Hydra:</p>
+<p><img alt="Fig. Verificación da wordlist, lanzamento de Hydra con hydra_attack" src="../images/exemplo1-12.png" />
+<img alt="Fig. Primeira tentativa con hydra_attack — falla por problema co separador" src="../images/exemplo1-13.png" />
+<img alt="Fig. Cambio a execute_command para lanzar Hydra directamente" src="../images/exemplo1-14.png" />
+<img alt="Fig. Segunda tentativa con Hydra directa — axuste da sintaxe" src="../images/exemplo1-15.png" />
+<img alt="Fig. Terceira tentativa con parámetro C= en vez de H=" src="../images/exemplo1-16.png" /></p>
+<p>HexStrike abandona Hydra temporalmente e crea un <strong>script bash con curl en loop</strong> como solución alternativa:</p>
+<p><img alt="Fig. Script bash con curl en loop como alternativa a Hydra" src="../images/exemplo1-17.png" /></p>
+<p><strong>Resultado final</strong></p>
+<p>O ataque complétase con éxito. O contrasinal <code>password</code> é atopado na posición 4ª da wordlist:</p>
+<p><img alt="Fig. Resumo completo do ataque — contrasinal password atopado" src="../images/exemplo1-18.png" /></p>
+<p>Tras completar o ataque, o <strong>usuario identifica</strong> que o problema con Hydra se podería ter resolto escapando o carácter <code>:</code> con <code>\:</code>. Claude confirma que é correcto e amosa como funcionaría:</p>
+<p><img alt="Fig. Hydra con escape correcto do carácter : — funcionamento verificado" src="../images/exemplo1-19.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Nota técnica sobre Hydra v9.6 e o separador <code>:</code> </p>
+<p>No módulo <code>http-get-form</code> de Hydra, o carácter <code>:</code> é o separador de campos. Cando a cookie de sesión contén <code>:</code> (como <code>security=low; PHPSESSID=valor</code>), provoca un conflito. A solución é escapar o carácter con <code>\:</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>hydra<span class="w"> </span>-l<span class="w"> </span>admin<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>-P<span class="w"> </span>/usr/share/wordlists/seclists/Passwords/Common-Credentials/2020-200_most_used_passwords.txt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="m">10</span>.0.2.100<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>http-get-form<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="s1">&#39;/dvwa/vulnerabilities/brute/:username=^USER^&amp;password=^PASS^&amp;Login=Login:F=Username and/or password incorrect:H=Cookie\: security=low; PHPSESSID=&lt;valor&gt;&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>-V<span class="w"> </span>-t<span class="w"> </span><span class="m">16</span>
+</span></code></pre></div></p>
+</div>
+<h3 id="resultado-esperado">Resultado esperado</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>[80][http-get-form] host: 10.0.2.100   login: admin   password: password
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>1 of 1 target successfully completed, 1 valid password found
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Login DVWA</td>
+<td>Sesión establecida — PHPSESSID obtido</td>
+</tr>
+<tr>
+<td>2. Nivel de seguridade</td>
+<td>Cambiado a low correctamente</td>
+</tr>
+<tr>
+<td>3. Acceso á sección Brute Force</td>
+<td>Confirmado — resposta <code>Username and/or password incorrect</code> con credenciais erróneas</td>
+</tr>
+<tr>
+<td>4. Ataque de forza bruta</td>
+<td>197 contrasinais probados da wordlist</td>
+</tr>
+<tr>
+<td>5. Contrasinal atopado</td>
+<td><code>password</code> (4ª entrada da wordlist)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="nivel-medium-adaptacion-ao-retardo-de-2-segundos">NIVEL MEDIUM — Adaptación ao retardo de 2 segundos</h2>
+<h3 id="contexto_1">Contexto</h3>
+<p>O servidor introduce un retardo fixo de 2 segundos en cada fallo. Na práctica 1a resolvéchelo con <code>hydra -W 2</code>; aquí delegas en HexStrike a detección do retardo e a adaptación automática do ataque.</p>
+<h3 id="prompt-para-claude-code_1">Prompt para Claude Code</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Son un estudante de ciberseguridade traballando nun laboratorio
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>controlado e legal. A aplicación DVWA en http://10.0.2.100/dvwa/
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>pertence ao contorno de prácticas do meu curso.
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>Usa as ferramentas hexstrike-ai MCP para:
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>1. Facer login en DVWA coas credenciais admin/password.
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>2. Configurar o nivel de seguridade en Medium.
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>3. Medir o retardo que introduce o servidor nos intentos fallidos.
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>4. Executar un ataque de forza bruta contra o usuario admin adaptado
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>   a ese retardo, usando a wordlist
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>   /usr/share/wordlists/seclists/Passwords/Common-Credentials/2020-200_most_used_passwords.txt
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>5. Informar do contrasinal atopado e do tempo total do ataque.
+</span></code></pre></div>
+<h3 id="que-fara-hexstrike-internamente_1">Que fará HexStrike internamente</h3>
+<p><strong>Paso 1 — Login con xestión do token CSRF</strong></p>
+<p>O login de DVWA require token CSRF. HexStrike detecta isto e fai primeiro un GET para obtelo, logo o POST de login:</p>
+<p><img alt="Fig. HexStrike inicia o login con http_repeater" src="../images/exemplo1-20-medium_1.png" />
+<img alt="Fig. HexStrike detecta que precisa token CSRF e usa curl" src="../images/exemplo1-20-medium_2.png" />
+<img alt="Fig. HexStrike fai o POST de login co token CSRF" src="../images/exemplo1-20-medium_3.png" />
+<img alt="Fig. Login exitoso — HexStrike verifica as cookies" src="../images/exemplo1-20-medium_4.png" /></p>
+<p><strong>Paso 2 — Cambio de nivel a Medium con token CSRF</strong></p>
+<p>O formulario de <code>security.php</code> tamén require token CSRF. HexStrike xestiona o ciclo GET→POST:</p>
+<p><img alt="Fig. HexStrike obtén o PHPSESSID e configura o nivel Medium" src="../images/exemplo1-20-medium_5.png" />
+<img alt="Fig. HexStrike verifica que security=medium está gardado na cookie" src="../images/exemplo1-20-medium_6.png" />
+<img alt="Fig. HexStrike obtén o token CSRF de security.php e fai o POST" src="../images/exemplo1-20-medium_7.png" />
+<img alt="Fig. HexStrike confirma o cambio de nivel verificando a resposta con -L" src="../images/exemplo1-20-medium_8.png" />
+<img alt="Fig. HexStrike verifica o nivel actual da sesión" src="../images/exemplo1-20-medium_9.png" /></p>
+<p><strong>Paso 3 — Medición do retardo</strong></p>
+<p>Con nivel Medium confirmado, HexStrike mide o retardo real do servidor con 3 intentos fallidos consecutivos:</p>
+<p><img alt="Fig. Nivel Medium confirmado — HexStrike mide o retardo con 3 intentos" src="../images/exemplo1-20-medium_10.png" /></p>
+<div class="admonition success">
+<p class="admonition-title">Retardo medido</p>
+<p>HexStrike detecta un retardo fixo de <strong>~2 segundos</strong> por intento fallido, correspondente ao <code>sleep(2)</code> do código PHP do nivel Medium:</p>
+<table>
+<thead>
+<tr>
+<th>Intento</th>
+<th>Resultado</th>
+<th>Tempo de resposta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Fallido</td>
+<td>~2033 ms</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Fallido</td>
+<td>~2026 ms</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Fallido</td>
+<td>~2025 ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Paso 4 — Ataque con Hydra adaptado ao retardo</strong></p>
+<p>HexStrike lanza Hydra con <code>-t 1 -w 3</code> para adaptarse ao retardo de 2s. Tras varios intentos de axuste da sintaxe do módulo <code>http-get-form</code>, usa o formato correcto cos parámetros opcionais (<code>H=</code>) antes da cadea de condición:</p>
+<p><img alt="Fig. HexStrike lanza Hydra con -t 1 -w 3 adaptado ao retardo" src="../images/exemplo1-20-medium_11.png" />
+<img alt="Fig. HexStrike corrixe o formato F= e C= de Hydra" src="../images/exemplo1-20-medium_12.png" />
+<img alt="Fig. HexStrike verifica a sintaxe exacta de Hydra 9.6 para http-get-form" src="../images/exemplo1-20-medium_13.png" />
+<img alt="Fig. HexStrike aplica a sintaxe correcta: H= antes da cadea de condición" src="../images/exemplo1-20-medium_14.png" /></p>
+<h3 id="resultado">Resultado</h3>
+<p><img alt="Fig. Informe completo do ataque Medium — contrasinal atopado en 8 segundos" src="../images/exemplo1-20-medium_15.png" />
+<img alt="Fig. Detalle do ataque: Hydra adaptado ao retardo, contrasinal password atopado" src="../images/exemplo1-20-medium_16.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Contrasinal atopado</strong></td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td><strong>Tempo total do ataque</strong></td>
+<td>8 segundos</td>
+</tr>
+<tr>
+<td><strong>Intentos ata o éxito</strong></td>
+<td>Moi poucos (contrasinal ao inicio da lista)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Por que foi tan rápido?</p>
+<p><code>password</code> é a 4ª entrada da wordlist. Se estivese ao final das 197 entradas, o tempo máximo tería sido ~197 × 2s = <strong>394 segundos (~6,5 min)</strong>.</p>
+</div>
+<hr />
+<h2 id="nivel-high-token-anti-csrf-renovado-por-peticion">NIVEL HIGH — Token anti-CSRF renovado por petición</h2>
+<h3 id="contexto_2">Contexto</h3>
+<p>O nivel High require obter un <code>user_token</code> fresco antes de cada petición. Hydra falla porque captura un só token no "warmup" inicial e reutilízao en todos os intentos — o servidor rexeita calquera petición con token inválido ou xa consumido. Na práctica 1a resolvéchelo cun script Python; aquí HexStrike xestiona automaticamente ese ciclo.</p>
+<h3 id="prompt-para-claude-code_2">Prompt para Claude Code</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Son un estudante de ciberseguridade traballando nun laboratorio
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>controlado e legal. A aplicación DVWA en http://10.0.2.100/dvwa/
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>pertence ao contorno de prácticas do meu curso.
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>O nivel High de DVWA Brute Force protéxese con tokens anti-CSRF
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>que se renovan en cada petición, polo que hydra non é suficiente.
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>Usa as ferramentas hexstrike-ai MCP para:
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>1. Facer login en DVWA coas credenciais admin/password.
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>2. Configurar o nivel de seguridade en High.
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>3. Comprobar que o formulario ten token anti-CSRF e explicar por
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>   que invalida os ataques simples con hydra.
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>4. Executar un ataque de forza bruta que xestione correctamente
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>   o token anti-CSRF, obtendo un token fresco antes de cada intento.
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>   Usa a wordlist /usr/share/wordlists/seclists/Passwords/Common-Credentials/2020-200_most_used_passwords.txt
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>5. Informar do contrasinal atopado, número de intentos e tempo total.
+</span></code></pre></div>
+<h3 id="que-fara-hexstrike-internamente_2">Que fará HexStrike internamente</h3>
+<p><strong>Pasos 1 e 2 — Login e nivel High</strong></p>
+<p>HexStrike fai login con xestión de CSRF e configura o nivel High nun único bloque:</p>
+<p><img alt="Fig. HexStrike fai login e configura o nivel High nun único script" src="../images/exemplo1-21-high_1.png" />
+<img alt="Fig. HexStrike cambia o nivel a High obtendo o token CSRF de security.php" src="../images/exemplo1-21-high_2.png" /></p>
+<p><strong>Paso 3 — Inspección do token anti-CSRF e verificación de que cambia</strong></p>
+<p>HexStrike detecta o campo <code>user_token</code> oculto e verifica que xera un valor diferente en cada GET:</p>
+<p><img alt="Fig. HexStrike inspecciona o formulario e detecta o token anti-CSRF" src="../images/exemplo1-21-high_3.png" />
+<img alt="Fig. HexStrike verifica que o token cambia en cada petición GET" src="../images/exemplo1-21-high_4.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Por que falla Hydra no nivel High?</p>
+<p>HexStrike explica o problema:</p>
+<ul>
+<li>Hydra captura <strong>un só token</strong> na petición inicial de "warmup"</li>
+<li>Reutiliza ese token en todos os intentos</li>
+<li>O servidor rexeita calquera petición con token inválido ou xa consumido</li>
+<li>Hydra nunca chega a probar as credenciais reais</li>
+</ul>
+</div>
+<p><img alt="Fig. HexStrike explica por que falla Hydra e crea o script Python" src="../images/exemplo1-21-high_5.png" /></p>
+<p><strong>Paso 4 — Script Python con ciclo GET→POST por intento</strong></p>
+<p>HexStrike xera e executa un script Python que implementa o ciclo correcto:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Para cada contrasinal na wordlist:
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  1. GET /dvwa/vulnerabilities/brute/  →  extraer user_token fresco
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  2. GET coas credenciais + ese token  →  comprobar resposta
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  3. Se non contén &quot;incorrect&quot;         →  éxito
+</span></code></pre></div>
+<p><img alt="Fig. HexStrike executa o script Python de forza bruta con CSRF por intento" src="../images/exemplo1-21-high_6.png" /></p>
+<h3 id="resultado_1">Resultado</h3>
+<p><img alt="Fig. Informe completo do ataque High — contrasinal atopado en 9.07 segundos" src="../images/exemplo1-21-high_7.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Contrasinal atopado</strong></td>
+<td><code>password</code></td>
+</tr>
+<tr>
+<td><strong>Intentos realizados</strong></td>
+<td>4 de 197</td>
+</tr>
+<tr>
+<td><strong>Tempo total</strong></td>
+<td>9.07 segundos</td>
+</tr>
+<tr>
+<td><strong>Retardo por intento</strong></td>
+<td>~2.3 s (GET token + GET con params)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Por que hai retardo se High non usa sleep()?</p>
+<p>O retardo de ~2.3s por intento no nivel High provén do doble GET que require cada tentativa (un para obter o token, outro para probar o contrasinal), non dun <code>sleep()</code> explícito. Se o contrasinal estivese ao final das 197 entradas, o ataque completo tardaría ~450 segundos.</p>
+</div>
+<hr />
+<h2 id="nivel-impossible-confirmar-que-non-e-explotable">NIVEL IMPOSSIBLE — Confirmar que non é explotable</h2>
+<h3 id="contexto_3">Contexto</h3>
+<p>O nivel Impossible combina 5 capas de defensa independentes. HexStrike intentará o ataque e documentará cada barreira que atopa.</p>
+<h3 id="prompt-para-claude-code_3">Prompt para Claude Code</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Son un estudante de ciberseguridade traballando nun laboratorio
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>controlado e legal. A aplicación DVWA en http://10.0.2.100/dvwa/
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>pertence ao contorno de prácticas do meu curso.
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Usa as ferramentas hexstrike-ai MCP para:
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>1. Facer login en DVWA coas credenciais admin/password.
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>2. Configurar o nivel de seguridade en Impossible.
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>3. Intentar un ataque de forza bruta contra o usuario admin e
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>   documentar por que non é posible explotalo.
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>4. Listar todas as medidas de seguridade que detectas no nivel
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>   Impossible e que o fan resistente ao ataque.
+</span></code></pre></div>
+<h3 id="que-fara-hexstrike-internamente_3">Que fará HexStrike internamente</h3>
+<p><strong>Pasos 1 e 2 — Login e nivel Impossible</strong></p>
+<p>HexStrike fai login con xestión de CSRF e configura o nivel Impossible:</p>
+<p><img alt="Fig. HexStrike fai login e inicia a configuración do nivel Impossible" src="../images/exemplo1-22-impossible_1.png" />
+<img alt="Fig. HexStrike cambia o nivel a Impossible con token CSRF" src="../images/exemplo1-22-impossible_2.png" /></p>
+<p><strong>Paso 3 — Inspección do formulario e tentativa de ataque</strong></p>
+<p>HexStrike inspecciona o HTML do formulario, verifica o token anti-CSRF e executa un script Python que documenta o bloqueo en tempo real:</p>
+<p><img alt="Fig. HexStrike inspecciona o formulario Impossible e executa o script de proba" src="../images/exemplo1-22-impossible_3.png" /></p>
+<h3 id="resultado-esperado_1">Resultado esperado</h3>
+<p>HexStrike confirmará as seguintes evidencias:</p>
+<p><strong>Bloqueo de conta tras 3 fallos (persistido en BD):</strong>
+A conta <code>admin</code> queda bloqueada polas tentativas dos exercicios anteriores. O contrasinal correcto non funciona mentres a conta está bloqueada:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>[correcto+bloqueado] user=&#39;admin&#39; pass=&#39;password&#39;
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  tempo=3.49s | Welcome=False | Fail=True | Locked=True
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>  Resposta: «Username and/or password incorrect. Alternative, the
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>            account has been locked because of too many failed logins»
+</span></code></pre></div></p>
+<p><strong>Token CSRF inválido → redirección inmediata sen autenticar:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Token inválido  → HTTP 200 + redirección a index.php
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Sen token       → HTTP 200 + redirección a index.php
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>O servidor nunca comproba o contrasinal se o token non é válido.
+</span></code></pre></div></p>
+<p><strong>Retardo aleatorio anti-timing</strong> (<code>sleep(rand(2,4))</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Intento</th>
+<th>Retardo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>4.127 s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4.063 s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2.104 s</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2.070 s</td>
+</tr>
+<tr>
+<td><strong>Media</strong></td>
+<td><strong>3.09 s</strong></td>
+</tr>
+<tr>
+<td><strong>Varianza</strong></td>
+<td><strong>1.345</strong></td>
+</tr>
+</tbody>
+</table>
+<p>A aleatoriedade impide calcular o número de intentos por tempo e dificulta ataques de timing.</p>
+<p><strong>Medidas de seguridade detectadas no código:</strong></p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="x">// 1. Validación CSRF antes de calquera outra operación</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="x">checkToken($_REQUEST[&#39;user_token&#39;], $_SESSION[&#39;session_token&#39;], &#39;index.php&#39;);</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="x">// 2. Sanitización de entradas</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="x">$user = stripslashes($user);</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="x">$user = mysqli_real_escape_string($GLOBALS[&quot;___mysqli_ston&quot;], $user);</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="x">$pass = md5($pass);</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="x">// 3. Parámetros de bloqueo</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="x">$total_failed_login = 3;   // umbral</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="x">$lockout_time       = 15;  // minutos</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="x">// 4. Consulta PDO preparada (anti-SQLi)</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="x">$data = $db-&gt;prepare(&#39;SELECT failed_login, last_login FROM users WHERE user = (:user) LIMIT 1;&#39;);</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="x">// 5. Consulta de autenticación PDO preparada (anti-SQLi)</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="x">$data = $db-&gt;prepare(&#39;SELECT * FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;&#39;);</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="x">// 6. Retardo aleatorio anti-timing e anti-brute</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="x">sleep(rand(2, 4));</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="x">// 7. Mensaxe idéntica para fallo e para bloqueo (anti-enumeración)</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="x">echo &quot;Username and/or password incorrect.&lt;br/&gt;Alternative, the account has been locked...&quot;;</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="x">// 8. Actualización do contador en BD</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="x">UPDATE users SET failed_login = (failed_login + 1) WHERE user = (:user) LIMIT 1;</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="x">// 9. Rexeneración do token CSRF ao final de cada petición</span>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a><span class="x">generateSessionToken();</span>
+</span></code></pre></div>
+<hr />
+<h2 id="actividade-de-consolidacion-informe-comparativo">Actividade de consolidación — Informe comparativo</h2>
+<p>Desde Claude Code con HexStrike activo, solicita o seguinte informe:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Son un estudante de ciberseguridade. Baseándote nos ataques
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>de forza bruta que acabas de executar contra os catro niveis
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>de DVWA, xera un informe comparativo en markdown que inclúa:
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>- Táboa resumo: nivel / proteccións detectadas / explotable / técnica usada
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>- Para cada nivel explotable: CVEs relacionados co tipo de fallo (se existen)
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>- Puntuación CVSS v3.1 estimada para cada nivel
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>- Top 5 recomendacións de remediación priorizadas por impacto
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>- Exemplo de cabeceiras HTTP de resposta (Set-Cookie, X-Frame-Options,
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>  Content-Security-Policy) que melloren a seguridade do formulario
+</span></code></pre></div>
+<h3 id="que-fara-hexstrike-internamente_4">Que fará HexStrike internamente</h3>
+<p>HexStrike recolle primeiro os headers HTTP reais do servidor para cada nivel e verifica a configuración de seguridade de Apache antes de xerar o informe:</p>
+<p><img alt="Fig. HexStrike recolle os headers HTTP reais de DVWA para cada nivel" src="../images/exemplo1-23-informe_1.png" />
+<img alt="Fig. HexStrike verifica as cabeceiras de seguridade en login e brute force" src="../images/exemplo1-23-informe_2.png" />
+<img alt="Fig. HexStrike comproba a configuración de Apache e módulos activos" src="../images/exemplo1-23-informe_3.png" />
+<img alt="Fig. HexStrike xera o informe completo en markdown con todos os datos reais" src="../images/exemplo1-23-informe_4.png" />
+<img alt="Fig. Informe: cabeceiras HTTP recomendadas e referencias OWASP/CWE" src="../images/exemplo1-23-informe_5.png" /></p>
+<h3 id="resultado_2">Resultado</h3>
+<p>O informe xérase como ficheiro markdown en <code>/tmp/dvwa_brute_force_report.md</code> e móstrase completo en Claude Code:</p>
+<p><img alt="Fig. Informe final: táboa comparativa dos 4 niveis, CVSS e CVEs" src="../images/exemplo1-23-informe_6.png" /></p>
+<p><strong>Extracto da táboa resumo xerada:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th style="text-align: center;">Token CSRF</th>
+<th style="text-align: center;">Retardo fallo</th>
+<th style="text-align: center;">Bloqueo conta</th>
+<th style="text-align: center;">Consultas PDO</th>
+<th style="text-align: center;">Explotable</th>
+<th>Técnica usada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Low</strong></td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td>Hydra <code>http-get-form</code> directo</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">2 s fixos</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td>Hydra + <code>-t 1 -w 3</code> adaptado ao retardo</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td style="text-align: center;">✓ (sesión)</td>
+<td style="text-align: center;">2 s fixos</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td>Script Python: GET token → POST creds</td>
+</tr>
+<tr>
+<td><strong>Impossible</strong></td>
+<td style="text-align: center;">✓ (transacción)</td>
+<td style="text-align: center;">2-4 s aleatorio</td>
+<td style="text-align: center;">✓ 3 fallos/15 min</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">❌</td>
+<td>Non explotable</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Puntuacións CVSS v3.1:</strong><br />
+- Low: <strong>9.1 CRÍTICO</strong> — CWE-307 + CWE-352 + CWE-521<br />
+- Medium: <strong>7.3 ALTO</strong><br />
+- High: <strong>5.9 MEDIO</strong><br />
+- Impossible: Non aplicable  </p>
+<hr />
+<h2 id="glosario">Glosario</h2>
+<table>
+<thead>
+<tr>
+<th>Termo</th>
+<th>Definición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Model Context Protocol — ponte entre Claude e ferramentas externas</td>
+</tr>
+<tr>
+<td><strong>HexStrike AI</strong></td>
+<td>Servidor MCP con 150+ ferramentas de ciberseguridade para Kali Linux</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>Cliente oficial de Anthropic para terminal, usa o Plan Pro de claude.ai</td>
+</tr>
+<tr>
+<td><strong>PHPSESSID</strong></td>
+<td>Identificador de sesión PHP necesario para acceder á zona autenticada de DVWA</td>
+</tr>
+<tr>
+<td><strong>Token anti-CSRF</strong></td>
+<td>Valor único renovado en cada petición para previr automatización simple</td>
+</tr>
+<tr>
+<td><strong>Prompt de pentesting</strong></td>
+<td>Instrución en linguaxe natural que guía a HexStrike para executar un ataque</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

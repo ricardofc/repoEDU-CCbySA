@@ -1,0 +1,1903 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../modo-22000/">
+      
+      
+        <link rel="next" href="../GUIA_VISUAL_ATAQUES_WIFI_all/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Formato NetNTLMv1 (hashcat modo 5500) - Hacking Ético - UD4 - O hacking ético nas redes sen fíos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#explicacion-do-formato-netntlmv1-hashcat-modo-5500" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-header__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Formato NetNTLMv1 (hashcat modo 5500)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../modo-22000/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../practicas-taller/wifi-psk/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD4
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modo-22000/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato WPA*02 (hashcat modo 22000)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Formato NetNTLMv1 (hashcat modo 5500)
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato NetNTLMv1 (hashcat modo 5500)
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introdución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#para-que-se-emprega" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para que se Emprega?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formato-do-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Formato do Hash
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-completa-separada-por" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura Completa (Separada por :)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explicacion-detallada-de-cada-campo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicación Detallada de Cada Campo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Explicación Detallada de Cada Campo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#campo-1-username-ana" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 1: Username (ana)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campos-2-3-e-4-campos-baleiros" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campos 2, 3 e 4: Campos Baleiros
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campo-5-ntresponse-de89e682929a6bc170867e24ec0f429da91772b5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 5: NTResponse (de89e682929a6bc170...867e24ec0f429da91772b5)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campo-6-challenge-e70a88fc72b2f83f" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 6: Challenge (e70a88fc72b2f83f)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-aparece-nos-logs-de-hostapd-wpe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Aparece nos Logs de hostapd-wpe
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-usa-hashcat-esta-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Usa Hashcat Esta Información?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saida-esperada-de-hashcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saída Esperada de hashcat
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparativa-modo-5500-vs-modo-22000" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparativa: Modo 5500 vs Modo 22000
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-visual" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo Visual
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacion-co-fluxo-do-ataque-evil-twin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relación co Fluxo do Ataque Evil Twin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio vuln-wifi.lab
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio vuln-wifi.lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GUIA_VISUAL_ATAQUES_WIFI_all/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía Visual de Ataques WiFi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD4
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD4
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/wifi-psk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (PSK)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/wifi-eap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (EAP)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/wifi-sae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 (SAE)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_2" id="__nav_3_2_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/2-ATAQUE_WPA2_EAP_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/2-ATAQUE_WPA2_EAP_MITM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP MITM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-2.1-ATAQUE_WPA2_EAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 EAP  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/3.1-ATAQUE_WPA3_SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-3.1-ATAQUE_WPA3-SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE KRACK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE KRACK  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vuln-wifi.lab/wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE downgrade WPA2 PSK(EAP) EVIL TWIN  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introdución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#para-que-se-emprega" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para que se Emprega?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formato-do-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Formato do Hash
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-completa-separada-por" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura Completa (Separada por :)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explicacion-detallada-de-cada-campo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explicación Detallada de Cada Campo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Explicación Detallada de Cada Campo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#campo-1-username-ana" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 1: Username (ana)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campos-2-3-e-4-campos-baleiros" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campos 2, 3 e 4: Campos Baleiros
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campo-5-ntresponse-de89e682929a6bc170867e24ec0f429da91772b5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 5: NTResponse (de89e682929a6bc170...867e24ec0f429da91772b5)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campo-6-challenge-e70a88fc72b2f83f" class="md-nav__link">
+    <span class="md-ellipsis">
+      Campo 6: Challenge (e70a88fc72b2f83f)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-aparece-nos-logs-de-hostapd-wpe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Aparece nos Logs de hostapd-wpe
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-usa-hashcat-esta-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Usa Hashcat Esta Información?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saida-esperada-de-hashcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saída Esperada de hashcat
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparativa-modo-5500-vs-modo-22000" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparativa: Modo 5500 vs Modo 22000
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-visual" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo Visual
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacion-co-fluxo-do-ataque-evil-twin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relación co Fluxo do Ataque Evil Twin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="explicacion-do-formato-netntlmv1-hashcat-modo-5500">Explicación do Formato NetNTLMv1 (hashcat modo 5500)</h1>
+<h2 id="introducion">Introdución</h2>
+<p>O <strong>modo 5500</strong> de hashcat é o formato específico para crackear hashes <strong>NetNTLMv1 / NetNTLMv1+ESS</strong> capturados durante ataques de tipo <strong>Evil Twin</strong> contra redes WPA2-EAP (PEAP/MSCHAPv2). É o complemento natural do modo 22000 para este vector de ataque.</p>
+<p>A diferenza do modo 22000 (que crackea contrasinais de redes Wi-Fi PSK), o modo 5500 crackea <strong>contrasinais de usuarios de dominio</strong> capturadas durante a autenticación EAP mediante o protocolo MSCHAPv2.</p>
+<h3 id="para-que-se-emprega">Para que se Emprega?</h3>
+<p>Este formato úsase na <strong>Práctica 2 (Evil Twin)</strong> do laboratorio <a href="https://github.com/ricardofc/vuln-wifi.lab" target="blank">vuln-wifi.lab</a> para:</p>
+<ol>
+<li><strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-1.pdf" target="_blank">Práctica 2.1</a> / <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-2.pdf" target="_blank">2.2</a></strong>: Capturar hashes MSCHAPv2 de usuarios que se conectan ao Evil Twin creado con <code>hostapd-wpe</code></li>
+<li><strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-3.pdf" target="_blank">Práctica 2.3 (MITM)</a></strong>: Alternativa para capturar credenciais cando o modo Evil Twin puro (sen proxy RADIUS) está activo</li>
+</ol>
+<p><strong>Vantaxe principal:</strong> O hash NetNTLMv1 xerado por MSCHAPv2 pode ser crackeado offline con hashcat sen necesidade de que o cliente volva conectarse, permitindo recuperar o contrasinal real do usuario de dominio.</p>
+<blockquote>
+<p>⚠️ <strong>Nota importante sobre WPA2-EAP en modo PROXY:</strong> En modo MITM con <code>hostapd-mana</code> actuando como proxy RADIUS, capturanse <strong>handshakes WPA2</strong> (formato 22000), non hashes MSCHAPv2. O modo 5500 só é aplicable cando <code>hostapd-wpe</code> ou <code>hostapd-mana</code> opera en modo Evil Twin <strong>sen proxy</strong>, capturando directamente o intercambio MSCHAPv2.</p>
+</blockquote>
+<hr />
+<h2 id="formato-do-hash">Formato do Hash</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f
+</span></code></pre></div>
+<p>Ou no formato alternativo compatible con John the Ripper (JtR):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ana:$NETNTLM$e70a88fc72b2f83f$de89e682929a6bc170ed4233e8867e24ec0f429da91772b5
+</span></code></pre></div>
+<h2 id="estrutura-completa-separada-por">Estrutura Completa (Separada por :)</h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Username</strong></td>
+<td><code>ana</code></td>
+<td>Nome de usuario capturado (Identity EAP)</td>
+</tr>
+<tr>
+<td><strong>2. Empty</strong></td>
+<td>``</td>
+<td>Campo baleiro (dominio, non usado en MSCHAPv2 simple)</td>
+</tr>
+<tr>
+<td><strong>3. Empty</strong></td>
+<td>``</td>
+<td>Campo baleiro (host, non usado)</td>
+</tr>
+<tr>
+<td><strong>4. Empty</strong></td>
+<td>``</td>
+<td>Campo baleiro (LMResponse, non presente en NetNTLMv1 puro)</td>
+</tr>
+<tr>
+<td><strong>5. NTResponse</strong></td>
+<td><code>de89e682929a6bc170ed4233e8867e24ec0f429da91772b5</code></td>
+<td>Resposta NT de 24 bytes (48 hex)</td>
+</tr>
+<tr>
+<td><strong>6. Challenge</strong></td>
+<td><code>e70a88fc72b2f83f</code></td>
+<td>Desafío de 8 bytes (16 hex) enviado polo servidor</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="explicacion-detallada-de-cada-campo">Explicación Detallada de Cada Campo</h2>
+<h3 id="campo-1-username-ana"><strong>Campo 1: Username</strong> (<code>ana</code>)</h3>
+<p>O nome de usuario é capturado durante a fase de <strong>EAP Identity</strong> do protocolo PEAP. Cando o cliente se conecta ao Evil Twin, envía a súa identidade en texto claro antes de establecer o túnel TLS. <code>hostapd-wpe</code> rexistra este valor directamente.</p>
+<hr />
+<h3 id="campos-2-3-e-4-campos-baleiros"><strong>Campos 2, 3 e 4: Campos Baleiros</strong></h3>
+<p>No formato NetNTLMv1 puro capturado por MSCHAPv2 en contextos Wi-Fi (PEAP), estes campos non conteñen información relevante e aparecen baleiros. Son herdanza do formato NTLM completo usado en autenticación Windows en rede local, onde incluirían o dominio e o nome do equipo.</p>
+<hr />
+<h3 id="campo-5-ntresponse-de89e682929a6bc170867e24ec0f429da91772b5"><strong>Campo 5: NTResponse</strong> (<code>de89e682929a6bc170...867e24ec0f429da91772b5</code>)</h3>
+<p>É o campo <strong>crítico</strong> para o cracking. Contén a resposta NT calculada polo cliente:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>NTResponse = DES(NT_Hash[0:7],  Challenge)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>           + DES(NT_Hash[7:14], Challenge)
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>           + DES(NT_Hash[14:16] + 5 bytes_ceros, Challenge)
+</span></code></pre></div>
+<p>Onde:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>NT_Hash = MD4(UTF-16LE(contrasinal))
+</span></code></pre></div></p>
+<ul>
+<li><strong>24 bytes</strong> (48 caracteres hexadecimais)</li>
+<li>Calculado polo suplicante Wi-Fi (o dispositivo do usuario)</li>
+<li>É o hash que hashcat intentará reproducir probando contrasinais do dicionario</li>
+</ul>
+<p><strong>Fluxo de cálculo:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>contrasinal &quot;1234&quot;
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    │
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    ▼
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>MD4(UTF-16LE(&quot;1234&quot;)) = 7ce21f17c0aee7fb9cebb3eb0a09345b
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    │
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    ▼
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>DES con Challenge (e70a88fc72b2f83f)
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    │
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    ▼
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>NTResponse = de89e682929a6bc170ed4233e8867e24ec0f429da91772b5
+</span></code></pre></div></p>
+<hr />
+<h3 id="campo-6-challenge-e70a88fc72b2f83f"><strong>Campo 6: Challenge</strong> (<code>e70a88fc72b2f83f</code>)</h3>
+<p>O challenge é un <strong>número aleatorio de 8 bytes</strong> xerado polo servidor EAP (no noso caso, polo <code>hostapd-wpe</code> do Evil Twin) e enviado ao cliente durante o intercambio MSCHAPv2. É análogo ao ANonce do modo 22000:</p>
+<ul>
+<li><strong>8 bytes</strong> (16 caracteres hexadecimais)</li>
+<li>Xerado aleatoriamente en cada sesión de autenticación</li>
+<li>Enviado en texto claro ao cliente</li>
+<li>Capturado por <code>hostapd-wpe</code> nos logs</li>
+</ul>
+<hr />
+<h2 id="como-aparece-nos-logs-de-hostapd-wpe">Como Aparece nos Logs de hostapd-wpe</h2>
+<p>Cando un cliente se conecta ao Evil Twin, <code>hostapd-wpe</code> mostra na terminal:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>wlan2: STA a2:c7:77:12:28:c1 IEEE 802.1X: Identity received from STA: &#39;ana&#39;
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>mschapv2: Sat Jan 31 17:12:15 2026
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>         username:      ana
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>         challenge:     e7:0a:88:fc:72:b2:f8:3f
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>         response:      de:89:e6:82:92:9a:6b:c1:70:ed:42:33:e8:86:7e:24:ec:0f:42:9d:a9:17:72:b5
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>         jtr NETNTLM:   ana:$NETNTLM$e70a88fc72b2f83f$de89e682929a6bc170ed4233e8867e24ec0f429da91772b5
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>         hashcat NETNTLM: ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f
+</span></code></pre></div>
+<p>A liña <code>hashcat NETNTLM</code> xa está no formato exacto que necesita hashcat modo 5500. Para extraela:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>grep<span class="w"> </span><span class="s2">&quot;hashcat NETNTLM&quot;</span><span class="w"> </span>evil-twin-credentials.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $3}&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>evil-hash.txt
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cat<span class="w"> </span>evil-hash.txt
+</span></code></pre></div>
+<hr />
+<h2 id="como-usa-hashcat-esta-informacion">Como Usa Hashcat Esta Información?</h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">5500</span><span class="w"> </span>evil-hash.txt<span class="w"> </span>/tmp/rockyou.txt
+</span></code></pre></div>
+<p><strong>Proceso interno de hashcat:</strong></p>
+<ol>
+<li><strong>Le o username:</strong> <code>ana</code> (informativo, non afecta ao cálculo)</li>
+<li><strong>Le o Challenge:</strong> <code>e70a88fc72b2f83f</code></li>
+<li><strong>Toma unha palabra do dicionario:</strong> Por exemplo: <code>1234</code></li>
+<li><strong>Calcula NT Hash:</strong>
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>NT_Hash = MD4(UTF-16LE(&quot;1234&quot;)) = 7ce21f17c0aee7fb9cebb3eb0a09345b
+</span></code></pre></div></li>
+<li><strong>Calcula NTResponse de proba:</strong>
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>NTResponse_test = DES(NT_Hash[0:7], e70a88fc72b2f83f)
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>                + DES(NT_Hash[7:14], e70a88fc72b2f83f)
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>                + DES(NT_Hash[14:16]+ceros, e70a88fc72b2f83f)
+</span></code></pre></div></li>
+<li><strong>Compara:</strong>
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Se NTResponse_test == de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    ✓ CONTRASINAL ATOPADO: 1234
+</span></code></pre></div></li>
+</ol>
+<hr />
+<h2 id="saida-esperada-de-hashcat">Saída Esperada de hashcat</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f:1234
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>Session..........: hashcat
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>Status...........: Cracked
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>Hash.Mode........: 5500 (NetNTLMv1 / NetNTLMv1+ESS)
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>Hash.Target......: ana::::de89e682929a6bc170ed4233e8867e24ec0f42...2f83f
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>Time.Started.....: (2 secs)
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>Speed.#01........: 1823.4 MH/s
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>Progress.........: 4/14344385 (0.00%)
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>Recovered........: 1/1 (100.00%) Digests
+</span></code></pre></div>
+<p>Para ver o resultado crackeado posteriormente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">5500</span><span class="w"> </span>evil-hash.txt<span class="w"> </span>/tmp/rockyou.txt<span class="w"> </span>--show
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Saída: ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f:1234</span>
+</span></code></pre></div>
+<hr />
+<h2 id="comparativa-modo-5500-vs-modo-22000">Comparativa: Modo 5500 vs Modo 22000</h2>
+<table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Modo 22000</th>
+<th>Modo 5500</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Protocolo</strong></td>
+<td>WPA2/WPA3 PSK</td>
+<td>WPA2-EAP (PEAP/MSCHAPv2)</td>
+</tr>
+<tr>
+<td><strong>Ataque</strong></td>
+<td>PSK Handshake / PMKID</td>
+<td>Evil Twin EAP</td>
+</tr>
+<tr>
+<td><strong>Ferramenta captura</strong></td>
+<td><code>airodump-ng</code>, <code>hcxdumptool</code></td>
+<td><code>hostapd-wpe</code>, <code>hostapd-mana</code></td>
+</tr>
+<tr>
+<td><strong>Obxectivo</strong></td>
+<td>Contrasinal da rede Wi-Fi</td>
+<td>Contrasinal do usuario de dominio</td>
+</tr>
+<tr>
+<td><strong>Hash base</strong></td>
+<td>PBKDF2-SHA1 (lento)</td>
+<td>MD4 + DES (rápido)</td>
+</tr>
+<tr>
+<td><strong>Velocidade</strong></td>
+<td>~4.500 H/s</td>
+<td>~1.800 MH/s</td>
+</tr>
+<tr>
+<td><strong>Formato</strong></td>
+<td><code>WPA*02*PMKID*MAC_AP*...</code></td>
+<td><code>user::::NTResp:challenge</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="resumo-visual">Resumo Visual</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>NetNTLMv1 para hashcat modo 5500:
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>ana  ::::  de89e682929a6bc170ed4233e8867e24ec0f429da91772b5  :  e70a88fc72b2f83f
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a> │     │                        │                                        │
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a> │     │                        │                                        └── Challenge (8B)
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a> │     │                        │                                            Xerado polo Evil Twin
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a> │     │                        └─────────────────────────────────────────── NTResponse (24B)
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a> │     │                                                                      DES(MD4(pass), challenge)
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a> │     └──────────────────────────────────────────────────────────────────── Campos baleiros
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a> │                                                                            (dominio:host:LMResp)
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a> └────────────────────────────────────────────────────────────────────────── Username
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>                                                                             Capturado en EAP Identity
+</span></code></pre></div>
+<hr />
+<h2 id="relacion-co-fluxo-do-ataque-evil-twin">Relación co Fluxo do Ataque Evil Twin</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>[Cliente Wi-Fi]                [Evil Twin (hostapd-wpe)]       [Atacante]
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>      │                                   │                         │
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>      │── Probe Request ──────────────────►                         │
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>      │◄─ Beacon (EMPRESA-XYZ) ───────────│                         │
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>      │── Association ────────────────────►                         │
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>      │◄─ EAP-Request/Identity ───────────│                         │
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>      │── EAP-Response/Identity (ana) ───►│── Rexistra username ───►│
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>      │◄─ EAP-Request/Challenge ──────────│                         │
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>      │   (e70a88fc72b2f83f) ←────────────│── Rexistra challenge ──►│
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>      │── EAP-Response/NTResponse ────────►                         │
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>      │   (de89e682...b5) ────────────────│── Rexistra hash ───────►│
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>      │                                   │                         │
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>      │                                   │          hashcat -m 5500 evil-hash.txt rockyou.txt
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>      │                                   │                         │
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>      │                                   │          ✓ Contrasinal: 1234
+</span></code></pre></div>
+<hr />
+<h2 id="conclusion">Conclusión</h2>
+<p>O formato <strong>NetNTLMv1</strong> do modo 5500 é especialmente relevante en auditorías Wi-Fi porque:</p>
+<ul>
+<li><strong>É moito máis rápido de crackear</strong> que o modo 22000 (ordes de magnitude, xa que usa DES en vez de PBKDF2)</li>
+<li><strong>Revela contrasinais de dominio</strong>, non só da rede Wi-Fi, con alto impacto en contornos corporativos</li>
+<li><strong>Non require que o usuario saiba</strong> que está conectado a un AP falso; MSCHAPv2 cede o hash automaticamente</li>
+<li>O hash capturado é <strong>sempre válido</strong> para cracking, independentemente de que o usuario acabe ou non autenticándose</li>
+</ul>
+<p>É por iso que o ataque <strong>Evil Twin contra WPA2-EAP</strong> é máis perigoso que o ataque PSK: comprométese a identidade corporativa do usuario, non só o acceso á rede Wi-Fi.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

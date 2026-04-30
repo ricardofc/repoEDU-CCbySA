@@ -1,0 +1,2572 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../fases/">
+      
+      
+        <link rel="next" href="CVE-2011-2523/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Informes - Hacking Ético - UD1 - Introdución á seguridade ofensiva</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#informes-de-pentesting" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-header__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD1 - Introdución á seguridade ofensiva
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Informes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../he/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos UD1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../practicas-taller/informes-sysreptor/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD1
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-nav__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD1 - Introdución á seguridade ofensiva
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos UD1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos UD1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Que é o Hacking Ético
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tipos-hackers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tipos de Hackers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tipos-auditorias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tipos de Auditorías
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../caid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fundamentos da Seguridade da Información (CAID)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fases dun Test de Intrusión (Pentest)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Informes de Pentesting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Informes de Pentesting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Informes
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Informes
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#informe-executivo-para-directivos-ou-responsables-de-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informe executivo (para directivos ou responsables de área)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informe-tecnico-para-equipos-de-seguridade-e-administracion-de-sistemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informe técnico (para equipos de seguridade e administración de sistemas)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recursos-e-estandares" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursos e estándares
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recursos e estándares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estandares-guias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estándares / guías
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#templates-e-exemplos-publicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Templates e exemplos públicos
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informes-con-sysreptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informes con sysreptor
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Informes con sysreptor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#para-que-serve" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para que serve?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características clave
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ligazons-oficiais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ligazóns oficiais
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacion-local-selfhosted-nunha-distribucion-kali-gnulinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación local (self‑hosted) nunha distribución Kali GNU/Linux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-tipico-para-oscp-con-sysreptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo típico para OSCP con SysReptor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-empregar-markdown-e-latex-para-informes-de-hacking-etico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que empregar Markdown e LaTeX para informes de Hacking Ético
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Por que empregar Markdown e LaTeX para informes de Hacking Ético">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes-de-markdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes de Markdown
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes-de-latex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes de LaTeX
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uso-combinado-segundo-necesidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso combinado segundo necesidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uso-de-modelos-latex-para-informes-tecnicos-profesionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso de modelos LaTeX para informes técnicos profesionais
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="CVE-2011-2523/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CVE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clasificacion_risco_cvss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CVSS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cwe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CWE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ética e Legalidade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../marcos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Marcos de traballo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modelos-ataque-defensa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modelos de Ataque e Defensa
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    ClearNet, Deep Web e Dark Web
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_10">
+            <span class="md-nav__icon md-icon"></span>
+            ClearNet, Deep Web e Dark Web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clearnet_deepweb_darkweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explicación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verificar_sinatura_tor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Verificación sinatura Tor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ferramentas Comúns
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursos de Aprendizaxe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Informes con sysreptor
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Informes con sysreptor
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/informes-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Recursos de aprendizaxe
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Recursos de aprendizaxe
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Metasploitable 2
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Metasploitable 2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Metasploitable 3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Metasploitable 3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Práctica Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulnHub
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            VulnHub
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    TryHackMe
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            TryHackMe
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    HackTheBox
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            HackTheBox
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/hacksplaining/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    HackSplaining
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    picoCTF
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            picoCTF
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_9" id="__nav_3_2_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    PentesterLab
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            PentesterLab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/machine-owasp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    OWASP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/s4vitar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    S4vitar
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#informe-executivo-para-directivos-ou-responsables-de-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informe executivo (para directivos ou responsables de área)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informe-tecnico-para-equipos-de-seguridade-e-administracion-de-sistemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informe técnico (para equipos de seguridade e administración de sistemas)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recursos-e-estandares" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursos e estándares
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recursos e estándares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estandares-guias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estándares / guías
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#templates-e-exemplos-publicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Templates e exemplos públicos
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informes-con-sysreptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Informes con sysreptor
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Informes con sysreptor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#para-que-serve" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para que serve?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características clave
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ligazons-oficiais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ligazóns oficiais
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacion-local-selfhosted-nunha-distribucion-kali-gnulinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación local (self‑hosted) nunha distribución Kali GNU/Linux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-tipico-para-oscp-con-sysreptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo típico para OSCP con SysReptor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-empregar-markdown-e-latex-para-informes-de-hacking-etico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que empregar Markdown e LaTeX para informes de Hacking Ético
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Por que empregar Markdown e LaTeX para informes de Hacking Ético">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes-de-markdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes de Markdown
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes-de-latex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes de LaTeX
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uso-combinado-segundo-necesidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso combinado segundo necesidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uso-de-modelos-latex-para-informes-tecnicos-profesionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso de modelos LaTeX para informes técnicos profesionais
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="informes-de-pentesting">Informes de Pentesting</h1>
+<p>O informe final é un dos resultados máis valiosos do proceso de pentesting. Pode redactarse en dúas versións complementarias, segundo o público destinatario:</p>
+<h2 id="informe-executivo-para-directivos-ou-responsables-de-area">Informe executivo (para directivos ou responsables de área)</h2>
+<p>Este documento presenta unha visión clara, sintética e comprensible dos riscos detectados. Debe conter:</p>
+<ul>
+<li>Resumo executivo orientado á toma de decisións.</li>
+<li>Identificación dos riscos principais, nivel de exposición e impacto potencial.</li>
+<li>Clasificación do risco segundo gravidade (ex. CVSS, código de cores).</li>
+<li>Implicacións legais, reputacionais ou económicas.</li>
+<li>Propostas de acción resumidas e roadmap de mitigación.</li>
+</ul>
+<p>Este informe <strong>non inclúe detalles técnicos</strong>, senón que traduce os achados a linguaxe de negocio ou xestión.</p>
+<hr />
+<h2 id="informe-tecnico-para-equipos-de-seguridade-e-administracion-de-sistemas">Informe técnico (para equipos de seguridade e administración de sistemas)</h2>
+<p>Este informe contén os detalles necesarios para <strong>reproducir, entender e mitigar</strong> as vulnerabilidades atopadas. Debe incluír:</p>
+<ul>
+<li>Metodoloxía utilizada.</li>
+<li><a href="CVE-2011-2523/" target="_blank">CVE</a> asociado, descrición técnica da vulnerabilidade.</li>
+<li>Ferramentas empregadas e comandos utilizados (ex. <code>nmap</code>, <code>searchsploit</code>, <code>metasploit</code>...).</li>
+<li>Payloads empregados, capturas de pantalla e logs.</li>
+<li>Servizos, sistemas operativos e configuracións afectadas.</li>
+<li>Evidencias claras e reproducibles.</li>
+<li><a href="clasificacion_risco_cvss/" target="_blank">Clasificación do risco (ex. CVSS).</a></li>
+<li>Propostas de corrección ou mitigación específicas.</li>
+</ul>
+<hr />
+<p>Un bo informe, tanto técnico como executivo, debe ser:</p>
+<ul>
+<li>Claro, organizado e obxectivo.</li>
+<li>Comprensible para o seu público destinatario.</li>
+<li>Accionable: debe permitir tomar decisións ou aplicar solucións.</li>
+<li>Basado en evidencias e métricas verificables.</li>
+</ul>
+<p>Este enfoque permite que cada parte interesada —dende a dirección ata os administradores— teña acceso á información que necesita para actuar con eficacia.</p>
+<hr />
+<h2 id="recursos-e-estandares">Recursos e estándares</h2>
+<h3 id="estandares-guias">Estándares / guías</h3>
+<ul>
+<li><a href="https://owasp.org/www-project-web-security-testing-guide/stable/5-Reporting/README" target="_blank">OWASP Web Security Testing Guide – Sección Reporting</a></li>
+<li><a href="https://pentest-standard.readthedocs.io/en/latest/reporting.html" target="_blank">PTES (Penetration Testing Execution Standard) – Reporting</a></li>
+<li><a href="https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-115.pdf" target="_blank">NIST SP 800‑115 – Technical Guide to Information Security Testing and Assessment</a></li>
+<li><a href="https://www.sans.org/white-papers/33343/" target="_blank">SANS – Writing a Penetration Testing Report</a></li>
+</ul>
+<h3 id="templates-e-exemplos-publicos">Templates e exemplos públicos</h3>
+<ul>
+<li><a href="https://purplesec.us/wp-content/uploads/2019/12/Sample-Penetration-Test-Report-PurpleSec.pdf" target="_blank">PurpleSec – Sample Penetration Test Report (PDF)</a></li>
+<li><a href="https://www.hackthebox.com/storage/press/samplereport/sample-penetration-testing-report-template.pdf" target="_blank">Hack The Box – Sample Penetration Testing Report Template (PDF)</a></li>
+<li><a href="https://www.offsec.com/pwk-online/PWK-Example-Report-v1.pdf" target="_blank">OffSec – Example Report (OSCP/PEN‑200)</a></li>
+</ul>
+<hr />
+<h2 id="informes-con-sysreptor">Informes con sysreptor</h2>
+<h3 id="que-e">Que é?</h3>
+<p><strong>SysReptor</strong> é unha plataforma de reporting para pentesting e red teaming. Permite escribir en <strong>Markdown</strong>, aplicar <strong>deseños HTML/CSS</strong> e exportar <strong>PDF profesionais</strong> cun só clic. Está dispoñible en modo <strong>cloud</strong> e <strong>self‑hosted</strong> (Docker).</p>
+<h3 id="para-que-serve">Para que serve?</h3>
+<ul>
+<li>Centralizar informes e achados.</li>
+<li>Reutilizar <strong>templates/deseños</strong> para diferentes clientes ou exames.</li>
+<li>Exportar rapidamente a PDF mantendo un estilo consistente.</li>
+<li>Integrar automatización (CLI) no teu fluxo de traballo.</li>
+</ul>
+<h3 id="caracteristicas-clave">Características clave</h3>
+<ul>
+<li>Editor Markdown + campos estruturados para findings.</li>
+<li>Motor de renderizado (Chromium/WeasyPrint) → PDF de alta calidade.</li>
+<li><strong>Templates oficiais para OffSec (OSCP, etc.) e Hack The Box (CPTS, CBBH, …)</strong> dispoñibles para importar.</li>
+<li>Plan <strong>Community</strong> gratuíto (ata 3 usuarios) e opción de autoaloxamento sen costo.</li>
+</ul>
+<h3 id="ligazons-oficiais">Ligazóns oficiais</h3>
+<ul>
+<li>Documentación: <a href="https://docs.sysreptor.com">https://docs.sysreptor.com</a></li>
+<li>Repositorio (exemplos, CLI, designs): <a href="https://github.com/Syslifters">https://github.com/Syslifters</a></li>
+<li>OffSec Reporting con SysReptor: <a href="https://docs.sysreptor.com/offsec-reporting-with-sysreptor/">https://docs.sysreptor.com/offsec-reporting-with-sysreptor/</a></li>
+<li>HTB Reporting con SysReptor: <a href="https://docs.sysreptor.com/htb-reporting-with-sysreptor/">https://docs.sysreptor.com/htb-reporting-with-sysreptor/</a></li>
+</ul>
+<p><strong>Templates oficiais dispoñibles</strong></p>
+<ul>
+<li><strong>OffSec:</strong> OSCP, OSWP, OSEP, OSED, OSEE, etc.</li>
+<li><strong>Hack The Box:</strong> CPTS, CBBH, CDSA, CWEE, CAPE…</li>
+</ul>
+<h3 id="instalacion-local-selfhosted-nunha-distribucion-kali-gnulinux">Instalación local (self‑hosted) nunha distribución Kali GNU/Linux</h3>
+<div class="admonition tip">
+<p class="admonition-title">Cheat Sheets Docker</p>
+<p>Ligazóns de Interese: <a href="https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SOM/" target="_blank">Cheat Sheets Docker</a></p>
+</div>
+<p>Dentro da documentación oficial sobre a <a href="https://docs.sysreptor.com/setup/installation/" target="_blank">Instalación de sysreptor</a> atoparás no pé de páxina no <a href="https://emvee-nl.github.io/posts/SysReptor/" target="_blank">punto 1 Kali</a> non soamente a documentación para a instalación nun sistema operativo Kali GNU/Linux, senón tamén a instalación de plantillas de offsec e htb, así como un titorial de uso da ferramenta.</p>
+<div class="admonition note">
+<p class="admonition-title">Instalación de plantillas</p>
+<p>1) OffSec designs
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://docs.sysreptor.com/assets/offsec-designs.tar.gz<span class="w">   </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--no-TTY<span class="w"> </span>app<span class="w"> </span>python3<span class="w"> </span>manage.py<span class="w"> </span>importdemodata<span class="w"> </span>--type<span class="o">=</span>design
+</span></code></pre></div></p>
+<p>2) HTB designs e proxectos demo
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://docs.sysreptor.com/assets/htb-designs.tar.gz<span class="w">   </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--no-TTY<span class="w"> </span>app<span class="w"> </span>python3<span class="w"> </span>manage.py<span class="w"> </span>importdemodata<span class="w"> </span>--type<span class="o">=</span>design
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://docs.sysreptor.com/assets/htb-demo-projects.tar.gz<span class="w">   </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--no-TTY<span class="w"> </span>app<span class="w"> </span>python3<span class="w"> </span>manage.py<span class="w"> </span>importdemodata<span class="w"> </span>--type<span class="o">=</span>project
+</span></code></pre></div></p>
+<p>3) Interfaz web en http://localhost:8000 (por defecto)</p>
+<blockquote>
+<p>Alternativa: subir os <code>.tar.gz</code> desde a interface web (Projects/Designs → <strong>Upload</strong>).</p>
+</blockquote>
+</div>
+<h3 id="fluxo-tipico-para-oscp-con-sysreptor">Fluxo típico para OSCP con SysReptor</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>1. Crear proxecto co template OSCP
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>2. Encher seccións: hosts, vulnerabilidades, PoC, capturas
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>3. Renderizar PDF
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>4. Comprimir en .7z (contraseña) segundo as normas de OffSec
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>5. Subir o paquete en ≤24 h ao portal de OffSec
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Exemplo de compresión</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>7z<span class="w"> </span>a<span class="w"> </span>-t7z<span class="w"> </span>-p<span class="s1">&#39;MINHA_PASS&#39;</span><span class="w"> </span>OSCP-OSID-Report.7z<span class="w"> </span>OSCP-OSID-Report.pdf
+</span></code></pre></div>
+</div>
+<hr />
+<h2 id="por-que-empregar-markdown-e-latex-para-informes-de-hacking-etico">Por que empregar Markdown e LaTeX para informes de Hacking Ético</h2>
+<p>No ámbito do <strong>hacking ético</strong>, a documentación é tan importante como as probas realizadas. Escoller as ferramentas axeitadas para redactar informes profesionais pode marcar a diferenza entre un traballo técnico comprensible e unha presentación caótica. Aquí explicamos por que <strong>Markdown</strong> e <strong>LaTeX</strong> son dúas opcións ideais:</p>
+<hr />
+<h3 id="vantaxes-de-markdown">Vantaxes de Markdown</h3>
+<ul>
+<li><strong>Sinxeleza e velocidade</strong>: permite escribir contido estruturado con sintaxe mínima.</li>
+<li><strong>Compatibilidade web</strong>: ideal para informes HTML estáticos ou publicacións en plataformas como MkDocs ou GitHub Pages.</li>
+<li><strong>Colaboración</strong>: facilmente versionable con Git.</li>
+<li><strong>Previsualización inmediata</strong>: moitos editores (como VS Code ou StackEdit) permiten ver o resultado mentres se escribe.</li>
+<li><strong>Exportación rápida</strong>: pode converterse en PDF, DOCX ou HTML usando ferramentas como <code>pandoc</code>.</li>
+</ul>
+<hr />
+<h3 id="vantaxes-de-latex">Vantaxes de LaTeX</h3>
+<ul>
+<li><strong>Calidade tipográfica profesional</strong>: especialmente útil para documentación formal e presentación de resultados técnicos.</li>
+<li><strong>Potente para fórmulas</strong>: ideal para expresar algoritmos, expresións criptográficas ou matemáticas (ex: hash SHA-256, algoritmos RSA, etc.).</li>
+<li><strong>Control total sobre o deseño</strong>: desde cabeceiras, índices, bibliografía ata anexos con código.</li>
+<li><strong>Amplamente usado en contextos académicos e científicos</strong>.</li>
+</ul>
+<hr />
+<h3 id="uso-combinado-segundo-necesidades">Uso combinado segundo necesidades</h3>
+<p>Nun proxecto de hacking ético, o informe é o produto final que ve o cliente. Empregar ferramentas como <strong>Markdown e LaTeX</strong> non só mellora a presentación, senón que facilita a reproducibilidade, a colaboración e a automatización da documentación técnica.</p>
+<blockquote>
+<p><em>"Un informe claro é tan importante como unha auditoría ben feita."</em></p>
+</blockquote>
+<ul>
+<li>Usa <strong>Markdown</strong> para informes rápidos, colaborativos e web (ex. informes preliminares ou documentación interna).</li>
+<li>Usa <strong>LaTeX</strong> para informes finais, profesionais ou cando se require precisión visual (ex. presentación a direccións ou clientes).</li>
+</ul>
+<hr />
+<div class="admonition tip">
+<p class="admonition-title"><strong>Recursos recomendados</strong></p>
+<ol>
+<li><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown Cheat Sheet</a>  </li>
+<li><a href="https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes" target="blank">Learn LateX in 30 minutes</a></li>
+</ol>
+</div>
+<div class="admonition tip">
+<p class="admonition-title"><strong>Exemplos de uso básicos para Informes</strong></p>
+<ol>
+<li><a href="informe.md.html" target="_blank">Uso de markdown</a> → <a href="informe/" target="blank">Visualizar o md</a></li>
+<li><a href="informe.tex.html" target="_blank">Uso de LaTeX</a> → <a href="informe.tex.pdf" target="_blank">Visualizar o tex</a></li>
+</ol>
+</div>
+<h3 id="uso-de-modelos-latex-para-informes-tecnicos-profesionais">Uso de modelos LaTeX para informes técnicos profesionais</h3>
+<div class="admonition info">
+<p class="admonition-title">De interese</p>
+<p>LaTeX é especialmente recomendable para a creación de informes profesionais pola súa alta calidade tipográfica, estrutura modular e soporte avanzado para figuras, táboas e código fonte. Ademais, facilita a reproducibilidade e consistencia dos documentos técnicos.</p>
+</div>
+<p>Pódense empregar modelos preconfigurados baseados en LaTeX para xerar informes profesionais de auditoría. Dentro do repositorio <a href="https://github.com/ricardofc/repoEDU-CCbySA/">repoEDU-CCbySA</a> podes atopar unha plantilla na cal basearte para prodecer a realizar un informe:</p>
+<p><strong>Como usalo:</strong></p>
+<ol>
+<li>
+<p>Usar <code>git</code> con sparse-checkout para clonar só a parte necesaria:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>clone<span class="w"> </span>--no-checkout<span class="w"> </span>https://github.com/ricardofc/repoEDU-CCbySA
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>repoEDU-CCbySA
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>git<span class="w"> </span>sparse-checkout<span class="w"> </span>init<span class="w"> </span>--cone
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>git<span class="w"> </span>sparse-checkout<span class="w"> </span><span class="nb">set</span><span class="w"> </span>script-bash-html2pdf/sources/LaTeX-sources/Informes
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>git<span class="w"> </span>fetch<span class="w"> </span>origin
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>git<span class="w"> </span>checkout<span class="w"> </span>origin/main<span class="w"> </span>--<span class="w"> </span>script-bash-html2pdf/sources/LaTeX-sources/Informes
+</span></code></pre></div>
+</li>
+<li>
+<p>Xerar un novo proxecto de informe baseado na plantilla:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>script-bash-html2pdf/sources/LaTeX-sources/Informes
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bash<span class="w"> </span>clone-template-new-machine.sh<span class="w"> </span>Probando
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">cd</span><span class="w"> </span>Probando
+</span></code></pre></div>
+</li>
+<li>
+<p>Editar o ficheiro <code>probando.tex</code> co contido da auditoría:<br />
+Personaliza os ficheiros <code>.tex</code> con:  </p>
+<ul>
+<li>Datos do cliente</li>
+<li>Resumo executivo</li>
+<li>Vulnerabilidades detectadas</li>
+<li>Medidas de mitigación</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>vim<span class="w"> </span>probando.tex
+</span></code></pre></div>
+</li>
+<li>
+<p>Compilar o PDF final:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>latexmk<span class="w"> </span>-pdf<span class="w"> </span>-pvc<span class="w"> </span>probando.tex
+</span></code></pre></div>
+</li>
+</ol>
+<p>O informe final estará dispoñible como <code>probando.pdf</code>.</p>
+<p>Estes modelos seguen un formato técnico claro e profesional adaptado a auditorías de ciberseguridade en contornos educativos ou reais</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

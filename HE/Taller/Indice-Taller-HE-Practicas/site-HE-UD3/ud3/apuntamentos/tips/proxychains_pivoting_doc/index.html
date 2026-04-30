@@ -1,0 +1,2893 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../consideracions/">
+      
+      
+        <link rel="next" href="../../restauracion-tty-linux/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Proxychains e SOCKS - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#proxychains-e-socks-no-pivoting" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Proxychains e SOCKS
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion-ao-problema-do-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución ao Problema do Pivoting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-e-socks-e-por-que-e-fundamental" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é SOCKS e por que é fundamental
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Que é SOCKS e por que é fundamental">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definicion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Definición
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versions-de-socks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Versións de SOCKS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-socks5-e-ideal-para-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que SOCKS5 é ideal para Pivoting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxychains-a-peza-que-falta" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proxychains: A peza que falta
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proxychains: A peza que falta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-e-necesario-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que é necesario Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración de Proxychains
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuración de Proxychains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ficheiro-de-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ficheiro de configuración
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración básica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcions-importantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opcións importantes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uso-de-proxychains-con-ferramentas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso de Proxychains con ferramentas comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uso de Proxychains con ferramentas comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escaneo-de-portos-nmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escaneo de portos (nmap)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brute-force-hydra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brute force (hydra)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acceso-ssh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Acceso SSH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#navegador-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      Navegador web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitacions-de-socks-e-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitacións de SOCKS e Proxychains
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitacións de SOCKS e Proxychains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-non-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      O que NON funciona
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coidados-ao-usar-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coidados ao usar Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chisel-creando-o-proxy-socks5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chisel: Creando o proxy SOCKS5
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chisel: Creando o proxy SOCKS5">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-chisel-e-ideal-para-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que Chisel é ideal para pivoting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-basica_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración básica
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-funciona-socks-nun-escenario-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona SOCKS nun escenario real
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Como funciona SOCKS nun escenario real">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-de-exemplo-war-basic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario de exemplo: 🔗 War → Basic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arquitectura-do-tunel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arquitectura do túnel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-de-conexion-con-socks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo de conexión con SOCKS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-completo-pivoting-war-basic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo completo: 🔗 Pivoting War → Basic
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo completo: 🔗 Pivoting War → Basic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-configurar-chisel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Configurar Chisel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-configurar-proxychains-na-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Configurar Proxychains na máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-usar-ferramentas-dende-a-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Usar ferramentas dende a máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolucion-de-problemas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolución de problemas comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolución de problemas comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#erro-connection-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      Erro: "connection refused"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#erro-host-seems-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      Erro: "Host seems down"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lentitude-extrema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lentitude extrema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firefox-non-usa-o-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Firefox non usa o proxy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencias
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Referencias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentacion-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentación oficial
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducion-ao-problema-do-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdución ao Problema do Pivoting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-e-socks-e-por-que-e-fundamental" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é SOCKS e por que é fundamental
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Que é SOCKS e por que é fundamental">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definicion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Definición
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versions-de-socks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Versións de SOCKS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-socks5-e-ideal-para-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que SOCKS5 é ideal para Pivoting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxychains-a-peza-que-falta" class="md-nav__link">
+    <span class="md-ellipsis">
+      Proxychains: A peza que falta
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proxychains: A peza que falta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Que é Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-e-necesario-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que é necesario Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración de Proxychains
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuración de Proxychains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ficheiro-de-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ficheiro de configuración
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración básica
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcions-importantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opcións importantes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uso-de-proxychains-con-ferramentas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso de Proxychains con ferramentas comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uso de Proxychains con ferramentas comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escaneo-de-portos-nmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escaneo de portos (nmap)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brute-force-hydra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Brute force (hydra)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acceso-ssh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Acceso SSH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#navegador-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      Navegador web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitacions-de-socks-e-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitacións de SOCKS e Proxychains
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitacións de SOCKS e Proxychains">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-non-funciona" class="md-nav__link">
+    <span class="md-ellipsis">
+      O que NON funciona
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coidados-ao-usar-proxychains" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coidados ao usar Proxychains
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chisel-creando-o-proxy-socks5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Chisel: Creando o proxy SOCKS5
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chisel: Creando o proxy SOCKS5">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-chisel-e-ideal-para-pivoting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que Chisel é ideal para pivoting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-basica_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración básica
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-funciona-socks-nun-escenario-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona SOCKS nun escenario real
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Como funciona SOCKS nun escenario real">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-de-exemplo-war-basic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario de exemplo: 🔗 War → Basic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arquitectura-do-tunel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arquitectura do túnel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluxo-de-conexion-con-socks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fluxo de conexión con SOCKS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-completo-pivoting-war-basic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo completo: 🔗 Pivoting War → Basic
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo completo: 🔗 Pivoting War → Basic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-configurar-chisel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Configurar Chisel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-configurar-proxychains-na-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Configurar Proxychains na máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-usar-ferramentas-dende-a-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Usar ferramentas dende a máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolucion-de-problemas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolución de problemas comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolución de problemas comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#erro-connection-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      Erro: "connection refused"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#erro-host-seems-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      Erro: "Host seems down"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lentitude-extrema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lentitude extrema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firefox-non-usa-o-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Firefox non usa o proxy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencias
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Referencias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentacion-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentación oficial
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="proxychains-e-socks-no-pivoting">Proxychains e SOCKS no Pivoting</h1>
+<h2 id="introducion-ao-problema-do-pivoting">Introdución ao Problema do Pivoting</h2>
+<p>Nun escenario de pivoting, o atacante necesita acceder a unha rede interna á que <strong>non ten conectividade directa</strong>. A solución clásica pasa por empregar unha máquina comprometida como <strong>ponte ou intermediario</strong>.</p>
+<p>Pero xurde un problema fundamental: <strong>como forzamos as nosas ferramentas locais (nmap, hydra, ssh, navegador) a usar esa ponte?</strong></p>
+<p>Aquí é onde entran en xogo <strong>SOCKS</strong> e <strong>Proxychains</strong>.</p>
+<hr />
+<h2 id="que-e-socks-e-por-que-e-fundamental">Que é SOCKS e por que é fundamental</h2>
+<h3 id="definicion">Definición</h3>
+<p><strong>SOCKS</strong> (Socket Secure) é un protocolo de rede que actúa como <strong>proxy a nivel de aplicación</strong>, permitindo que calquera programa redirixe as súas conexións TCP/UDP a través dun servidor intermediario.</p>
+<h3 id="versions-de-socks">Versións de SOCKS</h3>
+<table>
+<thead>
+<tr>
+<th>Versión</th>
+<th>Características</th>
+<th>Uso en Pivoting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SOCKS4</strong></td>
+<td>• Só TCP<br>• Sen autenticación<br>• Sen resolución DNS remota</td>
+<td>Básico, limitado</td>
+</tr>
+<tr>
+<td><strong>SOCKS5</strong></td>
+<td>• TCP e UDP<br>• Autenticación opcional<br>• Resolución DNS remota<br>• Soporte IPv6</td>
+<td><strong>Estándar no pivoting</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="por-que-socks5-e-ideal-para-pivoting">Por que SOCKS5 é ideal para Pivoting</h3>
+<ol>
+<li><strong>Transparencia</strong>: A aplicación cliente non precisa modificacións</li>
+<li><strong>Flexibilidade</strong>: Calquera protocolo sobre TCP/UDP</li>
+<li><strong>DNS remoto</strong>: As consultas DNS resolven no servidor SOCKS, non no cliente</li>
+<li><strong>Sen modificación de rutas</strong>: Non require tocar <code>iptables</code>, <code>route</code> nin NAT</li>
+</ol>
+<hr />
+<h2 id="proxychains-a-peza-que-falta">Proxychains: A peza que falta</h2>
+<h3 id="que-e-proxychains">Que é Proxychains</h3>
+<p><strong>Proxychains</strong> é unha ferramenta que <strong>intercepta as chamadas de rede dun programa</strong> e rediríxeas a través dun ou varios proxies (HTTP, SOCKS4, SOCKS5).</p>
+<p>Funciona mediante <strong>preloading de bibliotecas</strong> (<code>LD_PRELOAD</code>), substituíndo as funcións de rede estándar (<code>connect()</code>, <code>bind()</code>, etc.).</p>
+<h3 id="por-que-e-necesario-proxychains">Por que é necesario Proxychains</h3>
+<p>As ferramentas de hacking <strong>non teñen soporte nativo para proxies SOCKS</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Ferramenta</th>
+<th>Soporte SOCKS nativo</th>
+<th>Como úsala</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>nmap</strong></td>
+<td>❌ Non</td>
+<td><code>proxychains nmap</code></td>
+</tr>
+<tr>
+<td><strong>hydra</strong></td>
+<td>❌ Non</td>
+<td><code>proxychains hydra</code></td>
+</tr>
+<tr>
+<td><strong>ssh</strong></td>
+<td>✅ Si (con <code>-o ProxyCommand</code>)</td>
+<td><code>proxychains ssh</code> (máis sinxelo)</td>
+</tr>
+<tr>
+<td><strong>curl</strong></td>
+<td>✅ Si (<code>--socks5</code>)</td>
+<td><code>proxychains curl</code> (alternativa)</td>
+</tr>
+<tr>
+<td><strong>firefox</strong></td>
+<td>✅ Si (config manual)</td>
+<td>Configuración de proxy no navegador</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusión:</strong> Proxychains unifica o proceso e evita configuracións manuais en cada ferramenta.</p>
+<hr />
+<h2 id="configuracion-de-proxychains">Configuración de Proxychains</h2>
+<h3 id="ficheiro-de-configuracion">Ficheiro de configuración</h3>
+<p>Ruta: <code>/etc/proxychains4.conf</code> (ou <code>~/.proxychains/proxychains.conf</code>)</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Editar configuración</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/proxychains4.conf
+</span></code></pre></div>
+<h3 id="configuracion-basica">Configuración básica</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a># Opciones de comportamento
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>dynamic_chain
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>proxy_dns
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>remote_dns_subnet 224
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>tcp_read_time_out 15000
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>tcp_connect_time_out 8000
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a># Lista de proxies
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>[ProxyList]
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>socks5 127.0.0.1 1080
+</span></code></pre></div>
+<h3 id="opcions-importantes">Opcións importantes</h3>
+<table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Descripción</th>
+<th>Recomendación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dynamic_chain</code></td>
+<td>Usa só proxies dispoñibles</td>
+<td>✅ Pivoting estándar</td>
+</tr>
+<tr>
+<td><code>strict_chain</code></td>
+<td>Todos os proxies deben funcionar</td>
+<td>Para encadeamento múltiple</td>
+</tr>
+<tr>
+<td><code>random_chain</code></td>
+<td>Usa proxies en orde aleatoria</td>
+<td>Para ofuscación</td>
+</tr>
+<tr>
+<td><code>proxy_dns</code></td>
+<td>Resolve DNS a través do proxy</td>
+<td>✅ <strong>Fundamental</strong> (evita leaks)</td>
+</tr>
+<tr>
+<td><code>quiet_mode</code></td>
+<td>Reduce saída de depuración</td>
+<td>Opcional</td>
+</tr>
+</tbody>
+</table>
+<details class="abstract">
+<summary>Por que <code>proxy_dns</code> é crítico</summary>
+<p>Sen <code>proxy_dns</code>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Máquina atacante resolve dns (ex: &quot;servidor.local&quot;) → Consulta DNS dende máquina atacante → Fallaría
+</span></code></pre></div></p>
+<p>Con <code>proxy_dns</code>:
+```
+Máquina atacante → SOCKS (máquina pivote) → máquina pivote resolve dns (ex: "servidor.local") → Éxito</p>
+</details>
+<p>```</p>
+<div class="language-text highlight"><pre><span></span><code>**Que é un DNS Leak?**  
+Un DNS leak ocorre cando as consultas DNS se resolven **fóra do túnel/proxy**, revelando información sobre os destinos aos que intentas acceder e causando fallos ao intentar resolver nomes internos.
+
+**O problema en pivoting:**  
+Cando usas proxychains **sen `proxy_dns`**, o teu ordenador resolve os nomes de dominio (como &quot;servidor.local&quot;) **antes** de enviar a petición polo proxy. Isto falla porque o teu ordenador non ten acceso á rede interna.
+
+Con `proxy_dns` activado, o nome envíase sen resolver ao proxy, e **a máquina pivote** fai a consulta DNS dende dentro da rede interna.
+
+```bash
+# En /etc/proxychains4.conf
+proxy_dns  # Obrigatorio para evitar DNS leaks
+```
+
+**Resultado:** As túas consultas DNS non &quot;escapan&quot; do túnel, e os nomes internos resolven correctamente.
+</code></pre></div>
+<hr />
+<h2 id="uso-de-proxychains-con-ferramentas-comuns">Uso de Proxychains con ferramentas comúns</h2>
+<h3 id="escaneo-de-portos-nmap">Escaneo de portos (nmap)</h3>
+<p>⚠️ <strong>Limitacións:</strong> SOCKS non soporta ICMP nin raw sockets</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># ❌ NON FUNCIONA: SYN scan (-sS) require raw sockets</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>proxychains<span class="w"> </span>nmap<span class="w"> </span>-sS<span class="w"> </span><span class="m">192</span>.168.57.4
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># ✅ FUNCIONA: TCP Connect scan (-sT)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>proxychains<span class="w"> </span>nmap<span class="w"> </span>-sT<span class="w"> </span>-Pn<span class="w"> </span>-n<span class="w"> </span>-p-<span class="w"> </span>--min-rate<span class="w"> </span><span class="m">3000</span><span class="w"> </span><span class="m">192</span>.168.57.4
+</span></code></pre></div>
+<p><strong>Parámetros obrigatorios:</strong><br />
+- <code>-sT</code>: TCP Connect scan (usa <code>connect()</code>, compatible con SOCKS)<br />
+- <code>-Pn</code>: Non facer ping (ICMP non funciona a través de SOCKS)<br />
+- <code>-n</code>: Non resolver DNS localmente</p>
+<h3 id="brute-force-hydra">Brute force (hydra)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>proxychains<span class="w"> </span>hydra<span class="w"> </span>-l<span class="w"> </span>usuario<span class="w"> </span>-P<span class="w"> </span>/usr/share/wordlists/rockyou.txt<span class="w"> </span><span class="m">192</span>.168.57.4<span class="w"> </span>ssh
+</span></code></pre></div>
+<h3 id="acceso-ssh">Acceso SSH</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>proxychains<span class="w"> </span>ssh<span class="w"> </span>usuario@192.168.57.4
+</span></code></pre></div>
+<h3 id="navegador-web">Navegador web</h3>
+<p><strong>Opción 1: Proxychains (lento)</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>proxychains<span class="w"> </span>firefox<span class="w"> </span>http://192.168.57.4:631
+</span></code></pre></div></p>
+<p><strong>Opción 2: Configuración nativa (RECOMENDADO)</strong><br />
+1. Firefox → Settings → Network Settings<br />
+2. Manual proxy configuration:<br />
+   - SOCKS Host: <code>127.0.0.1</code><br />
+   - Port: <code>1080</code><br />
+   - SOCKS v5: ✅<br />
+   - Proxy DNS: ✅</p>
+<hr />
+<h2 id="limitacions-de-socks-e-proxychains">Limitacións de SOCKS e Proxychains</h2>
+<h3 id="o-que-non-funciona">O que NON funciona</h3>
+<table>
+<thead>
+<tr>
+<th>Técnica</th>
+<th>Por que non funciona</th>
+<th>Alternativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ping (ICMP)</strong></td>
+<td>SOCKS só TCP/UDP</td>
+<td>Ping con TCP (<code>nmap -sT -Pn</code>)</td>
+</tr>
+<tr>
+<td><strong>SYN scan (-sS)</strong></td>
+<td>Require raw sockets</td>
+<td>Connect scan (<code>nmap -sT</code>)</td>
+</tr>
+<tr>
+<td><strong>Traceroute</strong></td>
+<td>Require ICMP/UDP raw</td>
+<td>Non hai alternativa real</td>
+</tr>
+<tr>
+<td><strong>ARP requests</strong></td>
+<td>Nivel 2 (datalink)</td>
+<td>Executar dende máquina pivote</td>
+</tr>
+</tbody>
+</table>
+<h3 id="coidados-ao-usar-proxychains">Coidados ao usar Proxychains</h3>
+<ol>
+<li><strong>DNS Leaks</strong>: Sempre activar <code>proxy_dns</code>  </li>
+<li><strong>Rendimento</strong>: SOCKS engade latencia (normal en pivoting)  </li>
+<li><strong>Compatibilidade</strong>: Algúns programas non funcionan ben con <code>LD_PRELOAD</code>  </li>
+<li><strong>Resolución de nomes</strong>: Usar IPs sempre que sexa posible</li>
+</ol>
+<hr />
+<h2 id="chisel-creando-o-proxy-socks5">Chisel: Creando o proxy SOCKS5</h2>
+<h3 id="por-que-chisel-e-ideal-para-pivoting">Por que Chisel é ideal para pivoting</h3>
+<ul>
+<li>Executables para Windows, Linux, macOS</li>
+<li>Túneles inversos (reverse tunneling)</li>
+<li>Cifrado SSH sobre HTTP</li>
+<li>Un único porto para múltiples túneles</li>
+<li>Non require privilexios de administrador</li>
+</ul>
+<h3 id="configuracion-basica_1">Configuración básica</h3>
+<p><strong>1. Servidor Chisel (Kali - Máquina Atacante)</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>chisel<span class="w"> </span>server<span class="w"> </span>--reverse<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+</span></code></pre></div></p>
+<p>Explicación:<br />
+- <code>--reverse</code>: Permite túneles inversos (cliente inicia, servidor expón)<br />
+- <code>--port 8000</code>: Porto de escoita para clientes Chisel</p>
+<p><strong>2. Cliente Chisel (Máquina comprometida)</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>chisel.exe client IP_KALI:8000 R:socks
+</span></code></pre></div></p>
+<p>Explicación:<br />
+- <code>IP_KALI:8000</code>: Conecta ao servidor Chisel<br />
+- <code>R:socks</code>: Crea un <strong>túnel inverso</strong> que expón un proxy SOCKS5 en Kali  </p>
+<p><strong>3. Resultado</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Chisel server en Kali escoita en:
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>- Puerto 8000: Para clientes Chisel
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>- Puerto 1080: Proxy SOCKS5 (automático ao usar R:socks)
+</span></code></pre></div></p>
+<hr />
+<h2 id="como-funciona-socks-nun-escenario-real">Como funciona SOCKS nun escenario real</h2>
+<h3 id="escenario-de-exemplo-war-basic">Escenario de exemplo: <strong><a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" target="_blank">🔗 War → Basic</a></strong></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>┌───────────────┐           ┌─────────────────┐           ┌───────────────┐
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>│  Kali         │ vboxnet0  │  War            │           │  Basic        │
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>│ 192.168.56.X  │◄─────────►│ 192.168.56.177  │           │               │
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>│               │           │ 192.168.57.3    │◄─────────►│ 192.168.57.4  │
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>└───────────────┘           └─────────────────┘  vboxnet1 └───────────────┘
+</span></code></pre></div>
+<p><strong>Problema:</strong> Kali non ten ruta a <code>192.168.57.0/24</code><br />
+<strong>Solución:</strong> Usar War como proxy SOCKS5</p>
+<h3 id="arquitectura-do-tunel">Arquitectura do túnel</h3>
+<p><img alt="Fig. Arquitectura do túnel" src="../../images/proxychains-pivoting.png" /></p>
+<h3 id="fluxo-de-conexion-con-socks">Fluxo de conexión con SOCKS</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>1. Kali executa: proxychains ssh usuario@192.168.57.4
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>2. Proxychains intercepta a conexión
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>3. Envía a petición ao proxy SOCKS (127.0.0.1:1080)
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>4. Chisel Server (en Kali) recibe a petición SOCKS
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>5. Chisel Server envía a petición polo túnel HTTP ao Chisel Client (en War)
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>6. Chisel Client (en War) conecta a 192.168.57.4:22 dende War
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>7. Establécese un túnel bidireccional
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>Fluxo final:
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>Proxychains → SOCKS:1080 → Chisel Server (Kali) → Túnel HTTP → Chisel Client (War) → Basic:22
+</span></code></pre></div>
+<hr />
+<h3 id="exemplo-completo-pivoting-war-basic">Exemplo completo: <strong><a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" target="_blank">🔗 Pivoting War → Basic</a></strong></h3>
+<h4 id="paso-1-configurar-chisel">Paso 1: Configurar Chisel</h4>
+<p><strong>En Kali:</strong><br />
+Executar servidor na máquina atacante
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>chisel<span class="w"> </span>server<span class="w"> </span>--reverse<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+</span></code></pre></div></p>
+<p><strong>En War:</strong><br />
+Executar cliente na máquina comprometida
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>chisel.exe client 192.168.56.113:8000 R:socks
+</span></code></pre></div></p>
+<h4 id="paso-2-configurar-proxychains-na-maquina-atacante">Paso 2: Configurar Proxychains na máquina atacante</h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/proxychains4.conf
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>[ProxyList]
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>socks5 127.0.0.1 1080
+</span></code></pre></div>
+<h4 id="paso-3-usar-ferramentas-dende-a-maquina-atacante">Paso 3: Usar ferramentas dende a máquina atacante</h4>
+<p><strong>Escaneo:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>proxychains<span class="w"> </span>nmap<span class="w"> </span>-sT<span class="w"> </span>-Pn<span class="w"> </span>-n<span class="w"> </span>-p22,80,631<span class="w"> </span><span class="m">192</span>.168.57.4
+</span></code></pre></div></p>
+<p><strong>Brute force:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>proxychains<span class="w"> </span>hydra<span class="w"> </span>-l<span class="w"> </span>usuario<span class="w"> </span>-P<span class="w"> </span>rockyou.txt<span class="w"> </span><span class="m">192</span>.168.57.4<span class="w"> </span>ssh
+</span></code></pre></div></p>
+<p><strong>SSH:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>proxychains<span class="w"> </span>ssh<span class="w"> </span>usuario@192.168.57.4
+</span></code></pre></div></p>
+<p><strong>Navegador (CUPS):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Configurar proxy SOCKS5 en Firefox: 127.0.0.1:1080</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="c1"># Acceder a: http://192.168.57.4:631</span>
+</span></code></pre></div>
+<img alt="Fig. Proxy Firefox socks5" src="../../../practicas-taller/images/vulnyx/Pivoting/firefox-proxy-socks5-127.0.0.01-1080.png" /></p>
+<hr />
+<h2 id="resolucion-de-problemas-comuns">Resolución de problemas comúns</h2>
+<h3 id="erro-connection-refused">Erro: "connection refused"</h3>
+<p><strong>Causa:</strong> O túnel SOCKS non está activo</p>
+<p><strong>Solución:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Verificar que Chisel server está escoitando</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>ss<span class="w"> </span>-tlnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="m">1080</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># Verificar conexión do cliente</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="c1"># Debería aparecer: &quot;proxy#R:127.0.0.1:1080=&gt;socks: Listening&quot;</span>
+</span></code></pre></div></p>
+<h3 id="erro-host-seems-down">Erro: "Host seems down"</h3>
+<p><strong>Causa:</strong> Nmap non pode verificar o host con ping</p>
+<p><strong>Solución:</strong> Sempre usar <code>-Pn</code>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>proxychains<span class="w"> </span>nmap<span class="w"> </span>-sT<span class="w"> </span>-Pn<span class="w"> </span>-n<span class="w"> </span><span class="m">192</span>.168.57.4
+</span></code></pre></div></p>
+<h3 id="lentitude-extrema">Lentitude extrema</h3>
+<p><strong>Causa:</strong> Proxychains en modo verbose + DNS queries</p>
+<p><strong>Solución:</strong><br />
+1. Activar <code>quiet_mode</code> en proxychains.conf<br />
+2. Usar IPs en lugar de nomes de dominio<br />
+3. Activar <code>proxy_dns</code></p>
+<h3 id="firefox-non-usa-o-proxy">Firefox non usa o proxy</h3>
+<p><strong>Causa:</strong> Configuración incorrecta</p>
+<p><strong>Solución:</strong><br />
+1. Settings → Network Settings<br />
+2. Manual proxy configuration<br />
+3. SOCKS Host: <code>127.0.0.1</code>, Port: <code>1080</code><br />
+4. <strong>Marcar:</strong> "SOCKS v5" e "Proxy DNS when using SOCKS v5"</p>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<h3 id="documentacion-oficial">Documentación oficial</h3>
+<ul>
+<li><strong>Proxychains-ng:</strong> <a href="https://github.com/rofl0r/proxychains-ng" target="_blank">https://github.com/rofl0r/proxychains-ng</a>  </li>
+<li><strong>Chisel:</strong> <a href="https://github.com/jpillora/chisel" target="_blank">https://github.com/jpillora/chisel</a>  </li>
+<li><strong>RFC 1928 (SOCKS5):</strong> <a href="https://www.rfc-editor.org/rfc/rfc1928" target="_blank">https://www.rfc-editor.org/rfc/rfc1928</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

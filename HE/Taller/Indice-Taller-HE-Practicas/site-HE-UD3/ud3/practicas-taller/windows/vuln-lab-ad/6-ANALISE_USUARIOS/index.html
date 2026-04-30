@@ -1,0 +1,2239 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/">
+      
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Análise usuarios - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#analise-de-usuarios-e-vectores-de-ataque-vuln-helab" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Análise usuarios
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../apuntamentos/consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-administrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Administrador
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-braist" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. brais.t
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mariag" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. maria.g
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-nopreauthuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. nopreauth.user
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-svc_sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. svc_sql
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-helpdeskuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. helpdesk.user
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-krbtgt" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. krbtgt
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-de-rutas-de-ataque-viables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo de Rutas de Ataque Viables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo de Rutas de Ataque Viables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fase-1-4-acceso-e-escalada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 1-4: Acceso e Escalada
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-5-persistencia-avanzada-post-compromiso-total" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 5: Persistencia Avanzada (Post-Compromiso Total)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taboa-resumo-de-utilidade-por-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa Resumo de Utilidade por Usuario
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notas Finais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-administrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Administrador
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-braist" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. brais.t
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mariag" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. maria.g
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-nopreauthuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. nopreauth.user
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-svc_sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. svc_sql
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-helpdeskuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. helpdesk.user
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-krbtgt" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. krbtgt
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-de-rutas-de-ataque-viables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo de Rutas de Ataque Viables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo de Rutas de Ataque Viables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fase-1-4-acceso-e-escalada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 1-4: Acceso e Escalada
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-5-persistencia-avanzada-post-compromiso-total" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fase 5: Persistencia Avanzada (Post-Compromiso Total)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taboa-resumo-de-utilidade-por-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa Resumo de Utilidade por Usuario
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notas Finais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="analise-de-usuarios-e-vectores-de-ataque-vuln-helab">Análise de Usuarios e Vectores de Ataque: <span style='white-space: nowrap;'>VULN-HE.LAB</span></h1>
+<p>Este documento detalla a utilidade estratéxica de cada usuario configurado no laboratorio, indicando se son vulnerables a ataques de dicionario (Rockyou/Kaonashi) e que vías de escalada abren segundo a <em>Guía Mestra</em>.</p>
+<hr />
+<h2 id="1-administrador">1. Administrador</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>abc123.</code></li>
+<li><strong>Estado en Dicionarios:</strong> Moi común. Crackéase case instantaneamente con forza bruta ou dicionarios básicos.</li>
+<li><strong>Vectores de Acceso:</strong><ul>
+<li><strong>LLMNR Poisoning:</strong> O laboratorio xera tráfico automático deste usuario. Capturar o hash con Responder e crackealo é a vía más rápida.  </li>
+<li><strong>Pass-the-Hash:</strong> Se se obteñen hashes doutras vías (SeBackup), é o obxectivo final.</li>
+</ul>
+</li>
+<li><strong>Potencial:</strong> <strong>CONTROL TOTAL (Game Over).</strong></li>
+<li><strong>Uso en Persistencia:</strong><ul>
+<li><strong>Golden Ticket:</strong> O hash NTLM do Administrador (<code>3ec585243c919f4217175e1918e07780</code>) pode utilizarse como usuario suplantado nos Golden Tickets, pero o ticket non depende deste hash para ser válido (depende do hash de <code>krbtgt</code>).</li>
+<li><strong>Silver Ticket:</strong> Pode suplantarse o Administrador en tickets forxados para servizos específicos, proporcionando acceso elevado a eses servizos sen coñecer o contrasinal real.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="2-braist">2. brais.t</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>iloveyou</code></li>
+<li><strong>Estado en Dicionarios:</strong> Presente en <code>rockyou.txt</code>. Moi débil.</li>
+<li><strong>Vectores de Acceso:</strong><ul>
+<li><strong>Password Spraying / Forza Bruta:</strong> Moi vulnerable. É unha das entradas principais.</li>
+<li><strong>AS-REP Roasting:</strong> Non vulnerable (ten pre-autenticación activada).</li>
+</ul>
+</li>
+<li><strong>Privilexios/Grupos:</strong><ul>
+<li><code>Remote Management Users</code>: Permite acceso WinRM (probado con <code>evil-winrm</code>).</li>
+<li><strong>SeBackupPrivilege</strong>: Vector crítico de escalada.</li>
+</ul>
+</li>
+<li><strong>Conclusión:</strong> Unha das principais portas de entrada. <strong>Permite escalar a Domain Admin</strong> mediante o roubo do <code>NTDS.dit</code> e extracción de hashes.</li>
+<li><strong>Uso en Persistencia:</strong> Non ten valor directo para persistencia avanzada, pero ao permitir extracción de hashes (incluído <code>krbtgt</code> e <code>svc_sql</code>), <strong>habilita a creación de Golden e Silver Tickets</strong> en fases posteriores.</li>
+</ul>
+<hr />
+<h2 id="3-mariag">3. maria.g</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>dragon</code></li>
+<li><strong>Estado en Dicionarios:</strong> Presente en <code>rockyou.txt</code>. Moi débil.</li>
+<li><strong>Vectores de Acceso:</strong><ul>
+<li><strong>Password Spraying:</strong> Moi vulnerable.</li>
+</ul>
+</li>
+<li><strong>Privilexios/Grupos:</strong><ul>
+<li><code>Remote Desktop Users</code>: Permite acceso RDP.</li>
+<li><code>Remote Management Users</code>: Permite acceso WinRM (Confirmado na Guía Mestra).</li>
+<li><strong>SeImpersonatePrivilege</strong>: Vector crítico de escalada local.</li>
+</ul>
+</li>
+<li><strong>Conclusión:</strong> Porta de entrada alternativa. <strong>Permite escalar a NT AUTHORITY\SYSTEM</strong> local mediante exploits "Potato" (ex: <code>SigmaPotato.exe</code>), permitindo cambiar o contrasinal do Administrador ou crear novos usuarios.</li>
+<li><strong>Uso en Persistencia:</strong><ul>
+<li><strong>Golden Ticket:</strong> Pode suplantarse a <code>maria.g</code> nun Golden Ticket, pero o seu valor é limitado xa que non ten privilexios de Domain Admin por si mesma.</li>
+<li><strong>Silver Ticket:</strong> Tras escalar a SYSTEM mediante SeImpersonate, pódese acceder aos hashes necesarios para crear Silver Tickets.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="4-nopreauthuser">4. nopreauth.user</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>AsrepMePlease123</code></li>
+<li><strong>Vulnerabilidade:</strong> <strong>AS-REP Roasting</strong> (Non require pre-autenticación).</li>
+<li><strong>Estado en Dicionarios:</strong><ul>
+<li>Este contrasinal <strong>NON</strong> adoita estar en <code>rockyou.txt</code> nin <code>kaonashi</code> por defecto.</li>
+</ul>
+</li>
+<li><strong>Conclusión (Calexón sen saída parcial):</strong><ul>
+<li>Podes obter o hash AS-REP facilmente (<code>GetNPUsers</code>).</li>
+<li><strong>PERO</strong>, a menos que uses un ataque baseado en regras (rules-based) ou un dicionario customizado, é probable que <strong>non logres crackear o hash</strong>.</li>
+<li>Serve principalmente para demostrar a vulnerabilidade de configuración, pero no contexto deste laboratorio específico, adoita ser un camiño pechado se non se ten o dicionario adecuado.</li>
+</ul>
+</li>
+<li><strong>Uso en Persistencia:</strong> <strong>Ningunha utilidade directa.</strong> Non ten privilexios especiais nin SPN configurado. É un usuario de "demostración didáctica" de AS-REP Roasting sen valor práctico para persistencia.</li>
+</ul>
+<hr />
+<h2 id="5-svc_sql">5. svc_sql</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>SvcPassw0rdKerb!</code></li>
+<li><strong>Hash NTLM:</strong> <code>ad2896ecfb9b443720bab09bb020f852</code></li>
+<li><strong>Vulnerabilidade:</strong> <strong>Kerberoasting</strong> (Ten SPN <code>MSSQLSvc/VULN-DC-01.vuln-he.lab:1433</code>).</li>
+<li><strong>Estado en Dicionarios:</strong><ul>
+<li>Contrasinal complexo. Non presente en dicionarios comúns.</li>
+</ul>
+</li>
+<li><strong>Conclusión (Calexón sen saída parcial para cracking):</strong><ul>
+<li>Require un usuario previo autenticado para solicitar o ticket TGS.</li>
+<li>Do mesmo xeito que <code>nopreauth.user</code>, o hash obtense facilmente pero <strong>o crackeo é difícil</strong> con dicionarios estándar.</li>
+</ul>
+</li>
+<li><strong>Uso en Persistencia (CRÍTICO):</strong><ul>
+<li><strong>Silver Ticket:</strong> Esta é a conta <strong>CLAVE para a Fase 5 (Persistencia)</strong>. O seu hash NTLM (<code>ad2896ecfb9b443720bab09bb020f852</code>) úsase para <strong>forxar Silver Tickets</strong> que proporcionan acceso persistente ao servizo MSSQL durante 10 anos.</li>
+<li><strong>Obtención do hash:</strong><ul>
+<li><strong>Vía SeBackupPrivilege</strong> (brais.t): Extracción desde <code>NTDS.dit</code> ou <code>SAM</code>.</li>
+<li><strong>Vía DCSync</strong> (Administrador): <code>impacket-secretsdump</code> ou Mimikatz.</li>
+<li><strong>Vía Kerberoasting</strong> (se se crackea o contrasinal).</li>
+</ul>
+</li>
+<li><strong>Resultado:</strong> Acceso persistente a SQL Server como Administrador sen necesidade de contactar co KDC, habilitando execución remota mediante <code>xp_cmdshell</code> e posterior escalada a SYSTEM mediante SeImpersonate.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="6-helpdeskuser">6. helpdesk.user</h2>
+<ul>
+<li><strong>Contrasinal:</strong> <code>HelpDeskP@ss1</code></li>
+<li><strong>Estado en Dicionarios:</strong> Complexo, probablemente non crackeable facilmente.</li>
+<li><strong>Vectores de Acceso:</strong><ul>
+<li>Difícil acceso inicial directo por forza bruta.</li>
+<li><strong>Obtención de credenciais:</strong> Tras compromiso total (dump de NTDS/SAM con brais.t ou Administrador).</li>
+</ul>
+</li>
+<li><strong>Potencial de Explotación:</strong><ul>
+<li>Ten control total (<strong>GenericAll ACL</strong>) sobre o usuario <code>maria.g</code>.</li>
+</ul>
+</li>
+<li><strong>Conclusión (RUTA VIABLE):</strong><ul>
+<li><strong>Aínda que non ten acceso WinRM/RDP</strong>, o ataque de movemento lateral <strong>SI É EXECUTABLE</strong> mediante <code>rpcclient</code> desde Linux.</li>
+<li><strong>Procedemento:</strong><ol>
+<li>Obter credenciais de <code>helpdesk.user</code> (ex: tras dump completo de hashes con SeBackupPrivilege).</li>
+<li>Usar <code>rpcclient</code> para cambiar remotamente o contrasinal de <code>maria.g</code> <strong>sen necesidade de shell</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>rpcclient<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;VULN-HE.LAB\helpdesk.user%HelpDeskP@ss1&quot;</span><span class="w"> </span><span class="m">192</span>.168.56.100
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>rpcclient<span class="w"> </span>$&gt;<span class="w"> </span>setuserinfo2<span class="w"> </span>maria.g<span class="w"> </span><span class="m">23</span><span class="w"> </span><span class="s1">&#39;NovoPassword123!&#39;</span>
+</span></code></pre></div></li>
+<li>Acceder como <code>maria.g</code> mediante WinRM.</li>
+<li>Executar ataque Potato (SeImpersonatePrivilege) para escalar a SYSTEM.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Cadea de Ataque Completa:</strong><ol>
+<li>Compromiso inicial (brais.t/Administrador) → Dump de hashes → Obtención de credenciais de <code>helpdesk.user</code>.</li>
+<li>Abuso de ACL (<code>GenericAll</code>) → Control remoto de <code>maria.g</code> vía <code>rpcclient</code>.</li>
+<li>Acceso como <code>maria.g</code> → Abuso de Privilexio (<code>SeImpersonate</code>) → SYSTEM.</li>
+</ol>
+</li>
+<li><strong>Uso en Persistencia:</strong> <strong>Utilidade indirecta</strong>. Non ten valor directo para persistencia, pero permite movemento lateral a <code>maria.g</code>, que pode levar a SYSTEM e posterior acceso aos hashes necesarios para Silver/Golden Tickets.</li>
+</ul>
+<hr />
+<h2 id="7-krbtgt">7. krbtgt</h2>
+<ul>
+<li><strong>Hash NTLM:</strong> <code>f8d660354307503cae5a4a735d110da0</code></li>
+<li><strong>Descripción:</strong> Conta especial de servizo de Active Directory que non caduca nunca por defecto. Úsase polo KDC para asinar todos os TGTs do dominio.</li>
+<li><strong>Vulnerabilidade:</strong> <strong>Non é directamente atacable</strong>, pero o seu hash NTLM é o obxectivo máis crítico no dominio.</li>
+<li><strong>Obtención do Hash:</strong><ul>
+<li><strong>Vía SeBackupPrivilege</strong> (brais.t): Extracción desde <code>NTDS.dit</code>.</li>
+<li><strong>Vía DCSync</strong> (Administrador/brais.t): <code>impacket-secretsdump</code> ou Mimikatz.</li>
+</ul>
+</li>
+<li><strong>Uso en Persistencia (MÁXIMA PRIORIDADE):</strong><ul>
+<li><strong>Golden Ticket:</strong> O hash de <code>krbtgt</code> permite <strong>forxar TGTs válidos para TODO o dominio</strong> durante 10 anos por defecto.</li>
+<li><strong>Resultado:</strong> Acceso total e persistente a calquera recurso do dominio como calquera usuario (incluído Administrador) sen necesidade de contactar co KDC.</li>
+<li><strong>Invalidación:</strong> Requírese <strong>resetar o contrasinal de krbtgt DÚAS veces consecutivas</strong> para invalidar todos os Golden Tickets.</li>
+</ul>
+</li>
+<li><strong>Impacto:</strong> <strong>PEOR ESCENARIO POSIBLE</strong> - Compromiso total do dominio con persistencia de longo prazo (até 10 anos) practicamente indetectable.</li>
+</ul>
+<hr />
+<h2 id="resumo-de-rutas-de-ataque-viables">Resumo de Rutas de Ataque Viables</h2>
+<h3 id="fase-1-4-acceso-e-escalada">Fase 1-4: Acceso e Escalada</h3>
+<ol>
+<li><strong>Ruta Rápida (Poisoning):</strong> Responder → Hash Admin → Crack (<code>abc123.</code>) → WinRM → <strong>Domain Admin</strong>.</li>
+<li><strong>Ruta Backup (Brais):</strong> Spraying (<code>iloveyou</code>) → brais.t → WinRM → SeBackupPrivilege → Dump NTDS → <strong>Domain Admin</strong>.</li>
+<li><strong>Ruta Potato (Maria):</strong> Spraying (<code>dragon</code>) → maria.g → WinRM → SeImpersonate → SigmaPotato → <strong>SYSTEM/Domain Admin</strong>.</li>
+<li><strong>Ruta ACLs (HelpDesk):</strong> Dump hashes → helpdesk.user → rpcclient → Cambio contrasinal maria.g → WinRM → Potato → <strong>SYSTEM/Domain Admin</strong>.</li>
+</ol>
+<h3 id="fase-5-persistencia-avanzada-post-compromiso-total">Fase 5: Persistencia Avanzada (Post-Compromiso Total)</h3>
+<ol>
+<li>
+<p><strong>Persistencia por Servizo (Silver Ticket):</strong></p>
+<ul>
+<li><strong>Requisito:</strong> Hash NTLM de <code>svc_sql</code> (<code>ad2896ecfb9b443720bab09bb020f852</code>)</li>
+<li><strong>Obtención:</strong> Vía SeBackupPrivilege (brais.t) ou DCSync (Administrador)</li>
+<li><strong>Resultado:</strong> Acceso persistente (10 anos) ao servizo MSSQL como Administrador</li>
+<li><strong>Capacidades:</strong> Execución remota mediante <code>xp_cmdshell</code> + escalada a SYSTEM mediante SeImpersonate</li>
+<li><strong>Invalidación:</strong> Cambiar contrasinal de <code>svc_sql</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Persistencia Total do Dominio (Golden Ticket):</strong></p>
+<ul>
+<li><strong>Requisito:</strong> Hash NTLM de <code>krbtgt</code> (<code>f8d660354307503cae5a4a735d110da0</code>)</li>
+<li><strong>Obtención:</strong> Vía SeBackupPrivilege (brais.t) ou DCSync (Administrador)</li>
+<li><strong>Resultado:</strong> Acceso total ao dominio (10 anos) como calquera usuario</li>
+<li><strong>Capacidades:</strong> Control completo sobre todos os recursos, servizos e sistemas do dominio</li>
+<li><strong>Invalidación:</strong> Resetar contrasinal de <code>krbtgt</code> <strong>DÚAS veces consecutivas</strong></li>
+<li><strong>Sigilo:</strong> Non contacta co KDC, moi difícil de detectar</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="taboa-resumo-de-utilidade-por-usuario">Táboa Resumo de Utilidade por Usuario</h2>
+<table>
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Contrasinal</th>
+<th>Dicionario</th>
+<th>Acceso Inicial</th>
+<th>Escalada</th>
+<th>Persistencia</th>
+<th>Prioridade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administrador</strong></td>
+<td><code>abc123.</code></td>
+<td>✅ Rockyou</td>
+<td>LLMNR/PTH</td>
+<td>Game Over</td>
+<td>Golden/Silver (suplantado)</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>brais.t</strong></td>
+<td><code>iloveyou</code></td>
+<td>✅ Rockyou</td>
+<td>Spraying/WinRM</td>
+<td>SeBackup→DA</td>
+<td>Habilita Golden/Silver</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>maria.g</strong></td>
+<td><code>dragon</code></td>
+<td>✅ Rockyou</td>
+<td>Spraying/WinRM</td>
+<td>SeImpersonate→SYSTEM</td>
+<td>Indirecta vía SYSTEM</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>nopreauth.user</strong></td>
+<td><code>AsrepMePlease123</code></td>
+<td>❌ Non común</td>
+<td>AS-REP Roasting</td>
+<td>Calexón pechado</td>
+<td>Ningunha</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td><strong>svc_sql</strong></td>
+<td><code>SvcPassw0rdKerb!</code></td>
+<td>❌ Complexo</td>
+<td>Kerberoasting</td>
+<td>Difícil crackeo</td>
+<td><strong>Silver Ticket CRÍTICO</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>helpdesk.user</strong></td>
+<td><code>HelpDeskP@ss1</code></td>
+<td>❌ Complexo</td>
+<td>Post-compromiso</td>
+<td>ACL→maria.g→Potato</td>
+<td>Indirecta vía maria.g</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>krbtgt</strong></td>
+<td>N/A</td>
+<td>N/A</td>
+<td>Non aplicable</td>
+<td>Non aplicable</td>
+<td><strong>Golden Ticket CRÍTICO</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="notas-finais">Notas Finais</h2>
+<ul>
+<li><strong>Usuarios "Calexón pechado"</strong> (<code>nopreauth.user</code>): Configurados para demostración didáctica de vulnerabilidades, pero non son rutas viables no contexto deste laboratorio específico sen dicionarios customizados.</li>
+<li><strong>Contas críticas para persistencia</strong> (<code>svc_sql</code>, <code>krbtgt</code>): Aínda que o seu compromiso inicial é difícil ou imposible, o seu valor reside en fases avanzadas (Fase 5) tras obter privilexios elevados.</li>
+<li><strong>helpdesk.user - Ruta viable:</strong> Aínda que non permite acceso WinRM/RDP directo, <strong>SI permite explotación</strong> mediante <code>rpcclient</code> para movemento lateral a <code>maria.g</code>, que leva a SYSTEM mediante Potato.</li>
+<li><strong>Persistencia vs Acceso Inicial:</strong> O laboratorio distingue claramente entre usuarios útiles para <strong>acceso inicial</strong> (brais.t, maria.g, Administrador) e contas <strong>críticas para persistencia</strong> (krbtgt, svc_sql) que só cobran valor tras compromiso total.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../../js/opera.js"></script>
+      
+        <script src="../../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

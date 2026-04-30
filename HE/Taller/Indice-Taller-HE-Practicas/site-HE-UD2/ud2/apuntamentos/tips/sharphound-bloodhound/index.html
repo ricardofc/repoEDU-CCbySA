@@ -1,0 +1,5366 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../ataques-kerberos/">
+      
+      
+        <link rel="next" href="../../comandos-tipo-fase1/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>SharpHound/BloodHound - Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#enumeracion-de-active-directory-ad-con-sharphoundbloodhound" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" class="md-header__button md-logo" aria-label="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SharpHound/BloodHound
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../practicas-taller/vulnyx/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD2
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" class="md-nav__button md-logo" aria-label="Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD2 - Recoñecemento, escaneo e explotación de vulnerabilidades nos sistemas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques a contrasinais
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques a contrasinais
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ataques_contrasinais/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2_2" id="__nav_2_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ferramentas
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ferramentas
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/hashcat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hashcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/hydra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hydra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PHP-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PHP wrappers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_4" id="__nav_2_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_4_2" id="__nav_2_2_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Seguridade de credenciais
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Seguridade de credenciais
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hashes-Windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hashes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../responder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    responder
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mimikatz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mimikatz
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../privilexios-windows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Privilexios Clave e Métodos de Explotación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    SharpHound/BloodHound
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    SharpHound/BloodHound
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introdución
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introdución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-ferramentas-de-recoleccion-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Ferramentas de recolección de datos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-recomendacion-que-ferramenta-usar" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Recomendación: Que ferramenta usar?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-fluxos-de-traballo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Fluxos de traballo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-recoleccion-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Recolección de datos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Recolección de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-recoleccion-con-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Recolección con SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opción A: Recolección con SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-preparacion-de-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Preparación de SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1. Preparación de SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-upload-de-sharphound-a-maquina-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Upload de SharpHound á máquina vítima
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2. Upload de SharpHound á máquina vítima">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima (Windows)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-execucion-de-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Execución de SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3. Execución de SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-windows_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima (Windows)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-descarga-do-ficheiro-zip-a-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Descarga do ficheiro ZIP á máquina atacante
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4. Descarga do ficheiro ZIP á máquina atacante">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima → Máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-recoleccion-con-bloodhound-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: Recolección con bloodhound-python
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opción B: Recolección con bloodhound-python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#26-execucion-de-bloodhound-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. Execución de bloodhound-python
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6. Execución de bloodhound-python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-instalacion-e-configuracion-de-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Instalación e configuración de BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Instalación e configuración de BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-instalacion-de-paquetes-necesarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Instalación de paquetes necesarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1. Instalación de paquetes necesarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-configuracion-de-java-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Configuración de Java 11
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-inicio-de-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Inicio de Neo4j
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-configuracion-inicial-de-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Configuración inicial de BloodHound
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-reinicio-e-posta-en-marcha-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Reinicio e posta en marcha final
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-acceso-a-interface-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Acceso á interface web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-importacion-de-datos-en-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Importación de datos en BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Importación de datos en BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-subir-datos-a-plataforma" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1. Subir datos á plataforma
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1. Subir datos á plataforma">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-analise-e-exploracion-con-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Análise e exploración con BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Análise e exploración con BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-buscar-obxectos-especificos" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Buscar obxectos específicos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1. Buscar obxectos específicos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-identificar-caminos-de-ataque" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Identificar camiños de ataque
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 1. Recopilación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 1. Recopilación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos-tipo-fase1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arp-scan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    arp-scan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3_4" id="__nav_2_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    nmap
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            nmap
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Xenérico
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nmap-sCV/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Opción -sCV
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nmap-nse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scripts NSE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whatweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    whatweb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../curl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    curl
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 2. Análise
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 2. Análise
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos-tipo-fase2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Enumeración/Fuzzing contidos web
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Enumeración/Fuzzing contidos web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dirb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    dirb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gobuster/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    gobuster
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wfuzz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wfuzz
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nikto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nikto
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../enum4linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    enum4linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../smbclient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    smbclient
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../showmount/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    showmount
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../redis-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    redis-cli
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongosh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mongosh
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../finger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    finger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../searchsploit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    searchsploit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exiftool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    exiftool
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wpscan/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wpscan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 3. Explotación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 3. Explotación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos-tipo-fase3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/hydra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hydra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh2john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ssh2john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    john
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../annex/hashcat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hashcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../nc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    nc/netcat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../revshells/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reverse Shells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SSH (Secure Shell)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ftp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FTP (File Transfer Protocol)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sqlmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    sqlmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../msfconsole/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Metasploit Framework (msfconsole)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../msfvenom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Xerar payloads/shells (msfvenom)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 4. Post‑explotación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 4. Post‑explotación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos-tipo-fase4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Comandos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/sudo-l/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    sudo -l
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/find/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    find
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/getcap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    getcap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/linpeas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    linpeas.sh
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/pspy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pspy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/cat_grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    cat/grep
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/su/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    su
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/base64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    base64
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/python_http_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python HTTP Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comandos_fase4/wget_curl_scp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    wget/curl/scp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD2
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2" id="__nav_3_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_1" id="__nav_3_1_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-doctor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Doctor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-fing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-shock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Shock
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-real/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Real
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-zero/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Zero
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-deploy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deploy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-node/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Node
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-noob/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Noob
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-look/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Look
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-beginner/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Beginner
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-share/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Share
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-plot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-wicca/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Wicca
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Robot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    First
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-mux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Mux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-infected/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Infected
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Agent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-hackingstation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hackingstation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-diff3r3nts3c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Diff3r3ntS3c
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-exec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exec
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-blogger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blogger
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower4
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-loweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Loweb
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower6
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-lower7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lower7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/resumo-ataque-indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_2" id="__nav_3_1_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Low, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Low, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-experience/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Experience
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-eternal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Eternal
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Build
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/resumo-ataque-indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_3" id="__nav_3_1_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Easy, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Easy, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-admin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Admin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-hosting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hosting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    War
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-store/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Store
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/resumo-ataque-indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2_4" id="__nav_3_1_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas virtuais nivel Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas virtuais nivel Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-controler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Controler
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-change/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Change
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/doc-vulnyx-misconfigured/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Misconfigured
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/resumo-ataque-indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resumo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_3" id="__nav_3_2_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/2-ATAQUE_ESPECIFICO_LLMNR_RESPONDER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LLMNR Responder
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/3-ATAQUE_ESPECIFICO_SEBACKUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SeBackup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/4-ATAQUE_ESPECIFICO_SEIMPERSONATE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SeImpersonate
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/5-ATAQUE_ESPECIFICO_ACLS_HELPDESK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ACLs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/7-ENUMERACION-LDAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enumeración AD
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introdución
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introdución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-ferramentas-de-recoleccion-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1. Ferramentas de recolección de datos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-recomendacion-que-ferramenta-usar" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2. Recomendación: Que ferramenta usar?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-fluxos-de-traballo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3. Fluxos de traballo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-recoleccion-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Recolección de datos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Recolección de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-recoleccion-con-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Recolección con SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opción A: Recolección con SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-preparacion-de-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Preparación de SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1. Preparación de SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-upload-de-sharphound-a-maquina-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Upload de SharpHound á máquina vítima
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2. Upload de SharpHound á máquina vítima">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima (Windows)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-execucion-de-sharphound" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Execución de SharpHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3. Execución de SharpHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-windows_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima (Windows)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-descarga-do-ficheiro-zip-a-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4. Descarga do ficheiro ZIP á máquina atacante
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4. Descarga do ficheiro ZIP á máquina atacante">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-vitima-maquina-atacante" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina vítima → Máquina atacante
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-recoleccion-con-bloodhound-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: Recolección con bloodhound-python
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opción B: Recolección con bloodhound-python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#26-execucion-de-bloodhound-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.6. Execución de bloodhound-python
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6. Execución de bloodhound-python">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-instalacion-e-configuracion-de-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Instalación e configuración de BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Instalación e configuración de BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-instalacion-de-paquetes-necesarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Instalación de paquetes necesarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1. Instalación de paquetes necesarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-configuracion-de-java-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Configuración de Java 11
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-inicio-de-neo4j" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Inicio de Neo4j
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-configuracion-inicial-de-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4. Configuración inicial de BloodHound
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-reinicio-e-posta-en-marcha-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5. Reinicio e posta en marcha final
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-acceso-a-interface-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6. Acceso á interface web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-importacion-de-datos-en-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Importación de datos en BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Importación de datos en BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-subir-datos-a-plataforma" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1. Subir datos á plataforma
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1. Subir datos á plataforma">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-analise-e-exploracion-con-bloodhound" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Análise e exploración con BloodHound
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Análise e exploración con BloodHound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-buscar-obxectos-especificos" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1. Buscar obxectos específicos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1. Buscar obxectos específicos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#maquina-atacante-kali-linux_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Máquina atacante (Kali Linux)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-identificar-caminos-de-ataque" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2. Identificar camiños de ataque
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="enumeracion-de-active-directory-ad-con-sharphoundbloodhound">Enumeración de Active Directory (AD) con SharpHound/BloodHound</h1>
+<h2 id="1-introducion">1. Introdución</h2>
+<p><strong>SharpHound</strong> e <strong>BloodHound</strong> son ferramentas complementarias deseñadas para analizar e visualizar a configuración de seguridade en entornos de Active Directory (AD). Permiten identificar rutas de ataque, escalada de privilexios e relacións entre obxectos de AD que poden ser explotadas.</p>
+<h3 id="11-ferramentas-de-recoleccion-de-datos">1.1. Ferramentas de recolección de datos</h3>
+<p>Existen dúas opcións principais para recopilar datos de Active Directory:  </p>
+<p><strong>1. SharpHound (Executable .NET para Windows)</strong><br />
+- <strong>Execútase:</strong> Na máquina vítima (Windows) con acceso directo<br />
+- <strong>Vantaxes:</strong> Recolle máis información, incluíndo sesións activas<br />
+- <strong>Saída:</strong> Xera un ficheiro ZIP<br />
+- <strong>Cando usar:</strong> Cando xa temos acceso á máquina Windows (shell/WinRM)  </p>
+<p><strong>2. bloodhound-python (Script Python para Linux)</strong><br />
+- <strong>Execútase:</strong> Na máquina atacante (Kali Linux) de forma remota<br />
+- <strong>Vantaxes:</strong> Non require upload de ferramentas nin acceso directo á máquina<br />
+- <strong>Saída:</strong> Xera ficheiros JSON directamente<br />
+- <strong>Cando usar:</strong> Cando só temos credenciais válidas pero non shell na máquina<br />
+- <strong>Limitación:</strong> Non recolle sesións activas  </p>
+<p><strong>BloodHound: Plataforma de análise</strong>  </p>
+<p>Os datos recompilados por calquera das dúas ferramentas anteriores (SharpHound ou bloodhound-python) procésanse e visualízanse mediante <strong>BloodHound</strong>, unha plataforma de análise que se executa na máquina atacante (Kali Linux). BloodHound permite visualizar graficamente as relacións e camiños de ataque dispoñibles no dominio de Active Directory.</p>
+<h3 id="12-recomendacion-que-ferramenta-usar">1.2. Recomendación: Que ferramenta usar?</h3>
+<table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Ferramenta recomendada</th>
+<th>Razón</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tes shell/WinRM na máquina Windows</td>
+<td><strong>SharpHound</strong></td>
+<td>Máis información (sesións activas)</td>
+</tr>
+<tr>
+<td>Só tes credenciais válidas</td>
+<td><strong>bloodhound-python</strong></td>
+<td>Non require acceso directo</td>
+</tr>
+<tr>
+<td>Queres evitar detección</td>
+<td><strong>bloodhound-python</strong></td>
+<td>Sen upload de executables</td>
+</tr>
+<tr>
+<td>Precisas datos completos de sesións</td>
+<td><strong>SharpHound</strong></td>
+<td>Única opción que recolle sesións</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Diferenzas entre SharpHound e bloodhound-python</p>
+<p><strong>SharpHound (Windows):</strong>  </p>
+<ul>
+<li>Executable .NET para Windows  </li>
+<li>Require acceso directo á máquina  </li>
+<li>Recóllese máis información (sesións activas)  </li>
+<li>Xerase ficheiro ZIP  </li>
+</ul>
+<p><strong>bloodhound-python (Linux):</strong>  </p>
+<ul>
+<li>Script Python para Linux  </li>
+<li>Traballa remotamente mediante LDAP  </li>
+<li>Non require acceso á máquina  </li>
+<li>Xera ficheiros JSON directamente  </li>
+<li>Non recolle sesións activas  </li>
+</ul>
+<p><strong>Vantaxes de bloodhound-python:</strong>  </p>
+<ul>
+<li>Execútase desde Kali  </li>
+<li>Non require upload de ferramentas  </li>
+<li>Útil cando non temos shell  </li>
+<li>Ideal para enumeración sen detección  </li>
+</ul>
+</div>
+<h3 id="13-fluxos-de-traballo">1.3. Fluxos de traballo</h3>
+<p><strong>Opción A: Usando SharpHound (con acceso á máquina)</strong><br />
+1. <strong>Máquina atacante:</strong> Descargar e preparar SharpHound<br />
+2. <strong>Máquina vítima:</strong> Subir e executar SharpHound para recompilar datos de AD<br />
+3. <strong>Máquina vítima → Máquina atacante:</strong> Descargar o ficheiro ZIP xerado<br />
+4. <strong>Máquina atacante:</strong> Instalar, configurar e executar BloodHound<br />
+5. <strong>Máquina atacante:</strong> Importar e analizar os datos en BloodHound  </p>
+<p><strong>Opción B: Usando bloodhound-python (sen acceso á máquina)</strong><br />
+1. <strong>Máquina atacante:</strong> Executar bloodhound-python con credenciais válidas<br />
+2. <strong>Máquina atacante:</strong> Recoller ficheiros JSON xerados<br />
+3. <strong>Máquina atacante:</strong> Instalar, configurar e executar BloodHound<br />
+4. <strong>Máquina atacante:</strong> Importar e analizar os datos en BloodHound  </p>
+<hr />
+<h2 id="2-recoleccion-de-datos">2. Recolección de datos</h2>
+<h3 id="opcion-a-recoleccion-con-sharphound">Opción A: Recolección con SharpHound</h3>
+<h4 id="21-preparacion-de-sharphound">2.1. Preparación de SharpHound</h4>
+<h5 id="maquina-atacante-kali-linux">Máquina atacante (Kali Linux)</h5>
+<ol>
+<li>
+<p>Descargar SharpHound desde GitHub<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/Downloads
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>wget<span class="w"> </span>https://github.com/SpecterOps/SharpHound/releases/download/v2.8.0/SharpHound_v2.8.0_windows_x86.zip
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Descomprimir<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>7z<span class="w"> </span>x<span class="w"> </span>SharpHound_v2.8.0_windows_x86.zip
+</span></code></pre></div></p>
+</li>
+</ol>
+<h4 id="22-upload-de-sharphound-a-maquina-vitima">2.2. Upload de SharpHound á máquina vítima</h4>
+<h5 id="maquina-vitima-windows">Máquina vítima (Windows)</h5>
+<p>Desde unha consola winrm (por exemplo, Evil-WinRM), subir SharpHound.exe desde a máquina atacante á máquina vítima:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="no">[usuario]</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="n">upload</span> <span class="p">/</span><span class="n">home</span><span class="p">/</span><span class="n">kali</span><span class="p">/</span><span class="n">Downloads</span><span class="p">/</span><span class="n">SharpHound</span><span class="p">.</span><span class="n">exe</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">Info</span><span class="p">:</span> <span class="n">Uploading</span> <span class="p">/</span><span class="n">home</span><span class="p">/</span><span class="n">kali</span><span class="p">/</span><span class="n">Downloads</span><span class="p">/</span><span class="n">SharpHound</span><span class="p">.</span><span class="n">exe</span> <span class="n">to</span> <span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="no">[usuario]</span><span class="p">\</span><span class="n">Documents</span><span class="p">\</span><span class="n">SharpHound</span><span class="p">.</span><span class="n">exe</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">Data</span><span class="p">:</span> <span class="n">1753768</span> <span class="n">bytes</span> <span class="n">of</span> <span class="n">1753768</span> <span class="n">bytes</span> <span class="n">copied</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">Info</span><span class="p">:</span> <span class="n">Upload</span> <span class="n">successful</span><span class="p">!</span>
+</span></code></pre></div>
+<h4 id="23-execucion-de-sharphound">2.3. Execución de SharpHound</h4>
+<h5 id="maquina-vitima-windows_1">Máquina vítima (Windows)</h5>
+<p>Desde a máquina vítima, dentro da consola winrm, executar SharpHound para recoller todos os datos de AD:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="no">[usuario]</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="p">.\</span><span class="n">SharpHound</span><span class="p">.</span><span class="n">exe</span> <span class="n">-c</span> <span class="n">All</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">1234567</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">This</span> <span class="n">version</span> <span class="n">of</span> <span class="n">SharpHound</span> <span class="n">is</span> <span class="n">compatible</span> <span class="n">with</span> <span class="n">the</span> <span class="n">5</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span> <span class="n">Release</span> <span class="n">of</span> <span class="n">BloodHound</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">2345678</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Resolved</span> <span class="n">Collection</span> <span class="n">Methods</span><span class="p">:</span> <span class="n">Group</span><span class="p">,</span> <span class="n">LocalAdmin</span><span class="p">,</span> <span class="n">GPOLocalGroup</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">LoggedOn</span><span class="p">,</span> <span class="n">Trusts</span><span class="p">,</span> <span class="n">ACL</span><span class="p">,</span> <span class="n">Container</span><span class="p">,</span> <span class="n">RDP</span><span class="p">,</span> <span class="n">ObjectProps</span><span class="p">,</span> <span class="n">DCOM</span><span class="p">,</span> <span class="n">SPNTargets</span><span class="p">,</span> <span class="n">PSRemote</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">3456789</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Initializing</span> <span class="n">SharpHound</span> <span class="n">at</span> <span class="n">10</span><span class="p">:</span><span class="n">33</span> <span class="n">AM</span> <span class="n">on</span> <span class="n">11</span><span class="p">/</span><span class="n">12</span><span class="p">/</span><span class="n">2025</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">4567890</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Flags</span><span class="p">:</span> <span class="n">Group</span><span class="p">,</span> <span class="n">LocalAdmin</span><span class="p">,</span> <span class="n">GPOLocalGroup</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">LoggedOn</span><span class="p">,</span> <span class="n">Trusts</span><span class="p">,</span> <span class="n">ACL</span><span class="p">,</span> <span class="n">Container</span><span class="p">,</span> <span class="n">RDP</span><span class="p">,</span> <span class="n">ObjectProps</span><span class="p">,</span> <span class="n">DCOM</span><span class="p">,</span> <span class="n">SPNTargets</span><span class="p">,</span> <span class="n">PSRemote</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">5678901</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Beginning</span> <span class="n">LDAP</span> <span class="n">search</span> <span class="k">for</span> <span class="n">control</span><span class="p">.</span><span class="n">nyx</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">6789012</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Producer</span> <span class="n">has</span> <span class="n">finished</span><span class="p">,</span> <span class="n">closing</span> <span class="n">LDAP</span> <span class="n">channel</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">7890123</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">LDAP</span> <span class="n">channel</span> <span class="n">closed</span><span class="p">,</span> <span class="n">waiting</span> <span class="k">for</span> <span class="n">consumers</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">33</span><span class="p">:</span><span class="n">40</span><span class="p">.</span><span class="n">1234567</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Status</span><span class="p">:</span> <span class="n">0</span> <span class="n">objects</span> <span class="n">finished</span> <span class="p">(+</span><span class="n">0</span> <span class="n">0</span><span class="p">)/</span><span class="n">s</span> <span class="p">--</span> <span class="n">Using</span> <span class="n">38MB</span> <span class="n">RAM</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">2345678</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Consumers</span> <span class="n">finished</span><span class="p">,</span> <span class="n">closing</span> <span class="n">output</span> <span class="n">channel</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">Closing</span> <span class="n">writers</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">3456789</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Output</span> <span class="n">channel</span> <span class="n">closed</span><span class="p">,</span> <span class="n">waiting</span> <span class="k">for</span> <span class="n">output</span> <span class="n">task</span> <span class="n">to</span> <span class="n">complete</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">4567890</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Status</span><span class="p">:</span> <span class="n">103</span> <span class="n">objects</span> <span class="n">finished</span> <span class="p">(+</span><span class="n">103</span> <span class="n">1</span><span class="p">.</span><span class="n">030</span><span class="p">)/</span><span class="n">s</span> <span class="p">--</span> <span class="n">Using</span> <span class="n">43MB</span> <span class="n">RAM</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">5678901</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Enumeration</span> <span class="n">finished</span> <span class="k">in</span> <span class="n">00</span><span class="p">:</span><span class="n">01</span><span class="p">:</span><span class="n">00</span><span class="p">.</span><span class="n">0123456</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">6789012</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">Saving</span> <span class="n">cache</span> <span class="n">with</span> <span class="n">stats</span><span class="p">:</span> <span class="n">59</span> <span class="n">ID</span> <span class="n">to</span> <span class="nb">type </span><span class="n">mappings</span><span class="p">.</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a> <span class="n">0</span> <span class="n">name</span> <span class="n">to</span> <span class="n">SID</span> <span class="n">mappings</span><span class="p">.</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a> <span class="n">1</span> <span class="n">machine</span> <span class="n">sid</span> <span class="n">mappings</span><span class="p">.</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a> <span class="n">3</span> <span class="n">sid</span> <span class="n">to</span> <span class="n">domain</span> <span class="n">mappings</span><span class="p">.</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a> <span class="n">0</span> <span class="n">global</span> <span class="n">catalog</span> <span class="n">mappings</span><span class="p">.</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="n">2025</span><span class="p">-</span><span class="n">11</span><span class="p">-</span><span class="n">12T10</span><span class="p">:</span><span class="n">34</span><span class="p">:</span><span class="n">09</span><span class="p">.</span><span class="n">7890123</span><span class="p">-</span><span class="n">00</span><span class="p">:</span><span class="n">00</span><span class="p">|</span><span class="n">INFORMATION</span><span class="p">|</span><span class="n">SharpHound</span> <span class="n">Enumeration</span> <span class="n">Completed</span> <span class="n">at</span> <span class="n">10</span><span class="p">:</span><span class="n">34</span> <span class="n">AM</span> <span class="n">on</span> <span class="n">11</span><span class="p">/</span><span class="n">12</span><span class="p">/</span><span class="n">2025</span><span class="p">!</span> <span class="n">Happy</span> <span class="n">Graphing</span><span class="p">!</span>
+</span></code></pre></div>
+<p><strong>Ficheiro ZIP xerado:</strong> <code>20251112103309_BloodHound.zip</code></p>
+<h4 id="24-descarga-do-ficheiro-zip-a-maquina-atacante">2.4. Descarga do ficheiro ZIP á máquina atacante</h4>
+<h5 id="maquina-vitima-maquina-atacante">Máquina vítima → Máquina atacante</h5>
+<p>Desde a máquina vítima, descargar á máquina atacante o ficheiro ZIP conseguido por SharpHound con datos para importar en BloodHound:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="no">[usuario]</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="n">download</span> <span class="n">20251112103309_BloodHound</span><span class="p">.</span><span class="n">zip</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">Info</span><span class="p">:</span> <span class="n">Downloading</span> <span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="no">[usuario]</span><span class="p">\</span><span class="n">Documents</span><span class="p">\</span><span class="n">20251112103309_BloodHound</span><span class="p">.</span><span class="n">zip</span> <span class="n">to</span> <span class="n">20251112103309_BloodHound</span><span class="p">.</span><span class="n">zip</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">Info</span><span class="p">:</span> <span class="n">Download</span> <span class="n">successful</span><span class="p">!</span>
+</span></code></pre></div>
+<hr />
+<h3 id="opcion-b-recoleccion-con-bloodhound-python">Opción B: Recolección con bloodhound-python</h3>
+<h4 id="26-execucion-de-bloodhound-python">2.6. Execución de bloodhound-python</h4>
+<h5 id="maquina-atacante-kali-linux_1">Máquina atacante (Kali Linux)</h5>
+<p>Desde a máquina atacante tamén podemos recoller datos se temos credenciais dun usuario do dominio. Para iso, empregamos bloodhound-python:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bloodhound-python<span class="w"> </span>-c<span class="w"> </span>All<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">                  </span>-u<span class="w"> </span><span class="s1">&#39;[usuario]&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">                  </span>-p<span class="w"> </span><span class="s1">&#39;[contrasinal]&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">                  </span>-ns<span class="w"> </span>IP_AD<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">                  </span>-d<span class="w"> </span>domain
+</span></code></pre></div>
+<p><strong>Ficheiros JSON xerados:</strong><br />
+- <code>computers.json</code><br />
+- <code>domains.json</code><br />
+- <code>groups.json</code><br />
+- <code>users.json</code><br />
+- <code>containers.json</code>  </p>
+<div class="admonition note">
+<p class="admonition-title">Diferenza de saída</p>
+<p>Con SharpHound obtemos un arquivo ZIP único, mentres que con bloodhound-python obtemos múltiples arquivos JSON que deberemos subir individualmente a BloodHound (ou todos de vez).</p>
+</div>
+<hr />
+<h2 id="4-instalacion-e-configuracion-de-bloodhound">4. Instalación e configuración de BloodHound</h2>
+<h3 id="41-instalacion-de-paquetes-necesarios">4.1. Instalación de paquetes necesarios</h3>
+<h4 id="maquina-atacante-kali-linux_2">Máquina atacante (Kali Linux)</h4>
+<ol>
+<li>
+<p>Actualizar sistema<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Instalar Neo4j<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>neo4j
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Instalar BloodHound<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>bloodhound
+</span></code></pre></div></p>
+</li>
+</ol>
+<h3 id="42-configuracion-de-java-11">4.2. Configuración de Java 11</h3>
+<ol>
+<li>
+<p>Ver versións de Java dispoñibles<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--config<span class="w"> </span>java
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Seleccionar Java 11  </p>
+</li>
+</ol>
+<p>Escoller selección 1 (/usr/lib/jvm/java-11-openjdk-amd64/bin/java)<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>There<span class="w"> </span>are<span class="w"> </span><span class="m">2</span><span class="w"> </span>choices<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>alternative<span class="w"> </span>java<span class="w"> </span><span class="o">(</span>providing<span class="w"> </span>/usr/bin/java<span class="o">)</span>.
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>Selection<span class="w">    </span>Path<span class="w">                                         </span>Priority<span class="w">   </span>Status
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>------------------------------------------------------------
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>*<span class="w"> </span><span class="m">0</span><span class="w">            </span>/usr/lib/jvm/java-21-openjdk-amd64/bin/java<span class="w">   </span><span class="m">2111</span><span class="w">      </span>auto<span class="w"> </span>mode
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="m">1</span><span class="w">            </span>/usr/lib/jvm/java-11-openjdk-amd64/bin/java<span class="w">   </span><span class="m">1111</span><span class="w">      </span>manual<span class="w"> </span>mode
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="m">2</span><span class="w">            </span>/usr/lib/jvm/java-21-openjdk-amd64/bin/java<span class="w">   </span><span class="m">2111</span><span class="w">      </span>manual<span class="w"> </span>mode
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>Press<span class="w"> </span>&lt;enter&gt;<span class="w"> </span>to<span class="w"> </span>keep<span class="w"> </span>the<span class="w"> </span>current<span class="w"> </span>choice<span class="o">[</span>*<span class="o">]</span>,<span class="w"> </span>or<span class="w"> </span><span class="nb">type</span><span class="w"> </span>selection<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div></p>
+<h3 id="43-inicio-de-neo4j">4.3. Inicio de Neo4j</h3>
+<ol>
+<li>Iniciar servizo Neo4j<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sudo<span class="w"> </span>neo4j<span class="w"> </span>console
+</span></code></pre></div></li>
+</ol>
+<p><strong>Deixar esta terminal aberta e abrir outra terminal</strong></p>
+<h3 id="44-configuracion-inicial-de-bloodhound">4.4. Configuración inicial de BloodHound</h3>
+<ol>
+<li><strong>Primeira execución de BloodHound:</strong>  </li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>bloodhound
+</span></code></pre></div>
+<p><strong>Proceso de configuración inicial:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>It seems it&#39;s the first time you run bloodhound
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Please run bloodhound-setup first
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Do you want to run bloodhound-setup now? [Y/n] Y
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>[*] Starting PostgreSQL service
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>[*] Creating Database
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>[*] Starting neo4j
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>Neo4j is running at pid 5416
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>[i] You need to change the default password for neo4j
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    Default credentials are user:neo4j password:neo4j
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>[!] IMPORTANT: Once you have setup the new password, please update /etc/bhapi/bhapi.json with the new password before running bloodhound
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>opening http://localhost:7474/
+</span></code></pre></div>
+<ol>
+<li><strong>Cambiar contrasinal de Neo4j:</strong>  </li>
+</ol>
+<p>A. Ábrese navegador en <code>http://localhost:7474/</code><br />
+B. Login con: <code>neo4j</code> / <code>neo4j</code><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/credenciais-neo4j.png" /><br />
+C. Cambiar contrasinal (exemplo: <code>abc123.</code>)<br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/credenciais-neo4j-2.png" />  </p>
+<ol>
+<li><strong>Actualizar configuración de BloodHound:</strong>  </li>
+</ol>
+<p>A. Editar ficheiro de configuración<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/bhapi/bhapi.json
+</span></code></pre></div></p>
+<p>B. <strong>Modificar o campo <code>neo4j.secret</code>:</strong>  </p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">&quot;neo4j&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">&quot;addr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;localhost:7687&quot;</span><span class="p">,</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;neo4j&quot;</span><span class="p">,</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abc123.&quot;</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="45-reinicio-e-posta-en-marcha-final">4.5. Reinicio e posta en marcha final</h3>
+<ol>
+<li>
+<p><strong>Parar procesos</strong><br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sudo<span class="w"> </span>pkill<span class="w"> </span>-f<span class="w"> </span>bloodhound
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>sudo<span class="w"> </span>pkill<span class="w"> </span>-f<span class="w"> </span>neo4j
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Iniciar Neo4j en background</strong><br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>neo4j<span class="w"> </span>console<span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nb">disown</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Iniciar BloodHound</strong><br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>bloodhound
+</span></code></pre></div></p>
+</li>
+</ol>
+<h3 id="46-acceso-a-interface-web">4.6. Acceso á interface web</h3>
+<p><strong>Interface web de BloodHound:</strong>  </p>
+<p>Ábrese automaticamente en: <code>http://127.0.0.1:8080/ui/login</code></p>
+<ol>
+<li>
+<p>Login con: <code>admin</code> / <code>admin</code><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-1.png" />  </p>
+</li>
+<li>
+<p>Cambiar contrasinal na primeira autenticación  </p>
+</li>
+<li>Requisitos: mínimo 8 caracteres, maiúsculas, minúsculas, números<br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-2.png" /><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-3.png" />  </li>
+</ol>
+<hr />
+<h2 id="5-importacion-de-datos-en-bloodhound">5. Importación de datos en BloodHound</h2>
+<h3 id="51-subir-datos-a-plataforma">5.1. Subir datos á plataforma</h3>
+<h4 id="maquina-atacante-kali-linux_3">Máquina atacante (Kali Linux)</h4>
+<p><strong>Na interface web:</strong>  </p>
+<ol>
+<li>
+<p>Click en "Upload Data" (icona de nube arriba á dereita)  </p>
+</li>
+<li>
+<p><strong>Segundo a ferramenta usada:</strong>  </p>
+</li>
+<li><strong>SharpHound:</strong> Seleccionar ficheiro <code>20251112103309_BloodHound.zip</code>  </li>
+<li><strong>bloodhound-python:</strong> Seleccionar todos os ficheiros JSON xerados (pódense subir todos á vez)  </li>
+</ol>
+<p><img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-4.png" />  </p>
+<ol>
+<li>
+<p>Ou arrastralos directamente á interface<br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-5.png" />  </p>
+</li>
+<li>
+<p>Esperar a que se procesen os datos (1-2 minutos)  </p>
+</li>
+</ol>
+<hr />
+<h2 id="6-analise-e-exploracion-con-bloodhound">6. Análise e exploración con BloodHound</h2>
+<div class="admonition tip">
+<p class="admonition-title">No exemplo empregado...</p>
+<p>[DOMAIN]=CONTROL.NYX<br />
+[usuario]=[USUARIO]=Usuario do dominio  </p>
+</div>
+<h3 id="61-buscar-obxectos-especificos">6.1. Buscar obxectos específicos</h3>
+<h4 id="maquina-atacante-kali-linux_4">Máquina atacante (Kali Linux)</h4>
+<p><strong>Buscar usuario [usuario]:</strong>  </p>
+<ol>
+<li>
+<p>Na barra de busca: escribir <code>user:[usuario]</code><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-6.png" />  </p>
+</li>
+<li>
+<p>Seleccionar nodo <strong>[USUARIO]@[DOMAIN]</strong><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-7.png" />  </p>
+</li>
+<li>
+<p>Botón dereito → <strong>Set as Starting Node</strong><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-8.png" />  </p>
+</li>
+</ol>
+<h3 id="62-identificar-caminos-de-ataque">6.2. Identificar camiños de ataque</h3>
+<p><strong>Buscar camiños a Domain Admin:</strong>  </p>
+<ol>
+<li>
+<p>Seleccionar "Pathfinding" no menú lateral  </p>
+</li>
+<li>
+<p>En "Destination Node" escribir: <code>ADMINISTRATOR@[DOMAIN]</code><br />
+<img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-10.png" />  </p>
+</li>
+</ol>
+<p><strong>Ruta identificada:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>[USUARIO]@[DOMAIN]
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    ↓
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>  AllExtendedRights
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>    ↓
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>[DOMAIN]
+</span></code></pre></div>
+<p><img alt="Fig. Login" src="../../../practicas-taller/images/vulnyx/bloodhound/bloodhound-ce-11.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

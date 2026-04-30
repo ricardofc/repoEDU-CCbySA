@@ -1,0 +1,3375 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../wifi-sae/">
+      
+      
+        <link rel="next" href="1-ATAQUE_WPA2_PSK/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>README - Hacking Ético - UD4 - O hacking ético nas redes sen fíos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#laboratorio-vulnerable-wi-fi-vuln-wifilab-con-vagrant-e-mac80211_hwsim" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-header__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              README
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/modo-22000/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../wifi-psk/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD4
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD4 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD4 - O hacking ético nas redes sen fíos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/modo-22000/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato WPA*02 (hashcat modo 22000)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/modo-5500/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Formato NetNTLMv1 (hashcat modo 5500)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio vuln-wifi.lab
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio vuln-wifi.lab
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/GUIA_VISUAL_ATAQUES_WIFI_all/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía Visual de Ataques WiFi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD4
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD4
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-psk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (PSK)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-eap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 (EAP)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-sae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 (SAE)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab Wi-Fi
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab Wi-Fi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#aviso-legal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aviso Legal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taboa-de-contidos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa de Contidos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#caracteristicas-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características Principais
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Previos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requisitos Previos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-necesario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Necesario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hardware Recomendado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-rapida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación Rápida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instalación Rápida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-clonar-o-repositorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Clonar o Repositorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-iniciar-a-maquina-virtual" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Iniciar a Máquina Virtual
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-acceder-a-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Acceder á VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-primeira-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Primeira Execución
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indice-de-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Índice de Prácticas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Índice de Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#correspondencia-entre-manuais-pdf-e-escenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Correspondencia entre Manuais PDF e Escenarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Correspondencia entre Manuais PDF e Escenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bloque-1-wpa2-psk" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 1: WPA2-PSK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloque-2-wpa2-enterprise-eap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 2: WPA2-Enterprise (EAP)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloque-3-wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 3: WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uso-basico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso Básico
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uso Básico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-comezar-unha-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Comezar unha Práctica
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Como Comezar unha Práctica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-1-seguindo-o-manual-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 1: Seguindo o Manual PDF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodo-2-exploracion-libre" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 2: Exploración Libre
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-de-wifilabctl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de wifilabctl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comandos de wifilabctl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#listar-escenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Listar Escenarios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iniciar-un-escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iniciar un Escenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-estado-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ver Estado do Laboratorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-logs-en-tempo-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ver Logs en Tempo Real
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deter-e-limpar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deter e Limpar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnosticar-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagnosticar Problemas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#makefile" class="md-nav__link">
+    <span class="md-ellipsis">
+      Makefile
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Makefile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comandos-disponibles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos Dispoñibles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-fluxo-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo de Fluxo Completo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparacion-de-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparación de Prácticas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparación de Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taboa-comparativa-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa Comparativa de Vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumo-por-tecnoloxia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo por Tecnoloxía
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo por Tecnoloxía">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wpa2-psk" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA2-PSK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wpa2-eap" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA2-EAP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura do Laboratorio
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estrutura do Laboratorio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dentro-da-vm-homekaliwifilab" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dentro da VM (/home/kali/wifiLab/)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolución de Problemas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolución de Problemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problemas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problemas Comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problemas Comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-non-hai-namespaces-wifi-activos" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. "Non hai namespaces wifi activos"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-radius-server-not-responding" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. "RADIUS server not responding"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-hostapd-mana-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. "hostapd-mana: not found"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-airodump-ng-interface-wlan2mon-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. "airodump-ng: interface wlan2mon not found"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-vagrant-ssh-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. "Vagrant SSH not working"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Diagnóstico
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinicio-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reinicio Completo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actualizacion-e-mantemento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actualización e Mantemento
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actualización e Mantemento">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actualizar-o-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actualizar o Laboratorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desinstalacion-completa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desinstalación Completa
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencias
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Referencias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentacion-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentación Oficial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#investigacion-e-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Investigación e Vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ferramentas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manuais-pdf-do-taller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manuais PDF do Taller
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_2" id="__nav_3_2_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-1.2-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-1.3-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 PSK PMKID
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="2-ATAQUE_WPA2_EAP_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="2-ATAQUE_WPA2_EAP_MITM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA2 EAP MITM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-2.1-ATAQUE_WPA2_EAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA2 EAP  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="3.1-ATAQUE_WPA3_SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-3.1-ATAQUE_WPA3-SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE KRACK
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE KRACK  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WPA3 SAE downgrade WPA2 PSK EVIL TWIN
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    — wifite WPA3 SAE downgrade WPA2 PSK(EAP) EVIL TWIN  — NON SOPORTADO
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#aviso-legal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aviso Legal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taboa-de-contidos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa de Contidos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#caracteristicas-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características Principais
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Previos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requisitos Previos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-necesario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Necesario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-recomendado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hardware Recomendado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-rapida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación Rápida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instalación Rápida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-clonar-o-repositorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Clonar o Repositorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-iniciar-a-maquina-virtual" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Iniciar a Máquina Virtual
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-acceder-a-vm" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Acceder á VM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-primeira-execucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Primeira Execución
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indice-de-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Índice de Prácticas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Índice de Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#correspondencia-entre-manuais-pdf-e-escenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Correspondencia entre Manuais PDF e Escenarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Correspondencia entre Manuais PDF e Escenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bloque-1-wpa2-psk" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 1: WPA2-PSK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloque-2-wpa2-enterprise-eap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 2: WPA2-Enterprise (EAP)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bloque-3-wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bloque 3: WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uso-basico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uso Básico
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Uso Básico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-comezar-unha-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Comezar unha Práctica
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Como Comezar unha Práctica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-1-seguindo-o-manual-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 1: Seguindo o Manual PDF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodo-2-exploracion-libre" class="md-nav__link">
+    <span class="md-ellipsis">
+      Método 2: Exploración Libre
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-de-wifilabctl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de wifilabctl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comandos de wifilabctl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#listar-escenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Listar Escenarios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iniciar-un-escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iniciar un Escenario
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-estado-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ver Estado do Laboratorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-logs-en-tempo-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ver Logs en Tempo Real
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deter-e-limpar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deter e Limpar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnosticar-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagnosticar Problemas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#makefile" class="md-nav__link">
+    <span class="md-ellipsis">
+      Makefile
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Makefile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comandos-disponibles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos Dispoñibles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-fluxo-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo de Fluxo Completo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparacion-de-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparación de Prácticas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparación de Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taboa-comparativa-de-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Táboa Comparativa de Vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumo-por-tecnoloxia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo por Tecnoloxía
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo por Tecnoloxía">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wpa2-psk" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA2-PSK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wpa2-eap" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA2-EAP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wpa3-sae" class="md-nav__link">
+    <span class="md-ellipsis">
+      WPA3-SAE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-do-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estrutura do Laboratorio
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estrutura do Laboratorio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dentro-da-vm-homekaliwifilab" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dentro da VM (/home/kali/wifiLab/)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolución de Problemas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resolución de Problemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problemas-comuns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problemas Comúns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problemas Comúns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-non-hai-namespaces-wifi-activos" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. "Non hai namespaces wifi activos"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-radius-server-not-responding" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. "RADIUS server not responding"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-hostapd-mana-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. "hostapd-mana: not found"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-airodump-ng-interface-wlan2mon-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. "airodump-ng: interface wlan2mon not found"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-vagrant-ssh-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. "Vagrant SSH not working"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Diagnóstico
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinicio-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reinicio Completo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actualizacion-e-mantemento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actualización e Mantemento
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actualización e Mantemento">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actualizar-o-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actualizar o Laboratorio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desinstalacion-completa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desinstalación Completa
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencias
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Referencias">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentacion-oficial" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentación Oficial
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#investigacion-e-vulnerabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Investigación e Vulnerabilidades
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ferramentas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manuais-pdf-do-taller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manuais PDF do Taller
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="laboratorio-vulnerable-wi-fi-vuln-wifilab-con-vagrant-e-mac80211_hwsim">Laboratorio Vulnerable Wi-Fi (vuln-wifi.lab) con Vagrant e mac80211_hwsim</h1>
+<div class="admonition important">
+<p class="admonition-title"><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank"><img alt="Licenza" src="https://img.shields.io/badge/Licenza-CC%20BY--SA%204.0-lightgrey.svg" /></a> <a href="https://www.kali.org/" target="_blank"><img alt="Kali Linux" src="https://img.shields.io/badge/Kali-Rolling-557C94.svg" /></a> <a href="https://www.virtualbox.org/" target="_blank"><img alt="VirtualBox" src="https://img.shields.io/badge/VirtualBox-7.0%2B-blue.svg" /></a> <a href="https://www.vagrantup.com/" target="_blank"><img alt="Vagrant" src="https://img.shields.io/badge/Vagrant-2.3%2B-1868F2.svg" /></a></p>
+<p><strong>Laboratorio automatizado para prácticas de Hacking Ético Wi-Fi baseado en Vagrant, VirtualBox e mac80211_hwsim</strong></p>
+<p>Este laboratorio está estruturado para coincidir cos manuais PDF do repositorio <a href="https://github.com/ricardofc/repoEDU-CCbySA/tree/main/HE/Taller/Wi-Fi/" target="_blank">repoEDU-CCbySA - HE - Wi-Fi</a></p>
+</div>
+<h2 id="aviso-legal">Aviso Legal</h2>
+<div class="admonition warning">
+<p class="admonition-title"><strong>IMPORTANTE:</strong> Este laboratorio é <strong>EXCLUSIVAMENTE</strong> para fins educativos.</p>
+<p>O autor do presente documento <strong>declina calquera responsabilidade</strong> asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+<p><strong>NON EXPOÑAS ESTA MÁQUINA A INTERNET.</strong> </p>
+<p>Usos permitidos e non permitidos:</p>
+<ul>
+<li>
+<p>✅ Permitido: uso en contornas virtuais controladas con permiso do administrador  </p>
+</li>
+<li>
+<p>✅ Permitido: aprendizaxe e formación en ciberseguridade  </p>
+</li>
+<li>
+<p>❌ PROHIBIDO: uso contra redes reais sen autorización explícita e por escrito  </p>
+</li>
+<li>
+<p>❌ PROHIBIDO: distribución de ferramentas ou técnicas con fins maliciosos  </p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="taboa-de-contidos">Táboa de Contidos</h2>
+<ul>
+<li>
+<p><a href="#caracteristicas-principais">Características Principais</a>  </p>
+</li>
+<li>
+<p><a href="#requisitos-previos">Requisitos Previos</a>  </p>
+</li>
+<li>
+<p><a href="#instalacion-rapida">Instalación Rápida</a>  </p>
+</li>
+<li>
+<p><a href="#indice-de-practicas">Índice de Prácticas</a>  </p>
+</li>
+<li>
+<p><a href="#uso-basico">Uso Básico</a>  </p>
+</li>
+<li>
+<p><a href="#comandos-de-wifilabctl">Comandos de wifilabctl</a>  </p>
+</li>
+<li>
+<p><a href="#makefile">Makefile</a>  </p>
+</li>
+<li>
+<p><a href="#comparacion-de-practicas">Comparación de Prácticas</a>  </p>
+</li>
+<li>
+<p><a href="#estrutura-do-laboratorio">Estrutura do Laboratorio</a>  </p>
+</li>
+<li>
+<p><a href="#resolucion-de-problemas">Resolución de Problemas</a>  </p>
+</li>
+<li>
+<p><a href="#aviso-legal">Aviso Legal</a>  </p>
+</li>
+<li>
+<p><a href="#referencias">Referencias</a>  </p>
+</li>
+</ul>
+<hr />
+<h2 id="caracteristicas-principais">Características Principais</h2>
+<ul>
+<li>
+<p>Automatización completa mediante <code>vagrant up</code>  </p>
+</li>
+<li>
+<p>6 escenarios preconfigurados listos para usar  </p>
+</li>
+<li>
+<p>Simulación realista con <code>mac80211_hwsim</code> (sen hardware físico)  </p>
+</li>
+<li>
+<p>Namespaces de rede para illamento total  </p>
+</li>
+<li>
+<p>Ferramentas preinstaladas: <code>aircrack-ng</code>, <code>hostapd</code>, <code>hostapd-wpe</code>, <code>hostapd-mana</code>, <code>FreeRADIUS</code>, <code>dragondrain</code>, <code>hcxdumptool</code>  </p>
+</li>
+<li>
+<p>Dúas modalidades de guías por práctica: manual detallada e versión automatizada con <code>wifite</code>  </p>
+</li>
+<li>
+<p>Compatible con PDFs oficiais do repositorio HE  </p>
+</li>
+</ul>
+<hr />
+<h2 id="requisitos-previos">Requisitos Previos</h2>
+<h3 id="software-necesario">Software Necesario</h3>
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>Versión Mínima</th>
+<th>Enlace de Descarga</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VirtualBox</strong></td>
+<td>7.0+</td>
+<td><a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">virtualbox.org</a></td>
+</tr>
+<tr>
+<td><strong>Vagrant</strong></td>
+<td>2.3+</td>
+<td><a href="https://www.vagrantup.com/downloads" target="_blank">vagrantup.com</a></td>
+</tr>
+<tr>
+<td><strong>Git</strong></td>
+<td>2.0+</td>
+<td><a href="https://git-scm.com/downloads" target="_blank">git-scm.com</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="hardware-recomendado">Hardware Recomendado</h3>
+<ul>
+<li>
+<p>RAM: 8 GB (mínimo 6 GB libres para a VM)  </p>
+</li>
+<li>
+<p>CPU: 4 cores (2 cores para a VM)  </p>
+</li>
+<li>
+<p>Disco: 20 GB libres  </p>
+</li>
+<li>
+<p>OS: Windows 10/11, macOS 11+, GNU/Linux (Debian 12+)  </p>
+</li>
+</ul>
+<hr />
+<h2 id="instalacion-rapida">Instalación Rápida</h2>
+<h3 id="1-clonar-o-repositorio">1. Clonar o Repositorio</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ricardofc/vuln-wifi.lab.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>vuln-wifi.lab
+</span></code></pre></div>
+<h3 id="2-iniciar-a-maquina-virtual">2. Iniciar a Máquina Virtual</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>up
+</span></code></pre></div>
+<p>Tempo estimado: 15-20 minutos (primeira execución).</p>
+<h3 id="3-acceder-a-vm">3. Acceder á VM</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>make<span class="w"> </span>ssh
+</span></code></pre></div>
+<h3 id="4-primeira-execucion">4. Primeira Execución</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Verificar instalación</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>doctor
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Listar escenarios dispoñibles</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>list
+</span></code></pre></div>
+<p>Saída esperada:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ID                   Descrición
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>------------------------------------------------------------
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>psk                  WPA2-PSK: Ataque de dicionario offline
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>psk_pmf              WPA2-PSK con PMF: Protección básica contra deauth
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>eap_evil_twin        WPA2-EAP: Evil Twin sen validación de certificados
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>eap_mitm             WPA2-EAP: Man-in-the-Middle con hostapd-mana
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>wpa3_sae             WPA3-SAE: Auditoría de contrasinal (resistente a ataques offline)
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>wpa3_sae_vulnerable  WPA3-SAE vulnerable (hostapd 2.7) + Evil Twin WPA2-PSK + Dragondrain DoS
+</span></code></pre></div>
+<hr />
+<h2 id="indice-de-practicas">Índice de Prácticas</h2>
+<h3 id="correspondencia-entre-manuais-pdf-e-escenarios">Correspondencia entre Manuais PDF e Escenarios</h3>
+<p>Cada práctica dispón de <strong>dúas guías complementarias</strong>: a guía manual detallada (paso a paso, como o PDF) e a guía con <code>wifite</code> (ferramenta automatizada). Ambas traballan co mesmo escenario <code>wifilabctl</code>.</p>
+<h4 id="bloque-1-wpa2-psk">Bloque 1: WPA2-PSK</h4>
+<blockquote>
+<p>4 PDFs → 3 guías manuais + 3 guías Wifite. Os PDFs 1.3 e 1.4 comparten guía manual (<code>1.3</code>) porque cobren o mesmo ataque PMKID: o PDF-1.3 usa o escenario <code>psk</code> (sen PMF) e o PDF-1.4 usa <code>psk_pmf</code> (con <code>ieee80211w=2</code>), demostrando que PMF <strong>non protexe</strong> contra PMKID.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Manual PDF</th>
+<th>Escenario</th>
+<th>Guía Manual</th>
+<th>Guía Wifite</th>
+<th>Descrición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1-Taller-HE-Practica-WiFi-1.pdf</strong></td>
+<td><code>psk</code></td>
+<td><code>1-ATAQUE_WPA2_PSK.md</code></td>
+<td><code>wifite-1-ATAQUE_WPA2_PSK.md</code></td>
+<td>Captura de handshake 4-Way + cracking offline con <code>aircrack-ng</code></td>
+</tr>
+<tr>
+<td><strong>1-Taller-HE-Practica-WiFi-2.pdf</strong></td>
+<td><code>psk_pmf</code></td>
+<td><code>1.2-ATAQUE_WPA2_PSK_PMF.md</code></td>
+<td><code>wifite-1.2-ATAQUE_WPA2_PSK_PMF.md</code></td>
+<td>PMF (<code>ieee80211w=2</code>): as tramas de deauth van cifradas, o ataque falla</td>
+</tr>
+<tr>
+<td><strong>1-Taller-HE-Practica-WiFi-3.pdf</strong></td>
+<td><code>psk</code></td>
+<td><code>1.3-ATAQUE_WPA2_PSK_PMKID.md</code></td>
+<td><code>wifite-1.3-ATAQUE_WPA2_PSK_PMKID.md</code></td>
+<td>PMKID silencioso con <code>hcxdumptool</code> + <code>hashcat -m 22000</code> (AP sen PMF)</td>
+</tr>
+<tr>
+<td><strong>1-Taller-HE-Practica-WiFi-4.pdf</strong></td>
+<td><code>psk_pmf</code></td>
+<td><code>1.3-ATAQUE_WPA2_PSK_PMKID.md</code></td>
+<td><code>wifite-1.3-ATAQUE_WPA2_PSK_PMKID.md</code></td>
+<td>PMKID con <code>ieee80211w=2</code> activo: PMF <strong>non</strong> protexe contra PMKID</td>
+</tr>
+</tbody>
+</table>
+<p>As catro prácticas do Bloque 1 diferéncianse polo método de captura e o escenario:</p>
+<ul>
+<li>
+<p><strong>PDF 1.1</strong> (<code>psk</code>): deautenticación con <code>aireplay-ng</code> → captura do handshake 4-Way → cracking offline con <code>aircrack-ng</code></p>
+</li>
+<li>
+<p><strong>PDF 1.2</strong> (<code>psk_pmf</code>): o AP ten <code>ieee80211w=2</code> → as tramas de deauth van <strong>cifradas</strong> e son descartadas polo cliente; o ataque falla; verifícase con <code>tshark</code> e logs de <code>wpa_supplicant</code></p>
+</li>
+<li>
+<p><strong>PDF 1.3</strong> (<code>psk</code>): <code>hcxdumptool</code> envía Association Requests e captura o PMKID en 15-30 s → cracking offline con <code>hashcat -m 22000</code>; non require deautenticar ao cliente; AP <strong>sen</strong> PMF</p>
+</li>
+<li>
+<p><strong>PDF 1.4</strong> (<code>psk_pmf</code>): mesmo ataque PMKID co AP e cliente en <code>ieee80211w=2</code> → demostra que <strong>PMF non protexe contra PMKID</strong>; <code>hcxdumptool</code> captura o PMKID igualmente</p>
+</li>
+</ul>
+<h4 id="bloque-2-wpa2-enterprise-eap">Bloque 2: WPA2-Enterprise (EAP)</h4>
+<blockquote>
+<p>3 PDFs → 2 guías manuais + 1 guía Wifite (a práctica 2.1 é demostración de limitacións de Wifite). O PDF 2.1 (setup e funcionamento de FreeRADIUS) só ten guía Wifite, que demostra que Wifite descarta automaticamente obxectivos <code>WPA-E</code> sen realizar ningún ataque.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Manual PDF</th>
+<th>Escenario</th>
+<th>Guía Manual</th>
+<th>Guía Wifite</th>
+<th>Descrición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2-Taller-HE-Practica-WiFi-1.pdf</strong></td>
+<td><code>eap_mitm</code></td>
+<td>—</td>
+<td><code>wifite-2.1-ATAQUE_WPA2_EAP.md</code></td>
+<td>Setup FreeRADIUS + AP WPA2-EAP + cliente; Wifite detecta <code>WPA-E</code> e descarta o obxectivo automaticamente</td>
+</tr>
+<tr>
+<td><strong>2-Taller-HE-Practica-WiFi-2.pdf</strong></td>
+<td><code>eap_evil_twin</code></td>
+<td><code>2-ATAQUE_WPA2_EAP_EVIL_TWIN.md</code></td>
+<td><code>—</code></td>
+<td>Evil Twin con <code>hostapd-wpe</code>: captura hash MSCHAPv2 + cracking con <code>hashcat -m 5500</code></td>
+</tr>
+<tr>
+<td><strong>2-Taller-HE-Practica-WiFi-3.pdf</strong></td>
+<td><code>eap_mitm</code></td>
+<td><code>2-ATAQUE_WPA2_EAP_MITM.md</code></td>
+<td><code>—</code></td>
+<td>MITM con <code>hostapd-mana</code>: relay RADIUS + captura de tráfico con <code>mitmproxy</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="bloque-3-wpa3-sae">Bloque 3: WPA3-SAE</h4>
+<blockquote>
+<p>3 PDFs → 3 guías manuais + 3 guías Wifite. Wifite non pode executar ningún dos ataques avanzados de WPA3; as súas guías documentan as limitacións da ferramenta.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Manual PDF</th>
+<th>Escenario</th>
+<th>Guía Manual</th>
+<th>Guía Wifite</th>
+<th>Descrición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3-Taller-HE-Practica-WiFi-1.pdf</strong></td>
+<td><code>wpa3_sae</code></td>
+<td><code>3.1-ATAQUE_WPA3_SAE.md</code></td>
+<td><code>wifite-3.1-ATAQUE_WPA3-SAE.md</code></td>
+<td>SAE resistente a cracking offline; Dragonblood (timing); forza bruta online con <code>wacker</code></td>
+</tr>
+<tr>
+<td><strong>3-Taller-HE-Practica-WiFi-2.pdf</strong></td>
+<td><code>wpa3_sae</code></td>
+<td><code>3.2-ATAQUE_WPA3_KRACK.md</code></td>
+<td><code>wifite-3.2-ATAQUE_WPA3_KRACK.md</code></td>
+<td>Verificación inmunidade KRACK en WPA3 con PMF obrigatorio (<code>tshark</code>)</td>
+</tr>
+<tr>
+<td><strong>3-Taller-HE-Practica-WiFi-3.pdf</strong></td>
+<td><code>wpa3_sae_vulnerable</code></td>
+<td><code>3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md</code></td>
+<td><code>wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md</code></td>
+<td>Dragondrain DoS + downgrade WPA2-PSK/EAP; Wifite é inútil para este ataque multi-etapa</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="uso-basico">Uso Básico</h2>
+<h3 id="como-comezar-unha-practica">Como Comezar unha Práctica</h3>
+<h4 id="metodo-1-seguindo-o-manual-pdf">Método 1: Seguindo o Manual PDF</h4>
+<ol>
+<li>
+<p>Abre o manual PDF correspondente (<a href="#manuais-pdf-do-taller">ver sección Manuais PDF do Taller</a>)  </p>
+</li>
+<li>
+<p>Consulta a táboa de correspondencia anterior para identificar o escenario  </p>
+</li>
+<li>
+<p>Inicia o escenario dende dentro da VM:  </p>
+</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Exemplo para Práctica 1.1 (WPA2-PSK básico)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>psk
+</span></code></pre></div>
+<ol>
+<li>
+<p>Consulta a guía de ataque proporcionada polo profesorado (sección <code>Ataques específicos</code>)  </p>
+</li>
+<li>
+<p>Segue os pasos do PDF e da guía markdown en paralelo  </p>
+</li>
+</ol>
+<h4 id="metodo-2-exploracion-libre">Método 2: Exploración Libre</h4>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Ver todos os escenarios dispoñibles</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>list
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Iniciar un escenario</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>&lt;nome_escenario&gt;
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Ver estado actual</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>status
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># Ver logs en tempo real</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>logs<span class="w"> </span>&lt;nome_escenario&gt;
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1"># Deter e limpar</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span></code></pre></div>
+<hr />
+<h2 id="comandos-de-wifilabctl">Comandos de wifilabctl</h2>
+<h3 id="listar-escenarios">Listar Escenarios</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>list
+</span></code></pre></div>
+<h3 id="iniciar-un-escenario">Iniciar un Escenario</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>&lt;escenario&gt;
+</span></code></pre></div>
+<p>Exemplos:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Prácticas 1.1 e 1.3 (WPA2-PSK handshake e PMKID)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>psk
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Práctica 1.2 (PMF / ieee80211w)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>psk_pmf
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Prácticas 2.1 e 2.2 (WPA2-EAP Evil Twin)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>eap_evil_twin
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># Práctica 2.3 (WPA2-EAP MITM)</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>eap_mitm
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="c1"># Prácticas 3.1 e 3.2 (WPA3-SAE + wacker + KRACK)</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>wpa3_sae
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="c1"># Práctica 3.3 (Dragondrain DoS + Downgrade WPA2-PSK/EAP)</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>wpa3_sae_vulnerable
+</span></code></pre></div>
+<h3 id="ver-estado-do-laboratorio">Ver Estado do Laboratorio</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>status
+</span></code></pre></div>
+<p>Saída esperada:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>[*] Informe de Estado do Laboratorio
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>============================================================
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>Namespaces activos:
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>  wifi_ap_wlan0
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>  wifi_cliente_wlan1
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>Interfaces por namespace:
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>  wifi_ap_wlan0:
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    wlan0: UP (AP)
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>  wifi_cliente_wlan1:
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    wlan1: UP (Cliente)
+</span></code></pre></div>
+<h3 id="ver-logs-en-tempo-real">Ver Logs en Tempo Real</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>logs<span class="w"> </span>&lt;escenario&gt;
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Ctrl+C para saír</span>
+</span></code></pre></div>
+<h3 id="deter-e-limpar">Deter e Limpar</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span></code></pre></div>
+<h3 id="diagnosticar-problemas">Diagnosticar Problemas</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>doctor
+</span></code></pre></div>
+<hr />
+<h2 id="makefile">Makefile</h2>
+<p>O <code>Makefile</code> proporciona atallos para as operacións máis comúns dende o host, sen necesidade de entrar na VM manualmente.</p>
+<h3 id="comandos-disponibles">Comandos Dispoñibles</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Levantar e aprovisionar a VM</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>make<span class="w"> </span>up
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Conectar á VM por SSH</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>make<span class="w"> </span>ssh
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Suspender a VM</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>make<span class="w"> </span>halt
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="c1"># Destruír a VM completamente</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>make<span class="w"> </span>destroy
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="c1"># Destruír e limpar (alias de destroy)</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>make<span class="w"> </span>clean
+</span></code></pre></div>
+<h3 id="exemplo-de-fluxo-completo">Exemplo de Fluxo Completo</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># 1. Levantar a VM</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>make<span class="w"> </span>up
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># 2. Conectar e traballar</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>make<span class="w"> </span>ssh
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># 3. Dentro da VM: iniciar o escenario desexado</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>eap_evil_twin
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1"># 4. Ao rematar: suspender ou destruír</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>make<span class="w"> </span>halt<span class="w">      </span><span class="c1"># Suspender (conserva o estado)</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>make<span class="w"> </span>destroy<span class="w">   </span><span class="c1"># Destruír completamente</span>
+</span></code></pre></div>
+<hr />
+<h2 id="comparacion-de-practicas">Comparación de Prácticas</h2>
+<h3 id="taboa-comparativa-de-vulnerabilidades">Táboa Comparativa de Vulnerabilidades</h3>
+<table>
+<thead>
+<tr>
+<th>Práctica</th>
+<th>Escenario</th>
+<th>Tecnoloxía</th>
+<th>Tipo de Ataque</th>
+<th>Vulnerable?</th>
+<th>Tempo Estimado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDF 1.1</td>
+<td><code>psk</code></td>
+<td>WPA2-PSK</td>
+<td>Deauth + handshake 4-Way + dicionario offline (<code>aircrack-ng</code>)</td>
+<td>SI</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td>PDF 1.2</td>
+<td><code>psk_pmf</code></td>
+<td>WPA2-PSK + PMF</td>
+<td>Intento deauth — bloqueado por <code>ieee80211w=2</code></td>
+<td>NON (deauth)</td>
+<td>20 min</td>
+</tr>
+<tr>
+<td>PDF 1.3</td>
+<td><code>psk</code></td>
+<td>WPA2-PSK</td>
+<td>PMKID con <code>hcxdumptool</code> + <code>hashcat -m 22000</code>, AP sen PMF</td>
+<td>SI</td>
+<td>20 min</td>
+</tr>
+<tr>
+<td>PDF 1.4</td>
+<td><code>psk_pmf</code></td>
+<td>WPA2-PSK + PMF</td>
+<td>PMKID con <code>ieee80211w=2</code> activo — PMF <strong>non</strong> protexe contra PMKID</td>
+<td>SI</td>
+<td>25 min</td>
+</tr>
+<tr>
+<td>PDF 2.1</td>
+<td><code>eap_mitm</code></td>
+<td>WPA2-EAP</td>
+<td>Setup FreeRADIUS + cliente; Wifite descarta <code>WPA-E</code></td>
+<td>Referencia</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td>PDF 2.2</td>
+<td><code>eap_evil_twin</code></td>
+<td>WPA2-EAP</td>
+<td>Evil Twin (<code>hostapd-wpe</code>) + <code>hashcat -m 5500</code></td>
+<td>SI</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>PDF 2.3</td>
+<td><code>eap_mitm</code></td>
+<td>WPA2-EAP</td>
+<td>MITM (<code>hostapd-mana</code>) + relay RADIUS + <code>mitmproxy</code></td>
+<td>SI</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>PDF 3.1</td>
+<td><code>wpa3_sae</code></td>
+<td>WPA3-SAE</td>
+<td>Dragonblood timing; forza bruta online con <code>wacker</code></td>
+<td>NON offline / SI online</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>PDF 3.2</td>
+<td><code>wpa3_sae</code></td>
+<td>WPA3-SAE + PMF</td>
+<td>Verificación inmunidade KRACK con <code>tshark</code></td>
+<td>NON</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td>PDF 3.3</td>
+<td><code>wpa3_sae_vulnerable</code></td>
+<td>WPA3-SAE (≤2.7)</td>
+<td>Dragondrain DoS + downgrade WPA2-PSK ou WPA2-EAP</td>
+<td>SI (modo transición)</td>
+<td>60 min</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resumo-por-tecnoloxia">Resumo por Tecnoloxía</h3>
+<h4 id="wpa2-psk">WPA2-PSK</h4>
+<table>
+<thead>
+<tr>
+<th>Protección</th>
+<th>Estado</th>
+<th>Observacións</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Handshake Capture</td>
+<td>Vulnerable</td>
+<td>Require cliente conectado; cracking offline con <code>aircrack-ng</code> (PDF 1.1)</td>
+</tr>
+<tr>
+<td>PMKID Attack</td>
+<td>Vulnerable</td>
+<td>Require cliente lexítimo con sesión activa; AP cachea PMK tras 1º handshake (PDF 1.3 e 1.4)</td>
+</tr>
+<tr>
+<td>PMF (<code>ieee80211w=2</code>)</td>
+<td><strong>Protexe só contra deauth</strong></td>
+<td>Bloquea frames de deauth non cifrados (PDF 1.2) pero <strong>non protexe contra PMKID</strong> (PDF 1.4)</td>
+</tr>
+<tr>
+<td>Dicionario Offline</td>
+<td>Vulnerable</td>
+<td>Afecta tanto a handshake como a PMKID; contrasinais longos e aleatorios resisten</td>
+</tr>
+</tbody>
+</table>
+<h4 id="wpa2-eap">WPA2-EAP</h4>
+<table>
+<thead>
+<tr>
+<th>Protección</th>
+<th>Estado</th>
+<th>Observacións</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evil Twin</td>
+<td>Vulnerable</td>
+<td>Se o cliente non valida o certificado do servidor RADIUS</td>
+</tr>
+<tr>
+<td>MITM</td>
+<td>Vulnerable</td>
+<td><code>hostapd-mana</code> captura credenciais MSCHAPv2</td>
+</tr>
+<tr>
+<td>Validación Certificado</td>
+<td>Protexe</td>
+<td>Se <code>ca_cert</code> está correctamente configurado en <code>wpa_supplicant</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="wpa3-sae">WPA3-SAE</h4>
+<table>
+<thead>
+<tr>
+<th>Protección</th>
+<th>Estado</th>
+<th>Observacións</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dicionario Offline</td>
+<td>Protexido</td>
+<td>SAE non expón hash crackeable; <code>aircrack-ng</code> non é aplicable</td>
+</tr>
+<tr>
+<td>Forza Bruta Online (<code>wacker</code>)</td>
+<td>Parcialmente vulnerable</td>
+<td>Posible se o contrasinal é débil; limitado pola velocidade de resposta do AP</td>
+</tr>
+<tr>
+<td>KRACK</td>
+<td>Protexido</td>
+<td>PMF obrigatorio + implementación correcta</td>
+</tr>
+<tr>
+<td>Dragonblood DoS</td>
+<td>Vulnerable</td>
+<td>En hostapd &lt; 2.10</td>
+</tr>
+<tr>
+<td>Downgrade a WPA2</td>
+<td>Vulnerable</td>
+<td>Se o modo transición está activo</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="estrutura-do-laboratorio">Estrutura do Laboratorio</h2>
+<h3 id="dentro-da-vm-homekaliwifilab">Dentro da VM (<code>/home/kali/wifiLab/</code>)</h3>
+<p>O <code>bootstrap.sh</code> copia unicamente o mínimo necesario para o funcionamento do laboratorio. </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>/home/kali/wifiLab/
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>├── scenarios/                     # Definicións YAML dos escenarios
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>│   ├── eap_evil_twin.yaml
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>│   ├── eap_mitm.yaml
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>│   ├── psk.yaml
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>│   ├── psk_pmf.yaml
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>│   ├── wpa3_sae.yaml
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>│   └── wpa3_sae_vulnerable.yaml
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>├── scripts/
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>│   └── wifilabctl                 # Xestor de escenarios (tamén en /usr/local/bin/)
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>└── run/                           # Creado por wifilabctl ao iniciar un escenario
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>    └── &lt;escenario&gt;/
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>        ├── hostapd.log            # Logs do AP lexítimo
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>        ├── wpa_supplicant.log     # Logs do cliente simulado
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>        ├── freeradius.log         # Logs de RADIUS (só escenarios EAP)
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>        ├── hostapd_wpe.log        # Logs do AP falso (só eap_evil_twin)
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>        └── *.cap                  # Ficheiros de captura de tráfico
+</span></code></pre></div>
+<hr />
+<h2 id="resolucion-de-problemas">Resolución de Problemas</h2>
+<h3 id="problemas-comuns">Problemas Comúns</h3>
+<h4 id="1-non-hai-namespaces-wifi-activos">1. "Non hai namespaces wifi activos"</h4>
+<p>Causa: O escenario non está iniciado ou fallou ao cargar o módulo <code>mac80211_hwsim</code>.</p>
+<p>Solución:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Verificar módulo</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mac80211_hwsim
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># Se non está cargado</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>sudo<span class="w"> </span>modprobe<span class="w"> </span>mac80211_hwsim<span class="w"> </span><span class="nv">radios</span><span class="o">=</span><span class="m">4</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># Reiniciar escenario</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>psk
+</span></code></pre></div>
+<h4 id="2-radius-server-not-responding">2. "RADIUS server not responding"</h4>
+<p>Causa: FreeRADIUS non está en execución ou problema de certificados.</p>
+<p>Solución:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Verificar FreeRADIUS</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>freeradius
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># Comprobar certificados</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>ls<span class="w"> </span>-la<span class="w"> </span>/etc/freeradius/3.0/certs/
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># Rexenerar certificados</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="nb">cd</span><span class="w"> </span>/etc/freeradius/3.0/certs/
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>sudo<span class="w"> </span>make
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="c1"># Reiniciar RADIUS</span>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>freeradius
+</span></code></pre></div>
+<h4 id="3-hostapd-mana-not-found">3. "hostapd-mana: not found"</h4>
+<p>Causa: <code>hostapd-mana</code> non está compilado.</p>
+<p>Solución:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Compilar hostapd-mana</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">cd</span><span class="w"> </span>/opt/hostapd-mana
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>make<span class="w"> </span>-C<span class="w"> </span>hostapd
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1"># Verificar binario</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>ls<span class="w"> </span>-la<span class="w"> </span>/opt/hostapd-mana/hostapd/hostapd
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="c1"># Crear enlace simbólico</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>sudo<span class="w"> </span>ln<span class="w"> </span>-sf<span class="w"> </span>/opt/hostapd-mana/hostapd/hostapd<span class="w"> </span>/usr/local/bin/hostapd-mana
+</span></code></pre></div>
+<h4 id="4-airodump-ng-interface-wlan2mon-not-found">4. "airodump-ng: interface wlan2mon not found"</h4>
+<p>Causa: A interface non está en modo monitor.</p>
+<p>Solución:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Matar procesos que interfiren</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>check<span class="w"> </span><span class="nb">kill</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># Poñer en modo monitor</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>start<span class="w"> </span>wlan2
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="c1"># Verificar</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>iwconfig
+</span></code></pre></div>
+<h4 id="5-vagrant-ssh-not-working">5. "Vagrant SSH not working"</h4>
+<p>Causa: SSH non está escoitando.</p>
+<p>Solución:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Dende o host</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>make<span class="w"> </span>destroy
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>make<span class="w"> </span>up
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1"># Ou dende a VM (consola GUI)</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>ssh
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>ssh
+</span></code></pre></div>
+<h3 id="comandos-de-diagnostico">Comandos de Diagnóstico</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Verificar estado completo</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>doctor
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1"># Comprobar interfaces de rede</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>ip<span class="w"> </span>link<span class="w"> </span>show
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="c1"># Comprobar namespaces</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>ip<span class="w"> </span>netns<span class="w"> </span>list
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="c1"># Comprobar módulo mac80211_hwsim</span>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>mac80211
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="c1"># Ver procesos relacionados</span>
+</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;hostapd|wpa_supplicant|freeradius&#39;</span>
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>
+</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="c1"># Verificar logs do sistema</span>
+</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a>journalctl<span class="w"> </span>-xeu<span class="w"> </span>freeradius
+</span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a>journalctl<span class="w"> </span>-xeu<span class="w"> </span>ssh
+</span></code></pre></div>
+<h3 id="reinicio-completo">Reinicio Completo</h3>
+<p>Se todo falla, reinicia completamente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Dende o host (fóra da VM)</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>make<span class="w"> </span>destroy
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>make<span class="w"> </span>up
+</span></code></pre></div>
+<hr />
+<h2 id="actualizacion-e-mantemento">Actualización e Mantemento</h2>
+<h3 id="actualizar-o-laboratorio">Actualizar o Laboratorio</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># No host, actualizar o repositorio</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># Destruír e recrear a VM coa nova versión</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>make<span class="w"> </span>destroy
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>make<span class="w"> </span>up
+</span></code></pre></div>
+<h3 id="desinstalacion-completa">Desinstalación Completa</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>make<span class="w"> </span>destroy
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>rm<span class="w"> </span>-rf<span class="w"> </span>vuln-wifi.lab
+</span></code></pre></div>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<h3 id="documentacion-oficial">Documentación Oficial</h3>
+<ul>
+<li>
+<p><a href="https://standards.ieee.org/standard/802_11i-2004.html" target="_blank">WPA2 Specification - IEEE 802.11i</a>  </p>
+</li>
+<li>
+<p><a href="https://www.wi-fi.org/discover-wi-fi/security" target="_blank">WPA3 Specification - Wi-Fi Alliance</a>  </p>
+</li>
+<li>
+<p><a href="https://standards.ieee.org/standard/802_11w-2009.html" target="_blank">IEEE 802.11w - Protected Management Frames</a>  </p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/html/rfc7664" target="_blank">RFC 7664 - Dragonfly Key Exchange</a>  </p>
+</li>
+<li>
+<p><a href="https://w1.fi/hostapd/" target="_blank">hostapd documentation</a>  </p>
+</li>
+<li>
+<p><a href="https://w1.fi/wpa_supplicant/" target="_blank">wpa_supplicant documentation</a>  </p>
+</li>
+<li>
+<p><a href="https://freeradius.org/documentation/" target="_blank">FreeRADIUS documentation</a>  </p>
+</li>
+</ul>
+<h3 id="investigacion-e-vulnerabilidades">Investigación e Vulnerabilidades</h3>
+<ul>
+<li>
+<p><a href="https://www.krackattacks.com/" target="_blank">KRACK Attack Website</a> (2017)  </p>
+</li>
+<li>
+<p><a href="https://wpa3.mathyvanhoef.com/" target="_blank">Dragonblood Website</a> (2019)  </p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2017-13077" target="_blank">CVE-2017-13077 (KRACK)</a>  </p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-9494" target="_blank">CVE-2019-9494 (Dragonblood)</a>  </p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-13377" target="_blank">CVE-2019-13377 (Dragonblood SAE)</a>  </p>
+</li>
+</ul>
+<h3 id="ferramentas">Ferramentas</h3>
+<ul>
+<li>
+<p><a href="https://www.aircrack-ng.org/" target="_blank">aircrack-ng</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/derv82/wifite2" target="_blank">wifite2</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/OpenSecurityResearch/hostapd-wpe" target="_blank">hostapd-wpe (OpenSecurityResearch)</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/sensepost/hostapd-mana" target="_blank">hostapd-mana (SensePost)</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/vanhoefm/dragondrain-and-time" target="_blank">dragondrain (vanhoefm)</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/ZerBea/hcxtools" target="_blank">hcxtools (ZerBea)</a>  </p>
+</li>
+<li>
+<p><a href="https://github.com/ZerBea/hcxdumptool" target="_blank">hcxdumptool (ZerBea)</a>  </p>
+</li>
+</ul>
+<h3 id="manuais-pdf-do-taller">Manuais PDF do Taller</h3>
+<ul>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-1.pdf" target="_blank">1-Taller-HE-Practica-WiFi-1.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-2.pdf" target="_blank">1-Taller-HE-Practica-WiFi-2.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf" target="_blank">1-Taller-HE-Practica-WiFi-3.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-4.pdf" target="_blank">1-Taller-HE-Practica-WiFi-4.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-1.pdf" target="_blank">2-Taller-HE-Practica-WiFi-1.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-2.pdf" target="_blank">2-Taller-HE-Practica-WiFi-2.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-3.pdf" target="_blank">2-Taller-HE-Practica-WiFi-3.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-1.pdf" target="_blank">3-Taller-HE-Practica-WiFi-1.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf" target="_blank">3-Taller-HE-Practica-WiFi-2.pdf</a>  </p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-3.pdf" target="_blank">3-Taller-HE-Practica-WiFi-3.pdf</a>  </p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

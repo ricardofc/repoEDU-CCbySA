@@ -1,0 +1,70 @@
+services:
+  db:
+    image: mariadb:10.6
+    container_name: secshep_mariadb
+    command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci","--bind-address=0.0.0.0"]
+    environment:
+      - MYSQL_ROOT_PASSWORD=CowSaysMoo
+      - MYSQL_DATABASE=securityshepherd
+      - MYSQL_USER=shep
+      - MYSQL_PASSWORD=sheppass
+    volumes:
+      - securityshepherd_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-pCowSaysMoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks: [shepnet]
+
+  mongo:
+    image: mongo:4.4
+    container_name: secshep_mongo
+    command: ["--bind_ip_all"]
+    volumes:
+      - securityshepherd_mongodata:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+    networks: [shepnet]
+
+  web:
+    image: owasp/security-shepherd:3.1
+    container_name: secshep_tomcat
+    depends_on:
+      db:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    environment:
+      - DB_SERVER_IP=db
+      - DB_PORT=3306
+      - DB_NAME=securityshepherd
+      - DB_USER=shep
+      - DB_PASS=sheppass
+      - MONGO_SERVER=mongo
+      - MONGO_PORT=27017
+      - TZ=Europe/Madrid
+      - JAVA_OPTS=-Xms256m -Xmx768m -XX:MaxMetaspaceSize=256m
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc: 65535
+    ports:
+      - "8081:8080"
+      - "443:8443"
+    restart: unless-stopped
+    networks: [shepnet]
+
+networks:
+  shepnet:
+
+volumes:
+  securityshepherd_data:
+  securityshepherd_mongodata:

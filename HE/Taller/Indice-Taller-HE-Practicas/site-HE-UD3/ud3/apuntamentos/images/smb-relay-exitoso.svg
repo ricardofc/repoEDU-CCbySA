@@ -1,0 +1,86 @@
+<svg viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Estilos -->
+  <style>
+    .actor-box { fill: #f0f0f0; stroke: #333; stroke-width: 2; }
+    .text-actor { font-family: Arial, sans-serif; font-weight: bold; font-size: 14px; text-anchor: middle; }
+    .text-label { font-family: Arial, sans-serif; font-size: 12px; fill: #444; }
+    .line { stroke: #555; stroke-width: 2; stroke-dasharray: 5,5; }
+    .arrow-line { stroke: #333; stroke-width: 2; marker-end: url(#arrow); }
+    .phase-responder { fill: #e3f2fd; stroke: #2196f3; stroke-width: 1; stroke-dasharray: 5,5; opacity: 0.5; }
+    .phase-relay { fill: #ffebee; stroke: #f44336; stroke-width: 1; stroke-dasharray: 5,5; opacity: 0.5; }
+    .phase-text { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-anchor: start; }
+  </style>
+
+  <!-- Actores -->
+  <rect x="50" y="20" width="120" height="40" class="actor-box" />
+  <text x="110" y="45" class="text-actor">Vítima</text>
+  <line x1="110" y1="60" x2="110" y2="680" class="line" />
+
+  <rect x="340" y="20" width="120" height="40" class="actor-box" />
+  <text x="400" y="45" class="text-actor">Atacante</text>
+  <line x1="400" y1="60" x2="400" y2="680" class="line" />
+
+  <!-- Aumentado ancho a 160 e axustada a posición X a 610 para centrar -->
+  <rect x="610" y="20" width="160" height="40" class="actor-box" />
+  <text x="690" y="45" class="text-actor">Servidor Obxectivo</text>
+  <line x1="690" y1="60" x2="690" y2="680" class="line" />
+
+  <!-- FASE 1: RESPONDER -->
+  <rect x="30" y="80" width="740" height="110" rx="10" class="phase-responder" />
+  <text x="40" y="100" class="phase-text" fill="#1565c0">FASE 1: Envelenamento (Ferramenta: Responder)</text>
+  
+  <!-- Interaccións Fase 1 -->
+  <text x="255" y="125" class="text-label" text-anchor="middle">Broadcast: "Quen é SRV-MAL?" (LLMNR/NBT-NS)</text>
+  <line x1="110" y1="130" x2="400" y2="130" class="arrow-line" />
+  
+  <text x="255" y="165" class="text-label" text-anchor="middle">"Eu son SRV-MAL!" (Spoofing)</text>
+  <text x="255" y="180" class="text-label" text-anchor="middle" fill="#d32f2f" font-weight="bold">Responder dille á vítima que veña ao IP do atacante</text>
+  <line x1="400" y1="150" x2="110" y2="150" class="arrow-line" />
+
+
+  <!-- FASE 2: NTLMRELAYX -->
+  <rect x="30" y="210" width="740" height="460" rx="10" class="phase-relay" />
+  <text x="40" y="230" class="phase-text" fill="#c62828">FASE 2: Relevo (Ferramenta: ntlmrelayx)</text>
+
+  <!-- Interaccións Fase 2 -->
+  <text x="255" y="255" class="text-label" text-anchor="middle">1. NTLM Negotiate (Conecta ao atacante)</text>
+  <line x1="110" y1="260" x2="400" y2="260" class="arrow-line" />
+
+  <text x="545" y="255" class="text-label" text-anchor="middle">2. Reenvío Negotiate</text>
+  <line x1="400" y1="260" x2="690" y2="260" class="arrow-line" />
+
+  <text x="545" y="305" class="text-label" text-anchor="middle">3. NTLM Challenge (Desafío)</text>
+  <line x1="690" y1="310" x2="400" y2="310" class="arrow-line" />
+
+  <text x="255" y="305" class="text-label" text-anchor="middle">4. Reenvío Challenge</text>
+  <line x1="400" y1="310" x2="110" y2="310" class="arrow-line" />
+
+  <text x="255" y="355" class="text-label" text-anchor="middle">5. NTLM Authenticate (HASH)</text>
+  <line x1="110" y1="360" x2="400" y2="360" class="arrow-line" />
+
+  <text x="545" y="355" class="text-label" text-anchor="middle">6. Reenvío Authenticate</text>
+  <line x1="400" y1="360" x2="690" y2="360" class="arrow-line" />
+  
+  <!-- Resultado Exitoso -->
+  <rect x="580" y="400" width="180" height="120" rx="5" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" />
+  <text x="670" y="425" class="text-label" text-anchor="middle" font-weight="bold" fill="#2e7d32">VALIDACIÓN OK</text>
+  <text x="670" y="445" class="text-label" text-anchor="middle">O servidor acepta</text>
+  <text x="670" y="460" class="text-label" text-anchor="middle">a sesión porque as</text>
+  <text x="670" y="475" class="text-label" text-anchor="middle">credenciais son válidas</text>
+  <text x="670" y="500" class="text-label" text-anchor="middle" font-weight="bold">Sinatura SMB: NON</text>
+
+  <!-- MOVIDO ABAIXO: Baixamos a frecha e texto para que non toquen a caixa de arriba -->
+  <line x1="690" y1="560" x2="400" y2="560" class="arrow-line" />
+  <text x="545" y="555" class="text-label" text-anchor="middle" font-weight="bold" fill="#2e7d32">Acceso concedido (Admin)</text>
+  
+  <!-- MOVIDO ABAIXO: Caixa de pwned -->
+  <rect x="350" y="580" width="100" height="40" fill="#333" rx="3" />
+  <text x="400" y="605" fill="white" font-family="monospace" text-anchor="middle" font-size="12">C:\> pwned</text>
+
+</svg>

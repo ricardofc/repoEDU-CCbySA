@@ -1,0 +1,118 @@
+
+@media print {
+
+    li {
+         margin-left: 1.25em !important;
+    }
+
+    ol {
+        margin-left: 2.5em !important;
+    }
+
+
+     article {
+       visibility: visible !important; 
+       font-family: Arial, sans-serif !important;
+    }
+
+    figure {
+        margin: 0;       
+        margin-left: 0;  
+        padding-left: 10px;
+    }
+
+    .task-list-indicator::before {
+       transform: translateX(-12px);
+    }
+
+    .admonition > .admonition-title::before {
+       transform: translateX(-26px);
+       font-size: 1.76em;
+    }
+
+    .admonition details summary::before {
+       transform: translateX(-26px);
+       font-size: 1.76em;
+    }
+
+    @page {
+        @top-left {
+            content: element(footer);
+            font-family: Arial, sans-serif; 
+        }
+
+        @top-center {
+            content: element(footer);
+            font-family: Arial, sans-serif; 
+        }
+
+        @top-right {
+            content: element(footer);
+            font-family: Arial, sans-serif;
+        }
+
+        @bottom-left {
+            content: element(footer);
+            font-family: Arial, sans-serif; 
+        }
+
+        @bottom-center {
+            content: element(footer);
+            font-family: Arial, sans-serif; 
+        }
+
+        @bottom-right {
+            content: element(footer);
+            font-family: Arial, sans-serif;
+        } 
+
+}
+
+/* Forzar a táboa a aproveitar o ancho A4 e permitir quebra de texto */
+.md-typeset table,
+.md-typeset .md-content table {
+  width: 100% !important;
+  table-layout: fixed !important; /* fundamental para controlar as columnas */
+  border-collapse: collapse;
+  font-size: 10px;                /* reducelo para que entre */
+  hyphens: auto;
+}
+
+/* Colocación e quebra das celas */
+.md-typeset th,
+.md-typeset td {
+  overflow-wrap: anywhere;  /* permite cortar longas palabras/URLs */
+  word-break: break-word;
+  white-space: normal;      /* permitir que o contido salte a varias liñas */
+  vertical-align: top;
+  padding: 6px 8px;
+}
+
+/* Para ligazóns moi longas */
+.md-typeset a {
+  word-break: break-all;
+  text-decoration: underline;
+  /*color: inherit;*
+  color: blue;
+  font-size: 0.95em;
+}
+
+/* Opcional: definir anchos relativos por columna (axusta segundo as túas columnas) */
+.md-typeset table colgroup col:nth-child(1) { width: 12%; }  /* Fase */
+.md-typeset table colgroup col:nth-child(2) { width: 38%; }  /* Acción / Resumo */
+.md-typeset table colgroup col:nth-child(3) { width: 25%; }  /* Vector principal */
+.md-typeset table colgroup col:nth-child(4) { width: 20%; }  /* MITRE */
+.md-typeset table colgroup col:nth-child(5) { width: 5%; }   /* CWE */
+
+/* Repetir encabezados de táboa */
+.md-typeset thead { display: table-header-group; }
+
+/* Permitir que filas longas sexan partidas entre páxinas (WeasyPrint) */
+.md-typeset tr { page-break-inside: auto; }
+.md-typeset thead tr { page-break-inside: avoid; }
+
+/* Opcional: reduzir aínda máis a fonte no PDF (usar se aínda non entra) */
+@media print {
+  .md-typeset table { font-size: 9px; }
+}
+

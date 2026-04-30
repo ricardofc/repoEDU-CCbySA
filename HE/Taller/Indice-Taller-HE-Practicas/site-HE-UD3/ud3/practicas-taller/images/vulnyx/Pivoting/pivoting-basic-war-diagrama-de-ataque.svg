@@ -1,0 +1,233 @@
+<!-- ========================================== -->
+<!-- DIAGRAMA DE ATAQUE: Basic → War (SSH TUNNELING) -->
+<!-- pivoting-basic-war-diagrama-de-ataque.svg -->
+<!-- ========================================== -->
+
+<svg width="1000pt" height="900pt" viewBox="0.00 0.00 1000.00 900.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+    <!-- Marcador de Frecha -->
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="black" />
+    </marker>
+</defs>
+
+<!-- Fondo -->
+<rect x="0" y="0" width="1000" height="900" fill="white" />
+
+<!-- ========================================== -->
+<!-- FASE 1: RECOPILACIÓN -->
+<!-- ========================================== -->
+<rect x="10" y="40" width="200" height="400" fill="none" stroke="black" stroke-dasharray="5,5" stroke-width="1.5"/>
+<text x="110" y="30" font-family="Arial" font-size="14" text-anchor="middle" font-weight="bold">FASE 1: RECOPILACIÓN</text>
+
+<!-- Node 1.1: Compromiso Previo (Gris) -->
+<rect x="35" y="60" width="150" height="50" rx="20" ry="20" fill="#d3d3d3" stroke="black" stroke-width="1.5"/>
+<text x="110" y="80" font-family="Arial" font-size="12" text-anchor="middle">Compromiso Previo</text>
+<text x="110" y="95" font-family="Arial" font-size="12" text-anchor="middle">Basic (root)</text>
+
+<!-- Arrow -->
+<line x1="110" y1="110" x2="110" y2="140" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 1.2: ip addr (Branco) -->
+<rect x="35" y="140" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="110" y="160" font-family="Arial" font-size="12" text-anchor="middle">ip addr show</text>
+<text x="110" y="175" font-family="Arial" font-size="12" text-anchor="middle">Interfaces</text>
+
+<!-- Arrow -->
+<line x1="110" y1="190" x2="110" y2="220" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 1.3: Ping (Branco) -->
+<rect x="35" y="220" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="110" y="240" font-family="Arial" font-size="12" text-anchor="middle">Ping</text>
+<text x="110" y="255" font-family="Arial" font-size="12" text-anchor="middle">192.168.57.0/24</text>
+
+<!-- Arrow -->
+<line x1="110" y1="270" x2="110" y2="300" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 1.4: Host Found (Amarelo) -->
+<rect x="35" y="300" width="150" height="50" rx="20" ry="20" fill="#ffffcc" stroke="black" stroke-width="1.5"/>
+<text x="110" y="320" font-family="Arial" font-size="12" text-anchor="middle">Host Found</text>
+<text x="110" y="335" font-family="Arial" font-size="12" text-anchor="middle">192.168.57.5</text>
+
+
+<!-- ========================================== -->
+<!-- FASE 2: ANÁLISE -->
+<!-- ========================================== -->
+<!-- Conexión Fase 1 -> Fase 2 (Dashed) -->
+<path d="M185,325 L245,325 L245,125 L275,125" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+
+<rect x="280" y="80" width="200" height="730" fill="none" stroke="black" stroke-dasharray="5,5" stroke-width="1.5"/>
+<text x="380" y="70" font-family="Arial" font-size="14" text-anchor="middle" font-weight="bold">FASE 2: ANÁLISE</text>
+
+<!-- Node 2.1: SSH Config (Branco) -->
+<rect x="305" y="100" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="380" y="120" font-family="Arial" font-size="12" text-anchor="middle">SSH Config</text>
+<text x="380" y="135" font-family="Arial" font-size="12" text-anchor="middle">GatewayPorts yes</text>
+
+<!-- Arrow -->
+<line x1="380" y1="150" x2="380" y2="180" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.2: SSH -D (Branco) -->
+<rect x="305" y="180" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="380" y="200" font-family="Arial" font-size="12" text-anchor="middle">SSH -D 1080</text>
+<text x="380" y="215" font-family="Arial" font-size="12" text-anchor="middle">Dynamic Forward</text>
+
+<!-- Arrow -->
+<line x1="380" y1="230" x2="380" y2="260" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.3: Netcat Scan (Branco) -->
+<rect x="305" y="260" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="380" y="280" font-family="Arial" font-size="12" text-anchor="middle">Netcat Scan</text>
+<text x="380" y="295" font-family="Arial" font-size="12" text-anchor="middle">Port Discovery</text>
+
+<!-- Arrow -->
+<line x1="380" y1="310" x2="380" y2="340" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.4: Portos Abertos (Amarelo) -->
+<rect x="305" y="340" width="150" height="50" rx="20" ry="20" fill="#ffffcc" stroke="black" stroke-width="1.5"/>
+<text x="380" y="360" font-family="Arial" font-size="12" text-anchor="middle">Portos: 8080, 445</text>
+<text x="380" y="375" font-family="Arial" font-size="12" text-anchor="middle">Abertos</text>
+
+<!-- Arrow -->
+<line x1="380" y1="390" x2="380" y2="420" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.5: SSH -L (Branco) -->
+<rect x="305" y="420" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="380" y="440" font-family="Arial" font-size="12" text-anchor="middle">SSH -L Local</text>
+<text x="380" y="455" font-family="Arial" font-size="12" text-anchor="middle">8080:War:8080</text>
+
+<!-- Arrow -->
+<line x1="380" y1="470" x2="380" y2="500" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.6: Tomcat (Branco) -->
+<rect x="305" y="500" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="380" y="520" font-family="Arial" font-size="12" text-anchor="middle">Tomcat Local</text>
+<text x="380" y="535" font-family="Arial" font-size="12" text-anchor="middle">localhost:8080</text>
+
+<!-- Arrow -->
+<line x1="380" y1="550" x2="380" y2="580" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 2.7: Manager Found (Vermello Claro) -->
+<rect x="305" y="580" width="150" height="50" rx="20" ry="20" fill="#f08080" stroke="black" stroke-width="1.5"/>
+<text x="380" y="600" font-family="Arial" font-size="12" text-anchor="middle">Tomcat Manager</text>
+<text x="380" y="615" font-family="Arial" font-size="12" text-anchor="middle">/manager/html</text>
+
+
+<!-- ========================================== -->
+<!-- FASE 3: EXPLOTACIÓN -->
+<!-- ========================================== -->
+<!-- Conexión Fase 2 -> Fase 3 (Dashed) -->
+<path d="M455,605 L500,605 L500,265 L530,265" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+
+<rect x="535" y="180" width="200" height="590" fill="none" stroke="black" stroke-dasharray="5,5" stroke-width="1.5"/>
+<text x="635" y="170" font-family="Arial" font-size="14" text-anchor="middle" font-weight="bold">FASE 3: EXPLOTACIÓN</text>
+
+<!-- Node 3.1: Hydra (Branco) -->
+<rect x="560" y="240" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="635" y="260" font-family="Arial" font-size="12" text-anchor="middle">Hydra Tomcat</text>
+<text x="635" y="275" font-family="Arial" font-size="12" text-anchor="middle">localhost:8080</text>
+
+<!-- Arrow -->
+<line x1="635" y1="290" x2="635" y2="320" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 3.2: Credentials (Azul Claro) -->
+<rect x="560" y="320" width="150" height="50" rx="20" ry="20" fill="#add8e6" stroke="black" stroke-width="1.5"/>
+<text x="635" y="340" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Credentials</text>
+<text x="635" y="355" font-family="Arial" font-size="12" text-anchor="middle" fill="white">admin:tomcat</text>
+
+<!-- Arrow -->
+<line x1="635" y1="370" x2="635" y2="400" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 3.3: SSH -R (Branco) -->
+<rect x="560" y="400" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="635" y="420" font-family="Arial" font-size="12" text-anchor="middle">SSH -R Remote</text>
+<text x="635" y="435" font-family="Arial" font-size="12" text-anchor="middle">Basic:443→Kali</text>
+
+<!-- Arrow -->
+<line x1="635" y1="450" x2="635" y2="480" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 3.4: Msfvenom WAR (Branco) -->
+<rect x="560" y="480" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="635" y="500" font-family="Arial" font-size="12" text-anchor="middle">Msfvenom WAR</text>
+<text x="635" y="515" font-family="Arial" font-size="12" text-anchor="middle">LHOST=Basic IP</text>
+
+<!-- Arrow -->
+<line x1="635" y1="530" x2="635" y2="560" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 3.5: Deploy WAR (Branco) -->
+<rect x="560" y="560" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="635" y="580" font-family="Arial" font-size="12" text-anchor="middle">Deploy WAR</text>
+<text x="635" y="595" font-family="Arial" font-size="12" text-anchor="middle">via localhost</text>
+
+<!-- Arrow -->
+<line x1="635" y1="610" x2="635" y2="640" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 3.6: Shell Service (Verde Claro) -->
+<rect x="560" y="640" width="150" height="50" rx="20" ry="20" fill="#90ee90" stroke="black" stroke-width="1.5"/>
+<text x="635" y="660" font-family="Arial" font-size="12" text-anchor="middle">Reverse Shell</text>
+<text x="635" y="675" font-family="Arial" font-size="12" text-anchor="middle">LOCAL SERVICE</text>
+
+
+<!-- ========================================== -->
+<!-- FASE 4: POST-EXPLOTACIÓN -->
+<!-- ========================================== -->
+<!-- Conexión Fase 3 -> Fase 4 (Dashed) -->
+<path d="M710,665 L755,665 L755,365 L785,365" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+
+<rect x="790" y="280" width="200" height="600" fill="none" stroke="black" stroke-dasharray="5,5" stroke-width="1.5"/>
+<text x="890" y="270" font-family="Arial" font-size="13" text-anchor="middle" font-weight="bold">FASE 4: POST-EXPLOTACIÓN</text>
+
+<!-- Node 4.1: Enum Privs (Branco) -->
+<rect x="815" y="340" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="890" y="360" font-family="Arial" font-size="12" text-anchor="middle">whoami /priv</text>
+<text x="890" y="375" font-family="Arial" font-size="12" text-anchor="middle">Enum Privileges</text>
+
+<!-- Arrow -->
+<line x1="890" y1="390" x2="890" y2="420" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.2: SeImpersonate (Amarelo) -->
+<rect x="815" y="420" width="150" height="50" rx="20" ry="20" fill="#ffffcc" stroke="black" stroke-width="1.5"/>
+<text x="890" y="440" font-family="Arial" font-size="12" text-anchor="middle">SeImpersonate</text>
+<text x="890" y="455" font-family="Arial" font-size="12" text-anchor="middle">Privilege Enabled</text>
+
+<!-- Arrow -->
+<line x1="890" y1="470" x2="890" y2="500" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.3: Fake WAR Upload (Branco) -->
+<rect x="815" y="500" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="890" y="520" font-family="Arial" font-size="12" text-anchor="middle">Fake WAR Upload</text>
+<text x="890" y="535" font-family="Arial" font-size="12" text-anchor="middle">*.exe → *.war</text>
+
+<!-- Arrow -->
+<line x1="890" y1="550" x2="890" y2="580" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.4: SSH -R Tunnel (Branco) -->
+<rect x="815" y="580" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="890" y="600" font-family="Arial" font-size="12" text-anchor="middle">SSH -R :5555</text>
+<text x="890" y="615" font-family="Arial" font-size="12" text-anchor="middle">New Tunnel</text>
+
+<!-- Arrow -->
+<line x1="890" y1="630" x2="890" y2="660" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.5: SigmaPotato (Branco) -->
+<rect x="815" y="660" width="150" height="50" rx="20" ry="20" fill="white" stroke="black" stroke-width="1.5"/>
+<text x="890" y="680" font-family="Arial" font-size="12" text-anchor="middle">Run SigmaPotato</text>
+<text x="890" y="695" font-family="Arial" font-size="12" text-anchor="middle">Token Abuse</text>
+
+<!-- Arrow -->
+<line x1="890" y1="710" x2="890" y2="740" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.6: Shell SYSTEM (Azul Claro) -->
+<rect x="815" y="740" width="150" height="50" rx="20" ry="20" fill="#add8e6" stroke="black" stroke-width="1.5"/>
+<text x="890" y="760" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Shell SYSTEM</text>
+<text x="890" y="775" font-family="Arial" font-size="12" text-anchor="middle" fill="white">NT AUTHORITY</text>
+
+<!-- Arrow -->
+<line x1="890" y1="790" x2="890" y2="820" stroke="black" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Node 4.7: Flag Root (Laranxa) -->
+<rect x="815" y="820" width="150" height="50" rx="20" ry="20" fill="#ffa500" stroke="black" stroke-width="1.5"/>
+<text x="890" y="840" font-family="Arial" font-size="12" text-anchor="middle">Flag</text>
+<text x="890" y="855" font-family="Arial" font-size="12" text-anchor="middle">root.txt</text>
+
+</svg>
