@@ -86,6 +86,228 @@
     .mtop5{
       margin-top: 5px;
     }
+
+    .persiana {
+      position: absolute;
+      top: 0; right: 0; bottom: 4px; left: 0;
+      z-index: 0; /* por baixo dos .dropdown-menu (z-index: 1) das seccións visibles */
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #0b0f1a;
+      color: #c9d6e8;
+      font: 13px/1.2 SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      white-space: nowrap;
+      cursor: not-allowed;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .persiana ~ .dropdown-menu { display: none !important; }
+    .persiana > * { flex: none; margin-right: 12px; }
+    .persiana .ps-erro { color: #ff5d6c; }
+    .persiana .ps-pila { position: relative; display: inline-block; }
+    .persiana .ps-pila > .ps-b { position: absolute; top: 0; left: 0; }
+    .persiana .ps-a { animation: ps-fase-a 6s linear infinite; }
+    .persiana .ps-b { animation: ps-fase-b 6s linear infinite; }
+    .persiana .ps-puntos { display: inline-block; width: 0; overflow: hidden; vertical-align: bottom; animation: ps-puntos 1.2s steps(4, end) infinite; }
+    @keyframes ps-fase-a { 0%, 59.9% { opacity: 1; } 60%, 100% { opacity: 0; } }
+    @keyframes ps-fase-b { 0%, 59.9% { opacity: 0; } 60%, 100% { opacity: 1; } }
+    @keyframes ps-puntos { to { width: 4ch; } }
+
+    .ps-obras { flex-direction: column; align-items: stretch; justify-content: center; }
+    .ps-obras > * { margin-right: 0; }
+    .ps-obras::before, .ps-obras::after { content: ""; position: absolute; right: 0; left: -46px; height: 4px; background: repeating-linear-gradient(-45deg, #ffd166 0 8px, #0b0f1a 8px 16px); animation: ps-cinta 1.2s linear infinite; }
+    .ps-obras::before { top: 0; }
+    .ps-obras::after { bottom: 0; }
+    .ps-obras .ps-fila { position: relative; display: block; height: 16px; line-height: 16px; }
+    .ps-obras .ps-xa { display: inline-flex; align-items: center; animation: ps-obras-a 12s linear infinite; }
+    .ps-obras .ps-roda { box-sizing: border-box; width: 11px; height: 11px; margin-right: 8px; border: 2px solid #24304a; border-top-color: #2ec4b6; border-radius: 50%; animation: ps-xira .8s linear infinite; }
+    .ps-obras .ps-fases { position: relative; display: inline-block; margin-left: 1ch; color: #ffd166; }
+    .ps-obras .ps-fases span { position: absolute; top: 0; left: 0; opacity: 0; }
+    .ps-obras .ps-fases .f1 { position: static; opacity: 1; }
+    .ps-obras .ps-xb { position: absolute; top: 0; left: 0; opacity: 0; color: #ffd166; animation: ps-obras-b 12s linear infinite; }
+    .ps-obras .ps-ciclo { display: flex; align-items: center; margin-top: 4px; }
+    .ps-obras .ps-ciclo b { flex: none; box-sizing: border-box; width: 16px; height: 16px; border: 1.5px solid #24304a; border-radius: 50%; color: #4a5a7a; font-size: 9px; font-weight: 700; line-height: 13px; text-align: center; }
+    .ps-obras .ps-ciclo i { position: relative; flex: none; width: 12px; height: 4px; overflow: hidden; background: #1a2238; }
+    .ps-obras .ps-ciclo i::before, .ps-obras .ps-ciclo i::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; }
+    .ps-obras .ps-ciclo i::before { left: -30px; background: repeating-linear-gradient(-45deg, #ffd166 0 3px, #0b0f1a 3px 6px); }
+    .ps-obras .ps-ciclo i::after { background: #2ec4b6; }
+    .ps-obras .ps-desc { position: relative; flex: 1; height: 14px; margin-left: 10px; color: #8a9bb8; font-size: 11px; line-height: 14px; }
+    .ps-obras .ps-desc span { position: absolute; top: 0; left: 0; opacity: 0; }
+    .ps-obras .ps-desc .d1 { opacity: 1; }
+    @keyframes ps-cinta { to { transform: translateX(45.25px); } }
+    @keyframes ps-raias { to { transform: translateX(8.49px); } }
+    @keyframes ps-obras-a { 0%, 79.92% { opacity: 1; } 80%, 100% { opacity: 0; } }
+    @keyframes ps-obras-b { 0%, 79.92% { opacity: 0; } 80%, 100% { opacity: 1; } }
+    @keyframes ps-fase-1 { 0%, 13.25% { opacity: 1; } 13.33%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-1 { 0%, 13.25% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 13.33%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f1 { 0%, 13.25% { opacity: 0; } 13.33%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f1, .ps-obras .d1 { animation: ps-fase-1 12s linear infinite; }
+    .ps-obras .c1 { animation: ps-nodo-1 12s linear infinite; }
+    .ps-obras .t1::before { animation: ps-raias .5s linear infinite, ps-fase-1 12s linear infinite; }
+    .ps-obras .t1::after { animation: ps-tramo-f1 12s linear infinite; }
+    @keyframes ps-fase-2 { 0%, 13.25% { opacity: 0; } 13.33%, 26.58% { opacity: 1; } 26.67%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-2 { 0%, 13.25% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 13.33%, 26.58% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 26.67%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f2 { 0%, 26.58% { opacity: 0; } 26.67%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f2, .ps-obras .d2 { animation: ps-fase-2 12s linear infinite; }
+    .ps-obras .c2 { animation: ps-nodo-2 12s linear infinite; }
+    .ps-obras .t2::before { animation: ps-raias .5s linear infinite, ps-fase-2 12s linear infinite; }
+    .ps-obras .t2::after { animation: ps-tramo-f2 12s linear infinite; }
+    @keyframes ps-fase-3 { 0%, 26.58% { opacity: 0; } 26.67%, 39.92% { opacity: 1; } 40%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-3 { 0%, 26.58% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 26.67%, 39.92% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 40%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f3 { 0%, 39.92% { opacity: 0; } 40%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f3, .ps-obras .d3 { animation: ps-fase-3 12s linear infinite; }
+    .ps-obras .c3 { animation: ps-nodo-3 12s linear infinite; }
+    .ps-obras .t3::before { animation: ps-raias .5s linear infinite, ps-fase-3 12s linear infinite; }
+    .ps-obras .t3::after { animation: ps-tramo-f3 12s linear infinite; }
+    @keyframes ps-fase-4 { 0%, 39.92% { opacity: 0; } 40%, 53.25% { opacity: 1; } 53.33%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-4 { 0%, 39.92% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 40%, 53.25% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 53.33%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f4 { 0%, 53.25% { opacity: 0; } 53.33%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f4, .ps-obras .d4 { animation: ps-fase-4 12s linear infinite; }
+    .ps-obras .c4 { animation: ps-nodo-4 12s linear infinite; }
+    .ps-obras .t4::before { animation: ps-raias .5s linear infinite, ps-fase-4 12s linear infinite; }
+    .ps-obras .t4::after { animation: ps-tramo-f4 12s linear infinite; }
+    @keyframes ps-fase-5 { 0%, 53.25% { opacity: 0; } 53.33%, 66.58% { opacity: 1; } 66.67%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-5 { 0%, 53.25% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 53.33%, 66.58% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 66.67%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f5 { 0%, 66.58% { opacity: 0; } 66.67%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f5, .ps-obras .d5 { animation: ps-fase-5 12s linear infinite; }
+    .ps-obras .c5 { animation: ps-nodo-5 12s linear infinite; }
+    .ps-obras .t5::before { animation: ps-raias .5s linear infinite, ps-fase-5 12s linear infinite; }
+    .ps-obras .t5::after { animation: ps-tramo-f5 12s linear infinite; }
+    @keyframes ps-fase-6 { 0%, 66.58% { opacity: 0; } 66.67%, 79.92% { opacity: 1; } 80%, 100% { opacity: 0; } }
+    @keyframes ps-nodo-6 { 0%, 66.58% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 66.67%, 79.92% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 80%, 88.33% { border-color: #2ec4b6; background-color: #2ec4b6; color: #0b0f1a; box-shadow: none; } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    @keyframes ps-tramo-f6 { 0%, 79.92% { opacity: 0; } 80%, 88.33% { opacity: 1; } 90.83%, 100% { opacity: 0; } }
+    .ps-obras .f6, .ps-obras .d6 { animation: ps-fase-6 12s linear infinite; }
+    .ps-obras .c6 { animation: ps-nodo-6 12s linear infinite; }
+    .ps-obras .t6::before { animation: ps-raias .5s linear infinite, ps-fase-6 12s linear infinite; }
+    .ps-obras .t6::after { animation: ps-tramo-f6 12s linear infinite; }
+    @keyframes ps-nodo-volta { 0%, 79.92% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } 80%, 88.33% { border-color: #ffd166; background-color: transparent; color: #ffd166; box-shadow: 0 0 7px rgba(255,209,102,.8); } 90.83%, 100% { border-color: #24304a; background-color: transparent; color: #4a5a7a; box-shadow: none; } }
+    .ps-obras .ps-volta { border-style: dashed; animation: ps-nodo-volta 12s linear infinite; }
+
+    .ps-wifi svg { display: block; width: 32px; height: 26px; fill: none; stroke-width: 2.6; stroke-linecap: round; }
+    .ps-wifi .ps-arco { stroke: #24304a; animation: ps-arco 1.2s linear infinite; }
+    .ps-wifi .ps-arco.a2 { animation-delay: .2s; }
+    .ps-wifi .ps-arco.a3 { animation-delay: .4s; }
+    @keyframes ps-arco { 0%, 100% { stroke: #24304a; } 30%, 70% { stroke: #2ec4b6; } }
+
+    .ps-sql .ps-campo { display: inline-flex; align-items: center; width: 14ch; padding: 4px 7px; border: 1px solid #3a4763; border-radius: 3px; background: #121829; animation: ps-sacude 6s linear infinite, ps-campo-erro 6s linear infinite; }
+    .ps-sql .ps-tecleo { display: inline-block; width: 0; overflow: hidden; white-space: pre; color: #ffd166; animation: ps-tecleo 6s steps(11, end) infinite; }
+    .ps-sql .ps-cursor { display: inline-block; width: 7px; height: 14px; margin-left: 1px; background: #c9d6e8; animation: ps-pestanexo .8s steps(2, start) infinite; }
+    .ps-sql .ps-boton { padding: 4px 9px; border-radius: 3px; background: #24304a; animation: ps-pulsa 6s linear infinite; }
+    @keyframes ps-tecleo { 0%, 8% { width: 0; } 45%, 100% { width: 11ch; } }
+    @keyframes ps-pestanexo { to { visibility: hidden; } }
+    @keyframes ps-pulsa { 0%, 50%, 59%, 100% { background: #24304a; color: #c9d6e8; } 52%, 57% { background: #2ec4b6; color: #0b0f1a; } }
+    @keyframes ps-sacude { 0%, 60%, 72%, 100% { transform: translateX(0); } 62% { transform: translateX(-6px); } 64% { transform: translateX(6px); } 66% { transform: translateX(-5px); } 68% { transform: translateX(4px); } 70% { transform: translateX(-2px); } }
+    @keyframes ps-campo-erro { 0%, 59.9% { border-color: #3a4763; } 60%, 100% { border-color: #ff5d6c; } }
+
+    .persiana .ps-capa { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; margin: 0; padding: 0 14px; }
+    .persiana .ps-capa > * { flex: none; margin-right: 12px; }
+    .ps-combo .ps-radar { animation: ps-capa-radar 11s linear infinite; }
+    .ps-combo .ps-rst { opacity: 0; animation: ps-capa-rst 11s linear infinite; }
+    @keyframes ps-capa-radar { 0%, 49.09% { opacity: 1; } 51.82%, 98.18% { opacity: 0; } 100% { opacity: 1; } }
+    @keyframes ps-capa-rst { 0%, 51.82% { opacity: 0; } 54.55%, 97.27% { opacity: 1; } 100% { opacity: 0; } }
+
+    .ps-radar .ps-disco { position: relative; width: 38px; height: 38px; overflow: hidden; border: 1px solid #1f6f68; border-radius: 50%; background: radial-gradient(circle, transparent 0 6px, rgba(46,196,182,.35) 6px 7px, transparent 7px 12px, rgba(46,196,182,.35) 12px 13px, transparent 13px) #06231f; }
+    .ps-radar .ps-disco::before { content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 50%; background: conic-gradient(rgba(46,196,182,0) 0deg, rgba(46,196,182,0) 240deg, rgba(46,196,182,.9) 360deg); animation: ps-xira 1.5s linear infinite; }
+    .ps-radar .ps-disco::after { content: ""; position: absolute; top: 9px; left: 24px; width: 4px; height: 4px; border-radius: 50%; background: #ffd166; animation: ps-blip 1.5s linear infinite; }
+    .ps-radar .ps-chip { display: inline-flex; flex-direction: column; align-items: center; width: 68px; margin-right: 8px; padding: 3px 0; border: 1px solid #24304a; border-radius: 4px; font-size: 11px; }
+    .ps-radar .ps-chip b { font-weight: 600; }
+    .ps-radar .ps-chip i { font-style: normal; color: #ffd166; opacity: 0; }
+    @keyframes ps-xira { to { transform: rotate(360deg); } }
+    @keyframes ps-blip { 0%, 55% { opacity: 0; } 62% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes ps-chip-1 { 0%, 4.09% { border-color: #24304a; box-shadow: none; } 4.55%, 6.82% { border-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.7); } 8.64%, 51.82% { border-color: #6b5a2a; box-shadow: none; } 54.55%, 100% { border-color: #24304a; box-shadow: none; } }
+    @keyframes ps-chip-e1 { 0%, 6.36% { opacity: 0; } 8.18%, 51.82% { opacity: 1; } 54.55%, 100% { opacity: 0; } }
+    .ps-radar .r1 { animation: ps-chip-1 11s linear infinite; }
+    .ps-radar .r1 i { animation: ps-chip-e1 11s linear infinite; }
+    @keyframes ps-chip-2 { 0%, 11.36% { border-color: #24304a; box-shadow: none; } 11.82%, 14.09% { border-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.7); } 15.91%, 51.82% { border-color: #6b5a2a; box-shadow: none; } 54.55%, 100% { border-color: #24304a; box-shadow: none; } }
+    @keyframes ps-chip-e2 { 0%, 13.64% { opacity: 0; } 15.45%, 51.82% { opacity: 1; } 54.55%, 100% { opacity: 0; } }
+    .ps-radar .r2 { animation: ps-chip-2 11s linear infinite; }
+    .ps-radar .r2 i { animation: ps-chip-e2 11s linear infinite; }
+    @keyframes ps-chip-3 { 0%, 18.64% { border-color: #24304a; box-shadow: none; } 19.09%, 21.36% { border-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.7); } 23.18%, 51.82% { border-color: #6b5a2a; box-shadow: none; } 54.55%, 100% { border-color: #24304a; box-shadow: none; } }
+    @keyframes ps-chip-e3 { 0%, 20.91% { opacity: 0; } 22.73%, 51.82% { opacity: 1; } 54.55%, 100% { opacity: 0; } }
+    .ps-radar .r3 { animation: ps-chip-3 11s linear infinite; }
+    .ps-radar .r3 i { animation: ps-chip-e3 11s linear infinite; }
+    @keyframes ps-chip-4 { 0%, 25.91% { border-color: #24304a; box-shadow: none; } 26.36%, 28.64% { border-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.7); } 30.45%, 51.82% { border-color: #6b5a2a; box-shadow: none; } 54.55%, 100% { border-color: #24304a; box-shadow: none; } }
+    @keyframes ps-chip-e4 { 0%, 28.18% { opacity: 0; } 30%, 51.82% { opacity: 1; } 54.55%, 100% { opacity: 0; } }
+    .ps-radar .r4 { animation: ps-chip-4 11s linear infinite; }
+    .ps-radar .r4 i { animation: ps-chip-e4 11s linear infinite; }
+
+    .ps-rst .ps-via { position: absolute; top: 50%; right: 80px; left: 0; margin: 0; border-top: 1px dashed #24304a; }
+    .ps-rst .ps-paquete { position: absolute; top: calc(50% - 11px); left: -60px; margin: 0; padding: 3px 8px; border-radius: 3px; background: #2ec4b6; color: #0b0f1a; font-weight: 700; animation: ps-paquete 11s linear infinite; }
+    .ps-rst .ps-porta { position: absolute; top: calc(50% - 15px); right: 14px; margin: 0; padding: 5px 10px; border: 2px solid #c9d6e8; border-radius: 3px; background: #121829; font-weight: 700; animation: ps-porta 11s linear infinite; }
+    .ps-rst .ps-selo { position: absolute; top: 50%; left: 42%; margin: 0; padding: 3px 10px; border: 2px solid #ff5d6c; border-radius: 4px; background: rgba(11,15,26,.9); color: #ff5d6c; font-size: 14px; font-weight: 700; letter-spacing: 1px; transform: translate(-50%, -50%) rotate(-5deg); animation: ps-selo 11s linear infinite; }
+    @keyframes ps-paquete {
+      0%, 54.55% { left: -60px; transform: rotate(0); animation-timing-function: cubic-bezier(.5, 0, 1, .7); }
+      69.09% { left: calc(100% - 116px); transform: rotate(0); animation-timing-function: cubic-bezier(0, .5, .4, 1); }
+      76.36%, 100% { left: -70px; transform: rotate(-720deg); }
+    }
+    @keyframes ps-porta {
+      0%, 69% { border-color: #c9d6e8; background: #121829; color: #c9d6e8; transform: translateX(0); }
+      69.09% { border-color: #ff5d6c; background: #4a1520; color: #ff5d6c; transform: translateX(6px); }
+      70.45% { border-color: #ff5d6c; background: #4a1520; color: #ff5d6c; transform: translateX(-4px); }
+      71.82% { border-color: #ff5d6c; background: #4a1520; color: #ff5d6c; transform: translateX(2px); }
+      73.18%, 99.09% { border-color: #ff5d6c; background: #4a1520; color: #ff5d6c; transform: translateX(0); }
+      100% { border-color: #c9d6e8; background: #121829; color: #c9d6e8; transform: translateX(0); }
+    }
+    @keyframes ps-selo {
+      0%, 70.91% { opacity: 0; transform: translate(-50%, -50%) rotate(-5deg) scale(2.8); animation-timing-function: ease-in; }
+      73.64% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1); }
+      74.55% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); }
+      75.45%, 99.09% { opacity: 1; transform: translate(-50%, -50%) rotate(-5deg) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) rotate(-5deg) scale(1); }
+    }
+
+    .ps-oca { flex-direction: column; align-items: flex-start; justify-content: center; }
+    .ps-oca > * { margin-right: 0; }
+    .ps-oca .ps-taboleiro { position: relative; display: flex; }
+    .ps-oca .ps-cas { flex: none; box-sizing: border-box; width: 26px; height: 26px; margin-right: 5px; border: 1px solid #24304a; border-radius: 4px; color: #4a5a7a; font-size: 9px; line-height: 24px; text-align: center; }
+    .ps-oca .ps-dado { border-color: #e8edf5; background-color: #e8edf5; }
+    .ps-oca .ps-carcere { border-color: #6d2a35; background: repeating-linear-gradient(90deg, #a03a48 0 2px, transparent 2px 6px); animation: ps-carcere 9s linear infinite; }
+    .ps-oca .ps-ficha { position: absolute; top: 6px; left: 6px; width: 14px; height: 14px; animation: ps-ficha 9s linear infinite; }
+    .ps-oca .ps-ficha i { display: block; box-sizing: border-box; width: 14px; height: 14px; border: 2px solid #0b0f1a; border-radius: 50%; background: #ff9f1c; box-shadow: 0 0 0 1.5px #ff9f1c; animation: ps-salto 9s linear infinite; }
+    .ps-oca .ps-lenda { position: relative; margin-top: 3px; font-size: 11px; }
+    .ps-oca .ps-oa { animation: ps-oca-a 9s linear infinite; }
+    .ps-oca .ps-ob { position: absolute; top: 0; left: 0; opacity: 0; color: #ff5d6c; animation: ps-oca-b 9s linear infinite; }
+    .ps-oca .d1 { background-image: radial-gradient(circle at 28% 28%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 72% 72%, #0b0f1a 0 2.2px, transparent 2.7px); animation: ps-dado-1 9s linear infinite; }
+    @keyframes ps-dado-1 { 0%, 12.11% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } 12.22%, 82.22% { border-color: #2ec4b6; background-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.8); } 91.11%, 100% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } }
+    .ps-oca .d2 { background-image: radial-gradient(circle at 28% 28%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 50% 50%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 72% 72%, #0b0f1a 0 2.2px, transparent 2.7px); animation: ps-dado-2 9s linear infinite; }
+    @keyframes ps-dado-2 { 0%, 25.44% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } 25.56%, 82.22% { border-color: #2ec4b6; background-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.8); } 91.11%, 100% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } }
+    .ps-oca .d3 { background-image: radial-gradient(circle at 28% 28%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 72% 28%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 50% 50%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 28% 72%, #0b0f1a 0 2.2px, transparent 2.7px), radial-gradient(circle at 72% 72%, #0b0f1a 0 2.2px, transparent 2.7px); animation: ps-dado-3 9s linear infinite; }
+    @keyframes ps-dado-3 { 0%, 38.78% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } 38.89%, 82.22% { border-color: #2ec4b6; background-color: #2ec4b6; box-shadow: 0 0 8px rgba(46,196,182,.8); } 91.11%, 100% { border-color: #e8edf5; background-color: #e8edf5; box-shadow: none; } }
+    @keyframes ps-ficha {
+      0%, 6.67% { left: 6px; }
+      12.22%, 18.89% { left: 99px; }
+      25.56%, 32.22% { left: 192px; }
+      38.89%, 45.56% { left: 316px; }
+      52.22%, 82.22% { left: 378px; }
+      91.11%, 100% { left: 6px; }
+    }
+    @keyframes ps-salto {
+      0%, 6.67%, 12.22%, 18.89%, 25.56%, 32.22%, 38.89%, 45.56% { transform: translateY(0); animation-timing-function: ease-out; }
+      9.44%, 22.22%, 35.56%, 48.89% { transform: translateY(-11px); animation-timing-function: ease-in; }
+      52.22%, 100% { transform: translateY(0); }
+    }
+    @keyframes ps-carcere {
+      0%, 52.11% { border-color: #6d2a35; box-shadow: none; transform: translateX(0); }
+      52.22% { border-color: #ff5d6c; box-shadow: 0 0 8px rgba(255,93,108,.8); transform: translateX(3px); }
+      53.33% { border-color: #ff5d6c; box-shadow: 0 0 8px rgba(255,93,108,.8); transform: translateX(-3px); }
+      54.44% { border-color: #ff5d6c; box-shadow: 0 0 8px rgba(255,93,108,.8); transform: translateX(2px); }
+      55.56%, 82.22% { border-color: #ff5d6c; box-shadow: 0 0 8px rgba(255,93,108,.8); transform: translateX(0); }
+      88.89%, 100% { border-color: #6d2a35; box-shadow: none; transform: translateX(0); }
+    }
+    @keyframes ps-oca-a { 0%, 52.11% { opacity: 1; } 52.22%, 93.22% { opacity: 0; } 93.33%, 100% { opacity: 1; } }
+    @keyframes ps-oca-b { 0%, 52.11% { opacity: 0; } 52.22%, 93.22% { opacity: 1; } 93.33%, 100% { opacity: 0; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .persiana *, .persiana *::before, .persiana *::after { animation: none !important; }
+      .persiana .ps-a { opacity: 0; }
+      .ps-sql .ps-tecleo { width: 11ch; }
+      .ps-sql .ps-campo { border-color: #ff5d6c; }
+      .ps-radar .ps-chip i { opacity: 1; }
+      .ps-obras .ps-ciclo .c1 { border-color: #ffd166; color: #ffd166; }
+    }
   </style>
 </head>
 <body>
@@ -684,57 +906,74 @@
       <div class="container mt-2">
         <h3><a href='https://github.com/ricardofc/repoEDU-CCbySA/tree/main/HE/Taller'>HE - Módulo CE Ciberseguridade FP Hacking Ético</a></h3>
       </div>
+        <div class="container">
+          <div class="item fleft">
+            <ul type='square' style='margin-left:-40px;'><li class='bg-danger text-light px-2'><b>Laboratorios</b></ul>
+            <div class="dropdown-menu">
+              <a class='dropdown-item' href='https://github.com/ricardofc/viper-he.lab' target='_blank'>viper-he.lab</a></b>
+              <a class='dropdown-item' href='https://github.com/ricardofc/vuln-wifi.lab' target='_blank'>vuln-wifi.lab</a></b>
+              <a class='dropdown-item' href='https://github.com/ricardofc/vuln-he.lab' target='_blank'>vuln-he.lab</a></b>
+              <a class='dropdown-item' href='https://github.com/ricardofc/vuln-zerologon.lab' target='_blank'>vuln-zerlogon.lab</a></b>
+            </div>
+          </div>
+        </div>
+
         <div class="container cboth">
           <div class="item mtop5">
             <h4>1. Introdución á seguridade ofensiva<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <div class="persiana ps-obras" aria-hidden="true"><span class="ps-fila"><span class="ps-xa"><span class="ps-roda"></span>Pentesting en curso ·<span class="ps-fases"><span class="f1">1. Recopilación</span><span class="f2">2. Análise</span><span class="f3">3. Explotación</span><span class="f4">4. Post-Explotación</span><span class="f5">5. Persistencia</span><span class="f6">6. Informe</span></span></span><span class="ps-xb">↻ Informe entregado. O ciclo volve empezar.</span></span><span class="ps-ciclo"><b class="c1">1</b><i class="t1"></i><b class="c2">2</b><i class="t2"></i><b class="c3">3</b><i class="t3"></i><b class="c4">4</b><i class="t4"></i><b class="c5">5</b><i class="t5"></i><b class="c6">6</b><i class="t6"></i><b class="ps-volta">1</b><span class="ps-desc"><span class="d1">Reunir datos do obxectivo</span><span class="d2">Identificar debilidades</span><span class="d3">Obter acceso simulado</span><span class="d4">Moverse dentro da rede</span><span class="d5">Manter o acceso</span><span class="d6">Documentar achados</span></span></span></div>
             <div class="dropdown-menu">
               <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD1' target='_blank'>UD1 (Versión navegable)</a></div>
               <div class="dropdown-divider"></div>
-              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/HE-UD1.pdf' target='_blank'>UD1 (versión PDF)</a></div>
+              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD1' target='_blank'>UD1 (versión PDF)</a></div>
             </div>
           </div>
         </div>
 
-        <div class="container">
+        <div class="container" hidden>
           <div class="item">
-            <h4>2. Recoñecemento, escaneo, explotación de vulnerabilidade nos sistemas<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <h4>2. O hacking ético nas redes sen fíos<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <div class="persiana ps-wifi" aria-hidden="true"><span class="ps-pila"><svg class="ps-a" viewBox="0 0 32 26"><circle cx="16" cy="23" r="2.2" fill="#2ec4b6"/><path class="ps-arco" d="M11.05 18.05A7 7 0 0 1 20.95 18.05"/><path class="ps-arco a2" d="M6.81 13.81A13 13 0 0 1 25.19 13.81"/><path class="ps-arco a3" d="M2.56 9.56A19 19 0 0 1 29.44 9.56"/></svg><svg class="ps-b" viewBox="0 0 32 26"><circle cx="16" cy="23" r="2.2" fill="#6d2a35"/><g stroke="#6d2a35"><path d="M11.05 18.05A7 7 0 0 1 20.95 18.05"/><path d="M6.81 13.81A13 13 0 0 1 25.19 13.81"/><path d="M2.56 9.56A19 19 0 0 1 29.44 9.56"/></g><path d="M5 3L27 25" stroke="#ff5d6c"/></svg></span><span class="ps-pila"><span class="ps-a">Buscando a rede «HE-UD2»<span class="ps-puntos">...</span></span><span class="ps-b ps-erro">✕ SSID oculto. Volve outro día.</span></span></div>
             <div class="dropdown-menu">
               <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD2' target='_blank'>UD2 (Versión navegable)</a></div>
               <div class="dropdown-divider"></div>
-              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/HE-UD2.pdf' target='_blank'>UD2 (versión PDF)</a></div>
+              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD2' target='_blank'>UD2 (versión PDF)</a></div>
             </div>
           </div>
         </div>
 
-        <div class="container">
+        <div class="container" hidden>
           <div class="item">
-            <h4>3. Consolidación e utilización de sistemas comprometidos<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <h4>3. O hacking ético nas aplicacións web<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <div class="persiana ps-sql" aria-hidden="true"><span>usuario:</span><span class="ps-campo"><span class="ps-tecleo">&#39; OR 1=1 --</span><span class="ps-cursor"></span></span><span class="ps-boton">Entrar</span><span class="ps-b ps-erro">✕ Boa tentativa.</span></div>
             <div class="dropdown-menu">
               <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD3' target='_blank'>UD3 (Versión navegable)</a></div>
               <div class="dropdown-divider"></div>
-              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/HE-UD3.pdf' target='_blank'>UD3 (versión PDF)</a></div>
+              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD3' target='_blank'>UD3 (versión PDF)</a></div>
             </div>
           </div>
         </div>
 
-        <div class="container">
+        <div class="container" hidden>
           <div class="item">
-            <h4>4. O hacking ético nas redes sen fíos<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <h4>4. Recoñecemento, escaneo, explotación de vulnerabilidade nos sistemas<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <div class="persiana ps-combo" aria-hidden="true"><span class="ps-capa ps-radar"><span class="ps-disco"></span><span class="ps-chip r1"><b>22/tcp</b><i>filtered</i></span><span class="ps-chip r2"><b>80/tcp</b><i>filtered</i></span><span class="ps-chip r3"><b>443/tcp</b><i>filtered</i></span><span class="ps-chip r4"><b>8080/tcp</b><i>filtered</i></span></span><span class="ps-capa ps-rst"><span class="ps-via"></span><span class="ps-paquete">SYN</span><span class="ps-porta">:443</span><span class="ps-selo">CONEXIÓN REXEITADA</span></span></div>
             <div class="dropdown-menu">
               <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD4' target='_blank'>UD4 (Versión navegable)</a></div>
               <div class="dropdown-divider"></div>
-              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/HE-UD4.pdf' target='_blank'>UD4 (versión PDF)</a></div>
+              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD4' target='_blank'>UD4 (versión PDF)</a></div>
             </div>
           </div>
         </div>
 
-        <div class="container">
+        <div class="container" hidden>
           <div class="item">
-            <h4>5. O hacking ético nas aplicacións web<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <h4>5. Consolidación e utilización de sistemas comprometidos<img src="script-bash-html2pdf/images/mouse-pointer-mini.png" class="man" /></h4><br />
+            <div class="persiana ps-oca" aria-hidden="true"><span class="ps-taboleiro"><span class="ps-cas">1</span><span class="ps-cas">2</span><span class="ps-cas">3</span><span class="ps-cas ps-dado d1"></span><span class="ps-cas">5</span><span class="ps-cas">6</span><span class="ps-cas ps-dado d2"></span><span class="ps-cas">8</span><span class="ps-cas">9</span><span class="ps-cas">10</span><span class="ps-cas ps-dado d3"></span><span class="ps-cas">12</span><span class="ps-cas ps-carcere"></span><span class="ps-ficha"><i></i></span></span><span class="ps-lenda"><span class="ps-oa">De dado a dado e pivoto porque me tocou</span><span class="ps-ob">✕ Cárcere! Volves á casa de saída.</span></span></div>
             <div class="dropdown-menu">
               <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-DC-UD5' target='_blank'>Documentación Complementaria - Prácticas Taller UD5 (Versión navegable)</a></div>
               <div class="dropdown-divider"></div>
-              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/HE-DC-UD5.pdf' target='_blank'>Documentación Complementaria - Prácticas Taller UD5 (versión PDF)</a></div>
+              <div class='dropdown-item ml-4'><a href='HE/Taller/Indice-Taller-HE-Practicas/site-HE-DC-UD5' target='_blank'>Documentación Complementaria - Prácticas Taller UD5 (versión PDF)</a></div>
             </div>
           </div>
         </div>
