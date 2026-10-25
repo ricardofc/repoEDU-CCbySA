@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="720" viewBox="0 0 1920 720" role="img" aria-labelledby="titulo descricion">
+  <title id="titulo">Práctica 5: pipeline secuencial de CrewAI con Ollama</title>
+  <desc id="descricion">CrewAI executa en orde a lectura de evidencias, o analista, o revisor, o redactor e a creación do informe final. O analista utiliza unha ferramenta limitada para ler nmap.txt e http.txt. O revisor recibe a extracción e o redactor recibe a extracción e a revisión. Ollama ofrece un modelo local compartido por API aos tres axentes, pero non controla o fluxo nin executa ferramentas. O informe é gardado por CrewAI.</desc>
+  <defs>
+    <style>
+      .main{font-family:DejaVu Sans,Arial,sans-serif;fill:#783016}
+      .body{font-family:DejaVu Sans,Arial,sans-serif;fill:#8f3c20}
+      .small{font-family:DejaVu Sans,Arial,sans-serif;fill:#565f69}
+      .title{font-family:DejaVu Sans,Arial,sans-serif;font-size:34px;font-weight:700;fill:#783016}
+      .node-title{font-family:DejaVu Sans,Arial,sans-serif;font-size:28px;font-weight:700;fill:#793219}
+      .desc{font-family:DejaVu Sans,Arial,sans-serif;font-size:23px;fill:#913c20}
+      .code{font-family:DejaVu Sans Mono,monospace;font-size:18px;fill:#81402a}
+    </style>
+    <marker id="f-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11" fill="none" stroke="#9e3618" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="b-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11" fill="none" stroke="#3173a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1920" height="720" fill="#ffffff"/>
+  <text x="960" y="48" class="title" text-anchor="middle">PRÁCTICA 5 · EXECUCIÓN DO EQUIPO DE AXENTES</text>
+  <rect x="48" y="80" width="1824" height="107" rx="19" fill="#fbebdf" stroke="#e65a2c" stroke-width="2.8"/>
+  <text x="960" y="121" class="title" text-anchor="middle" font-size="29">CrewAI · ORQUESTRADOR</text>
+  <text x="960" y="156" class="body" font-size="23" text-anchor="middle">Process.sequential · Coordina a orde, as tarefas e o traspaso de contexto (sen execución paralela)</text>
+
+  <!-- Frechas do pipeline: a saída de cada etapa alimenta a seguinte. -->
+  <g fill="none" stroke="#9e3618" stroke-width="4" stroke-linecap="round" marker-end="url(#f-arrow)">
+    <line x1="351" y1="327" x2="411" y2="327"/>
+    <line x1="732" y1="327" x2="792" y2="327"/>
+    <line x1="1113" y1="327" x2="1173" y2="327"/>
+    <line x1="1494" y1="327" x2="1554" y2="327"/>
+  </g>
+
+  <!-- Etapas análogas á lectura de esquerda a dereita do exemplo MITRE. -->
+  <g>
+    <rect x="48" y="218" width="303" height="219" rx="21" fill="#fbedeb" stroke="#ea572b" stroke-width="3"/>
+    <circle cx="78" cy="251" r="23" fill="#dc5428"/><text x="78" y="259" font-size="22" fill="#fff" text-anchor="middle" font-weight="700" font-family="DejaVu Sans,Arial">1</text>
+    <text x="199" y="277" class="node-title" text-anchor="middle">EVIDENCIAS</text>
+    <text x="199" y="321" class="desc" text-anchor="middle">nmap.txt</text>
+    <text x="199" y="354" class="desc" text-anchor="middle">http.txt</text>
+    <text x="199" y="397" class="small" font-size="20" text-anchor="middle">Ficheiros ficticios</text>
+  </g>
+  <g>
+    <rect x="429" y="218" width="303" height="219" rx="21" fill="#fbedeb" stroke="#ea572b" stroke-width="3"/>
+    <circle cx="459" cy="251" r="23" fill="#dc5428"/><text x="459" y="259" font-size="22" fill="#fff" text-anchor="middle" font-weight="700" font-family="DejaVu Sans,Arial">2</text>
+    <text x="580" y="277" class="node-title" text-anchor="middle">ANALISTA</text>
+    <text x="580" y="319" class="desc" text-anchor="middle">Le as evidencias</text>
+    <text x="580" y="354" class="desc" text-anchor="middle">con tool calling</text>
+    <text x="580" y="398" class="code" text-anchor="middle">ler_evidencia(nome)</text>
+  </g>
+  <g>
+    <rect x="810" y="218" width="303" height="219" rx="21" fill="#fbedeb" stroke="#ea572b" stroke-width="3"/>
+    <circle cx="840" cy="251" r="23" fill="#dc5428"/><text x="840" y="259" font-size="22" fill="#fff" text-anchor="middle" font-weight="700" font-family="DejaVu Sans,Arial">3</text>
+    <text x="961" y="277" class="node-title" text-anchor="middle">REVISOR</text>
+    <text x="961" y="319" class="desc" text-anchor="middle">Verifica os achados</text>
+    <text x="961" y="354" class="desc" text-anchor="middle">e cuestiona CVE</text>
+    <text x="961" y="398" class="code" text-anchor="middle">context=[extraccion]</text>
+  </g>
+  <g>
+    <rect x="1191" y="218" width="303" height="219" rx="21" fill="#fbedeb" stroke="#ea572b" stroke-width="3"/>
+    <circle cx="1221" cy="251" r="23" fill="#dc5428"/><text x="1221" y="259" font-size="22" fill="#fff" text-anchor="middle" font-weight="700" font-family="DejaVu Sans,Arial">4</text>
+    <text x="1342" y="277" class="node-title" text-anchor="middle">REDACTOR</text>
+    <text x="1342" y="319" class="desc" text-anchor="middle">Combina extracción</text>
+    <text x="1342" y="352" class="desc" text-anchor="middle">e revisión</text>
+    <text x="1342" y="392" class="code" font-size="15" text-anchor="middle">context=[extraccion,</text>
+    <text x="1342" y="415" class="code" font-size="15" text-anchor="middle">comprobacion]</text>
+  </g>
+  <g>
+    <rect x="1572" y="218" width="303" height="219" rx="21" fill="#fbedeb" stroke="#ea572b" stroke-width="3"/>
+    <circle cx="1602" cy="251" r="23" fill="#dc5428"/><text x="1602" y="259" font-size="22" fill="#fff" text-anchor="middle" font-weight="700" font-family="DejaVu Sans,Arial">5</text>
+    <text x="1723" y="277" class="node-title" text-anchor="middle">INFORME</text>
+    <text x="1723" y="319" class="desc" text-anchor="middle">informe-equipo.md</text>
+    <text x="1723" y="354" class="desc" text-anchor="middle">CrewAI gárdao</text>
+    <text x="1723" y="398" class="code" text-anchor="middle">output_file=...</text>
+  </g>
+
+  <!-- O mesmo modelo local serve aos tres axentes; cada liña representa petición/resposta, non paralelismo. -->
+  <g stroke="#3173a4" stroke-width="3.5" stroke-dasharray="8 10" fill="none" marker-start="url(#b-arrow)" marker-end="url(#b-arrow)">
+    <line x1="580" y1="450" x2="580" y2="531" />
+    <line x1="961" y1="450" x2="961" y2="531" />
+    <line x1="1342" y1="450" x2="1342" y2="531" />
+  </g>
+  <rect x="428" y="544" width="1067" height="107" rx="18" fill="#eaf4fc" stroke="#3173a4" stroke-width="2.8"/>
+  <text x="961" y="586" font-size="30" font-weight="700" font-family="DejaVu Sans,Arial" fill="#174c75" text-anchor="middle">OLLAMA · MODELO LOCAL COMPARTIDO</text>
+  <text x="961" y="623" font-size="22" font-family="DejaVu Sans,Arial" fill="#2e6087" text-anchor="middle">API HTTP · Atende chamadas sucesivas dos tres axentes</text>
+  <text x="960" y="689" font-size="20" font-family="DejaVu Sans,Arial" fill="#5b626b" text-anchor="middle">O modelo xera respostas; o código Python / CrewAI executa as ferramentas e escribe o ficheiro final.</text>
+</svg>

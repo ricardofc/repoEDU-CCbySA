@@ -1,0 +1,4409 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../openvas/">
+      
+      
+        <link rel="next" href="../recursos/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Modelos de IA locais (Ollama) - Hacking Ético - UD1 - Introdución á seguridade ofensiva</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modelos-de-ia-locais-ollama-soberania-de-datos" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-header__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD1 - Introdución á seguridade ofensiva
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Modelos de IA locais (Ollama)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../he/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos UD1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../practicas-taller/informes-sysreptor/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD1
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apendice/" class="md-tabs__link">
+          
+  
+  
+  Apéndice
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-nav__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD1 - Introdución á seguridade ofensiva
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    De interese
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apuntamentos UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apuntamentos UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Que é o Hacking Ético
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tipos-hackers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Hackers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tipos-auditorias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Auditorías
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../caid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos da Seguridade da Información (CAID)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases dun Test de Intrusión (Pentest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes de Pentesting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes de Pentesting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes/CVE-2011-2523/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes/clasificacion_risco_cvss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVSS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes/cwe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CWE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../etica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ética e Legalidade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../marcos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marcos de traballo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modelos-ataque-defensa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de Ataque e Defensa
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clearnet_deepweb_darkweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explicación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verificar_sinatura_tor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verificación sinatura Tor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ferramentas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ferramentas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comúns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#modelos-de-ia-locais-ollama-soberania-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelos de IA locais (Ollama) — soberanía de datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelos de IA locais (Ollama) — soberanía de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-un-modelo-de-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é un modelo de IA?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-traballar-cun-modelo-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que traballar cun modelo local?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-hardware-fai-falla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que hardware fai falla?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-significa-3b-8b-parametros-dun-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que significa "3B", "8B"...? Parámetros dun modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onde-probar-modelos-grandes-gratis-sen-instalar-nada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onde probar modelos grandes gratis, sen instalar nada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-e-un-modelfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é un Modelfile?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#podense-crear-axentes-subaxentes-e-equipos-de-axentes-con-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pódense crear axentes, subaxentes e equipos de axentes con Ollama?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pódense crear axentes, subaxentes e equipos de axentes con Ollama?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-aplicado-un-pentest-a-web-dunha-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo aplicado: un pentest á web dunha empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duas-arquitecturas-adicionais-sdk-python-e-crewai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dúas arquitecturas adicionais: SDK Python e CrewAI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dúas arquitecturas adicionais: SDK Python e CrewAI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-o-tool-calling-chamada-a-ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é o tool calling (chamada a ferramentas)?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-tool-calling-non-executa-unha-funcion-automaticamente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O tool calling non executa unha función automaticamente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equipo-con-tarefas-fixas-fronte-a-xestor-xerarquico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipo con tarefas fixas fronte a xestor xerárquico
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-veremos-nas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que veremos nas prácticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de Aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER, Red Team e C2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes con sysreptor
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes con sysreptor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/informes-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise de vulnerabilidades con OpenVAS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modelos de IA locais (Ollama)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-ollama-vm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 1 — Dentro dunha VM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-ollama-host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 2 — No equipo anfitrión (GPU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-ollama-agentes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 3 — Axentes e multiaxentes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-ollama-agente-python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 4 — Axente propio con Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-ollama-crewai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 5 — Equipos de axentes con CrewAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recursos de aprendizaxe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_1" id="__nav_3_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 3
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 3
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_3" id="__nav_3_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnHub
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulnHub
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_4" id="__nav_3_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TryHackMe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    TryHackMe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_5" id="__nav_3_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackTheBox
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HackTheBox
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_6" id="__nav_3_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulNyx
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulNyx
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_7" id="__nav_3_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DockerLabs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DockerLabs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/hacksplaining/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackSplaining
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_9" id="__nav_3_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    picoCTF
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    picoCTF
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_10" id="__nav_3_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pwn.college
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    pwn.college
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_11" id="__nav_3_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PentesterLab
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    PentesterLab
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/machine-owasp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OWASP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/s4vitar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S4vitar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practicas-taller/practicas-taller-viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulación de ataques con VIPER
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apéndice
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apéndice
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automatización dos escenarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SysReptor (Vagrant + Docker)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone (OVA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/ollama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ollama (Vagrant + nativo)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER (Packer + VirtualBox)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#modelos-de-ia-locais-ollama-soberania-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelos de IA locais (Ollama) — soberanía de datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelos de IA locais (Ollama) — soberanía de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-un-modelo-de-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é un modelo de IA?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-traballar-cun-modelo-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que traballar cun modelo local?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-hardware-fai-falla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que hardware fai falla?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-significa-3b-8b-parametros-dun-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que significa "3B", "8B"...? Parámetros dun modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onde-probar-modelos-grandes-gratis-sen-instalar-nada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Onde probar modelos grandes gratis, sen instalar nada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-e-un-modelfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é un Modelfile?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#podense-crear-axentes-subaxentes-e-equipos-de-axentes-con-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pódense crear axentes, subaxentes e equipos de axentes con Ollama?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pódense crear axentes, subaxentes e equipos de axentes con Ollama?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-aplicado-un-pentest-a-web-dunha-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo aplicado: un pentest á web dunha empresa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duas-arquitecturas-adicionais-sdk-python-e-crewai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dúas arquitecturas adicionais: SDK Python e CrewAI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dúas arquitecturas adicionais: SDK Python e CrewAI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-e-o-tool-calling-chamada-a-ferramentas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que é o tool calling (chamada a ferramentas)?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#o-tool-calling-non-executa-unha-funcion-automaticamente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O tool calling non executa unha función automaticamente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equipo-con-tarefas-fixas-fronte-a-xestor-xerarquico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipo con tarefas fixas fronte a xestor xerárquico
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-veremos-nas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Que veremos nas prácticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Modelos de IA locais (Ollama)</h1>
+
+<style>
+/* Evitar que as táboas se saian da páxina ao xerar o PDF (A4 portrait). */
+@media print {
+  .md-typeset table:not([class]),
+  table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td,
+  th, td {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    vertical-align: top;
+  }
+  .md-typeset table:not([class]) code,
+  td code, th code {
+    white-space: pre-wrap !important;
+    overflow-wrap: break-word !important;
+    word-break: break-all !important;
+  }
+}
+</style>
+
+<h2 id="modelos-de-ia-locais-ollama-soberania-de-datos">Modelos de IA locais (Ollama) — soberanía de datos</h2>
+<div class="admonition info">
+<p class="admonition-title">Cheat-sheet oficial</p>
+<p>A <a href="https://docs.ollama.com/cli" target="_blank">Referencia de comandos CLI</a> da
+documentación oficial de Ollama recolle todos os comandos dispoñibles
+(<code>pull</code>, <code>run</code>, <code>create</code>, <code>cp</code>, <code>rm</code>...). Convén telo a man mentres
+traballas coa ferramenta.</p>
+</div>
+<h3 id="que-e-un-modelo-de-ia">Que é un modelo de IA?</h3>
+<p>Un <strong>modelo de linguaxe</strong> (o tipo de IA que usan Claude, ChatGPT, Gemini ou
+Ollama) é un programa adestrado con enormes cantidades de texto para facer
+unha soa cousa moi ben: <strong>predicir cal é a palabra máis probable que veña a
+continuación</strong>, dado o texto anterior. Repetindo esa predición unha e outra
+vez, palabra a palabra, o modelo constrúe respostas enteiras.</p>
+<p>Isto ten implicacións importantes que convén ter claras dende o principio:</p>
+<ul>
+<li><strong>Non é unha base de datos nin un buscador.</strong> Un modelo local (ou en liña)
+  non "busca" a resposta nun sitio, nin ten gardado un documento con "a
+  resposta correcta" para cada pregunta. Xera o texto sobre a marcha, en
+  base ao que aprendeu durante o adestramento.</li>
+<li><strong>Pode equivocarse con total seguridade aparente</strong> (o que se coñece como
+  <em>alucinación</em>): como o modelo xera a palabra máis probable, pode producir
+  información incorrecta ou inventada expresada co mesmo ton confiado ca
+  unha correcta. Isto é especialmente relevante en pentesting: <strong>verifica
+  sempre</strong> o que suxire un modelo (un exploit, un comando, unha
+  interpretación dun resultado) antes de aplicalo.</li>
+<li><strong>Un só modelo serve para moitas tarefas distintas</strong> (conversar, xerar
+  código, traducir, resumir...) porque todas son, no fondo, "predicir a
+  seguinte palabra" aplicado a contextos diferentes — non hai un módulo
+  separado para cada tarefa.</li>
+<li><strong>"Local" ou "en liña" non cambia como funciona o modelo</strong>, só onde se
+  executa. Claude, ChatGPT e Gemini son modelos moito máis grandes
+  executados nos servidores da empresa que os fai; os modelos de Ollama son
+  máis pequenos e execútanse enteiramente na túa máquina. O
+  funcionamento interno (predicir texto) é o mesmo nos dous casos.</li>
+</ul>
+<h3 id="por-que-traballar-cun-modelo-local">Por que traballar cun modelo local?</h3>
+<p>É habitual apoiarse en ferramentas de IA en liña (<a href="https://claude.ai" target="_blank">Claude</a>,
+<a href="https://chatgpt.com" target="_blank">ChatGPT</a>, <a href="https://gemini.google.com" target="_blank">Gemini</a>) para
+estudar, resolver dúbidas ou revisar código. Nun pentest <strong>profesional
+contratado</strong>, con todo, isto deixa de ser tan sinxelo: moitos contratos de
+auditoría inclúen cláusulas de confidencialidade e o RGPD esixe control sobre
+onde van os datos que manexas (nomes de hosts do cliente, vulnerabilidades
+atopadas, credenciais, fragmentos de código interno...). Enviar eses datos a
+un servizo de IA en liña de terceiros pode incumprir o contrato ou a
+normativa, aínda que sexa sen mala intención.</p>
+<div class="admonition note">
+<p class="admonition-title">Que é o RGPD?</p>
+<p>O <strong>Regulamento Xeral de Protección de Datos</strong> (RGPD) é a lei da Unión
+Europea que regula como se recollen, tratan e protexen os datos persoais
+(nomes, contrasinais, direccións IP, calquera dato que identifique a unha
+persoa). Obriga a que as empresas saiban en todo momento onde están os
+datos que manexan e con quen os comparten, e establece sancións
+importantes se se envían datos a terceiros sen o consentimento ou a base
+legal adecuada. Nun pentest, os "datos persoais" poden aparecer en
+calquera parte: un correo dun empregado, un nome de usuario, un hash de
+contrasinal... por iso onde executas as ferramentas de IA que os len
+tamén importa legalmente, non só tecnicamente.</p>
+</div>
+<p><strong>Ollama</strong> resolve isto executando modelos de linguaxe <strong>de código aberto
+enteiramente na túa propia máquina</strong>, sen que ningún dato saia dela. É máis
+lento e menos potente que os grandes modelos comerciais, pero para moitas
+tarefas de apoio (explicar un concepto, revisar un script, suxerir o seguinte
+paso nunha auditoría) é máis que suficiente, e garante que ningún dato do
+cliente sae da túa rede.</p>
+<h3 id="que-hardware-fai-falla">Que hardware fai falla?</h3>
+<p>Ollama pode executarse en CPU, pero vai máis fluído con GPU. Non fai falla
+que sexa dun fabricante concreto:</p>
+<ul>
+<li><strong>NVIDIA</strong>: acelera vía CUDA automaticamente, con polo menos 6-8 GB de VRAM recomendados.</li>
+<li><strong>AMD</strong>: acelera vía ROCm, en tarxetas compatibles.</li>
+<li><strong>Apple Silicon (M1/M2/M3/M4)</strong>: acelera vía Metal automaticamente en macOS.</li>
+<li><strong>Sen GPU dedicada</strong> (ou GPU non soportada): funciona igual en CPU, só que máis lento canto máis grande sexa o modelo.</li>
+</ul>
+<p>Canto máis grande o modelo, máis VRAM e RAM de sistema necesitas. Esta unidade
+inclúe cinco Prácticas Taller complementarias. As Prácticas 1 e 2 presentan
+alternativas de despregue; as Prácticas 3, 4 e 5 amplían progresivamente o
+traballo con axentes de IA.</p>
+<h3 id="que-significa-3b-8b-parametros-dun-modelo">Que significa "3B", "8B"...? Parámetros dun modelo</h3>
+<p>Cando ves un nome de modelo en Ollama como <code>llama3.2:3b</code> ou <code>dolphin-llama3:8b</code>,
+ese número (3B, 8B) indica os <strong>parámetros</strong> do modelo, en miles de millóns
+(<em>B</em> de <em>billion</em>, "millardo" en inglés).</p>
+<div class="admonition note">
+<p class="admonition-title">Que é un parámetro?</p>
+<p>Un modelo de linguaxe é, por dentro, unha rede neuronal: millóns ou miles
+de millóns de números (<strong>pesos</strong>) que determinan como o modelo relaciona
+palabras, conceptos e contextos entre si. Cada un deses números é un
+<strong>parámetro</strong>. Non hai "regras" escritas á man dentro do modelo — todo o
+que "sabe" está codificado nese enorme conxunto de pesos, axustados
+durante o adestramento.</p>
+<p>Unha forma sinxela de velo: imaxina que cada parámetro é unha pequena
+regra numérica aprendida ("se aparece tal palabra despois de tal outra,
+é máis probable que veña isto"). Un modelo de 3B ten preto de 3.000
+millóns desas regras; un de 8B ten preto de 8.000 millóns. Ningunha regra
+illada significa nada por si soa, pero xuntas permiten que o modelo
+xenere respostas coherentes. Cantas máis regras (parámetros) ten un
+modelo, máis matices e relacións complexas pode capturar entre
+conceptos — pero tamén ocupa máis memoria e require máis cálculo para
+procesar cada palabra que xera.</p>
+</div>
+<p><strong>Como se constrúen (en resumo, sen entrar en detalle técnico):</strong></p>
+<ol>
+<li><strong>Preadestramento (<em>pretraining</em>)</strong>: o modelo le cantidades masivas de
+   texto público (libros, código, páxinas web...) e aprende a predicir a
+   seguinte palabra dunha secuencia. Isto require enormes clústeres de GPU e
+   adoita custar millóns de euros — por iso case ningún estudante nin
+   pequena empresa adestra un modelo dende cero, senón que parte dun xa
+   feito (por Meta, Microsoft, Mistral...).</li>
+<li><strong>Axuste por instrucións (<em>fine-tuning</em>)</strong>: o modelo base apréndese a
+   seguir instrucións e a manter unha conversa, non só a completar texto.</li>
+<li><strong>Aliñamento e filtros de seguridade (<em>alignment</em>)</strong>: adéstrase
+   adicionalmente para que rexeite certas peticións (contido perigoso,
+   ilegal...). É xustamente este último paso o que os modelos <em>decensored</em>
+   (como <code>dolphin-llama3</code> ou <code>dolphin-phi</code>) reducen ou eliminan de forma
+   deliberada, volvendo entrenar sobre o modelo base para que responda sen
+   tantas restricións — por iso son útiles nun contexto profesional de
+   pentesting autorizado, e por iso tamén hai que usalos con responsabilidade.</li>
+</ol>
+<p><strong>Por que o ficheiro descargado pesa menos do que "debería"</strong>: un modelo de
+8.000 millóns de parámetros, se cada un ocupase 4 bytes (precisión estándar),
+pesaría uns 32 GB. Ollama descarga versións <strong>cuantizadas</strong> (<em>quantized</em>),
+onde cada parámetro se garda con menos precisión (por exemplo 4 bits en vez
+de 32) para reducir moito o tamaño e a memoria necesaria, a cambio dunha
+perda de calidade case sempre pequena. É por iso que <code>dolphin-llama3:8b</code>
+ocupa uns 4,7 GB e non 32 GB.</p>
+<p><strong>Táboa comparativa dos modelos que usamos nesta unidade:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Modelo</th>
+<th>Parámetros</th>
+<th>Tamaño descarga</th>
+<th>Onde o usamos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llama3.2:3b</code></td>
+<td>~3.200 millóns</td>
+<td>~2 GB</td>
+<td>Dentro dunha VM (sen GPU)</td>
+</tr>
+<tr>
+<td><code>qwen2.5:3b</code></td>
+<td>~3.100 millóns</td>
+<td>~1,9 GB</td>
+<td>Axentes e multiaxentes (VM sen GPU)</td>
+</tr>
+<tr>
+<td><code>dolphin-phi</code></td>
+<td>~2.700 millóns</td>
+<td>~1,6 GB</td>
+<td>Alternativa lixeira <em>decensored</em></td>
+</tr>
+<tr>
+<td><code>dolphin-llama3:8b</code></td>
+<td>~8.000 millóns</td>
+<td>~4,7 GB</td>
+<td>Equipo anfitrión (con GPU)</td>
+</tr>
+</tbody>
+</table>
+<p>En xeral: <strong>máis parámetros → máis capacidade de razoamento e matiz, pero
+máis lento e con máis requisitos de hardware</strong>. Para tarefas de apoio
+puntuais (como as desta unidade), un modelo pequeno adoita ser dabondo; para
+un uso profesional máis esixente, compensa un modelo maior se o hardware o
+permite.</p>
+<div class="admonition warning">
+<p class="admonition-title">Non todo modelo libre é practicable en local</p>
+<p>"Libre" (open-weight) non é o mesmo que "descargable por un estudante".
+Moitos dos modelos open-weight máis potentes de 2026 (DeepSeek V4, Kimi
+K2/K3, Qwen3.5, GLM-5) pesan <strong>centos de GB</strong> unha vez cuantizados e só se
+poden executar en clústeres de varias GPU de centro de datos — na
+práctica, para un particular son tan inaccesibles coma un modelo pechado,
+aínda que a licenza permita descargalos. Os que realmente encaixan no
+obxectivo desta unidade (soberanía de datos nun portátil normal) son os
+pequenos (3B-8B, 2-5 GB), que é xustamente a categoría de
+<code>llama3.2:3b</code>, <code>dolphin-phi</code> e <code>dolphin-llama3:8b</code>.</p>
+</div>
+<h3 id="onde-probar-modelos-grandes-gratis-sen-instalar-nada">Onde probar modelos grandes gratis, sen instalar nada</h3>
+<p>Se queres comparar a calidade dun modelo pequeno local cun modelo grande
+(que non poderías executar na túa máquina), podes probalos gratuitamente en
+liña, sen tarxeta nin instalación:</p>
+<p><strong>Chat oficiais de cada modelo:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Sitio</th>
+<th>Modelo(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://chat.deepseek.com" target="_blank">chat.deepseek.com</a></td>
+<td>DeepSeek (V4, R1...)</td>
+</tr>
+<tr>
+<td><a href="https://chat.qwen.ai" target="_blank">chat.qwen.ai</a></td>
+<td>Qwen (3.5, 3.6...)</td>
+</tr>
+<tr>
+<td><a href="https://chat.z.ai" target="_blank">chat.z.ai</a></td>
+<td>GLM (Zhipu/Z.ai)</td>
+</tr>
+<tr>
+<td><a href="https://www.kimi.com" target="_blank">kimi.com</a></td>
+<td>Kimi (Moonshot AI)</td>
+</tr>
+<tr>
+<td><a href="https://www.meta.ai" target="_blank">meta.ai</a></td>
+<td>Llama (versión aloxada por Meta)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comparadores/agregadores (varios modelos nun só sitio):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Sitio</th>
+<th>Que ofrece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://huggingface.co/chat" target="_blank">Hugging Face Chat</a> (HuggingChat)</td>
+<td>Chat gratuíto con moitos modelos open-weight distintos, sen conta de pago</td>
+</tr>
+<tr>
+<td><a href="https://lmarena.ai" target="_blank">LMArena</a></td>
+<td>Comparación "a cegas" lado a lado entre dous modelos calquera (open e pechados)</td>
+</tr>
+<tr>
+<td><a href="https://openrouter.ai" target="_blank">OpenRouter</a></td>
+<td>Moitos modelos con capa gratuíta marcada explicitamente como <code>:free</code>; require rexistro mais non tarxeta para os gratuítos</td>
+</tr>
+<tr>
+<td><a href="https://groq.com" target="_blank">Groq</a></td>
+<td>Inferencia moi rápida de modelos abertos (Llama, etc.) con capa gratuíta xenerosa</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Exercicio suxerido</p>
+<p>Fai a mesma pregunta técnica (por exemplo, sobre unha reverse shell) no
+teu modelo local e nun modelo grande en HuggingChat ou LMArena. Compara a
+profundidade e precisión das respostas — é a mellor forma de entender de
+forma práctica a táboa de parámetros de máis arriba.</p>
+</div>
+<p><strong>Para seguir que modelos novos van saíndo e comparativas actualizadas</strong>,
+estas páxinas actualízanse continuamente (a diferenza de calquera
+artigo ou táboa como esta, que queda desactualizada en cuestión de meses):</p>
+<table>
+<thead>
+<tr>
+<th>Sitio</th>
+<th>Que ofrece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://lmarena.ai" target="_blank">LMArena</a></td>
+<td><em>Ranking</em> por preferencia humana: miles de persoas votan ás cegas entre respostas de dous modelos, e sácase unha clasificación tipo Elo (como no xadrez). Inclúe modelos abertos e pechados xuntos</td>
+</tr>
+<tr>
+<td><a href="https://artificialanalysis.ai" target="_blank">Artificial Analysis</a></td>
+<td>Benchmarks independentes de calidade, prezo e velocidade por modelo e por provedor de API — útil para comparar non só "cal responde mellor" senón "cal compensa máis"</td>
+</tr>
+<tr>
+<td><a href="https://huggingface.co/open-llm-leaderboard" target="_blank">Hugging Face Open LLM Leaderboard</a></td>
+<td>Especializado só en modelos <strong>abertos</strong>, con benchmarks académicos estandarizados (MMLU, GPQA...). <strong>Nota:</strong> está <strong>arquivado dende 2025</strong> (xa non engade modelos novos), así que serve como <strong>referencia histórica</strong>, non para as últimas novidades</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Ningún leaderboard é a verdade absoluta</p>
+<p>Cada un mide cousas distintas (preferencia humana, benchmarks académicos,
+prezo/rendemento...), e un modelo pode ir primeiro nun e mediano noutro.
+Úsaos para facer unha primeira selección, non como xuízo definitivo.</p>
+</div>
+<h3 id="que-e-un-modelfile">Que é un Modelfile?</h3>
+<p>Ao longo das prácticas desta unidade creas varias veces un ficheiro chamado
+<code>Modelfile</code>. É o "plano de construción" que le Ollama para xerar un modelo
+personalizado a partir dun xa existente (<code>ollama create nome -f Modelfile</code>),
+sen ter que reentrenar nada — só engade instrucións por riba do modelo base.</p>
+<p>Cada liña dun Modelfile é unha instrución. As máis relevantes para este
+curso:</p>
+<table>
+<thead>
+<tr>
+<th>Instrución</th>
+<th>Para que serve</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FROM</code> (obrigatoria)</td>
+<td>Modelo base sobre o que se constrúe. Pode ser un modelo xa descargado (<code>llama3.2:3b</code>) ou un ficheiro local (<code>./modelo.gguf</code>)</td>
+<td><code>FROM llama3.2:3b</code></td>
+</tr>
+<tr>
+<td><code>SYSTEM</code></td>
+<td>Mensaxe de sistema: fixa o rol/comportamento do modelo en cada conversa, sen ter que repetilo ti cada vez</td>
+<td><code>SYSTEM """Es un asistente de pentesting..."""</code></td>
+</tr>
+<tr>
+<td><code>PARAMETER</code></td>
+<td>Axusta como xera texto o modelo (ver táboa seguinte)</td>
+<td><code>PARAMETER temperature 0.7</code></td>
+</tr>
+<tr>
+<td><code>TEMPLATE</code></td>
+<td>O formato exacto no que se monta o <em>prompt</em> final antes de envialo ao modelo (avanzado; normalmente non fai falla tocalo)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ADAPTER</code></td>
+<td>Engade un adaptador LoRA (un axuste lixeiro adicional, adestrado á parte) sobre o modelo base</td>
+<td><code>ADAPTER ./axuste.gguf</code></td>
+</tr>
+<tr>
+<td><code>MESSAGE</code></td>
+<td>Predefine un historial de conversa de exemplo, para guiar o estilo de resposta</td>
+<td><code>MESSAGE user "Ola"</code></td>
+</tr>
+<tr>
+<td><code>LICENSE</code></td>
+<td>Indica a licenza legal baixo a que se comparte o modelo</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>PARAMETER</code> máis útiles para empezar:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Que controla</th>
+<th>Valores típicos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code></td>
+<td>Canto de "creativo"/aleatorio é. Valores baixos → respostas máis previsibles e consistentes; valores altos → máis variadas, pero tamén máis propensas a desvaríos</td>
+<td><code>0.0</code> a <code>1.0</code> (por defecto adoita ser <code>0.7-0.8</code>)</td>
+</tr>
+<tr>
+<td><code>num_ctx</code></td>
+<td>Tamaño da xanela de contexto: cantos tokens (fragmentos de texto) pode "lembrar" o modelo dunha conversa</td>
+<td><code>2048</code>, <code>4096</code>, <code>8192</code>...</td>
+</tr>
+<tr>
+<td><code>stop</code></td>
+<td>Cadea de texto que, se aparece, corta a xeración de resposta aí mesmo</td>
+<td><code>PARAMETER stop "&lt;/s&gt;"</code></td>
+</tr>
+</tbody>
+</table>
+<p>Un Modelfile mínimo só precisa <code>FROM</code> e <code>SYSTEM</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>FROM llama3.2:3b
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>SYSTEM &quot;&quot;&quot;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Respondes sempre en castelán, de forma breve e técnica.
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>&quot;&quot;&quot;
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Ver o Modelfile dun modelo xa creado</p>
+<p>Podes inspeccionar en calquera momento como está construído un modelo
+(o teu ou un descargado) con:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ollama<span class="w"> </span>show<span class="w"> </span>--modelfile<span class="w"> </span>llama3.2:3b
+</span></code></pre></div>
+</div>
+<h3 id="podense-crear-axentes-subaxentes-e-equipos-de-axentes-con-ollama">Pódense crear axentes, subaxentes e equipos de axentes con Ollama?</h3>
+<p>Antes de entrar en detalle, aclaremos catro conceptos que adoitan mesturarse:
+<strong>modelo</strong>, <strong>axente</strong>, <strong>Ollama</strong> e <strong>Cline</strong>. Van de menos a máis.</p>
+<p><strong>1. O modelo (LLM) só.</strong> Un modelo de linguaxe só sabe facer unha cousa:
+recibir texto e devolver texto. <strong>Non toca ficheiros nin executa nada.</strong> Se lle
+pides "crea <code>saludo.py</code>", el só che <em>escribe</em> o código como resposta; non
+aparece ningún ficheiro. As "mans" non as ten o modelo.</p>
+<p><strong>2. O axente.</strong> Un axente é un programa que envolve o modelo nun <strong>bucle con
+ferramentas</strong>. Dálle ao modelo un obxectivo e unha lista de ferramentas
+(<code>ler_ficheiro</code>, <code>escribir_ficheiro</code>, <code>executar_comando</code>, <code>buscar_web</code>...) e
+repite este ciclo: o <strong>modelo decide</strong> que ferramenta usar → o <strong>axente
+execútaa</strong> de verdade → devólvelle o resultado ao modelo → o modelo decide o
+seguinte paso, ata rematar. Reparto de papeis: <strong>o modelo é o cerebro (decide),
+o axente son as mans (executa)</strong>. Por iso un axente si crea o ficheiro, e o
+modelo só non.</p>
+<p>Cando fai falla un axente: cando a tarefa require <em>actuar</em> (ficheiros, comandos,
+web) ou <em>decidir pasos sobre a marcha</em>. Se o fluxo é fixo e ti fas ti mesmo a
+entrada e a saída (<em>input/output</em>) coa shell, <strong>non</strong> precisas axente: por
+exemplo, pasarlle a saída dun escaneo a un
+modelo cun <code>ollama run "... $(cat scan.txt)"</code>, como se ve en
+<a href="../../practicas-taller/practicas-taller-ollama-host/#formas-de-executar-un-modelo">Formas de executar un modelo</a>
+da práctica de «Ollama no equipo anfitrión».</p>
+<p><strong>3. Ollama.</strong> Ollama <strong>non é o axente</strong>: é o <strong>motor que serve o modelo</strong>.
+Execútao na túa máquina e exponse para que outros o usen, cunha <strong>API
+compatible con <a href="https://developers.openai.com/api/reference/overview" target="_blank">OpenAI</a></strong>
+e co comando <strong><code>ollama launch</code></strong>. O bucle de
+ferramentas, os subaxentes e o paralelo <strong>non os fai Ollama</strong>; só pon o cerebro.
+<code>ollama run</code> a secas é un <strong>chat</strong>, non un axente que toca o teu disco.</p>
+<p><strong>4. Cline.</strong> <a href="https://cline.bot" target="_blank">Cline</a> é <strong>o axente</strong> que
+usamos nesta unidade: o programa que pon o bucle, as ferramentas concretas
+(<code>read_files</code>, <code>editor</code>, <code>bash</code>) e a lóxica avanzada (subaxentes,
+taboleiro <em>Kanban</em> para varios en paralelo). É de código aberto e gratuíto (a
+diferenza de <a href="https://www.claude.com/claude-code" target="_blank">Claude Code</a>,
+non pide conta) e úsase dende un editor (<a href="https://code.visualstudio.com" target="_blank">VS Code</a>) ou dende a liña de comandos
+(<code>cline</code>). Necesita un modelo como cerebro; con
+<code>ollama launch cline --model qwen2.5:3b</code>, ese cerebro é un modelo <strong>local
+servido por Ollama</strong>, en vez dun de pago na nube.</p>
+<div class="admonition note">
+<p class="admonition-title">Entón: Cline é o axente, e que son Claude, ChatGPT ou Gemini?</p>
+<ul>
+<li><strong>Cline é un axente</strong>, non "unha ferramenta" solta. As súas <em>ferramentas</em>
+  son as accións que executa (<code>read_files</code>, <code>bash</code>, <code>nmap</code>...). Hai
+  outros axentes equivalentes: <a href="https://www.claude.com/claude-code" target="_blank">Claude Code</a>,
+  <a href="https://opencode.ai" target="_blank">OpenCode</a>,
+  <a href="https://aider.chat" target="_blank">Aider</a> ou
+  <a href="https://github.com/OpenHands/OpenHands" target="_blank">OpenHands</a>.</li>
+<li><strong>Claude, ChatGPT e Gemini</strong> non son un "modelo" a secas nin un "axente" a
+  secas: son <strong>produtos en liña</strong> (unha aplicación de chat) construídos sobre
+  un modelo moi grande. Cando só conversas con eles, estás a usar o
+  <strong>modelo</strong>; cando activan ferramentas (buscar na web, executar código,
+  editar ficheiros) actúan como <strong>axente</strong>. A diferenza fronte a Cline+Ollama
+  é <em>onde</em> corre o modelo: nos seus servidores (os teus datos saen da túa
+  máquina) fronte á túa propia máquina (soberanía de datos).</li>
+</ul>
+</div>
+<p><strong>A cadea completa:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>TI  ── dás o obxectivo ──▶  CLINE    (o AXENTE: bucle + ferramentas + orquestración Kanban)
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>                              │   &quot;que fago agora?&quot;
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>                              ▼
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>                            OLLAMA   (o MOTOR: serve o modelo por unha API)
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>                              │
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>                              ▼
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>                            MODELO   (o CEREBRO: decide, pero só devolve texto)
+</span></code></pre></div>
+<p>Cline decide <em>que hai que facer</em> preguntándolle ao modelo e <strong>executa</strong> as
+accións; Ollama só fai correr o modelo; o modelo só <em>pensa</em>. Por iso, para unha
+tarefa guionizada onde ti xa fixaches os pasos, podes prescindir de <strong>calquera
+axente</strong> (non só de Cline) e resolvela ti coa shell — por exemplo coa
+substitución de comandos <code>ollama run "... $(cat scan.txt)"</code> que se ve en
+<a href="../../practicas-taller/practicas-taller-ollama-host/#formas-de-executar-un-modelo">Formas de executar un modelo</a>
+da práctica de «Ollama no equipo anfitrión». Pero cando varios axentes deben <em>decidir sobre a marcha</em> —en
+paralelo ou encadeados, como na
+<a href="../../practicas-taller/practicas-taller-ollama-agentes/">Axentes e multiaxentes</a>— si fai
+falla un axente (nós usamos Cline).</p>
+<div class="admonition note">
+<p class="admonition-title">O <code>$(cat)</code> vale para ficheiros pequenos</p>
+<p>A substitución de comandos <code>$(cat scan.txt)</code> mete o contido do ficheiro na
+propia liña de comando, así que serve ben para saídas curtas (un <code>nmap</code>, un
+script pequeno). Para ficheiros grandes pode superar o límite de lonxitude
+de argumentos da shell ou a xanela de contexto do modelo; nese caso usa a
+redirección <code>ollama run modelo &lt; ficheiro</code> ou o pipe
+<code>cat ficheiro | ollama run modelo</code> (ambas na mesma sección da práctica de «Ollama no equipo anfitrión»).</p>
+</div>
+<p>Para velo dun golpe de vista (o mesmo que describen os catro puntos de arriba,
+en forma de esquema):</p>
+<p><img alt="Xerarquía entre modelo, axente, subaxente e equipo de axentes" src="../images/modelo-axente-subaxente-equipo.svg" /></p>
+<p>Cada caixa de axente leva dentro un <strong>modelo</strong> (o motor) máis as súas
+<strong>ferramentas</strong> e o <strong>bucle</strong>. Un <strong>equipo</strong> (o marco descontinuo) son varios
+axentes coordinados por un orquestrador; un <strong>subaxente</strong> vive fóra e é un
+axente que outro crea para unha subtarefa concreta, devolvendo só o resultado.</p>
+<div class="admonition note">
+<p class="admonition-title">Ollo cos dous sentidos de «ferramenta»</p>
+<p>No diagrama e na táboa de abaixo, <strong>ferramenta</strong> significa unha <em>acción</em> que
+o axente pode executar (<code>nmap</code>, editar un ficheiro, correr un comando). É un
+uso distinto de cando, en linguaxe corrente, se lle chama "ferramenta" a un
+programa coma <strong>Cline</strong>: nesta unidade Cline é o <strong>axente</strong> (o programa que
+orquestra), non unha das accións. Resumo: o modelo pensa, Cline (o axente)
+decide e actúa, e as ferramentas son as accións concretas coas que actúa.</p>
+</div>
+<p>Con exemplos concretos:</p>
+<table>
+<thead>
+<tr>
+<th>Peza</th>
+<th>Que é</th>
+<th>Exemplos concretos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Modelo</strong></td>
+<td>O motor de IA: dado texto, predí texto. Non le ficheiros nin executa nada por si só.</td>
+<td><code>qwen2.5:3b</code>, <code>llama3.2:3b</code>, <code>dolphin-llama3:8b</code>; tamén <code>mistral</code>, <code>gemma2</code>, <code>phi3</code></td>
+</tr>
+<tr>
+<td><strong>Axente</strong></td>
+<td>O programa que envolve un modelo e lle engade obxectivo, ferramentas e bucle.</td>
+<td><strong><a href="https://cline.bot" target="_blank">Cline</a></strong> (o que usamos aquí, motorizado por Ollama); tamén <a href="https://www.claude.com/claude-code" target="_blank">Claude Code</a>, <a href="https://opencode.ai" target="_blank">OpenCode</a>, <a href="https://aider.chat" target="_blank">Aider</a>, <a href="https://github.com/OpenHands/OpenHands" target="_blank">OpenHands</a></td>
+</tr>
+<tr>
+<td><strong>Ferramentas</strong></td>
+<td>O que lle dá "mans" ao axente para actuar. Non son o axente: son o que o axente executa.</td>
+<td>En código: ler/escribir ficheiros, shell, <code>git</code>, correr tests. Nun pentest: <code>nmap</code>, <code>nikto</code>, <code>gobuster</code>/<code>ffuf</code>, <code>sqlmap</code>, <code>curl</code>, <code>whatweb</code>, <code>searchsploit</code></td>
+</tr>
+<tr>
+<td><strong>Subaxente</strong></td>
+<td>Axente que outro axente crea para unha subtarefa acoutada; devolve só o resultado.</td>
+<td>"Executa <code>nmap</code> e devólveme só os portos abertos", "analiza a saída de <code>nikto</code> e lista os CVE candidatos", "busca no código onde se valida o login"</td>
+</tr>
+<tr>
+<td><strong>Equipo de axentes</strong></td>
+<td>Varios axentes con roles distintos, coordinados cara a un obxectivo común.</td>
+<td>Analista + revisor + redactor orquestrados con <a href="../../practicas-taller/practicas-taller-ollama-crewai/">CrewAI</a>; a <a href="../../practicas-taller/practicas-taller-ollama-agentes/#paso-8-multiaxente-colaborativo-axentes-que-traballan-xuntos">Axentes e multiaxentes (Paso 8)</a> é un pipeline manual de chamadas</td>
+</tr>
+</tbody>
+</table>
+<p>Aclarado isto, vexamos que parte de todo iso fai Ollama e cal non.</p>
+<p>A resposta correcta ten un matiz importante: <strong>Ollama por si só non ten a súa
+propia lóxica de subaxentes nin equipos</strong>. O que fai é dúas cousas moi
+concretas, e a orquestración de varios axentes sempre a pon <strong>outra
+ferramenta</strong> que usa Ollama como motor.</p>
+<p><strong>O que Ollama SI fai por si só</strong></p>
+<ul>
+<li><strong>Servir o modelo</strong>: pon o "cerebro" que responde ás preguntas e decide que
+  ferramentas usar. As ferramentas execútaas quen o usa por riba (Cline,
+  Claude Code...).</li>
+<li><strong>Busca web integrada</strong>: calquera ferramenta que use Ollama pode buscar na
+  web sen configurar nada máis (nin MCP nin API key). Ollo: a busca faise nos
+  servidores de Ollama, así que a consulta <strong>si sae da túa máquina</strong>; e se
+  chamas directamente á <a href="https://docs.ollama.com/web-search" target="_blank">API de busca web</a>
+  dende un script propio, aí si fai falla unha conta gratuíta e unha API key.</li>
+<li><strong>Un chat de terminal</strong>: executar <code>ollama</code> sen argumentos abre unha interface
+  de terminal para conversar co modelo e buscar na web. Pode <em>escribirche</em>
+  código como resposta, pero non crea ficheiros no teu proxecto nin executa
+  comandos: para iso fai falla un axente coma Cline.</li>
+</ul>
+<p><strong>O que Ollama NON fai por si só</strong></p>
+<p>Lanzar varios axentes independentes en paralelo (subaxentes, equipos) <strong>non
+é unha función de Ollama</strong> — é unha función da ferramenta orquestradora que
+o usa por riba. A proba máis clara: a propia documentación de Ollama chama a
+isto "<em>Subagents in Claude Code</em>" — o mecanismo de subaxentes é de <strong>Claude
+Code</strong>, Ollama só lle serve de motor. O mesmo ocorre con Cline (o seu Kanban
+Board é lóxica propia de Cline) ou con OpenCode.</p>
+<p><strong><code>ollama launch</code> — conectar un modelo local como motor doutras ferramentas</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ollama<span class="w"> </span>launch<span class="w"> </span>claude<span class="w">      </span><span class="c1"># Claude Code, usando un modelo Ollama local como motor</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ollama<span class="w"> </span>launch<span class="w"> </span>opencode<span class="w">    </span><span class="c1"># OpenCode (axente de código aberto, sen conta)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w">       </span><span class="c1"># Cline (axente de código aberto, sen conta)</span>
+</span></code></pre></div>
+<p>Con <code>ollama launch</code>, ferramentas coma Claude Code, Cline ou OpenCode poden
+traballar con <strong>subaxentes e equipos de axentes</strong> (varios roles
+especializados colaborando nunha mesma tarefa) usando un modelo a
+executarse <strong>en local</strong>, sen conta de pago nin custo de API — pero a lóxica
+de "como se reparten e coordinan" segue sendo desas ferramentas, non de
+Ollama.</p>
+<p><strong>Multiaxente real en paralelo, en concreto con Cline</strong></p>
+<p>O modo <em>Kanban Board</em> de <code>ollama launch cline</code> lanza <strong>varios axentes á
+vez</strong> dende unha interface web, cada un traballando nunha tarefa distinta —
+xa é multiaxente de verdade, non tarefas en serie. É a propia arquitectura
+de Cline a que fai isto posible; Ollama simplemente lle proporciona a
+intelixencia (o modelo) que cada un dos axentes paralelos usa.</p>
+<div class="admonition note">
+<p class="admonition-title">Para equipos de axentes totalmente personalizados</p>
+<p>Se queres definir os teus propios roles especializados (por exemplo, un
+axente de recoñecemento e outro de análise, cada un cunha tarefa
+concreta), a arquitectura non cambia: Ollama expón unha API compatible
+con OpenAI, e ferramentas coma Claude Code, Cline ou frameworks
+(<a href="https://www.crewai.com" target="_blank">CrewAI</a> /
+<a href="https://microsoft.github.io/autogen/" target="_blank">AutoGen</a> /
+<a href="https://www.langchain.com/langgraph" target="_blank">LangGraph</a>) poden
+usar un modelo Ollama local como
+"cerebro" de cada axente do equipo, en vez de Claude en liña. A
+orquestración (quen fai que, en que orde) sempre a define a ferramenta,
+nunca Ollama.</p>
+</div>
+<h4 id="exemplo-aplicado-un-pentest-a-web-dunha-empresa">Exemplo aplicado: un pentest á web dunha empresa</h4>
+<p>Imaxina o obxectivo de facer un pentest á web dunha empresa (<code>example.com</code>).
+Podes montalo como un <strong>equipo de axentes</strong>, un por fase, cun orquestrador que
+reparte o traballo:</p>
+<p><img alt="Equipo de axentes aplicado a un pentest web" src="../images/pentest-equipo-exemplo.svg" /></p>
+<p>Cada <strong>membro</strong> é un axente especializado nunha fase, e as súas <strong>ferramentas</strong>
+son as reais desa fase; todos usan un <strong>modelo</strong> local servido por Ollama. Un
+axente pode ademais crear un <strong>subaxente</strong> para unha subtarefa acoutada (no
+debuxo, o de recon delega "executa <code>nmap</code> e devólveme os portos abertos" e
+recibe só ese resultado). Así encaixa cada fase dun test de intrusión coas
+pezas que acabamos de ver:</p>
+<table>
+<thead>
+<tr>
+<th>Fase do pentest</th>
+<th>Axente responsable</th>
+<th>Ferramentas típicas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recopilación</td>
+<td>Axente de recon</td>
+<td><code>nmap</code>, <code>whatweb</code>, <code>dig</code>, <code>theHarvester</code></td>
+</tr>
+<tr>
+<td>Análise de vulnerabilidades</td>
+<td>Axente de vulnerabilidades</td>
+<td><code>nikto</code>, <code>nuclei</code>, <code>searchsploit</code></td>
+</tr>
+<tr>
+<td>Explotación</td>
+<td>Axente de explotación</td>
+<td><code>sqlmap</code>, <code>curl</code>, Metasploit</td>
+</tr>
+<tr>
+<td>Post-explotación</td>
+<td>Axente de post-explotación</td>
+<td>shell, scripts de enumeración</td>
+</tr>
+<tr>
+<td>Persistencia</td>
+<td>Paso controlado, en laboratorio autorizado</td>
+<td>técnicas de acceso persistente</td>
+</tr>
+<tr>
+<td>Informe</td>
+<td>Axente de informe</td>
+<td>notas en <a href="https://www.giuspen.net/cherrytree/" target="_blank">CherryTree</a>, exportación a PDF</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Só en contornos autorizados</p>
+<p>Este exemplo é ilustrativo e para laboratorio propio ou con permiso
+explícito. Automatizar fases dun pentest con axentes non cambia nada dos
+límites legais e éticos do módulo.</p>
+</div>
+<h3 id="duas-arquitecturas-adicionais-sdk-python-e-crewai">Dúas arquitecturas adicionais: SDK Python e CrewAI</h3>
+<p>As prácticas anteriores empregan <strong>Cline</strong> como axente de codificación.
+Para comprender mellor a tecnoloxía e non depender dun único axente,
+engadimos dous enfoques complementarios:</p>
+<table>
+<thead>
+<tr>
+<th>Arquitectura</th>
+<th>Que controla o programador</th>
+<th>Que controla a biblioteca</th>
+<th>Práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SDK Python de Ollama</strong></td>
+<td>Lista de ferramentas, validación, execución, memoria da conversa e límite de iteracións</td>
+<td>Comunicación co modelo e formato de <code>tool_calls</code></td>
+<td><a href="../../practicas-taller/practicas-taller-ollama-agente-python/">Práctica 4 — Axente propio con Python</a></td>
+</tr>
+<tr>
+<td><strong>CrewAI + Ollama</strong></td>
+<td>Axentes, roles, ferramentas, tarefas e proceso</td>
+<td>Execución das tarefas, distribución do contexto e orquestración</td>
+<td><a href="../../practicas-taller/practicas-taller-ollama-crewai/">Práctica 5 — Equipos de axentes con CrewAI</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="que-e-o-tool-calling-chamada-a-ferramentas">Que é o <em>tool calling</em> (chamada a ferramentas)?</h4>
+<div class="admonition info">
+<p class="admonition-title">Tool calling — chamada a ferramentas</p>
+<p>O <strong>tool calling</strong> é un mecanismo que permite a un modelo de IA <strong>solicitar
+o uso de funcións ou ferramentas externas</strong> para realizar operacións que
+non pode efectuar directamente, como ler datos, consultar unha API ou
+gardar un informe.</p>
+<p>Por exemplo, un axente pode dispoñer de funcións como:</p>
+<ul>
+<li><code>ler_evidencia("nmap.txt")</code>: ler un ficheiro de resultados.</li>
+<li><code>consultar_api("https://example.com")</code>: solicitar información a unha API.</li>
+<li><code>gardar_informe("informe.md")</code>: gardar un informe no disco.</li>
+<li><code>executar_comando("ls -l")</code>: executar un comando, <strong>só se a aplicación
+  implementa e autoriza expresamente esa ferramenta</strong>.</li>
+</ul>
+<p>O modelo <strong>non executa directamente as funcións</strong>: devolve unha solicitude
+coa ferramenta escollida e os seus argumentos. A aplicación que actúa como
+axente valida a solicitude, executa a función permitida e devolve o
+resultado ao modelo.</p>
+<p>Isto permite construír un <strong>bucle de axente</strong>:</p>
+<ol>
+<li>O usuario solicita unha tarefa.</li>
+<li>O modelo decide se precisa unha ferramenta e solicita a súa chamada.</li>
+<li>O axente valida e executa a ferramenta autorizada.</li>
+<li>O resultado devólvese ao modelo.</li>
+<li>O modelo decide se debe continuar con outra ferramenta ou responder.</li>
+</ol>
+<p><strong>Ollama admite tool calling</strong>, pero a execución das ferramentas corresponde
+á aplicación que utiliza o modelo (por exemplo, Cline, CrewAI ou un
+programa Python propio).</p>
+<p>Máis información: <a href="https://docs.ollama.com/capabilities/tool-calling" target="_blank">Ollama — Tool calling</a>.</p>
+</div>
+<h4 id="o-tool-calling-non-executa-unha-funcion-automaticamente">O <em>tool calling</em> non executa unha función automaticamente</h4>
+<p>O modelo pode responder solicitando, por exemplo, <code>ler_evidencia("nmap.txt")</code>.
+O programa que recibe esa solicitude <strong>debe decidir se a función está
+permitida</strong>, executala e devolver o resultado. Se nunca se programou unha
+función que escriba no disco, o modelo non terá esa capacidade por moito
+que a mencione. A biblioteca oficial de Ollama ofrece este mecanismo:
+<a href="https://docs.ollama.com/capabilities/tool-calling" target="_blank">Tool calling</a>.</p>
+<h4 id="equipo-con-tarefas-fixas-fronte-a-xestor-xerarquico">Equipo con tarefas fixas fronte a xestor xerárquico</h4>
+<p>Un <em>pipeline</em> de Cline lanzado manualmente (sección de axentes e multiaxentes, Paso 8) demostra
+<strong>colaboración por estado compartido</strong>, non asignación automática de tarefas.
+En CrewAI, <code>Process.sequential</code> coordina un equipo cos roles xa asignados;
+<code>Process.hierarchical</code> introduce un <strong>xestor</strong> con capacidade para delegar e
+revisar. Ningunha das dúas configuracións implica, por defecto, que os
+axentes executen comandos arbitrarios ou que corran en paralelo.</p>
+<div class="admonition warning">
+<p class="admonition-title">Modelo local non significa illamento absoluto</p>
+<p>A inferencia pode ser local, pero as ferramentas conectadas, un plugin
+ou a telemetría dunha biblioteca poden xerar comunicacións externas.
+Nas novas prácticas empregarás evidencias ficticias, sen credenciais,
+con ferramentas de lectura/escritura limitadas, e desactivarás a
+telemetría de CrewAI. Os resultados seguen requirindo revisión humana.</p>
+</div>
+<h3 id="que-veremos-nas-practicas">Que veremos nas prácticas</h3>
+<p>Esta sección inclúe <strong>cinco Prácticas Taller</strong>:</p>
+<p><strong><a href="../../practicas-taller/practicas-taller-ollama-vm/">Práctica 1 — Ollama dentro dunha VM (sen GPU)</a>:</strong></p>
+<ol>
+<li>Xeraremos unha máquina virtual Kali GNU/Linux propia mediante Vagrant (o
+   mesmo método que en <a href="../../practicas-taller/practicas-taller-sysreptor/">Informes con sysreptor</a>).</li>
+<li>Instalaremos Ollama dentro dela e probaremos un modelo lixeiro, pensado
+   para ir fluído só con CPU.</li>
+</ol>
+<p><strong><a href="../../practicas-taller/practicas-taller-ollama-host/">Práctica 2 — Ollama no equipo anfitrión (con GPU)</a>:</strong></p>
+<ol>
+<li>Instalaremos Ollama no equipo anfitrión, aproveitando a GPU dispoñible, coa
+   VM de Kali da práctica de «Ollama dentro dunha VM» actuando só como cliente por rede.</li>
+<li>Descargaremos un modelo <em>decensored</em> de maior tamaño.</li>
+<li>Crearemos un asistente personalizado de pentesting mediante un Modelfile.</li>
+</ol>
+<p><strong><a href="../../practicas-taller/practicas-taller-ollama-agentes/">Práctica 3 — Axentes e multiaxentes con Ollama</a>:</strong></p>
+<ol>
+<li>Instalaremos Cline CLI e conectarémolo a un modelo Ollama local
+   (<code>qwen2.5:3b</code>, máis fiable ca Llama en tarefas con ferramentas).</li>
+<li>Comprobaremos que un axente real le instrucións e escribe código
+   executable, non só texto de chat.</li>
+<li>Lanzaremos tres axentes independentes en paralelo (taboleiro Kanban) e
+   verificaremos, con comandos de git, que traballaron de forma illada e
+   simultánea.</li>
+<li>Encadearemos execucións de Cline (desenvolvedor → tester →
+   documentador), onde cada unha constrúe sobre o resultado da anterior.
+   <strong>Trátase dun pipeline manual con estado compartido</strong>, non dun xestor
+   que delega automaticamente tarefas.</li>
+</ol>
+<p><strong><a href="../../practicas-taller/practicas-taller-ollama-agente-python/">Práctica 4 — Crear un axente propio con Python</a>:</strong></p>
+<ol>
+<li>Programaremos un axente co SDK oficial de Ollama e un bucle de <em>tool calling</em>.</li>
+<li>Crearemos ferramentas limitadas para ler evidencias e escribir un informe.</li>
+<li>Verificaremos permisos, límites de execución e resultados no disco.</li>
+</ol>
+<p><strong><a href="../../practicas-taller/practicas-taller-ollama-crewai/">Práctica 5 — Equipos de axentes con CrewAI</a>:</strong></p>
+<ol>
+<li>Definiremos analista, revisor e redactor con roles e tarefas separadas.</li>
+<li>Coordinaremos as tarefas de maneira secuencial mediante CrewAI e Ollama.</li>
+<li>Compararemos os informes do axente Python e de CrewAI e estudaremos un xestor
+   xerárquico como ampliación avanzada.</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Recursos descargables para as Prácticas 4 e 5</p>
+<p>Para facilitar a reprodución do laboratorio, descarga os seguintes exemplos:</p>
+<ul>
+<li><a href="../../assets/ollama/evidencias/nmap.txt">Evidencia nmap.txt</a>.</li>
+<li><a href="../../assets/ollama/evidencias/http.txt">Evidencia http.txt</a>.</li>
+<li><a href="../../assets/ollama/scripts/axente_ollama.py">Axente Python — axente_ollama.py</a>.</li>
+<li><a href="../../assets/ollama/scripts/equipo_crewai.py">Equipo CrewAI — equipo_crewai.py</a>.</li>
+</ul>
+<p>Eses son <strong>recursos estáticos de MkDocs</strong>. Para executar os programas debes
+copialos aos directorios de traballo indicados nas prácticas, xunto aos
+ficheiros <code>evidencias/</code> correspondentes.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

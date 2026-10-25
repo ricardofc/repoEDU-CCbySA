@@ -1,0 +1,35 @@
+graph TD;
+    subgraph VIPER ["VM-1: VIPER"]
+        IP1["IP: 192.168.120.100"]
+        A3["Xeración payload.exe"]
+        A4["Xeración task.xml"]
+        A1["Handler psexec<br>port 5555"]
+        A2["Handler persistencia<br>port 6666"]
+    end
+    
+    subgraph WINDOWS ["VM-3: Windows 10"]
+        IP2["IP: 192.168.120.102"]
+        B["Sesión meterpreter<br>via psexec"]
+        C["Upload payload.exe<br>+ task.xml"]
+        D["schtasks /create<br>importando task.xml"]
+        E["Reboot + login"]
+    end
+    
+    A3 --> A1
+    A4 --> A1
+    A1 -->|psexec| B
+    B -->|upload| C
+    C --> D
+    D --> E
+    E -->|Reconexión| A2
+    
+    style IP1 fill:#ffffff,stroke:#333,stroke-width:1px
+    style IP2 fill:#ffffff,stroke:#333,stroke-width:1px
+    style A1 fill:yellow,stroke:#333,stroke-width:2px
+    style A2 fill:lightgreen,stroke:#333,stroke-width:2px
+    style A3 fill:lightblue,stroke:#333,stroke-width:1.5px
+    style A4 fill:lightblue,stroke:#333,stroke-width:1.5px
+    style B fill:orange,stroke:#333,stroke-width:2px
+    style C fill:violet,stroke:#333,stroke-width:2px
+    style D fill:#dda0dd,stroke:#333,stroke-width:2px
+    style E fill:#f9f,stroke:#333,stroke-width:2px

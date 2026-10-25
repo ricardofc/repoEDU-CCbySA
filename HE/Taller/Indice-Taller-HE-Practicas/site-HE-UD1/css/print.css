@@ -11,13 +11,13 @@
 
 
      article {
-       visibility: visible !important; 
+       visibility: visible !important;
        font-family: Arial, sans-serif !important;
     }
 
     figure {
-        margin: 0;       
-        margin-left: 0;  
+        margin: 0;
+        margin-left: 0;
         padding-left: 10px;
     }
 
@@ -35,15 +35,40 @@
        font-size: 1.76em;
     }
 
+    /* --- Control de saltos de páxina (WeasyPrint / mkdocs-with-pdf) --- */
+
+    /* Deixar que as caixas de admonición se partan entre páxinas en lugar
+       de saltar enteiras e deixar un oco en branco (ex.: "Parámetros máis
+       comúns" antes de "5. Comandos básicos"). */
+    .admonition,
+    .admonition > * {
+        break-inside: auto;
+    }
+
+    /* As táboas longas tamén poden continuar na páxina seguinte. */
+    table {
+        break-inside: auto;
+    }
+
+    /* Repetir a cabeceira da táboa ao continuar noutra páxina. */
+    thead {
+        display: table-header-group;
+    }
+
+    /* Evitar que un título quede orfo ao pé da páxina, separado do seu contido. */
+    h1, h2, h3, h4 {
+        break-after: avoid-page;
+    }
+
     @page {
         @top-left {
             content: element(footer);
-            font-family: Arial, sans-serif; 
+            font-family: Arial, sans-serif;
         }
 
         @top-center {
             content: element(footer);
-            font-family: Arial, sans-serif; 
+            font-family: Arial, sans-serif;
         }
 
         @top-right {
@@ -53,18 +78,18 @@
 
         @bottom-left {
             content: element(footer);
-            font-family: Arial, sans-serif; 
+            font-family: Arial, sans-serif;
         }
 
         @bottom-center {
             content: element(footer);
-            font-family: Arial, sans-serif; 
+            font-family: Arial, sans-serif;
         }
 
         @bottom-right {
             content: element(footer);
             font-family: Arial, sans-serif;
-        } 
+        }
 
 }
 

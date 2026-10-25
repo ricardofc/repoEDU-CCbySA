@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="780" viewBox="0 0 1920 780" role="img" aria-labelledby="titulo descricion">
+ <title id="titulo">Práctica 4 — Fluxo de tool calling dun axente Python e Ollama</title>
+ <desc id="descricion">O usuario inicia o axente Python. Na volta 1 Ollama solicita dúas chamadas á ferramenta ler_evidencia; Python valida e le nmap.txt e http.txt e devolve os resultados. Na volta 2 Ollama solicita gardar_informe; Python verifica que leu ambos ficheiros e garda informe-axente.md. Na volta 3 Ollama responde ao usuario e Python indica a ruta de saída. Ollama serve o modelo; só Python executa ferramentas e accede ao disco.</desc>
+ <defs><style>
+ .h{font-family:DejaVu Sans,Arial,sans-serif;fill:#783016;font-weight:700}
+ .b{font-family:DejaVu Sans,Arial,sans-serif;fill:#913c20}
+ .small{font-family:DejaVu Sans,Arial,sans-serif;fill:#626b73}
+ .code{font-family:DejaVu Sans Mono,monospace;fill:#7e3a22}
+ </style>
+ <marker id="orange-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#9e3618" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+ <marker id="blue-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#3173a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+ </defs>
+ <rect x="0" y="0" width="1920" height="780" fill="#ffffff" />
+ <text x="960" y="54" font-family="DejaVu Sans,Arial,sans-serif" font-size="34" fill="#783016" text-anchor="middle" font-weight="700">PRÁCTICA 4 · EXECUCIÓN DUN AXENTE PYTHON CON OLLAMA</text>
+ <rect x="47" y="80" width="1826" height="103" rx="20" fill="#fbebdf" stroke="#e65a2c" stroke-width="3"/>
+ <text x="960" y="119" font-size="29" text-anchor="middle" class="h">AXENTE PYTHON · CONTROL DA EXECUCIÓN</text>
+ <text x="960" y="154" font-size="22" text-anchor="middle" class="b">SDK Ollama · Valida as ferramentas · Garda as respostas e resultados no historial · Máximo 10 voltas</text>
+ <g fill="none" stroke="#9e3618" stroke-width="3.8" stroke-linecap="round" marker-end="url(#orange-arrow)">
+<line x1="323" y1="351" x2="346" y2="351"/>
+<line x1="635" y1="351" x2="658" y2="351"/>
+<line x1="947" y1="351" x2="970" y2="351"/>
+<line x1="1259" y1="351" x2="1282" y2="351"/>
+<line x1="1571" y1="351" x2="1594" y2="351"/>
+</g>
+<rect x="47" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="77" cy="263" r="22" fill="#dc5428"/><text x="77" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">1</text>
+<text x="183.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">PETICIÓN</text>
+<text x="183.0" y="345" class="b" font-size="20" text-anchor="middle">O usuario solicita</text>
+<text x="183.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">analizar evidencias</text>
+<text x="183.0" y="408" class="b" font-size="19" text-anchor="middle">e crear un informe</text>
+<text x="183.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">ENTRADA</text>
+<rect x="359" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="389" cy="263" r="22" fill="#dc5428"/><text x="389" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">2</text>
+<text x="495.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">VOLTA 1</text>
+<text x="495.0" y="345" class="b" font-size="20" text-anchor="middle">Ollama solicita</text>
+<text x="495.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">ler_evidencia()</text>
+<text x="495.0" y="408" class="b" font-size="19" text-anchor="middle">dúas veces</text>
+<text x="495.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">MODELO · TOOL CALLS</text>
+<rect x="671" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="701" cy="263" r="22" fill="#dc5428"/><text x="701" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">3</text>
+<text x="807.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">LECTURA PYTHON</text>
+<text x="807.0" y="345" class="b" font-size="20" text-anchor="middle">Valida a lista branca</text>
+<text x="807.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">nmap.txt e http.txt</text>
+<text x="807.0" y="408" class="b" font-size="19" text-anchor="middle">Devolve resultados</text>
+<text x="807.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">FERRAMENTA</text>
+<rect x="983" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="1013" cy="263" r="22" fill="#dc5428"/><text x="1013" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">4</text>
+<text x="1119.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">VOLTA 2</text>
+<text x="1119.0" y="345" class="b" font-size="20" text-anchor="middle">Ollama solicita</text>
+<text x="1119.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">gardar_informe()</text>
+<text x="1119.0" y="408" class="b" font-size="19" text-anchor="middle">co informe xerado</text>
+<text x="1119.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">MODELO · TOOL CALL</text>
+<rect x="1295" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="1325" cy="263" r="22" fill="#dc5428"/><text x="1325" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">5</text>
+<text x="1431.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">GARDADO PYTHON</text>
+<text x="1431.0" y="345" class="b" font-size="20" text-anchor="middle">Comproba as lecturas</text>
+<text x="1431.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">informe-axente.md</text>
+<text x="1431.0" y="408" class="b" font-size="19" text-anchor="middle">Escribe no disco</text>
+<text x="1431.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">FERRAMENTA</text>
+<rect x="1607" y="231" width="272" height="232" rx="21" fill="#fbedeb" stroke="#e65a2c" stroke-width="3"/>
+<circle cx="1637" cy="263" r="22" fill="#dc5428"/><text x="1637" y="271" fill="#ffffff" font-family="DejaVu Sans,Arial" font-size="22" font-weight="700" text-anchor="middle">6</text>
+<text x="1743.0" y="310" font-family="DejaVu Sans,Arial" font-size="23" font-weight="700" fill="#793219" text-anchor="middle">VOLTA 3</text>
+<text x="1743.0" y="345" class="b" font-size="20" text-anchor="middle">Ollama confirma</text>
+<text x="1743.0" y="375" class="b" font-size="20" font-weight="700" text-anchor="middle">o resultado ao usuario</text>
+<text x="1743.0" y="408" class="b" font-size="19" text-anchor="middle">Python verifica o ficheiro</text>
+<text x="1743.0" y="439" class="small" font-size="16" font-weight="700" text-anchor="middle">MODELO · SAÍDA</text>
+<g stroke="#3173a4" stroke-width="3.3" stroke-dasharray="7 10" fill="none" marker-start="url(#blue-arrow)" marker-end="url(#blue-arrow)">
+<line x1="495.0" y1="479" x2="495.0" y2="551"/>
+<line x1="1119.0" y1="479" x2="1119.0" y2="551"/>
+<line x1="1743.0" y1="479" x2="1743.0" y2="551"/>
+</g>
+<rect x="47" y="567" width="1826" height="123" rx="20" fill="#eaf4fc" stroke="#3173a4" stroke-width="3"/>
+<text x="960" y="609" text-anchor="middle" font-family="DejaVu Sans,Arial" font-size="30" font-weight="700" fill="#174c75">OLLAMA · MODELO LOCAL SERVIDO POR API HTTP</text>
+<text x="960" y="647" text-anchor="middle" font-family="DejaVu Sans,Arial" font-size="22" fill="#2e6087">Solicita ferramentas e xera respostas; non le nin escribe ficheiros directamente</text>
+<text x="960" y="732" font-family="DejaVu Sans,Arial" font-size="20" fill="#626b73" text-anchor="middle">As voltas 1, 2 e 3 son as observadas no rexistro real. Non son tres axentes distintos.</text>
+<text x="960" y="759" font-family="DejaVu Sans,Arial" font-size="18" fill="#626b73" text-anchor="middle">O código Python define a lista branca de ficheiros e executa as chamadas autorizadas.</text>
+</svg>

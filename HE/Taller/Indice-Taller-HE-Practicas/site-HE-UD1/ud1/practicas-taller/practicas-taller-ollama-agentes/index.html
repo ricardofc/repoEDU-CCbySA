@@ -1,0 +1,3927 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../practicas-taller-ollama-host/">
+      
+      
+        <link rel="next" href="../practicas-taller-ollama-agente-python/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Práctica 3 — Axentes e multiaxentes - Hacking Ético - UD1 - Introdución á seguridade ofensiva</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#practica-3-axentes-e-multiaxentes-con-ollama" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-header__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD1 - Introdución á seguridade ofensiva
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Práctica 3 — Axentes e multiaxentes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/he/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos UD1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../informes-sysreptor/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD1
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apendice/" class="md-tabs__link">
+          
+  
+  
+  Apéndice
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-nav__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD1 - Introdución á seguridade ofensiva
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    De interese
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apuntamentos UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apuntamentos UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Que é o Hacking Ético
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-hackers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Hackers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-auditorias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Auditorías
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/caid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos da Seguridade da Información (CAID)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases dun Test de Intrusión (Pentest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes de Pentesting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes de Pentesting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/CVE-2011-2523/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/clasificacion_risco_cvss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVSS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/cwe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CWE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/etica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ética e Legalidade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/marcos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marcos de traballo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/modelos-ataque-defensa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de Ataque e Defensa
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/clearnet_deepweb_darkweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explicación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/verificar_sinatura_tor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verificación sinatura Tor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ferramentas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ferramentas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comúns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/metasploit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/ollama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/recursos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de Aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER, Red Team e C2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes con sysreptor
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes con sysreptor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise de vulnerabilidades con OpenVAS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modelos de IA locais (Ollama)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-vm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 1 — Dentro dunha VM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 2 — No equipo anfitrión (GPU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 3 — Axentes e multiaxentes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 3 — Axentes e multiaxentes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#practica-3-axentes-e-multiaxentes-con-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 3 — Axentes e multiaxentes con Ollama
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Práctica 3 — Axentes e multiaxentes con Ollama">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recordatorio-modelo-axente-subaxente-e-equipo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recordatorio: modelo, axente, subaxente e equipo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-instalar-nodejs-22-e-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1 — Instalar Node.js 22+ e Git
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-instalar-cline-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2 — Instalar Cline CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-crear-un-proxecto-de-proba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3 — Crear un proxecto de proba
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-proba-dun-unico-axente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4 — Proba dun único axente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-abrir-o-taboleiro-kanban-multiaxente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5 — Abrir o taboleiro Kanban (multiaxente)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-crear-tres-tarefas-independentes-e-lanzalas-a-vez" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6 — Crear tres tarefas independentes e lanzalas á vez
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-verificar-que-realmente-traballaron-en-paralelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7 — Verificar que realmente traballaron en paralelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-multiaxente-colaborativo-axentes-que-traballan-xuntos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 8 — Multiaxente colaborativo (axentes que traballan xuntos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#peche-da-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peche da práctica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-agente-python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 4 — Axente propio con Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-crewai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 5 — Equipos de axentes con CrewAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recursos de aprendizaxe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_1" id="__nav_3_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 3
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 3
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_3" id="__nav_3_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnHub
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulnHub
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_4" id="__nav_3_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TryHackMe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    TryHackMe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_5" id="__nav_3_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackTheBox
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HackTheBox
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_6" id="__nav_3_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulNyx
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulNyx
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_7" id="__nav_3_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DockerLabs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DockerLabs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hacksplaining/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackSplaining
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_9" id="__nav_3_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    picoCTF
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    picoCTF
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_10" id="__nav_3_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pwn.college
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    pwn.college
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_11" id="__nav_3_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PentesterLab
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    PentesterLab
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine-owasp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OWASP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../s4vitar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S4vitar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulación de ataques con VIPER
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apéndice
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apéndice
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automatización dos escenarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SysReptor (Vagrant + Docker)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone (OVA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/ollama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ollama (Vagrant + nativo)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER (Packer + VirtualBox)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#practica-3-axentes-e-multiaxentes-con-ollama" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 3 — Axentes e multiaxentes con Ollama
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Práctica 3 — Axentes e multiaxentes con Ollama">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recordatorio-modelo-axente-subaxente-e-equipo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recordatorio: modelo, axente, subaxente e equipo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-instalar-nodejs-22-e-git" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1 — Instalar Node.js 22+ e Git
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-instalar-cline-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2 — Instalar Cline CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-crear-un-proxecto-de-proba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3 — Crear un proxecto de proba
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-proba-dun-unico-axente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4 — Proba dun único axente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-abrir-o-taboleiro-kanban-multiaxente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5 — Abrir o taboleiro Kanban (multiaxente)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-crear-tres-tarefas-independentes-e-lanzalas-a-vez" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6 — Crear tres tarefas independentes e lanzalas á vez
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-verificar-que-realmente-traballaron-en-paralelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7 — Verificar que realmente traballaron en paralelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-multiaxente-colaborativo-axentes-que-traballan-xuntos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 8 — Multiaxente colaborativo (axentes que traballan xuntos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#peche-da-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peche da práctica
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Práctica 3 — Axentes e multiaxentes</h1>
+
+<style>
+/* Evitar que as táboas se saian da páxina ao xerar o PDF (A4 portrait). */
+@media print {
+  .md-typeset table:not([class]),
+  table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td,
+  th, td {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    vertical-align: top;
+  }
+  .md-typeset table:not([class]) code,
+  td code, th code {
+    white-space: pre-wrap !important;
+    overflow-wrap: break-word !important;
+    word-break: break-all !important;
+  }
+}
+</style>
+
+<h2 id="practica-3-axentes-e-multiaxentes-con-ollama">Práctica 3 — Axentes e multiaxentes con Ollama</h2>
+<div class="admonition tip">
+<p class="admonition-title">Automatización (apéndice)</p>
+<p>Ver <a href="../../apendice/ollama/#axentes" target="_blank">Apéndice · Ollama · axentes</a>.</p>
+</div>
+<h3 id="escenario">Escenario</h3>
+<p>Continuamos dentro da mesma VM <code>KALI-Ollama</code> da <a href="../practicas-taller-ollama-vm/">Práctica 1</a>. Nesta práctica
+descargarás tamén <code>qwen2.5:3b</code> en vez de <code>llama3.2:3b</code>. Esta práctica engade
+só o necesario para demostrar, paso a paso, o que se explica no apuntamento:
+que Ollama pode motorizar axentes de codificación reais, que se poden
+lanzar <strong>varios á vez</strong> en paralelo, e que eses axentes tamén poden
+<strong>colaborar</strong> encadeados nunha mesma tarefa.</p>
+<div class="admonition note">
+<p class="admonition-title">Por que Qwen e non Llama para esta práctica</p>
+<p>Non é anecdótico — hai unha razón real de deseño detrás:</p>
+<ul>
+<li><strong>Foco de adestramento distinto</strong>: Meta deseñou Llama 3.2 nos tamaños
+  pequenos (1B/3B) pensando en tarefas <em>on-device</em> coma resumir texto ou
+  RAG, non en axentes que chaman ferramentas. Qwen2.5 adestrouse cun
+  peso moito maior en código e <em>function calling</em> estruturado dende o
+  principio, mesmo nos tamaños pequenos.</li>
+<li><strong>Datos de benchmark que o confirman</strong>: en probas estándar de chamada
+  a ferramentas (BFCL — Berkeley Function-Calling Leaderboard), modelos
+  Llama por baixo de 2B adoitan colapsar arredor dun 38% de acerto,
+  mentres que Qwen2.5 do mesmo rango de tamaño obtén resultados
+  claramente mellores no mesmo tipo de proba.</li>
+<li><strong>O que se comproba na propia práctica</strong>: Cline avisa de forma
+  xenérica para calquera modelo pequeno (tamén para <code>qwen2.5:3b</code>), pero
+  na práctica <code>llama3.2:3b</code> nin chega a xerar o ficheiro, mentres que
+  <code>qwen2.5:3b</code> remata a tarefa (aínda que lento). Non é que Qwen sexa
+  perfecto — é notablemente máis fiable ca Llama neste tipo de tarefa
+  concreta, no mesmo tamaño.</li>
+</ul>
+<p>Isto non quere dicir que Llama sexa "peor" en xeral: para conversa ou
+resumir texto vai ben. O problema é específico de tarefas con
+ferramentas, que é xustamente o que precisamos nesta práctica.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Obxectivo desta práctica</p>
+<p>Non quedarnos na teoría de "isto é posible" — comprobar con exercicios
+concretos e verificables que (1) un axente real (non un simple chat)
+pode ler e modificar ficheiros dun proxecto, (2) varios axentes poden
+traballar en tarefas independentes ao mesmo tempo (paralelismo) e (3)
+varios axentes poden colaborar encadeados, construíndo cada un sobre o
+traballo do anterior.</p>
+</div>
+<h3 id="recordatorio-modelo-axente-subaxente-e-equipo">Recordatorio: modelo, axente, subaxente e equipo</h3>
+<div class="admonition info">
+<p class="admonition-title">Estes conceptos explícanse na teoría</p>
+<p>A diferenza entre <strong>modelo</strong>, <strong>axente</strong>, <strong>subaxente</strong> e <strong>equipo de
+axentes</strong> (co diagrama, exemplos concretos e un caso aplicado a un pentest
+web) está desenvolvida na teoría desta unidade:
+<a href="../../apuntamentos/ollama/#podense-crear-axentes-subaxentes-e-equipos-de-axentes-con-ollama">Modelos de IA locais con Ollama</a>,
+na sección <em>"Pódense crear axentes, subaxentes e equipos de axentes con
+Ollama?"</em>.</p>
+<p>En resumo: o <strong>modelo</strong> pensa (só devolve texto), o <strong>axente</strong> (Cline)
+decide e actúa coas súas <strong>ferramentas</strong> (<code>nmap</code>, editar ficheiros...), un
+<strong>subaxente</strong> é un axente que outro crea para unha subtarefa acoutada, e un
+<strong>equipo</strong> son varios axentes coordinados cara a un obxectivo común.</p>
+</div>
+<p>Nesta práctica verás tres desas formas en acción: un <strong>axente</strong> só (Paso 4),
+varios <strong>en paralelo</strong> nun taboleiro (Pasos 6-7) e un <strong>equipo</strong> que colabora
+encadeado (Paso 8).</p>
+<div class="admonition warning">
+<p class="admonition-title">Onde executar cada paso: SSH vs sesión gráfica</p>
+<p>Executar un modelo de IA en CPU xa consome bastante RAM por si só. Se
+ademais tes aberta a sesión gráfica de XFCE (Xorg, escritorio,
+lightdm...), é doado esgotar os 4 GB orixinais da VM e entrar en
+<strong>swap thrashing</strong> (o sistema queda case conxelado intercambiando
+memoria con disco — o teclado deixa de responder).</p>
+<p>Por iso, para esta práctica en concreto:</p>
+<ol>
+<li>Asegúrate de que o <code>Vagrantfile</code> xa ten <code>vb.memory = "6144"</code> (ver
+   <a href="../practicas-taller-ollama-vm/">Práctica 1</a>) e fai <code>vagrant reload</code> se o
+   cambiaches despois de crear a VM.</li>
+<li>Os pasos en <strong>terminal</strong> (axente único no Paso 4 e o multiaxente
+   colaborativo do Paso 8) podes facelos <strong>por SSH</strong>, sen abrir o
+   escritorio, para aforrar a memoria que consomen Xorg e XFCE:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>vagrant<span class="w"> </span>ssh
+</span></code></pre></div></li>
+<li>O <strong>taboleiro Kanban</strong> (Pasos 5-7) ábrese nun <strong>navegador dentro da VM</strong>,
+   así que eses pasos <strong>si precisan a sesión gráfica</strong>. Nese caso, pecha
+   todo o que non necesites para deixarlle RAM ao modelo e a Cline.</li>
+</ol>
+</div>
+<h3 id="paso-1-instalar-nodejs-22-e-git">Paso 1 — Instalar Node.js 22+ e Git</h3>
+<p>Cline require Node.js 22 ou superior. A versión que trae Kali por defecto en
+<code>apt</code> adoita ser máis antiga, así que instalamos unha versión actual:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Repositorio oficial de NodeSource (Node 22 LTS)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://deb.nodesource.com/setup_22.x<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>nodejs<span class="w"> </span>git
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Verificar versións</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>node<span class="w"> </span>--version<span class="w">   </span><span class="c1"># debe amosar v22.x ou superior</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>npm<span class="w"> </span>--version
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>git<span class="w"> </span>--version
+</span></code></pre></div>
+<h3 id="paso-2-instalar-cline-cli">Paso 2 — Instalar Cline CLI</h3>
+<p>O instalador de Node.js do paso anterior configura npm para instalar
+paquetes globais en <code>/usr/lib/node_modules</code>, que pertence a <code>root</code>. Para
+evitar ter que usar <code>sudo</code> cada vez que instales algo con npm, cambia
+primeiro o cartafol global a un que sexa teu:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.npm-global
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>npm<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>prefix<span class="w"> </span><span class="s1">&#39;~/.npm-global&#39;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=~/.npm-global/bin:$PATH&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">source</span><span class="w"> </span>~/.zshrc
+</span></code></pre></div>
+<p>Agora xa podes instalar sen <code>sudo</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>cline
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cline<span class="w"> </span>--version
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Erro <code>EACCES: permission denied</code></p>
+<p>Se xa executaches <code>npm install -g cline</code> antes de facer o cambio de
+cartafol e che deu un erro de permisos (<code>EACCES</code>), non che quedou nada a
+medio instalar — simplemente segue os pasos de enriba e volve executar
+o <code>npm install -g cline</code>.</p>
+</div>
+<h3 id="paso-3-crear-un-proxecto-de-proba">Paso 3 — Crear un proxecto de proba</h3>
+<p>Cline (e o seu modo Kanban) traballan sempre dentro dun repositorio git.</p>
+<div class="admonition note">
+<p class="admonition-title">Primeiro uso de git nesta VM</p>
+<p>Se é a primeira vez que usas <code>git commit</code> nesta VM, configura antes a
+túa identidade (calquera valor abonda para esta práctica, non fai falla
+que sexa real):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;kali@KALI-Ollama.local&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Kali HE&quot;</span>
+</span></code></pre></div>
+</div>
+<p>Creamos un pequeno proxecto con tres tarefas <strong>independentes entre si</strong>
+(condición necesaria para que teña sentido facelas en paralelo):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/agentes-lab<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/agentes-lab
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>init
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# Lab de axentes&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>README.md
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>git<span class="w"> </span>add<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Proxecto inicial&quot;</span>
+</span></code></pre></div>
+<h3 id="paso-4-proba-dun-unico-axente">Paso 4 — Proba dun único axente</h3>
+<p>Antes de ir a varios á vez, descarga o modelo e comproba que un só axente
+funciona correctamente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ollama<span class="w"> </span>pull<span class="w"> </span>qwen2.5:3b
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w"> </span>--model<span class="w"> </span>qwen2.5:3b<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;Crea un fichero saludo.py que imprima &#39;Ola, HE!&#39; por consola&quot;</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Cline pediche confirmación por ser un modelo pequeno</p>
+<p><code>qwen2.5:3b</code> é pequeno para tarefas de axente, así que ao lanzalo Cline
+advirte e pide confirmación:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Launch with qwen2.5:3b anyway?
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>   Launch anyway    Pick another model
+</span></code></pre></div>
+<p>Escolle <strong><code>Launch anyway</code></strong> para continuar con ese modelo (é o que
+queremos nesta práctica). <strong><code>Pick another model</code></strong> só é útil se tes
+descargado outro modelo máis capaz co que probar.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">É normal que tarde e que escriba amodo</p>
+<p>Nunha VM sen GPU, o modelo xera a resposta <strong>token a token, en tempo
+real e con delay perceptible</strong> — verás o texto aparecer aos poucos, non
+de golpe. Non é que estea conxelado; é o ritmo real de inferencia en
+CPU. Espera con paciencia a que remate antes de dar por fallada a
+execución.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Por que o prompt vai en castelán, non en galego</p>
+<p>Igual que na Práctica 1, se escribes a instrución en galego é probable
+que o modelo responda (ou comente o que fai) en portugués, xa que o
+galego non está entre os idiomas oficialmente soportados destes modelos
+pequenos. Por iso os prompts desta práctica van en castelán — é a opción
+fiable, non un descoido.</p>
+</div>
+<p><strong>Verificación</strong>: comproba que o ficheiro se creou realmente e que o
+contido é o esperado:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cat<span class="w"> </span>~/agentes-lab/saludo.py
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>python3<span class="w"> </span>~/agentes-lab/saludo.py
+</span></code></pre></div>
+<p>Se ves o ficheiro creado e a saída correcta ao executalo, o axente
+funcionou de verdade (leu a instrución, escribiu código, e ese código é
+executable) — non foi só unha resposta de chat.</p>
+<h3 id="paso-5-abrir-o-taboleiro-kanban-multiaxente">Paso 5 — Abrir o taboleiro Kanban (multiaxente)</h3>
+<div class="admonition note">
+<p class="admonition-title">Este paso precisa a sesión gráfica</p>
+<p>A diferenza do Paso 4, o Kanban abre unha interface web no <strong>navegador
+dentro da VM</strong>, así que aquí si necesitas a sesión gráfica de XFCE (non
+vale só <code>vagrant ssh</code>). Inicia sesión no escritorio de Kali para seguir.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>~/agentes-lab
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w"> </span>--model<span class="w"> </span>qwen2.5:3b<span class="w"> </span>--<span class="w"> </span>kanban
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>...
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Cline<span class="w"> </span>Kanban<span class="w"> </span>running<span class="w"> </span>at<span class="w"> </span>http://127.0.0.1:3484/agentes-lab
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>...
+</span></code></pre></div>
+<p>Isto abre unha interface web no navegador (dentro da propia VM). Na
+primeira execución pedirache escoller o cartafol do proxecto (<code>~/agentes-lab</code>)
+e o axente a usar (Cline).</p>
+<p><img alt="kanban - Crear axentes" src="../images/kanban-1.png" /></p>
+<h3 id="paso-6-crear-tres-tarefas-independentes-e-lanzalas-a-vez">Paso 6 — Crear tres tarefas independentes e lanzalas á vez</h3>
+<p>No taboleiro, crea <strong>tres tarxetas de tarefa</strong>, unha por cada un destes
+encargos independentes (non dependen unhas das outras a propósito), <strong>en
+castelán polo mesmo motivo do Paso 4</strong>:</p>
+<ol>
+<li><em>"Crea un fichero <code>par_impar.py</code> con una función que diga si un número es par o impar"</em><br />
+<img alt="kanban - Crear task1" src="../images/kanban-2.png" />  </li>
+<li><em>"Crea un fichero <code>fibonacci.py</code> con una función que calcule el n-ésimo término de Fibonacci"</em><br />
+<img alt="kanban - Crear task2" src="../images/kanban-3.png" />  </li>
+<li><em>"Crea un fichero <code>readme_update.md</code> con un resumen de qué hace este proyecto"</em><br />
+<img alt="kanban - Crear task3" src="../images/kanban-4.png" />  </li>
+</ol>
+<p>Preme "play" nas tres tarxetas <strong>sen esperar a que remate a anterior</strong>.<br />
+<img alt="kanban - Play task3" src="../images/kanban-5.png" />  </p>
+<div class="admonition warning">
+<p class="admonition-title">Vai ser lento — e iso tamén é parte da lección</p>
+<p>Como xa vimos, dentro desta VM Ollama corre en CPU. Executar tres
+axentes en paralelo significa tres inferencias de IA competindo polo
+mesmo procesador, cada unha escribindo a súa resposta amodo e token a
+token — cada tarefa individual tardará máis do que tardaría soa. Isto é
+exactamente o <em>trade-off</em> real do multiaxente: gañas paralelismo de
+tarefas, non necesariamente velocidade total se o
+hardware é o límite.</p>
+</div>
+<h3 id="paso-7-verificar-que-realmente-traballaron-en-paralelo">Paso 7 — Verificar que realmente traballaron en paralelo</h3>
+<p>Cando remate (ou mentres traballan), comproba nun terminal á parte:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Cline crea un &quot;git worktree&quot; illado por cada tarefa activa</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>-C<span class="w"> </span>~/agentes-lab<span class="w"> </span>worktree<span class="w"> </span>list
+</span></code></pre></div>
+<p><strong>Resultado esperado</strong>: debes ver <strong>varias entradas de worktree distintas</strong>
+(unha por tarefa activa), non só a rama principal — é a proba técnica de que
+cada axente traballou no seu propio espazo illado, sen interferir cos outros.</p>
+<p>Ollo co matiz: isto é <strong>paralelismo de axentes independentes</strong>, non
+colaboración. Cada axente ten o seu obxectivo e o seu worktree, e non se
+comunica cos demais nin comparte estado con eles. É unha das dúas caras do
+"multiaxente"; a outra —axentes que <strong>si</strong> colaboran entre si, ao estilo dos
+<em>Subagents</em>/<em>Agent Teams</em> do apuntamento— vémola no Paso 8.</p>
+<p><img alt="kanban - Verificar traballo en paralelo das tasks" src="../images/kanban-6.png" /></p>
+<p>Ao rematar todas, comproba que os tres ficheiros existen e son correctos:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cat<span class="w"> </span>~/agentes-lab/par_impar.py
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>cat<span class="w"> </span>~/agentes-lab/fibonacci.py
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>cat<span class="w"> </span>~/agentes-lab/readme_update.md
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>python3<span class="w"> </span>~/agentes-lab/par_impar.py
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>python3<span class="w"> </span>~/agentes-lab/fibonacci.py
+</span></code></pre></div>
+<h3 id="paso-8-multiaxente-colaborativo-axentes-que-traballan-xuntos">Paso 8 — Multiaxente colaborativo (axentes que traballan xuntos)</h3>
+<p>Nos pasos 6-7 os axentes eran <strong>independentes</strong>: cada un no seu worktree, sen
+saber nada dos outros. Iso é paralelismo, pero non colaboración. Agora imos ao
+outro caso: varios axentes que <strong>constrúen sobre o traballo do outro</strong>,
+encadeados nun <em>pipeline</em> clásico de desenvolvemento —
+<strong>desarrollador → tester → documentador</strong> — todos sobre o <strong>mesmo</strong> proxecto.</p>
+<p>A diferenza clave respecto ao Paso 6 está en dúas cousas:</p>
+<ul>
+<li><strong>Estado compartido</strong>: aquí NON usamos o Kanban (que illa cada tarefa nun
+  worktree). Usamos a forma directa do Paso 4, que traballa sobre o cartafol do
+  proxecto, para que cada axente vexa os ficheiros que deixou o anterior.</li>
+<li><strong>Execución secuencial</strong>: lánzanse <strong>un tras outro</strong>, esperando a que remate
+  cada un, porque o axente 2 precisa o que produciu o 1, e o 3 o que produciron
+  os anteriores.</li>
+</ul>
+<p>Traballa nun cartafol limpo para non mesturar cos ficheiros dos pasos previos:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/agentes-colab<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/agentes-colab
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>git<span class="w"> </span>init
+</span></code></pre></div>
+<p><strong>Axente 1 — desarrollador.</strong> Crea o código base:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w"> </span>--model<span class="w"> </span>qwen2.5:3b<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;Crea un archivo calculadora.py con cuatro funciones: sumar(a, b), restar(a, b), multiplicar(a, b) y dividir(a, b). La función dividir debe lanzar un ValueError si b es cero.&quot;</span>
+</span></code></pre></div>
+<p><strong>Axente 2 — tester.</strong> Le o que fixo o anterior e escribe as probas (fíxate en
+que o prompt lle pide <em>ler</em> o ficheiro existente — aí está a colaboración):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w"> </span>--model<span class="w"> </span>qwen2.5:3b<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;Lee el archivo calculadora.py que ya existe en este proyecto y crea test_calculadora.py con pruebas unittest para cada una de sus funciones, incluyendo el caso en que dividir recibe un cero.&quot;</span>
+</span></code></pre></div>
+<p><strong>Axente 3 — documentador.</strong> Le o código e as probas e redacta a documentación:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>ollama<span class="w"> </span>launch<span class="w"> </span>cline<span class="w"> </span>--model<span class="w"> </span>qwen2.5:3b<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;Lee calculadora.py y test_calculadora.py de este proyecto y crea un archivo USO.md que documente qué hace cada función y cómo ejecutar las pruebas.&quot;</span>
+</span></code></pre></div>
+<p><strong>Verificación</strong>: a proba de que houbo colaboración real é que as probas do
+axente 2 pasen contra o código do axente 1 (é dicir, que o tester entendese o
+que escribiu o desarrollador):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span>~/agentes-colab
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>unittest<span class="w"> </span>test_calculadora.py<span class="w"> </span>-v
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>cat<span class="w"> </span>USO.md
+</span></code></pre></div>
+<p>Se os tests pasan e o <code>USO.md</code> describe as funcións reais de <code>calculadora.py</code>,
+os tres axentes coordináronse a través do estado compartido, partindo cada un
+do traballo do anterior.</p>
+<div class="admonition note">
+<p class="admonition-title">Colaboración por encadeamento vs. orquestración</p>
+<p>Este é o xeito máis sinxelo e verificable de colaboración: un <em>pipeline</em>
+secuencial con traspaso (<em>handoff</em>) a través dos ficheiros do proxecto. Hai
+formas máis avanzadas —un axente "orquestrador" que reparte subtarefas a
+outros e recolle os resultados, como nos <em>Agent Teams</em>— pero requiren máis
+orquestración da que cabe nesta VM. A idea de fondo (uns axentes constrúen
+sobre o que fan outros) é a mesma que acabas de comprobar.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cun modelo de 3B en CPU, sé claro nos prompts</p>
+<p>A colaboración depende de que os axentes 2 e 3 <em>lean ben</em> o ficheiro
+anterior. Cun modelo pequeno iso non sempre sae á primeira: se un axente
+ignora o ficheiro existente ou inventa funcións que non están, reformula o
+prompt facéndoo máis explícito ("lee primero el archivo X y básate solo en
+sus funciones"). É a mesma limitación de fiabilidade xa vista, agora nun
+escenario con dependencias entre axentes.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Continúa con dous enfoques novos</p>
+<ul>
+<li><a href="../practicas-taller-ollama-agente-python/">Práctica 4 — Crear un axente propio con Python</a>:
+  construír o bucle de ferramentas e comprobar os permisos desde o código.</li>
+<li><a href="../practicas-taller-ollama-crewai/">Práctica 5 — Equipos de axentes con CrewAI</a>:
+  coordinar roles e tarefas; distinguir proceso secuencial de xerárquico.</li>
+</ul>
+</div>
+<h3 id="peche-da-practica">Peche da práctica</h3>
+<p>O que acabas de comprobar, en termos do
+<a href="../../apuntamentos/ollama/#podense-crear-axentes-subaxentes-e-equipos-de-axentes-con-ollama">apuntamento</a>:</p>
+<table>
+<thead>
+<tr>
+<th>No apuntamento dicíase...</th>
+<th>E o comprobaches con...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Para <em>actuar</em> (crear ficheiros, executar) fai falla un <strong>axente</strong>; o modelo só devolve texto</td>
+<td>Paso 4 — Cline (motor: <code>qwen2.5:3b</code> en Ollama) leu a instrución e creou <code>saludo.py</code> executable, non só texto de chat</td>
+</tr>
+<tr>
+<td>"<code>ollama launch</code> — conectar un modelo local como motor doutras ferramentas"</td>
+<td>Todos os pasos — Cline usando <code>qwen2.5:3b</code> como motor, sen conta de pago</td>
+</tr>
+<tr>
+<td>"Multiaxente en paralelo (axentes independentes)"</td>
+<td>Pasos 6-7 — tres axentes <strong>independentes</strong>, cada un no seu <em>worktree</em> illado, executados á vez: paralelismo, non colaboración</td>
+</tr>
+<tr>
+<td>"subaxentes e equipos de axentes" — varios roles colaborando nunha mesma tarefa</td>
+<td>Paso 8 — <em>pipeline</em> desarrollador → tester → documentador, onde cada axente le e constrúe sobre a saída do anterior</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Para ir máis alá</p>
+<p>Se tes acceso á <a href="../practicas-taller-ollama-host/">Práctica 2</a> (equipo
+anfitrión con GPU), repite os pasos 5-8 alí cun modelo maior
+(<code>dolphin-llama3:8b</code>) e compara canto máis rápido vai o mesmo exercicio con
+GPU fronte a CPU.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

