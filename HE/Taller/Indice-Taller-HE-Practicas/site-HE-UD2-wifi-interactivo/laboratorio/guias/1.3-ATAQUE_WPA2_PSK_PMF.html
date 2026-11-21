@@ -1,0 +1,55 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 1.3 — WPA2-PSK con PMF (802.11w)</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 1.3 — WPA2-PSK con PMF (802.11w)</h1>
+<div class="notice warning"><strong>Consideracións técnicas antes dos comandos</strong>
+<p>Nesta práctica emprégase o escenario <code>psk_pmf</code> e a interface de observación <code>wlan3</code>. Para evitar confusión, <strong>Terminal 1</strong> é a de recoñecemento/captura e <strong>Terminal 2</strong> a da proba controlada de desautenticación. Se aparece <code>wlan2mon</code> nalgún comando, comproba a interface dispoñible: comproba sempre as interfaces con <code>iw dev</code> antes de iniciar unha captura. PMF protexe determinadas tramas de xestión unha vez negociadas as claves; non implica que todas as tramas Wi-Fi vaian cifradas.</p>
+</div>
+<div class="notice important"><strong>Baseada na práctica [1-Taller-HE-Practica-WiFi-2.pdf](https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-2.pdf){:target=&quot;_blank&quot;}</strong>
+</div>
+<h2>1. Contexto</h2>
+<p>Nesta práctica probaremos a protección de tramas de xestión (PMF). Ao activala, os ataques de deautenticación estándar deberían fallar porque as tramas de deautenticación van cifradas e asinadas.</p>
+<h2>2. Preparación (Terminal 1)</h2>
+<p>Arranca o escenario PMF.</p>
+<pre><code class="language-bash">sudo wifilabctl up psk_pmf
+sudo wifilabctl status
+</code></pre>
+<h2>3. Recoñecemento e Modo Monitor (Terminal 1)</h2>
+<p>Pon a túa tarxeta Wi-Fi de ataque (<code>wlan2</code>) en modo monitor.</p>
+<pre><code class="language-bash">sudo airmon-ng start wlan2
+sudo airodump-ng wlan2mon
+</code></pre>
+<p><em>Anota o BSSID do AP obxectivo (EMPRESA-XYZ) e a Canle (6).</em></p>
+<h2>4. Captura (Terminal 1)</h2>
+<p>Inicia a captura especificando a canle e o BSSID.</p>
+<pre><code class="language-bash"># Cambia &lt;BSSID&gt; polo valor real atopado
+Ctrl+C
+sudo airodump-ng -c 6 --bssid &lt;BSSID&gt; -w captura_psk wlan2mon
+#Espera a ver como o cliente(wlan1) está autenticado neste BSSID (AP Lexítimo)
+</code></pre>
+<h2>5. Intentar ataque de Deautenticación (Terminal 2)</h2>
+<p>Nunha <strong>NOVA terminal</strong>, envía paquetes de deautenticación para forzar ao cliente a reconectarse usando a interface global <code>wlan3</code>.</p>
+<pre><code class="language-bash">sudo aireplay-ng -0 5 -a &lt;BSSID_AP&gt; -c &lt;MAC_CLIENTE&gt; wlan2mon
+</code></pre>
+<p><em>Nota: Tamén podes usar wlan3 se a pos en monitor.</em></p>
+<h2>6. Observación e Analise Técnica</h2>
+<p>A diferenza da <a href="1.2-ATAQUE_WPA2_PSK_DEAUTH.html">práctica de desautenticación WPA2-PSK</a>{:target=&quot;_blank&quot;}, sen PMF, o cliente con PMF obrigatorio <strong>non debería desconectarse</strong> ao recibir tramas DeAuth falsificadas non protexidas. Verás que <code>aireplay-ng</code> informa de que enviou os paquetes, pero o cliente sigue navegando ou mantendo o seu ping sen interrupción.</p>
+<h3>Por que fallou o ataque?</h3>
+<p>Ao activar <strong>PMF (Protected Management Frames)</strong>, as tramas de deautenticación e desasociación:</p>
+<ol>
+<li><strong>Van asinadas</strong>: O cliente só acepta tramas que veñan coa firma criptográfica correcta xerada durante o handshake 4-way.</li>
+<li><strong>Ignoran a terceiros</strong>: Como o atacante non coñece as claves de sesión (PTK/GTK), non pode xerar unha firma válida. O cliente descarta os teus paquetes como falsos.</li>
+</ol>
+<h3>Como verificalo nos logs?</h3>
+<p>Podes ver como o sistema ignora estes intentos monitorizando o log de <code>hostapd</code> ou <code>wpa_supplicant</code>:</p>
+<pre><code class="language-bash"># Verificar no cliente (NON debería haber deconexións por reason=7 se PMF funciona)
+grep CTRL-EVENT-DISCONNECTED /home/kali/wifiLab/run/psk_pmf/wpa_supplicant.log 
+</code></pre>
+<p>Podes comparar este comportamento co <a href="1.1-ATAQUE_WPA2_PSK.html">ataque PSK sen PMF</a>{:target=&quot;_blank&quot;}, onde si verías:</p>
+<pre><code class="language-bash"># Opción desactivada: ieee80211w=0
+grep CTRL-EVENT-DISCONNECTED /home/kali/wifiLab/run/psk/wpa_supplicant.log 
+# wlan1: CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:00:00 reason=7
+</code></pre>
+<h2>7. Limpeza</h2>
+<p>Ao rematar, apaga o escenario.</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

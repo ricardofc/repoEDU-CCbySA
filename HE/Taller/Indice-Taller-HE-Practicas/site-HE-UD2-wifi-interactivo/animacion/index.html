@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="gl" data-page="anim">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animación interactiva · Seguridade WiFi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+<style>
+  :root[data-page="anim"]{--cli:#1f9d6b;--sta:#1f9d6b;--ap:#1f9d6b;--radius:#2f7fe0;--att:#d6364f}
+  @media (prefers-color-scheme:dark){:root[data-page="anim"]:not([data-theme="light"]){--cli:#3bc088;--sta:#3bc088;--ap:#3bc088;--radius:#5aa0ff;--att:#ff5d78}}
+  :root[data-page="anim"][data-theme="dark"]{--cli:#3bc088;--sta:#3bc088;--ap:#3bc088;--radius:#5aa0ff;--att:#ff5d78}
+
+  .selector{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+  .levels,.phase{display:flex;gap:5px;flex-wrap:wrap}
+  .lvl{font-family:var(--disp);font-weight:600;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:8px 13px;border-radius:10px;cursor:pointer}
+  .lvl[data-on="1"]{color:#fff}
+  .lvl.psk[data-on="1"]{background:var(--psk);border-color:var(--psk)}
+  .lvl.eap[data-on="1"]{background:var(--eap);border-color:var(--eap)}
+  .lvl.sae[data-on="1"]{background:var(--sae);border-color:var(--sae);color:#04201f}
+
+  .phase{margin-left:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px}
+  .phase button{font-family:var(--sans);font-weight:600;font-size:12.5px;border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:7px;cursor:pointer}
+  .phase button[data-on="1"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
+  .phase button.func[data-on="1"]{color:var(--good)}
+  .phase button.risk[data-on="1"]{color:var(--danger)}
+  .phase button.def[data-on="1"]{color:var(--sae)}
+
+  .sandbox{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;padding:11px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);font-size:12.5px}
+  .sandbox[hidden]{display:none}
+  .sandbox .sb-title{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.06em;margin-right:4px}
+  .sandbox label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted)}
+  .sandbox select{font-family:var(--mono);font-size:12px;padding:4px 8px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg)}
+
+  .board{margin-top:12px;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--sae) 7%,var(--surface)),var(--surface));border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .stage{position:relative;height:clamp(370px,52vw,460px);overflow:hidden}
+  .stage .floor{position:absolute;left:0;right:0;bottom:0;height:30%;background:linear-gradient(0deg,color-mix(in srgb,var(--fg) 5%,transparent),transparent)}
+  #linkSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+  .actor{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;width:112px;transition:left .36s ease,top .36s ease,opacity .25s ease;z-index:3}
+  .actor .fig{width:76px;height:76px;display:block;position:relative;z-index:1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.14))}
+  .actor .nm{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap;box-shadow:var(--shadow)}
+  #a-cli .nm,#a-ap .nm{border-color:color-mix(in srgb,var(--cli) 55%,var(--line));color:var(--cli)}
+  #a-radius .nm{border-color:color-mix(in srgb,var(--radius) 55%,var(--line));color:var(--radius)}
+  #a-att .nm,#a-evil .nm{border-color:color-mix(in srgb,var(--att) 60%,var(--line));color:var(--att);background:color-mix(in srgb,var(--att) 8%,var(--surface))}
+
+  .actor .bubble{position:absolute;top:-14px;right:0;min-width:25px;height:25px;padding:0 7px;border-radius:999px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono);font-weight:700;box-shadow:var(--shadow);opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;z-index:4;white-space:nowrap}
+  .actor .bubble.show{opacity:1;transform:scale(1)}
+  .actor .mouth{display:none}
+  .actor[data-mood="happy"] .m-smile,.actor[data-mood="neutral"] .m-flat,.actor[data-mood="worried"] .m-frown,.actor[data-mood="evil"] .m-smirk{display:block}
+  .actor.listening{animation:listenpulse 1.8s ease-out infinite;border-radius:16px}
+  @keyframes listenpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--att) 42%,transparent)}70%{box-shadow:0 0 0 22px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  @keyframes shake{10%,90%{transform:translate(-52%,-50%)}30%,70%{transform:translate(-46%,-50%)}50%{transform:translate(-50%,-52%)}}
+  .actor.fx-shake{animation:shake .48s 2}
+  @keyframes bounce{0%,100%{transform:translate(-50%,-50%)}40%{transform:translate(-50%,-64%)}}
+  .actor.fx-bounce{animation:bounce .45s}
+  @keyframes glowp{50%{filter:drop-shadow(0 0 15px var(--good))}}
+  .actor.fx-glow .fig{animation:glowp .9s}
+  @keyframes flashb{50%{filter:drop-shadow(0 0 16px var(--danger))}}
+  .actor.fx-bad .fig{animation:flashb .65s 2}
+
+  .rw{position:absolute;left:50%;top:38%;width:66px;height:66px;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+  .rw::before,.rw::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--cli);opacity:0;animation:rwave 2.6s ease-out infinite}
+  .rw::after{animation-delay:1.3s}
+  #a-evil .rw::before,#a-evil .rw::after,#a-att .rw::before,#a-att .rw::after{border-color:var(--att)}
+  @keyframes rwave{0%{transform:scale(.42);opacity:.45}70%{opacity:.1}100%{transform:scale(2.05);opacity:0}}
+
+  .pkt-layer{position:absolute;inset:0;pointer-events:none;z-index:5}
+  .packet{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap;background:var(--surface);border:1.5px solid var(--line);box-shadow:0 6px 16px -6px rgba(0,0,0,.4);opacity:0}
+  .packet.show{opacity:1}
+  .packet[data-k="nonce"]{color:var(--muted)}
+  .packet[data-k="secure"]{color:var(--cli);border-color:color-mix(in srgb,var(--cli) 55%,var(--line))}
+  .packet[data-k="key"]{color:var(--key);border-color:color-mix(in srgb,var(--key) 60%,var(--line))}
+  .packet[data-k="id"]{color:var(--radius);border-color:color-mix(in srgb,var(--radius) 55%,var(--line))}
+  .packet[data-k="bad"]{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 60%,var(--line))}
+  .packet[data-k="warn"]{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
+  .packet[data-k="dice"]{color:var(--sae);border-color:color-mix(in srgb,var(--sae) 60%,var(--line))}
+  .packet.sniff{transform:translate(-50%,-50%) scale(.84);border-style:dashed}
+  .packet.blocked{color:var(--danger);border-color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--surface))}
+
+  .tls-band{position:absolute;left:12px;top:10px;z-index:6;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--tls);background:color-mix(in srgb,var(--tls) 13%,var(--surface));border:1px dashed color-mix(in srgb,var(--tls) 55%,var(--line));border-radius:999px;padding:5px 12px;opacity:0;transition:opacity .25s;max-width:calc(100% - 24px)}
+  .tls-band.show{opacity:1}
+  .alarm{position:absolute;top:10px;right:12px;z-index:6;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--danger);border-radius:999px;padding:5px 12px;opacity:0;transition:opacity .25s;white-space:nowrap}
+  .alarm.show{opacity:1;animation:alpulse 1s infinite}
+  @keyframes alpulse{50%{filter:brightness(1.22)}}
+
+  .blocker{position:absolute;transform:translate(-50%,-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transition:opacity .22s}
+  .blocker.show{opacity:1}
+  .blocker .bi{width:38px;height:38px;border-radius:50%;background:color-mix(in srgb,var(--good) 20%,var(--surface));border:2px solid var(--good);display:grid;place-items:center;font-size:18px}
+  .blocker .bl{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--good);background:var(--surface);border:1px solid color-mix(in srgb,var(--good) 45%,var(--line));border-radius:999px;padding:2px 8px;white-space:nowrap;box-shadow:var(--shadow)}
+
+  .hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;padding:10px 14px;background:var(--surface-2);border-top:1px solid var(--line)}
+  .hud-card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11.5px}
+  .hud-card[data-actor="cli"],.hud-card[data-actor="ap"]{border-top-color:var(--cli)}
+  .hud-card[data-actor="radius"]{border-top-color:var(--radius)}
+  .hud-card[data-actor="att"],.hud-card[data-actor="evil"]{border-top-color:var(--att)}
+  .hud-card b{font-family:var(--mono);display:block;font-size:11px;margin-bottom:4px;color:var(--fg)}
+  .hud-tags{display:flex;flex-wrap:wrap;gap:4px}
+  .htag{font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+  .htag.ok{border-color:color-mix(in srgb,var(--good) 45%,var(--line));color:var(--good)}
+  .htag.bad{border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}
+
+  .narr{padding:15px 18px;border-top:1px solid var(--line)}
+  .narr .tagrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .narr .tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .narr .prac{font-family:var(--mono);font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--key) 14%,transparent);color:var(--key);border:1px solid color-mix(in srgb,var(--key) 34%,transparent)}
+  .narr p{margin:6px 0 0;font-size:14.2px}
+  .lesson{margin-top:10px;display:none;gap:9px;align-items:flex-start;background:color-mix(in srgb,var(--good) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--good) 35%,var(--line));border-radius:11px;padding:10px 13px;font-size:13px}
+  .lesson.show{display:flex}
+  .lesson.bad{background:color-mix(in srgb,var(--danger) 10%,var(--surface));border-color:color-mix(in srgb,var(--danger) 35%,var(--line))}
+  .lesson .i{font-weight:700;color:var(--good)} .lesson.bad .i{color:var(--danger)}
+
+  .anim-ctrls{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--surface-2);flex-wrap:wrap}
+  .dots{display:flex;gap:6px;flex-wrap:wrap}
+  .dotbtn{width:13px;height:13px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:background .15s,transform .15s}
+  .dotbtn.on{background:var(--accent);transform:scale(1.2)}
+  .speed-sel{font-family:var(--mono);font-size:11.5px;padding:5px 8px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+  .btn.go{background:var(--fg);border-color:var(--fg);color:var(--bg);min-width:175px;justify-content:center}
+  .btn.go.attack{background:var(--danger);border-color:var(--danger);color:#fff}
+  .btn.go.secure{background:var(--good);border-color:var(--good);color:#fff}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-size:12px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend .sw{width:12px;height:12px;border-radius:4px;flex:0 0 auto}
+  .ll-line{width:22px;height:0;border-top:2px dashed var(--cli)}
+  .ll-line.evil{border-top:2px dashed var(--att)}
+  .ll-line.solid{border-top:3px solid var(--radius)}
+  .ll-line.act{border-top:3px solid var(--key)}
+
+  @media(prefers-reduced-motion:reduce){
+    .actor,.rw::before,.rw::after,.alarm.show,.actor.listening{animation:none!important;transition:none!important}
+  }
+  @media(max-width:560px){
+    .actor{width:78px} .actor .fig{width:54px;height:54px} .actor .nm{font-size:9px}
+    .phase{margin-left:0;width:100%} .phase button{flex:1}
+    .btn.go{min-width:0;flex:1}
+    .tls-band,.alarm{font-size:9.5px;padding:4px 8px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html">WPA3-SAE</a>
+      <a href="../animacion/index.html" class="active">Animación</a>
+      <a href="../laboratorio/index.html">Laboratorio</a>
+      <a href="../ferramentas/index.html">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>Escenario animado: <span class="g">protocolos, ataques e "E se...?"</span></h1>
+    <p>Os dispositivos lexítimos (<b>Cliente</b> e <b>AP</b>) móstranse sempre en <b>verde</b>, o servidor <b>RADIUS</b> en <b>azul</b> e os actores ou puntos de acceso maliciosos (<b>Atacante</b> e <b>AP falso</b>) en <b>vermello</b>.</p>
+  </div>
+
+  <div class="selector">
+    <div class="levels" id="levels">
+      <button class="lvl psk" data-lvl="psk" data-on="1">WPA2-PSK</button>
+      <button class="lvl eap" data-lvl="eap">WPA2-EAP</button>
+      <button class="lvl sae" data-lvl="sae">WPA3-SAE</button>
+    </div>
+    <div class="phase" id="phase">
+      <button class="func" data-ph="func" data-on="1">▶ Funcionamento</button>
+      <button class="risk" data-ph="risk">⚠ Riscos / Ataques</button>
+      <button class="def" data-ph="def">🛡 Evitar</button>
+    </div>
+  </div>
+
+  <div class="sandbox" id="sandbox" hidden></div>
+
+  <div class="board">
+    <div class="stage" id="stage">
+      <div class="floor"></div>
+      <svg id="linkSvg" viewBox="0 0 1000 450" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="tls-band" id="tlsBand">🛡️ Túnel TLS</div>
+      <div class="alarm" id="alarm">🚨 IDS / Anti-clogging activado</div>
+
+      <!-- Cliente lexítimo (VERDE) -->
+      <div class="actor" id="a-cli" data-mood="neutral">
+        <div class="bubble" id="b-cli"></div><span class="rw"></span>
+        <svg class="fig" viewBox="0 0 72 96" aria-label="Cliente lexítimo">
+          <line x1="26" y1="6" x2="21" y2="1" stroke="var(--cli)" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="21" cy="1" r="2.2" fill="var(--cli)"/>
+          <line x1="46" y1="6" x2="51" y2="1" stroke="var(--cli)" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="51" cy="1" r="2.2" fill="var(--cli)"/>
+          <rect x="14" y="6" width="44" height="85" rx="10" fill="var(--cli)"/>
+          <rect x="19" y="14" width="34" height="68" rx="5" fill="#eef7f2"/>
+          <circle cx="29" cy="40" r="3.4" fill="#10211f"/><circle cx="43" cy="40" r="3.4" fill="#10211f"/>
+          <path class="mouth m-smile" d="M28 50 Q36 59 44 50" stroke="#10211f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-flat" d="M29 53 H43" stroke="#10211f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-frown" d="M28 56 Q36 48 44 56" stroke="#10211f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-smirk" d="M29 53 Q36 57 44 50" stroke="#10211f" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="nm" id="nm-cli">📱 Cliente</span>
+      </div>
+
+      <!-- AP lexítimo (VERDE) -->
+      <div class="actor" id="a-ap" data-mood="neutral">
+        <div class="bubble" id="b-ap"></div><span class="rw"></span>
+        <svg class="fig" viewBox="0 0 96 96" aria-label="AP lexítimo">
+          <line x1="30" y1="34" x2="22" y2="9" stroke="var(--ap)" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="8" r="4" fill="var(--ap)"/>
+          <line x1="66" y1="34" x2="74" y2="9" stroke="var(--ap)" stroke-width="3" stroke-linecap="round"/><circle cx="74" cy="8" r="4" fill="var(--ap)"/>
+          <rect x="14" y="32" width="68" height="46" rx="9" fill="var(--ap)"/>
+          <circle cx="36" cy="52" r="3.6" fill="#fff"/><circle cx="60" cy="52" r="3.6" fill="#fff"/>
+          <path class="mouth m-smile" d="M36 62 Q48 71 60 62" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-flat" d="M38 65 H58" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-frown" d="M36 68 Q48 59 60 68" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-smirk" d="M37 65 Q48 70 59 63" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="nm" id="nm-ap">📡 AP</span>
+      </div>
+
+      <!-- RADIUS (AZUL) -->
+      <div class="actor" id="a-radius" data-mood="neutral">
+        <div class="bubble" id="b-radius"></div>
+        <svg class="fig" viewBox="0 0 80 96" aria-label="Servidor RADIUS">
+          <rect x="16" y="6" width="48" height="84" rx="8" fill="var(--radius)"/>
+          <rect x="23" y="14" width="34" height="7" rx="3" fill="#e7f0ff"/>
+          <rect x="23" y="25" width="34" height="7" rx="3" fill="#e7f0ff"/>
+          <rect x="23" y="36" width="34" height="7" rx="3" fill="#e7f0ff"/>
+          <circle cx="32" cy="54" r="3.4" fill="#fff"/><circle cx="48" cy="54" r="3.4" fill="#fff"/>
+          <path class="mouth m-smile" d="M32 64 Q40 71 48 64" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-flat" d="M33 66 H47" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-frown" d="M32 69 Q40 62 48 69" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-smirk" d="M33 66 Q40 70 48 63" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="nm" id="nm-radius">🗄️ RADIUS</span>
+      </div>
+
+      <!-- Atacante (VERMELLO) -->
+      <div class="actor" id="a-att" data-mood="evil">
+        <div class="bubble" id="b-att"></div><span class="rw"></span>
+        <svg class="fig" viewBox="0 0 90 96" aria-label="Atacante">
+          <line x1="45" y1="20" x2="45" y2="9" stroke="#5e0714" stroke-width="2.6" stroke-linecap="round"/><circle cx="45" cy="6" r="3" fill="#5e0714"/>
+          <path d="M26 30 C18 18 20 8 27 5 C25 15 31 23 38 27 Z" fill="#8f0f24"/>
+          <path d="M64 30 C72 18 70 8 63 5 C65 15 59 23 52 27 Z" fill="#8f0f24"/>
+          <path d="M45 18 C26 18 15 32 15 52 C15 73 28 88 45 88 C62 88 75 73 75 52 C75 32 64 18 45 18 Z" fill="var(--att)"/>
+          <path d="M26 45 L41 50" stroke="#5e0714" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M64 45 L49 50" stroke="#5e0714" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="35" cy="55" r="4.2" fill="#2a0008"/><circle cx="55" cy="55" r="4.2" fill="#2a0008"/>
+          <circle cx="36.4" cy="53.6" r="1.3" fill="#fff"/><circle cx="56.4" cy="53.6" r="1.3" fill="#fff"/>
+          <path class="mouth m-smirk" d="M31 67 Q45 80 59 67 Q52 72 45 72 Q38 72 31 67 Z" fill="#2a0008"/>
+          <path class="mouth m-smile" d="M33 67 Q45 77 57 67" stroke="#2a0008" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-flat" d="M35 70 H55" stroke="#2a0008" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-frown" d="M34 73 Q45 64 56 73" stroke="#2a0008" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M40 84 L45 93 L50 84 Z" fill="#8f0f24"/>
+        </svg>
+        <span class="nm" id="nm-att">😈 Atacante</span>
+      </div>
+
+      <!-- Evil Twin (VERMELLO) -->
+      <div class="actor" id="a-evil" data-mood="neutral">
+        <div class="bubble" id="b-evil"></div><span class="rw"></span>
+        <svg class="fig" viewBox="0 0 96 96" aria-label="AP falso">
+          <path d="M22 34 C16 22 18 13 24 11 C23 19 28 26 33 30 Z" fill="#5e0714"/>
+          <path d="M74 34 C80 22 78 13 72 11 C73 19 68 26 63 30 Z" fill="#5e0714"/>
+          <rect x="14" y="32" width="68" height="46" rx="9" fill="var(--att)"/>
+          <rect x="24" y="45" width="48" height="13" rx="3" fill="#2a0008"/>
+          <circle cx="36" cy="52" r="2.6" fill="#fff"/><circle cx="60" cy="52" r="2.6" fill="#fff"/>
+          <path class="mouth m-smile" d="M34 67 Q48 74 62 67" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-flat" d="M35 69 H61" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-frown" d="M34 72 Q48 63 62 72" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <path class="mouth m-smirk" d="M35 68 Q48 73 61 65" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="nm" id="nm-evil">🎭 AP falso</span>
+      </div>
+
+      <div class="blocker" id="blocker"><span class="bi">🛡️</span><span class="bl"></span></div>
+      <div class="pkt-layer" id="pktLayer"></div>
+    </div>
+
+    <div class="hud" id="hud"></div>
+
+    <div class="narr">
+      <div class="tagrow">
+        <div class="tag" id="scTag"></div>
+        <span class="prac" id="scPrac"></span>
+      </div>
+      <p id="narrText"></p>
+      <div class="lesson" id="lesson"><span class="i">★</span><span id="lessonText"></span></div>
+    </div>
+
+    <div class="anim-ctrls">
+      <div class="dots" id="dots"></div>
+      <div class="spacer"></div>
+      <select class="speed-sel" id="speedSel" aria-label="Velocidade">
+        <option value="3">0.5×</option>
+        <option value="2" selected>1×</option>
+        <option value="1.1">2×</option>
+      </select>
+      <button class="btn sm" id="prevBtn" type="button" aria-label="Paso anterior" disabled>←</button>
+      <button class="btn sm" id="replayBtn" type="button" title="Repetir este paso" aria-label="Repetir paso">↻</button>
+      <button class="btn sm" id="playBtn" type="button" aria-label="Reproducir">▶</button>
+      <button class="btn go" id="goBtn" type="button">Comezar</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--cli)"></i>Cliente lexítimo (STA)</span>
+    <span><i class="sw" style="background:var(--ap)"></i>AP lexítimo</span>
+    <span><i class="sw" style="background:var(--radius)"></i>Servidor RADIUS</span>
+    <span><i class="sw" style="background:var(--att)"></i>Atacante / AP falso</span>
+    <span><i class="ll-line"></i> Radio lexítimo</span>
+    <span><i class="ll-line evil"></i> Radio ataque</span>
+    <span><i class="ll-line solid"></i> Cable / Ponte</span>
+    <span><i class="ll-line act"></i> Fluxo activo</span>
+  </div>
+
+  <section>
+    <div class="eyebrow">Referencia rápida</div>
+    <h2 class="sec">Glosario de termos</h2>
+    <dl class="glos">
+      <div class="term"><dt>4-Way Handshake</dt><dd>Intercambio de 4 mensaxes (M1–M4) que proba coñecemento da PMK e deriva PTK/GTK sen enviar a clave. Existe tanto en WPA2 como tras SAE en WPA3.</dd></div>
+      <div class="term"><dt>EAPOL-Key</dt><dd>Tipo de trama que transporta cada mensaxe M1–M4. <b>Non é unha trama de xestión</b>, polo que PMF non a protexe.</dd></div>
+      <div class="term"><dt>PMK / PTK / GTK</dt><dd>PMK: clave mestra por par. PTK: clave de sesión unicast derivada no handshake. GTK: clave de grupo para tráfico multicast/broadcast.</dd></div>
+      <div class="term"><dt>ANonce / SNonce / MIC</dt><dd>Nonces aleatorios do AP e do cliente que fan única a PTK; o MIC é a firma coa PTK que valida integridade e posesión da clave.</dd></div>
+      <div class="term"><dt>PSK / PBKDF2</dt><dd>En WPA2-Personal a PMK derívase do contrasinal: <code>PMK = PBKDF2(PSK, SSID)</code>. Permite ataque de dicionario offline se se captura o handshake.</dd></div>
+      <div class="term"><dt>PMKID</dt><dd><code>HMAC-SHA1-128(PMK, "PMK Name" || MAC_AP || MAC_STA)</code>. Pode vir no M1; crackéase offline igual ca un handshake e <b>PMF non o protexe</b>.</dd></div>
+      <div class="term"><dt>PMF (802.11w)</dt><dd>Protected Management Frames: asina tramas de xestión robustas (Deauth, Disassoc). <code>ieee80211w=2</code> = obrigatorio. Non cobre EAPOL-Key nin o PMKID.</dd></div>
+      <div class="term"><dt>802.1X / EAP / PEAP</dt><dd>Marco de autenticación de WPA2-Enterprise por usuario. PEAP crea un túnel TLS no que viaxa MSCHAPv2.</dd></div>
+      <div class="term"><dt>RADIUS / MSK</dt><dd>FreeRADIUS valida o usuario e entrega a MSK ao AP; a PMK derívase da MSK, polo que capturar o handshake non revela o contrasinal de usuario.</dd></div>
+      <div class="term"><dt>ca_cert / Evil Twin</dt><dd>Certificado da CA que o cliente usa para validar o servidor RADIUS. Sen <code>ca_cert</code>, un Evil Twin (<code>hostapd-wpe</code>) pode suplantalo e capturar credenciais.</dd></div>
+      <div class="term"><dt>NetNTLMv1 (hashcat -m 5500)</dt><dd>Formato do hash MSCHAPv2 capturado por un Evil Twin EAP. Crackéase offline (MD4+DES) para recuperar o contrasinal de dominio.</dd></div>
+      <div class="term"><dt>MITM proxy (hostapd-mana)</dt><dd>O AP falso reenvía a autenticación ao RADIUS real; con <code>ca_cert</code>, PEAP e HTTPS seguen cifrados, pero o HTTP que atravesa a ponte vese en claro.</dd></div>
+      <div class="term"><dt>SAE / Dragonfly</dt><dd>Autenticación de WPA3-Personal. Intercambio <b>Commit</b> (scalar + Element) e <b>Confirm</b>; o contrasinal entra a través do PWE. Proporciona Forward Secrecy.</dd></div>
+      <div class="term"><dt>Forward Secrecy</dt><dd>Cada sesión deriva claves únicas; capturar o tráfico non permite reconstruír o contrasinal offline, a diferenza de WPA2-PSK.</dd></div>
+      <div class="term"><dt>anti-clogging</dt><dd>Mecanismo de SAE (token) fronte a floods de Commit; mitiga a saturación, pero non substitúe un contrasinal forte.</dd></div>
+      <div class="term"><dt>Modo transición / Downgrade</dt><dd><code>wpa=2+3</code> permite WPA2 e WPA3 co mesmo SSID; un AP falso só-WPA2 pode inducir o cliente a negociar WPA2 (downgrade).</dd></div>
+      <div class="term"><dt>wacker</dt><dd>Dicionario <b>online</b> contra WPA3-SAE: proba contrasinais directamente contra o AP (~80–150/s). Ruidoso e detectable, pero eficaz contra claves débiles.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <p>Baseado en <b>HE-UD2 · 2.4.1 Guía Visual de Ataques WiFi</b> e nos escenarios de <a href="https://github.com/ricardofc/vuln-wifi.lab/" target="_blank" rel="noopener">vuln-wifi.lab</a>.</p>
+    <p>Fonte docente: <b>repoEDU-CCbySA</b> · Licenza <b>CC BY-SA 4.0</b></p>
+  </footer>
+</div>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+
+  var LAYOUTS={
+    duo:     {cli:[20,54], ap:[80,54]},
+    trio:    {cli:[15,56], ap:[50,56], radius:[85,56]},
+    duoA:    {cli:[18,72], ap:[82,72], att:[50,26]},
+    eapWpe:  {cli:[15,72], evil:[48,66], ap:[85,72], att:[48,24]},
+    eapMana: {cli:[13,72], evil:[46,72], radius:[86,72], att:[46,25], ap:[86,25]},
+    saeRisk: {cli:[16,72], evil:[50,68], ap:[84,72], att:[50,24]}
+  };
+  var NAMES={cli:"📱 Cliente",ap:"📡 AP",radius:"🗄️ RADIUS",att:"😈 Atacante",evil:"🎭 AP falso"};
+
+  var opts={
+    pskPmf:false, pskVec:"deauth",
+    eapVec:"22", eapCa:false,
+    saeVec:"wacker", saeAnti:true, saeDual:false,
+    saeTrans:true, saeVer:"2.7"
+  };
+
+  var lvl="psk", ph="func", scene=null, cur=0, playing=false;
+  var timers=[], rafs=[];
+
+  function clearTimers(){
+    timers.forEach(function(t){clearTimeout(t);}); timers=[];
+    rafs.forEach(function(r){cancelAnimationFrame(r);}); rafs=[];
+  }
+  function mult(){ return Number(document.getElementById("speedSel").value)||2; }
+  function sched(fn,ms){
+    var id=setTimeout(fn, Math.round(ms*mult()));
+    timers.push(id);
+    return id;
+  }
+  function reducedMotion(){
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  function itp(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t]; }
+
+  function renderSandbox(){
+    var sb=document.getElementById("sandbox");
+    if(ph!=="risk"){ sb.hidden=true; sb.innerHTML=""; return; }
+    sb.hidden=false;
+    var html='<span class="sb-title">E se…?</span>';
+    if(lvl==="psk"){
+      html+='<label>Vector: <select id="sbPskVec"><option value="deauth"'+(opts.pskVec==="deauth"?" selected":"")+'>Deauth + Handshake (1.1/1.2)</option><option value="pmkid"'+(opts.pskVec==="pmkid"?" selected":"")+'>PMKID silencioso (1.4)</option></select></label>';
+      html+='<label><input type="checkbox" id="sbPskPmf"'+(opts.pskPmf?" checked":"")+'> PMF activo (<code>ieee80211w=2</code>)</label>';
+    }else if(lvl==="eap"){
+      html+='<label>Escenario: <select id="sbEapVec"><option value="22"'+(opts.eapVec==="22"?" selected":"")+'>Evil Twin · hostapd-wpe (2.2)</option><option value="23"'+(opts.eapVec==="23"?" selected":"")+'>MITM Proxy · hostapd-mana (2.3)</option></select></label>';
+      html+='<label><input type="checkbox" id="sbEapCa"'+(opts.eapCa?" checked":"")+'> Cliente valida <code>ca_cert</code></label>';
+    }else if(lvl==="sae"){
+      html+='<label>Ataque: <select id="sbSaeVec"><option value="wacker"'+(opts.saeVec==="wacker"?" selected":"")+'>Wacker · online (3.1)</option><option value="dragon"'+(opts.saeVec==="dragon"?" selected":"")+'>Dragonblood / Transición (3.3)</option></select></label>';
+      if(opts.saeVec==="wacker"){
+        html+='<label><input type="checkbox" id="sbSaeAnti"'+(opts.saeAnti?" checked":"")+'> <code>anti-clogging</code></label>';
+        html+='<label><input type="checkbox" id="sbSaeDual"'+(opts.saeDual?" checked":"")+'> Paralelo (<code>wlan2</code>+<code>wlan3</code>)</label>';
+      }else{
+        html+='<label><input type="checkbox" id="sbTrans"'+(opts.saeTrans?" checked":"")+'> Modo transición (<code>wpa=2+3</code>)</label>';
+        html+='<label>hostapd: <select id="sbVer"><option value="2.7"'+(opts.saeVer==="2.7"?" selected":"")+'>≤ 2.7</option><option value="2.10"'+(opts.saeVer==="2.10"?" selected":"")+'>≥ 2.10</option></select></label>';
+      }
+    }
+    sb.innerHTML=html;
+
+    // Función bind con ámbito independente por elemento (evita peches compartidos con var)
+    function bind(sel, ev, fn){
+      var el=sb.querySelector(sel);
+      if(el) el.addEventListener(ev, function(){ fn(el); });
+    }
+    bind("#sbPskVec","change",function(el){ opts.pskVec=el.value; reload(); });
+    bind("#sbPskPmf","change",function(el){ opts.pskPmf=el.checked; reload(); });
+    bind("#sbEapVec","change",function(el){ opts.eapVec=el.value; opts.eapCa=(el.value==="23"); renderSandbox(); reload(); });
+    bind("#sbEapCa","change",function(el){ opts.eapCa=el.checked; reload(); });
+    bind("#sbSaeVec","change",function(el){ opts.saeVec=el.value; renderSandbox(); reload(); });
+    bind("#sbSaeAnti","change",function(el){ opts.saeAnti=el.checked; reload(); });
+    bind("#sbSaeDual","change",function(el){ opts.saeDual=el.checked; reload(); });
+    bind("#sbTrans","change",function(el){ opts.saeTrans=el.checked; reload(); });
+    bind("#sbVer","change",function(el){ opts.saeVer=el.value; reload(); });
+  }
+
+  function buildScene(){
+    if(lvl==="psk" && ph==="func") return {
+      prac:"HE-UD2 · Práctica 1.1", tag:"WPA2-PSK · 4-Way Handshake", layout:"duo", actors:["cli","ap"],
+      apName:"📡 AP (EMPRESA-XYZ)", links:[["cli","ap","radio"]],
+      steps:[
+        {narr:"Cliente e AP xa teñen o contrasinal. Preme <b>Comezar</b> para ver o <b>4-way handshake</b>.",inv:{cli:["PSK"],ap:["PSK"]}},
+        {btn:"🔑 Calcular PMK local",narr:"Cada extremo calcula localmente <b>PMK = PBKDF2(PSK, SSID)</b>. A clave non sae.",b:{cli:"🔑",ap:"🔑"},fx:{a:"both",t:"glow"},inv:{cli:["PSK","PMK"],ap:["PSK","PMK"]}},
+        {btn:"1️⃣ M1: ANonce",pkts:[{from:"ap",to:"cli",k:"nonce",i:"1️⃣",t:"M1 · ANonce"}],narr:"O AP envía o <b>ANonce</b> aleatorio.",inv:{cli:["PMK","ANonce"],ap:["PMK","ANonce"]}},
+        {btn:"2️⃣ M2: SNonce + MIC",pkts:[{from:"cli",to:"ap",k:"secure",i:"2️⃣",t:"M2 · SNonce+MIC"}],narr:"A STA calcula a <b>PTK</b> e manda <b>SNonce + MIC</b>. O AP comproba o MIC ✓.",b:{ap:"✅"},m:{ap:"happy"},inv:{cli:["PMK","PTK"],ap:["PMK","PTK","MIC✓"]}},
+        {btn:"3️⃣ M3: MIC + GTK",pkts:[{from:"ap",to:"cli",k:"secure",i:"3️⃣",t:"M3 · MIC+GTK"}],narr:"O AP envía o seu MIC e a <b>GTK</b> cifrada coa PTK.",inv:{cli:["PMK","PTK","GTK"],ap:["PMK","PTK","GTK"]}},
+        {btn:"4️⃣ M4: ACK",pkts:[{from:"cli",to:"ap",k:"secure",i:"4️⃣",t:"M4 · ACK"}],narr:"Confirmación final. Tráfico cifrado con PTK/GTK sen ter enviado nunca o contrasinal.",m:{cli:"happy",ap:"happy"},b:{cli:"🔒",ap:"🔒"},fx:{a:"both",t:"bounce"},inv:{cli:["PTK","GTK","🔒"],ap:["PTK","GTK","🔒"]},lesson:{t:"M1–M4 demostran posesión do PSK mediante MICs sen transmitilo."}}
+      ]
+    };
+
+    if(lvl==="psk" && ph==="risk"){
+      var pmf=opts.pskPmf;
+      if(opts.pskVec==="pmkid") return {
+        prac:"HE-UD2 · Práctica 1.4 (PMKID)", tag:"WPA2-PSK · Ataque PMKID silencioso ("+(pmf?"con PMF":"sen PMF")+")", layout:"duoA", actors:["cli","ap","att"],
+        apName:pmf?"📡 AP (PMF=2)":"📡 AP (PMF=0)", links:[["cli","ap","radio"],["att","ap","radio"]],
+        steps:[
+          {narr:"<b>Vía PMKID (hcxdumptool):</b> O cliente lexítimo está conectado ao <b>AP lexítimo</b>. "+(pmf?"O AP ten PMF activo (<code>ieee80211w=2</code>). ":"")+"O atacante <b>non toca ao cliente</b>: vai directamente contra o AP lexítimo.",m:{cli:"happy",ap:"happy"},b:{cli:pmf?"🛡️":"🔒",att:"🎯"},inv:{cli:["PTK (activo)"],ap:["PMK",pmf?"PMF":"sen PMF"],att:["hcxdumptool"]}},
+          {btn:"📡 Asociarse ao AP lexítimo (-c 6a)",pkts:[{from:"att",to:"ap",k:"bad",i:"🎯",t:"Assoc Req → AP"},{from:"ap",to:"att",k:"nonce",i:"📩",t:"Assoc Resp",delay:1100}],narr:"<code>hcxdumptool</code> envía un <b>Association Request</b> directamente ao <b>AP lexítimo</b> na canle 6 e o AP acepta a asociación.",b:{att:"⏳"}},
+          {btn:"🔑 AP lexítimo envía M1 + PMKID",pkts:[{from:"ap",to:"att",k:"bad",i:"🔑",t:"EAPOL M1 + PMKID"}],narr:"O AP lexítimo devolve ao atacante o <b>EAPOL M1 co PMKID</b> (16 bytes derivados da PMK). "+(pmf?"<b>PMF non protexe o PMKID!</b> ":"")+"O cliente lexítimo nin se entera.",b:{att:"📦 WPA*01"},fx:{a:"att",t:"glow"},inv:{att:["PMKID (WPA*01)"]}},
+          {btn:"🎰 hashcat -m 22000",narr:"Co <code>WPA*01</code> convertido por <code>hcxpcapngtool</code>, <code>hashcat</code> crackea <code>spongebob19</code> offline mentres o cliente lexítimo segue conectado sen cortes.",m:{att:"evil",cli:"happy"},b:{att:"🔓"},fx:{a:"att",t:"bounce"},inv:{att:["WPA*01","PSK ✓"]},lesson:{bad:true,t:"Si: no PMKID silencioso o atacante vai <b>directamente contra o AP lexítimo</b>. A Práctica 1.4 (escenario <code>psk</code>) obtén o PMKID; a 1.3 (<code>psk_pmf</code>) demostra que <b>PMF bloquea Deauth pero NON protexe contra PMKID</b>."}}
+        ]
+      };
+      return {
+        prac:pmf?"HE-UD2 · Práctica 1.3 (PMF)":"HE-UD2 · Prácticas 1.1 & 1.2 (Deauth)", tag:"WPA2-PSK · Deauth ("+(pmf?"con PMF":"sen PMF")+")", layout:"duoA", actors:["cli","ap","att"],
+        apName:pmf?"📡 AP (PMF=2)":"📡 AP (PMF=0)", links:[["cli","ap","radio"],["att","cli","radio"]],
+        steps:[
+          {narr:"O atacante escoita en <b>modo monitor</b> (<code>wlan3</code>/<code>wlan2mon</code>) na canle 6.",listen:true,m:{cli:"happy",ap:"happy"},b:{cli:pmf?"🛡️":"🔒",att:"👂"},inv:{cli:["PTK",pmf?"PMF":"sen PMF"],ap:["PMK"],att:["monitor"]}},
+          pmf
+            ? {btn:"💥 Lanzar Deauth",pkts:[{from:"att",to:"cli",k:"bad",i:"💥",t:"Deauth falsa",block:0.55,blockLabel:"PMF 802.11w"}],narr:"Inxecta <code>aireplay-ng --deauth</code> sen firma PTK (<code>protected=False</code>). A STA <b>rexeita a trama</b> e permanece conectada.",m:{cli:"happy",att:"worried"},b:{att:"❌",cli:"🛡️"},fx:{a:"cli",t:"glow"},inv:{att:["0 handshakes"]},lesson:{t:"<b>PMF (ieee80211w=2)</b> rexeita DeAuth falsas sen sinatura; proba cambiar a PMKID silencioso no selector superior!"}}
+            : {btn:"💥 Lanzar Deauth",pkts:[{from:"att",to:"cli",k:"bad",i:"💥",t:"Deauth (protected=False)"}],narr:"Sen PMF, a STA acepta a Deauth falsa e desconéctase (<code>reason=7</code>).",m:{cli:"worried"},b:{cli:"⚠️"},fx:{a:"cli",t:"shake"},inv:{cli:["desconectado"],att:["monitor"]}},
+          ...(pmf?[]:[
+            {btn:"📡 Captura M1–M4 ao voo",pkts:[{from:"ap",to:"cli",k:"nonce",i:"1️⃣",t:"ANonce",sniff:true},{from:"cli",to:"ap",k:"secure",i:"2️⃣",t:"SNonce+MIC",sniff:true,delay:1200}],narr:"Na reconexión, M1 e M2 voan polo aire e son <b>copiados ao voo</b> polo atacante.",listen:false,b:{att:"📦 WPA*02"},inv:{cli:["PTK"],att:["ANonce","SNonce","MIC"]}},
+            {btn:"🎰 aircrack-ng / hashcat",narr:"Con M1–M4 en <code>.cap</code>, recupera <code>spongebob19</code> offline.",m:{att:"evil"},b:{att:"🔓"},fx:{a:"att",t:"bounce"},inv:{att:["WPA*02","PSK ✓"]},lesson:{bad:true,t:"Sen PMF, DeAuth forza un novo handshake en segundos para crackealo offline."}}
+          ])
+        ]
+      };
+    }
+
+    if(lvl==="psk" && ph==="def") return {
+      prac:"HE-UD2 · Defensa WPA2-PSK", tag:"WPA2-PSK · Mitigacións", layout:"duoA", actors:["cli","ap","att"],
+      apName:"📡 AP (PMF=2)", links:[["cli","ap","radio"],["att","cli","radio"]],
+      steps:[
+        {narr:"Combinamos <b>PMF</b> + <b>contrasinal ≥20 chars aleatorios</b>.",m:{cli:"happy",ap:"happy"},b:{ap:"🛡️"},inv:{ap:["PMF","PSK≥20"]}},
+        {btn:"💥 Probar Deauth",pkts:[{from:"att",to:"cli",k:"bad",i:"💥",t:"Deauth",block:0.55,blockLabel:"PMF 802.11w"}],narr:"PMF bloquea a expulsión de clientes.",m:{att:"worried"},b:{att:"😤"}},
+        {btn:"🎰 Probar Dicionario",narr:"Incluso con PMKID ou handshake, ≥20 caracteres aleatorios fan inviable o crackeo offline.",m:{cli:"happy",ap:"happy",att:"worried"},b:{cli:"🔒",att:"❌"},lesson:{t:"PMF corta a Deauth e ≥20 chars aleatorios cortan o dicionario offline."}}
+      ]
+    };
+
+    if(lvl==="eap" && ph==="func") return {
+      prac:"HE-UD2 · Práctica 2.1", tag:"WPA2-EAP · 802.1X + PEAP + FreeRADIUS", layout:"trio", actors:["cli","ap","radius"],
+      apName:"📡 AP (802.1X)", links:[["cli","ap","radio"],["ap","radius","cable","br-radius"]],
+      tlsText:"🛡️ Túnel TLS (PEAP · ca_cert ✓)",
+      steps:[
+        {narr:"Cliente (radio), AP (pasarela) e FreeRADIUS (cable <code>br-radius</code>). Porto 802.1X bloqueado.",b:{ap:"🔒"},inv:{cli:["ca_cert"],ap:["porto 🔒"],radius:["cert","BD"]}},
+        {btn:"🪪 Identity en claro",pkts:[{from:"cli",to:"radius",via:"ap",k:"id",i:"🪪",t:'Identity: "ana"'}],narr:"A identidade viaxa en claro polo AP ata FreeRADIUS.",inv:{ap:["ana"],radius:["ana"]}},
+        {btn:"🛡️ Túnel TLS (PEAP)",tls:true,pkts:[{from:"radius",to:"cli",via:"ap",k:"secure",i:"📜",t:"Cert → TLS OK"}],narr:"O cliente verifica <code>server.pem</code> contra o seu <code>ca_cert</code> e abre o túnel TLS.",b:{cli:"🛡️",radius:"🛡️"},inv:{cli:["TLS ✓"],radius:["TLS ✓"]}},
+        {btn:"🔑 MSCHAPv2 + MSK",tls:true,pkts:[{from:"cli",to:"radius",via:"ap",k:"secure",i:"🔑",t:"MSCHAPv2"},{from:"radius",to:"ap",k:"key",i:"🎟️",t:"Accept+MSK",delay:2150}],narr:"Valídase MSCHAPv2 dentro de TLS e o RADIUS entrega a <b>MSK</b> ao AP por cable.",m:{radius:"happy"},inv:{ap:["MSK","PMK"],radius:["Accept"]}},
+        {btn:"🤝 4-Way Handshake",pkts:[{from:"ap",to:"cli",k:"secure",i:"🤝",t:"4-Way (PMK←MSK)"}],narr:"Ábrese o porto e o cliente obtén IP DHCP.",m:{cli:"happy",ap:"happy"},b:{cli:"🔒",ap:"🔓"},fx:{a:"both",t:"bounce"},inv:{cli:["PTK","IP ✓"],ap:["porto 🔓"]},lesson:{t:"A PMK vén da MSK de FreeRADIUS: capturar WPA*02 non crackea o contrasinal de usuario."}}
+      ]
+    };
+
+    if(lvl==="eap" && ph==="risk"){
+      var hasCa=opts.eapCa;
+      if(opts.eapVec==="23") return {
+        prac:"HE-UD2 · Práctica 2.3 (eap_mitm)", tag:"WPA2-EAP · MITM Proxy (hostapd-mana + br-mitm)", layout:"eapMana", actors:["cli","evil","ap","radius","att"],
+        apName:"📡 AP real (ch 6)", evilName:"🎭 MANA ch 1",
+        links:[["cli","ap","radio"],["ap","radius","cable","br-radius"],["evil","radius","cable","br-mitm → br-radius"],["evil","att","cable","tcpdump"]],
+        tlsText:"🛡️ PEAP e HTTPS seguen cifrados · HTTP :8080 vai en claro",
+        steps:[
+          {narr:"<b>Práctica 2.3 (Fase A · inicio):</b> o cliente está conectado ao <b>AP real (canle 6)</b> e ten <code>"+(hasCa?"ca_cert ✓":"sen ca_cert")+"</code>. O atacante arranca <code>hostapd-mana</code> (<code>eap_server=0</code>) e crea a ponte <code>br-mitm</code> (<code>wlan2+veth0</code>) conectada a <code>br-radius</code>.",m:{cli:"happy",ap:"happy"},b:{cli:hasCa?"📜 ca_cert":"⚠️",evil:"🔀 br-mitm"},inv:{cli:[hasCa?"ca_cert":"sen ca_cert"],evil:["eap_server=0","br-mitm"],radius:["real + :8080"]}},
+          {btn:"📡 select-mitm: conectar ao AP MANA",links:[["cli","evil","radio"],["ap","radius","cable","br-radius"],["evil","radius","cable","br-mitm → br-radius"],["evil","att","cable","tcpdump"]],pkts:[{from:"cli",to:"evil",k:"bad",i:"📡",t:"Asóciase a MANA (ch 1)"}],narr:"<b>Fase B/C (<code>select-mitm</code>):</b> o cliente deixa o AP real e asóciase ao BSSID de <b>MANA (canle 1)</b>.",m:{cli:"neutral",evil:"evil"},b:{evil:"✓ STA ch1"},inv:{cli:["BSSID=MANA"]}},
+          {btn:"🔀 Relay EAP → FreeRADIUS real",links:[["cli","evil","radio"],["ap","radius","cable","br-radius"],["evil","radius","cable","br-mitm → br-radius"],["evil","att","cable","tcpdump"]],tls:true,pkts:[{from:"cli",to:"radius",via:"evil",k:"id",i:"🔀",t:"PEAP (proxy)"},{from:"radius",to:"cli",via:"evil",k:"key",i:"🎟️",t:"Accept + IP",delay:2150}],narr:"MANA actúa como <b>proxy RADIUS</b> cara ao FreeRADIUS real. "+(hasCa?"O cliente valida <code>ca_cert</code> fronte ao RADIUS real, polo que <b>PEAP non se descifra</b>":"Autentícase contra o RADIUS real (en 2.3 non se rouba MSCHAPv2)")+" e obtén IP DHCP.",m:{cli:"happy",radius:"happy"},b:{cli:"IP ✓",evil:"✓ PEAP"},inv:{cli:["IP DHCP ✓","PEAP ✓"],evil:["relay RADIUS"]}},
+          {btn:"🌐 Tráfico HTTP :8080 vs HTTPS",links:[["cli","evil","radio"],["ap","radius","cable","br-radius"],["evil","radius","cable","br-mitm → br-radius"],["evil","att","cable","tcpdump"]],tls:true,pkts:[{from:"cli",to:"radius",via:"evil",k:"id",i:"🌐",t:"HTTP GET :8080"},{from:"evil",to:"att",k:"bad",i:"👁️",t:"tcpdump: GET /?usuario=proba",delay:1150}],narr:"Ao navegar por HTTP local (<code>192.168.50.1:8080</code>), todo atravesa <code>br-mitm</code> e <code>tcpdump</code> léno <b>en claro</b>. O tráfico <b>HTTPS</b> e o túnel <b>PEAP</b> continúan cifrados.",b:{att:"👁️ HTTP"},m:{att:"evil"},fx:{a:"att",t:"bounce"},inv:{att:["HTTP claro ✓","PEAP/HTTPS 🔒"]},lesson:{bad:true,t:"En 2.3 (<code>eap_mitm</code>), <code>ca_cert</code> protexe PEAP, pero estar na ponte <code>br-mitm</code> expón calquera tráfico HTTP sen cifrar."}}
+        ]
+      };
+      return {
+        prac:"HE-UD2 · Práctica 2.2 (eap_evil_twin)", tag:"WPA2-EAP · Evil Twin (hostapd-wpe)", layout:"eapWpe", actors:["cli","ap","att","evil"], startHidden:["evil"],
+        apName:"📡 AP real", evilName:"🎭 hostapd-wpe",
+        links:[["cli","ap","radio"],["att","cli","radio"],["cli","evil","radio"],["evil","att","cable"]],
+        steps:[
+          {narr:"<b>Práctica 2.2 (eap_evil_twin):</b> cliente "+(hasCa?"<b>CON <code>ca_cert</code></b> configurado":"<b>SEN <code>ca_cert</code></b> (vulnerable)")+".",m:{cli:"happy",ap:"happy"},b:{cli:hasCa?"🛡️ ca_cert":"⚠️ sen ca_cert"},inv:{cli:[hasCa?"ca_cert":"sen ca_cert"],ap:["FreeRADIUS"]}},
+          {btn:"🎭 Levantar hostapd-wpe + Deauth",enter:"evil",pkts:[{from:"att",to:"cli",k:"bad",i:"💥",t:"Deauth"}],narr:"Levanta o Evil Twin (<code>eap_server=1</code>, certificado autofirmado) e expulsa a STA do AP real.",m:{cli:"worried",evil:"evil"},b:{evil:"🎭"},fx:{a:"cli",t:"shake"},inv:{evil:["cert falso","eap_server=1"]}},
+          hasCa
+            ? {btn:"🛡️ Negociación TLS",pkts:[{from:"evil",to:"cli",k:"bad",i:"📜",t:"cert falso",block:0.55,blockLabel:"ca_cert"}],narr:"O cliente verifica o certificado falso contra <code>ca_cert</code> e <b>rexéitao</b>! Non envía MSCHAPv2 e volve ao AP real.",m:{cli:"happy",att:"worried"},b:{cli:"🛡️",evil:"🚫"},fx:{a:"cli",t:"glow"},inv:{evil:["0 hashes"]},lesson:{t:"Con <code>ca_cert</code> configurado, o Evil Twin (2.2) é rexeitado automaticamente."}}
+            : {btn:"🔓 Entrega hash MSCHAPv2",pkts:[{from:"cli",to:"evil",k:"bad",i:"#️⃣",t:"Identity + MSCHAPv2"},{from:"evil",to:"att",k:"bad",i:"📥",t:"hash 5500",delay:1150}],narr:"Sen <code>ca_cert</code>, acepta o certificado falso e entrega o hash NetNTLMv1 (<code>ana::::...</code>).",m:{evil:"evil",att:"evil"},b:{att:"📥 5500"},fx:{a:"att",t:"glow"},inv:{att:["hash 5500"]}},
+          ...(hasCa?[]:[{btn:"🎰 hashcat -m 5500",narr:"<code>hashcat -m 5500</code> (NetNTLMv1, MD4+DES) crackea case de inmediato unha clave trivial: <b><code>ana / 1234</code></b>.",b:{att:"🔓 1234"},fx:{a:"att",t:"bounce"},inv:{att:["ana:1234 ✓"]},lesson:{bad:true,t:"Sen validación <code>ca_cert</code>, un Evil Twin rouba credenciais de dominio en formato NetNTLMv1."}}])
+        ]
+      };
+    }
+
+    if(lvl==="eap" && ph==="def") return {
+      prac:"HE-UD2 · Defensa EAP", tag:"WPA2-EAP · ca_cert + EAP-TLS + HTTPS", layout:"eapWpe", actors:["cli","ap","att","evil"], startHidden:["evil"],
+      apName:"📡 AP real", evilName:"🎭 Evil Twin",
+      links:[["cli","ap","radio"],["att","cli","radio"],["evil","cli","radio"]],
+      steps:[
+        {narr:"Configuramos <code>ca_cert</code> por GPO/MDM para validar o servidor RADIUS.",m:{cli:"happy",ap:"happy"},b:{cli:"🛡️ ca_cert"},inv:{cli:["ca_cert ✓"]}},
+        {btn:"🎭 Probar Evil Twin",enter:"evil",pkts:[{from:"att",to:"cli",k:"bad",i:"💥",t:"Deauth"},{from:"evil",to:"cli",k:"bad",i:"📜",t:"cert falso",block:0.55,blockLabel:"ca_cert",delay:1050}],narr:"O cliente rexeita calquera certificado autofirmado e volve ao AP lexítimo.",m:{cli:"happy",att:"worried"},b:{cli:"🛡️",evil:"🚫"},fx:{a:"cli",t:"glow"}},
+        {btn:"🔒 EAP-TLS + HTTPS",narr:"<b>EAP-TLS</b> elimina contrasinais/MSCHAPv2, e <b>HTTPS</b> protexe o tráfico de aplicación fronte a proxies MITM.",m:{cli:"happy",ap:"happy"},b:{cli:"🔒 EAP-TLS"},lesson:{t:"<b>ca_cert</b> + <b>EAP-TLS</b> + <b>HTTPS</b> pechan os vectores 2.2 e 2.3."}}
+      ]
+    };
+
+    if(lvl==="sae" && ph==="func") return {
+      prac:"HE-UD2 · Práctica 3.1 (wpa3_sae)", tag:"WPA3-SAE · Dragonfly simultáneo", layout:"duo", actors:["cli","ap"],
+      apName:"📡 AP WPA3-SAE", links:[["cli","ap","radio"]],
+      steps:[
+        {narr:"Cliente e AP derivan o punto <b>PWE</b> do contrasinal. Preme <b>Comezar</b>.",inv:{cli:["PWE"],ap:["PWE"]}},
+        {btn:"🎲 SAE Commit simultáneo",pkts:[{from:"cli",to:"ap",k:"dice",i:"🎲",t:"COMMIT_C"},{from:"ap",to:"cli",k:"dice",i:"🎲",t:"COMMIT_A"}],narr:"Cada extremo xera un escalar aleatorio e un elemento (<code>scalar</code> + <code>Element</code>) e intercambian os seus <b>COMMIT</b> á vez. O contrasinal xa está embebido no <code>PWE</code>.",b:{cli:"🎲",ap:"🎲"},inv:{cli:["PWE","scalar+Elem"],ap:["PWE","scalar+Elem"]}},
+        {btn:"🔑 Calcular segredo K local",narr:"Cada extremo deriva <code>K</code> a partir do <b>elemento do par</b> e do seu segredo propio (sobre o PWE). Capturar os COMMIT non permite probar contrasinais offline.",b:{cli:"🔑",ap:"🔑"},fx:{a:"both",t:"glow"},inv:{cli:["K"],ap:["K"]}},
+        {btn:"✔ SAE Confirm simultáneo",pkts:[{from:"cli",to:"ap",k:"secure",i:"🔏",t:"CONFIRM_C"},{from:"ap",to:"cli",k:"secure",i:"🔏",t:"CONFIRM_A"}],narr:"Intercambian <code>hash(K)</code> para confirmación mutua.",m:{cli:"happy",ap:"happy"},inv:{cli:["PMK (FS)"],ap:["PMK (FS)"]}},
+        {btn:"🤝 4-Way Handshake + PMF",pkts:[{from:"ap",to:"cli",k:"secure",i:"🤝",t:"M1–M4 + PMF"}],narr:"Execútase o 4-Way Handshake coa PMK única da sesión e actívase PMF obrigatorio.",b:{cli:"🔒",ap:"🔒"},fx:{a:"both",t:"bounce"},inv:{cli:["PTK","PMF ✓"],ap:["PTK","PMF ✓"]},lesson:{t:"Forward secrecy + resistencia a ataques offline. <code>aircrack-ng</code> falla explicitamente."}}
+      ]
+    };
+
+    if(lvl==="sae" && ph==="risk"){
+      if(opts.saeVec==="dragon"){
+        var trans=opts.saeTrans, oldV=opts.saeVer==="2.7";
+        return {
+          prac:"HE-UD2 · Práctica 3.3 (wpa3_sae_vulnerable)", tag:"WPA3-SAE · Modo transición e Downgrade", layout:"saeRisk", actors:["cli","ap","att","evil"], startHidden:["evil"],
+          apName:trans?"📡 AP (wpa=2+3)":"📡 AP (wpa=3)", evilName:"🎭 Evil Twin (WPA2)",
+          links:[["cli","ap","radio"],["att","ap","radio"],["cli","evil","radio"],["evil","att","cable"]],
+          alarmText:"🌊 Flood: 1000+ SAE Commits/s",
+          steps:[
+            {narr:"<b>Práctica 3.3:</b> AP en modo <b>"+(trans?"transición (WPA-PSK SAE)":"WPA3 puro (wpa=3)")+"</b>, <code>hostapd "+opts.saeVer+"</code>. Clave real: <code>spongebob19</code>.",m:{cli:"happy",ap:"happy"},b:{ap:trans?"wpa=2+3":"wpa=3"},inv:{cli:[trans?"SAE+PSK":"só SAE"],ap:["spongebob19"]}},
+            {btn:"🌊 Indispoñibilidade do AP (dragondrain / kill)",alarm:oldV,pkts:[{from:"att",to:"ap",k:"bad",i:"🌊",t:"Commit flood"},{from:"att",to:"ap",k:"bad",i:"🌊",t:"Commit flood",delay:350}],narr:(oldV?"<code>dragondrain</code> (ou <code>kill -TERM</code> na simulación <code>hwsim</code>) deixa fóra de servizo o AP real.":"Con <code>hostapd ≥ 2.10</code> o flood mitígase mellor (na simulación detense o proceso manualmente)."),m:{ap:"worried"},b:{ap:"💤"},fx:{a:"ap",t:"shake"},inv:{ap:["caído"]}},
+            {btn:"🎭 Evil Twin só-WPA2 (calqueracousa)",enter:"evil",narr:"O atacante levanta o Evil Twin só-WPA2 co mesmo SSID e unha clave inventada (<code>calqueracousa</code>).",m:{evil:"evil"},b:{evil:"🎭 calqueracousa"},inv:{evil:["WPA2-PSK","calqueracousa"]}},
+            trans
+              ? {btn:"⬇️ Intento de downgrade a WPA2",pkts:[{from:"cli",to:"evil",k:"bad",i:"⬇️",t:"Intento WPA2-PSK"},{from:"evil",to:"att",k:"warn",i:"📦",t:"Material EAPOL?",delay:1150}],narr:"O cliente pode intentar baixar a WPA2 e falla con <code>AP-STA-POSSIBLE-PSK-MISMATCH</code> (o Evil Twin usa outra clave, <code>calqueracousa</code>). <b>Se</b> o cliente chega a enviar o seu M2, deixa material WPA2 <i>potencialmente</i> crackeable offline. A 3.3 <b>non demostra</b> esa recuperación nin un Dragonblood real.",m:{cli:"worried",att:"neutral"},b:{cli:"⚠️",att:"❓ material WPA2"},fx:{a:"att",t:"bounce"},inv:{att:["intento WPA2 (sen proba)"]},lesson:{bad:true,t:"O risco do modo transición é o <b>downgrade</b>: o cliente pode negociar WPA2 cun AP falso. <code>AP-STA-POSSIBLE-PSK-MISMATCH</code> <b>non</b> significa clave en claro, e aparecer un AP falso non implica que o cliente o seleccione."}}
+              : {btn:"🛡️ Cliente rexeita WPA2",pkts:[{from:"evil",to:"cli",k:"bad",i:"⬇️",t:"Beacon WPA2",block:0.55,blockLabel:"wpa=3 puro"}],narr:"Sen modo transición, o cliente <b>non baixa a WPA2</b> e ignora o Evil Twin!",m:{cli:"happy",att:"worried"},b:{cli:"🛡️",att:"❌"},fx:{a:"cli",t:"glow"},inv:{att:["0 capturas"]},lesson:{t:"Desactivar o modo transición (<code>wpa=3</code>) elimina completamente o downgrade."}}
+          ]
+        };
+      }
+      var anti=opts.saeAnti, dual=opts.saeDual;
+      return {
+        prac:"HE-UD2 · Práctica 3.1 (wacker)", tag:"WPA3-SAE · Forza bruta online (wacker)", layout:"duoA", actors:["cli","ap","att"],
+        apName:"📡 AP WPA3-SAE", links:[["cli","ap","radio"],["att","ap","radio"]],
+        alarmText:"🌊 Flood SAE: centos de Commit/s · IDS alerta",
+        steps:[
+          {narr:"<b>Práctica 3.1:</b> capturar SAE non permite crackear offline (Forward Secrecy). Pero <code>wacker</code> proba contrasinais <b>en liña</b> contra o AP en modo <b>managed</b>, usando <code>rockyou</code>.",m:{att:"neutral",ap:"neutral"},b:{att:"managed"},inv:{ap:[anti?"anti-clogging":"sen límite"],att:[dual?"wlan2+wlan3":"wlan2","rockyou"]}},
+          {btn:"🌊 Inundar o AP con intentos SAE",pkts:(dual?[
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: 123456 (wlan2)"},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: password (wlan3)",delay:160},
+              {from:"ap",to:"att",k:"warn",i:"✗",t:"SAE fallo",delay:360},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: qwerty (wlan2)",delay:520},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: dragon (wlan3)",delay:680},
+              {from:"ap",to:"att",k:"warn",i:"✗",t:"SAE fallo",delay:900},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: iloveyou (wlan2)",delay:1060}
+            ]:[
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: 123456"},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: password",delay:300},
+              {from:"ap",to:"att",k:"warn",i:"✗",t:"SAE fallo",delay:560},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: qwerty",delay:820},
+              {from:"att",to:"ap",k:"bad",i:"🔁",t:"Commit: iloveyou",delay:1100}
+            ]),narr:(dual?"Dúas interfaces (<code>wlan2</code>+<code>wlan3</code>) <b>inundan o AP</b> con Commits de <code>rockyou</code> en paralelo. ":"Unha interface <b>bombardea o AP</b> con Commits de <code>rockyou</code>, <b>~80–150 palabras/s</b> (limitado pola rede). ")+"Cada intento esixe resposta do AP: o aire énchese de tráfico SAE e o <b>IDS detecta o ruído</b> de inmediato.",alarm:true,fx:{a:"ap",t:"shake"},m:{att:"neutral",ap:"neutral"},inv:{ap:["inundado"],att:["~80–150/s"]}},
+          {btn:"🔑 Probar 'spongebob19'",pkts:[{from:"att",to:"ap",k:"dice",i:"🔑",t:"Commit: spongebob19"},{from:"ap",to:"att",k:"key",i:"✅",t:"SAE OK → PMK",delay:1150}],narr:"Entre os candidatos de <code>rockyou</code> chega <b><code>spongebob19</code></b>: o AP <b>acéptao</b> e wacker <b>atopa o contrasinal</b> en minutos — ruidoso e lento, pero eficaz. "+(anti?"O <code>anti-clogging</code> e o IDS retardan e delatan o ataque, pero <b>non o impiden</b> contra unha clave débil.":"Sen anti-clogging vai algo máis rápido."),m:{att:"evil",ap:"worried"},alarm:true,b:{att:"🔓 spongebob19",ap:"💢"},fx:{a:"att",t:"bounce"},inv:{att:["spongebob19 ✓"]},lesson:{bad:true,t:"WPA3-SAE elimina o ataque <b>offline</b>, pero o <b>online con <code>wacker</code> si funciona</b> contra contrasinais débiles. Como indica a 3.1, a <b>única defensa real é a fortaleza do contrasinal</b> (≥20 chars aleatorios → séculos)."}}
+        ]
+      };
+    }
+
+    return {
+      prac:"HE-UD2 · Defensa WPA3-SAE", tag:"WPA3-SAE · Configuración robusta", layout:"duoA", actors:["cli","ap","att"],
+      apName:"📡 AP (wpa=3 ≥2.10)", links:[["cli","ap","radio"],["att","ap","radio"]],
+      steps:[
+        {narr:"Configuración recomendada: <code>wpa=3</code>, <code>hostapd ≥ 2.10</code>, <code>ieee80211w=2</code>, <code>sae_pwe=2</code>, <code>sae_groups=19</code> e ≥20 chars.",m:{cli:"happy",ap:"happy"},b:{ap:"🛡️ wpa=3"},inv:{ap:["wpa=3","≥2.10","pwe=2","≥20c"]}},
+        {btn:"💥 Probar Downgrade / Wacker",pkts:[{from:"att",to:"ap",k:"bad",i:"⬇️",t:"Ataques SAE",block:0.55,blockLabel:"WPA3 Puro ≥2.10"}],narr:"Sen modo transición, con pilas actualizadas e clave forte, todos os vectores bloqueados.",m:{att:"worried"},b:{att:"❌"},fx:{a:"ap",t:"glow"},lesson:{t:"<code>wpa=3</code> + <code>≥2.10</code> + <code>sae_pwe=2</code> + <code>≥20 chars</code> pechan o offline, o downgrade e o wacker."}}
+      ]
+    };
+  }
+
+  var els={cli:document.getElementById("a-cli"),ap:document.getElementById("a-ap"),radius:document.getElementById("a-radius"),att:document.getElementById("a-att"),evil:document.getElementById("a-evil")};
+  var bub={cli:document.getElementById("b-cli"),ap:document.getElementById("b-ap"),radius:document.getElementById("b-radius"),att:document.getElementById("b-att"),evil:document.getElementById("b-evil")};
+  var pktLayer=document.getElementById("pktLayer"), linkSvg=document.getElementById("linkSvg");
+  var blocker=document.getElementById("blocker"), blockerLbl=blocker.querySelector(".bl");
+  var tlsBand=document.getElementById("tlsBand"), alarm=document.getElementById("alarm");
+  var dots=document.getElementById("dots"), hud=document.getElementById("hud");
+  var carry={m:{},b:{},shown:{},listen:false,inv:{}};
+
+  function resetCarry(){
+    carry={m:{},b:{},shown:{},listen:false,inv:{}};
+    Object.keys(bub).forEach(function(k){bub[k].classList.remove("show");bub[k].textContent="";});
+    if(els.att) els.att.classList.remove("listening");
+  }
+
+  function isRogue(id){ return id==="att"||id==="evil"; }
+
+  function drawLinks(activePkts, stepLinks){
+    linkSvg.innerHTML='<defs><marker id="arrActive" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--key)"/></marker></defs>';
+    var L=LAYOUTS[scene.layout];
+    function visible(id){
+      if(scene.actors.indexOf(id)<0) return false;
+      if((scene.startHidden||[]).indexOf(id)>=0 && !carry.shown[id]) return false;
+      return !!L[id];
+    }
+    (stepLinks||scene.links||[]).forEach(function(lk){
+      var a=lk[0], b=lk[1], type=lk[2], lbl=lk[3];
+      if(!visible(a)||!visible(b)) return;
+      var A=L[a], B=L[b];
+      var x1=A[0]*10, y1=A[1]*4.5, x2=B[0]*10, y2=B[1]*4.5;
+      var rogueLink = isRogue(a)||isRogue(b);
+      var strokeColor = type==="cable" ? (rogueLink?"var(--att)":"var(--radius)") : (rogueLink?"var(--att)":"var(--cli)");
+      var line=document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("x1",x1); line.setAttribute("y1",y1);
+      line.setAttribute("x2",x2); line.setAttribute("y2",y2);
+      line.setAttribute("stroke", strokeColor);
+      line.setAttribute("stroke-width", type==="cable" ? "3" : "2");
+      line.setAttribute("stroke-opacity", rogueLink ? "0.42" : "0.52");
+      if(type!=="cable") line.setAttribute("stroke-dasharray","8 7");
+      linkSvg.appendChild(line);
+      if(lbl){
+        var tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+        tx.setAttribute("x",(x1+x2)/2); tx.setAttribute("y",(y1+y2)/2 - 10);
+        tx.setAttribute("text-anchor","middle"); tx.setAttribute("fill","var(--muted)");
+        tx.setAttribute("font-size","12"); tx.setAttribute("font-family","var(--mono)");
+        tx.textContent=lbl; linkSvg.appendChild(tx);
+      }
+    });
+
+    (activePkts||[]).forEach(function(p){
+      if(!visible(p.from)||!visible(p.to)) return;
+      var pts = (p.via && visible(p.via)) ? [L[p.from], L[p.via], L[p.to]] : [L[p.from], L[p.to]];
+      for(var i=0;i<pts.length-1;i++){
+        var A=pts[i], B=pts[i+1];
+        var x1=A[0]*10, y1=A[1]*4.5, x2=B[0]*10, y2=B[1]*4.5;
+        var mx1=x1+(x2-x1)*0.18, my1=y1+(y2-y1)*0.18;
+        var mx2=x1+(x2-x1)*0.82, my2=y1+(y2-y1)*0.82;
+        var al=document.createElementNS("http://www.w3.org/2000/svg","line");
+        al.setAttribute("x1",mx1); al.setAttribute("y1",my1);
+        al.setAttribute("x2",mx2); al.setAttribute("y2",my2);
+        al.setAttribute("stroke","var(--key)"); al.setAttribute("stroke-width","2.6");
+        al.setAttribute("stroke-opacity","0.65");
+        if(i===pts.length-2) al.setAttribute("marker-end","url(#arrActive)");
+        linkSvg.appendChild(al);
+      }
+    });
+  }
+
+  function renderHud(){
+    var html="";
+    scene.actors.forEach(function(k){
+      if((scene.startHidden||[]).indexOf(k)>=0 && !carry.shown[k]) return;
+      var items=carry.inv[k]||[];
+      html+='<div class="hud-card" data-actor="'+k+'"><b>'+NAMES[k]+'</b><div class="hud-tags">';
+      if(!items.length) html+='<span class="htag">—</span>';
+      else items.forEach(function(t){
+        var cls="htag"+(t.indexOf("✓")>=0||t==="PMF"||t==="ca_cert"?" ok":(t.indexOf("⚠️")>=0||t.indexOf("hash")>=0||t.indexOf("nonce=0")>=0?" bad":""));
+        html+='<span class="'+cls+'">'+t+'</span>';
+      });
+      html+='</div></div>';
+    });
+    hud.innerHTML=html;
+  }
+
+  function launchPacket(p, instant){
+    var L=LAYOUTS[scene.layout], F=L[p.from], T=L[p.to];
+    if(!F||!T) return;
+    if(instant || reducedMotion()){
+      if(p.block){
+        var bpt=itp(F,T,0.60);
+        blocker.style.left=bpt[0]+"%"; blocker.style.top=bpt[1]+"%";
+        blockerLbl.textContent=p.blockLabel||""; blocker.classList.add("show");
+      }
+      return;
+    }
+
+    function spawn(){
+      var el=document.createElement("div");
+      el.className="packet show";
+      el.setAttribute("data-k", p.k||"nonce");
+      el.innerHTML='<span class="ico">'+(p.i||"✉️")+'</span><span class="txt">'+(p.t||"")+'</span>';
+      el.style.left=F[0]+"%"; el.style.top=F[1]+"%";
+      pktLayer.appendChild(el);
+      void el.offsetWidth;
+
+      var legDur=Math.round(900*mult());
+      el.style.transition="left "+legDur+"ms cubic-bezier(.5,0,.3,1), top "+legDur+"ms cubic-bezier(.5,0,.3,1), opacity 250ms ease";
+
+      if(p.block){
+        var stop=itp(F,T,0.44), bpos=itp(F,T,0.60);
+        blocker.style.left=bpos[0]+"%"; blocker.style.top=bpos[1]+"%";
+        blockerLbl.textContent=p.blockLabel||""; blocker.classList.add("show");
+        rafs.push(requestAnimationFrame(function(){ el.style.left=stop[0]+"%"; el.style.top=stop[1]+"%"; }));
+        sched(function(){ el.classList.add("blocked"); el.querySelector(".txt").textContent="✗ "+p.t; }, 920);
+        sched(function(){ el.style.opacity="0"; }, 2250);
+        sched(function(){ if(el.parentNode) el.remove(); }, 2600);
+      } else if(p.via && L[p.via]){
+        var V=L[p.via];
+        rafs.push(requestAnimationFrame(function(){ el.style.left=V[0]+"%"; el.style.top=V[1]+"%"; }));
+        sched(function(){
+          var a=els[p.via];
+          if(a){ a.classList.add("fx-glow"); sched(function(){a.classList.remove("fx-glow");},750); }
+          el.style.left=T[0]+"%"; el.style.top=T[1]+"%";
+        }, 1000);
+        sched(function(){ el.style.opacity="0"; }, 2250);
+        sched(function(){ if(el.parentNode) el.remove(); }, 2600);
+      } else {
+        rafs.push(requestAnimationFrame(function(){ el.style.left=T[0]+"%"; el.style.top=T[1]+"%"; }));
+        if(p.sniff && L.att){
+          var sn=document.createElement("div");
+          sn.className="packet sniff show"; sn.setAttribute("data-k","bad");
+          sn.innerHTML='<span class="ico">📡</span><span class="txt">copia '+p.t+'</span>';
+          var mid=itp(F,T,0.5);
+          sn.style.left=mid[0]+"%"; sn.style.top=mid[1]+"%";
+          pktLayer.appendChild(sn);
+          void sn.offsetWidth;
+          sn.style.transition="left "+legDur+"ms ease, top "+legDur+"ms ease, opacity 250ms ease";
+          sched(function(){ sn.style.left=L.att[0]+"%"; sn.style.top=(L.att[1]+10)+"%"; }, 380);
+          sched(function(){ sn.style.opacity="0"; }, 1950);
+          sched(function(){ if(sn.parentNode) sn.remove(); }, 2300);
+        }
+        sched(function(){ el.style.opacity="0"; }, 1850);
+        sched(function(){ if(el.parentNode) el.remove(); }, 2200);
+      }
+    }
+
+    if(p.delay && p.delay>0) sched(spawn, p.delay);
+    else spawn();
+  }
+
+  function applyStep(instant){
+    clearTimers();
+    pktLayer.innerHTML="";
+    blocker.classList.remove("show");
+    var st=scene.steps[cur];
+    document.getElementById("narrText").innerHTML=st.narr||"";
+    var defM={cli:"neutral",ap:"neutral",radius:"neutral",att:"evil",evil:"neutral"};
+    Object.keys(els).forEach(function(k){
+      if(st.m && st.m[k]) carry.m[k]=st.m[k];
+      els[k].setAttribute("data-mood", carry.m[k]||defM[k]);
+    });
+    if(st.enter) carry.shown[st.enter]=true;
+    if(scene.startHidden){ scene.startHidden.forEach(function(k){ els[k].hidden=!carry.shown[k]; }); }
+    if(st.b){ Object.keys(st.b).forEach(function(k){ if(bub[k]){bub[k].textContent=st.b[k];bub[k].classList.add("show");carry.b[k]=st.b[k];} }); }
+    if(st.inv){ Object.keys(st.inv).forEach(function(k){ carry.inv[k]=st.inv[k]; }); }
+    if(st.listen!==undefined) carry.listen=st.listen;
+    if(els.att) els.att.classList.toggle("listening", !!carry.listen && scene.actors.indexOf("att")>=0);
+
+    tlsBand.textContent = st.tlsText || scene.tlsText || "🛡️ Túnel TLS";
+    tlsBand.classList.toggle("show",!!st.tls);
+    alarm.textContent = st.alarmText || scene.alarmText || "🚨 IDS / Anti-clogging activado";
+    alarm.classList.toggle("show",!!st.alarm);
+
+    drawLinks(st.pkts, st.links);
+    renderHud();
+
+    (st.pkts||[]).forEach(function(p){ launchPacket(p,instant); });
+
+    if(st.fx && !instant && !reducedMotion()){
+      var cls="fx-"+st.fx.t;
+      var targets = st.fx.a==="both" ? scene.actors.filter(function(a){return a==="cli"||a==="ap";}) : [st.fx.a];
+      targets.forEach(function(a){
+        if(els[a]){ els[a].classList.remove(cls); void els[a].offsetWidth; els[a].classList.add(cls); sched(function(){els[a].classList.remove(cls);},950); }
+      });
+    }
+
+    var lesson=document.getElementById("lesson");
+    if(st.lesson){ document.getElementById("lessonText").innerHTML=st.lesson.t; lesson.classList.add("show"); lesson.classList.toggle("bad",!!st.lesson.bad); }
+    else lesson.classList.remove("show");
+
+    [].forEach.call(dots.children,function(d,i){ d.classList.toggle("on", i===cur); });
+    document.getElementById("prevBtn").disabled = cur===0;
+    document.getElementById("replayBtn").disabled = !(st.pkts&&st.pkts.length) && !st.fx;
+    var nextSt=scene.steps[cur+1], goBtn=document.getElementById("goBtn");
+    goBtn.textContent = nextSt ? (nextSt.btn||"Seguinte →") : "↺ Reiniciar";
+    goBtn.className = "btn go" + (nextSt ? (ph==="risk"?" attack":" secure") : "");
+  }
+
+  function layoutScene(){
+    scene=buildScene();
+    var L=LAYOUTS[scene.layout];
+    document.getElementById("nm-ap").textContent = scene.apName || "📡 AP";
+    document.getElementById("nm-evil").textContent = scene.evilName || "🎭 AP falso";
+    Object.keys(els).forEach(function(k){
+      var on=scene.actors.indexOf(k)>=0;
+      els[k].hidden=!on;
+      els[k].classList.remove("fx-shake","fx-bounce","fx-glow","fx-bad");
+      if(on && L[k]){ els[k].style.left=L[k][0]+"%"; els[k].style.top=L[k][1]+"%"; }
+    });
+    dots.innerHTML="";
+    scene.steps.forEach(function(s,i){
+      var b=document.createElement("button");
+      b.className="dotbtn"; b.type="button";
+      b.setAttribute("aria-label","Ir ao paso "+(i+1));
+      b.title=s.btn||("Paso "+(i+1));
+      b.addEventListener("click",function(){ stopPlay(); jumpTo(i); });
+      dots.appendChild(b);
+    });
+    document.getElementById("scTag").textContent=scene.tag;
+    document.getElementById("scPrac").textContent=scene.prac||"";
+    cur=0; applyStep(true);
+  }
+
+  function jumpTo(target){
+    clearTimers();
+    resetCarry();
+    for(var i=0;i<=target;i++){ cur=i; applyStep(i<target); }
+  }
+  function reload(){ stopPlay(); resetCarry(); layoutScene(); }
+  function go(){
+    if(cur<scene.steps.length-1){ cur++; applyStep(false); }
+    else { resetCarry(); cur=0; applyStep(true); }
+  }
+  function prev(){ if(cur>0) jumpTo(cur-1); }
+
+  function stopPlay(){ playing=false; document.getElementById("playBtn").textContent="▶"; clearTimers(); }
+  function stepWaitMs(st){
+    var maxP=0;
+    (st.pkts||[]).forEach(function(p){
+      var end=(p.delay||0) + (p.via?2500:2100);
+      if(end>maxP) maxP=end;
+    });
+    return Math.max(2400, maxP + 1100);
+  }
+  function scheduleTick(){
+    if(!playing) return;
+    var st=scene.steps[cur];
+    sched(function(){
+      if(!playing) return;
+      if(cur<scene.steps.length-1){ go(); scheduleTick(); }
+      else stopPlay();
+    }, stepWaitMs(st));
+  }
+
+  document.getElementById("goBtn").addEventListener("click",function(){ stopPlay(); go(); });
+  document.getElementById("prevBtn").addEventListener("click",function(){ stopPlay(); prev(); });
+  document.getElementById("replayBtn").addEventListener("click",function(){ stopPlay(); applyStep(false); });
+  document.getElementById("playBtn").addEventListener("click",function(){
+    if(playing){ stopPlay(); return; }
+    if(cur>=scene.steps.length-1){ resetCarry(); cur=0; applyStep(true); }
+    playing=true; document.getElementById("playBtn").textContent="⏸";
+    sched(function(){ if(playing && cur<scene.steps.length-1){ go(); scheduleTick(); } else stopPlay(); }, 600);
+  });
+
+  document.getElementById("levels").addEventListener("click",function(e){
+    var b=e.target.closest("[data-lvl]"); if(!b)return;
+    [].forEach.call(this.children,function(x){x.setAttribute("data-on",x===b?"1":"0");});
+    lvl=b.getAttribute("data-lvl"); renderSandbox(); reload();
+  });
+  document.getElementById("phase").addEventListener("click",function(e){
+    var b=e.target.closest("[data-ph]"); if(!b)return;
+    [].forEach.call(this.children,function(x){x.setAttribute("data-on",x===b?"1":"0");});
+    ph=b.getAttribute("data-ph"); renderSandbox(); reload();
+  });
+
+  document.addEventListener("keydown",function(e){
+    var tag=(document.activeElement&&document.activeElement.tagName)||"";
+    if(tag==="INPUT"||tag==="SELECT") return;
+    if(e.key==="ArrowRight"){ stopPlay(); go(); }
+    else if(e.key==="ArrowLeft"){ stopPlay(); prev(); }
+    else if(e.key===" " && tag!=="BUTTON"){ e.preventDefault(); document.getElementById("playBtn").click(); }
+  });
+
+  renderSandbox();
+  layoutScene();
+})();
+</script>
+</body>
+</html>

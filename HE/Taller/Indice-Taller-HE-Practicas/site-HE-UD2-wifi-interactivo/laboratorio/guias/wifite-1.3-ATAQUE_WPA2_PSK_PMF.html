@@ -1,0 +1,274 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica Wifite 1.3 — WPA2-PSK con PMF</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica Wifite 1.3 — WPA2-PSK con PMF</h1>
+<div class="notice warning"><strong>**LIMITACIÓN DE RESPONSABILIDADE**</strong>
+<p>O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.<br />
+O uso de Wifite ou calquera outra ferramenta de auditoría en redes Wi-Fi sen autorización expresa é <strong>ILEGAL</strong>.</p>
+</div>
+<h2>1. Resumo</h2>
+<p>Esta práctica demostra como <strong>PMF (Protected Management Frames, ieee80211w)</strong> protexe determinadas tramas de xestión nas redes WPA2-PSK. Empregaremos <strong>Wifite</strong> para intentar forzar unha reconexión mediante tramas de desautenticación falsificadas e comprobar que, cunha asociación protexida por PMF obrigatorio (<code>ieee80211w=2</code>), o cliente non debe desconectarse por esas tramas non protexidas. <strong>Isto non impide capturar pasivamente un handshake que se produza por unha conexión lexítima.</strong></p>
+<p><strong>Obxectivos de aprendizaxe:</strong></p>
+<ul>
+<li>Comprender o papel de <code>ieee80211w</code> na protección contra ataques de desautenticación</li>
+<li>Verificar que as tramas DeAuth falsificadas non protexidas non desconectan un cliente cunha asociación PMF establecida</li>
+<li>Analizar con <code>tshark</code> o bit Protected das tramas de xestión e relacionar as capturas co estado da conexión</li>
+<li>Contrastar coa <a href="1.2-ATAQUE_WPA2_PSK_DEAUTH.html">práctica de desautenticación WPA2-PSK</a>, realizada sen PMF</li>
+</ul>
+<hr />
+<h2>2. Material necesario</h2>
+<p><strong>Hardware/Software:</strong></p>
+<ul>
+<li>Host alumnado</li>
+<li>Máquina virtual GNU/Linux Kali amd64</li>
+<li>RAM ≥ 2048MB</li>
+<li>CPU ≥ 2 cores</li>
+<li>PAE/NX habilitado</li>
+<li>ISO: Kali Live amd64</li>
+</ul>
+<p><strong>Ferramentas:</strong></p>
+<ul>
+<li><code>wifite</code></li>
+<li><code>hostapd</code></li>
+<li><code>wpa_supplicant</code></li>
+<li><code>mac80211_hwsim</code></li>
+<li><code>aircrack-ng</code> suite (aireplay-ng, airodump-ng)</li>
+<li><code>tshark</code> (análise de tramas)</li>
+<li>Wordlist: <code>/usr/share/wordlists/rockyou.txt.gz</code></li>
+</ul>
+<p><strong>Referencias:</strong></p>
+<ul>
+<li>[0] <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf">1-Taller-HE-Practica-WiFi-3.pdf</a>{:target=&quot;_blank&quot;}</li>
+<li>[1] <a href="https://android.googlesource.com/platform/external/wpa_supplicant_8/+/444d567/wpa_supplicant/wpa_supplicant.conf">IEEE 802.11w-2009 (Protected Management Frames)</a>{:target=&quot;_blank&quot;}</li>
+<li>[2] <a href="https://w1.fi/hostapd/">hostapd ieee80211w configuration</a>{:target=&quot;_blank&quot;}</li>
+</ul>
+<hr />
+<h2>3. Escenario e topoloxía</h2>
+<p>| Rol                  | Interface | Namespace             | Estado tras <code>wifilabctl up</code>  |
+|----------------------|-----------|-----------------------|------------------------------|
+| AP WPA2-PSK + PMF    | <code>wlan0</code>   | <code>wifi_ap_wlan0</code>       | ✅ Automático                 |
+| Cliente PMF          | <code>wlan1</code>   | <code>wifi_cliente_wlan1</code>  | ✅ Automático                 |
+| Atacante (Wifite)    | <code>wlan2</code>   | (global)              | ⏳ Interface libre            |
+| Monitor (aireplay)   | <code>wlan3</code>   | (global)              | ⏳ Interface libre            |</p>
+<p><strong>SSID:</strong> <code>EMPRESA-XYZ</code> · <strong>Contrasinal:</strong> <code>spongebob19</code> · <strong>Canal:</strong> 6 · <strong>ieee80211w:</strong> 2 (obrigatorio) · <strong>key_mgmt:</strong> <code>WPA-PSK-SHA256</code></p>
+<pre><code>[wlan1: Cliente PMF]  ----wireless----&gt; [wlan0: AP WPA2-PSK + PMF]
+                                               ^
+                                               |
+                                      [wlan2mon: Wifite]
+                                      [wlan3mon: airodump-ng]
+                                      (intentos de deauth → FALLAN con PMF)
+</code></pre>
+<blockquote>
+<p>💡 <code>wifilabctl up psk_pmf</code> levanta <strong>automaticamente</strong> AP e cliente con PMF configurado. As terminais son para observación e ataque, non para configuración manual.</p>
+</blockquote>
+<hr />
+<h2>4. Procedemento</h2>
+<p><strong>Resumo de terminais:</strong></p>
+<p>Para seguir a práctica, abre catro terminais na sesión gráfica de Kali. Cada unha ten unha función específica:</p>
+<p>| Terminal | Rol                                        |
+|----------|--------------------------------------------|
+| 1        | Arrancar e xestionar o escenario           |
+| 2        | Monitorizar logs do AP en tempo real       |
+| 3        | Executar o ataque con Wifite               |
+| 4        | Captura e análise de tramas con tshark     |</p>
+<hr />
+<h3>Terminal 1 — Arrancar o escenario</h3>
+<pre><code class="language-bash"># Arrancar o escenario PSK con PMF obrigatorio
+sudo wifilabctl up psk_pmf
+
+# Verificar que AP e cliente están activos con PMF
+sudo wifilabctl status
+</code></pre>
+<p>Saída esperada ao finalizar:</p>
+<pre><code>[*] Informe de Estado do Laboratorio
+============================================================
+NAMESPACE                 INTERFACE       IP                   ESTADO
+---------------------------------------------------------------------------
+wifi_cliente_wlan1        wlan1           -                    UP
+wifi_ap_wlan0             wlan0           -                    UP
+---------------------------------------------------------------------------
+Interfaces GLOBAIS / ATACANTE:
+(global)                  wlan2           (host/monitor)       LISTO
+(global)                  wlan3           (host/monitor)       LISTO
+</code></pre>
+<blockquote>
+<p>⚠️ O escenario configura automaticamente <code>ieee80211w=2</code> e <code>wpa_key_mgmt=WPA-PSK-SHA256</code> no AP (<code>hostapd_pmf.conf</code>) e no cliente (<code>wpa_pmf.conf</code>). Non é necesario ningún paso manual.</p>
+</blockquote>
+<hr />
+<h3>Terminal 2 — Monitorizar logs do AP (en tempo real)</h3>
+<p>Abrir <strong>esta terminal antes de lanzar o ataque</strong> para observar os logs do AP lexítimo:</p>
+<pre><code class="language-bash">tail -f /home/kali/wifiLab/run/psk_pmf/hostapd.log
+</code></pre>
+<p>Deixar correndo.</p>
+<hr />
+<h3>Terminal 3 — Ataque con Wifite</h3>
+<h4>Paso 1: Acceder como root e preparar wordlist</h4>
+<pre><code class="language-bash">sudo su -
+gunzip -kf /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<h4>Paso 2: Lanzar Wifite</h4>
+<pre><code class="language-bash">wifite --no-wps --dict /usr/share/wordlists/rockyou.txt
+</code></pre>
+<h4>Paso 3: Avisos de procesos en conflito — non matar</h4>
+<p>Wifite detectará os procesos do escenario (<code>hostapd</code>, <code>wpa_supplicant</code>) e avisará:</p>
+<pre><code> [!] Conflicting processes: NetworkManager (PID 642), wpa_supplicant (PID 1919),
+     hostapd (PID 2009), wpa_supplicant (PID 2024)
+ [!] If you have problems: kill -9 PID or re-run wifite with --kill
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Non matar eses procesos nin utilizar <code>--kill</code>.</strong> Son o AP e o cliente do escenario de laboratorio. Ignorar o aviso e continuar.</p>
+</blockquote>
+<h4>Paso 4: Seleccionar a interface de ataque</h4>
+<p>Con <code>mac80211_hwsim</code>, Wifite <strong>non selecciona automaticamente</strong> a interface. Lista <code>wlan2</code> e <code>wlan3</code> e pide escoller:</p>
+<pre><code>    Interface   PHY   Driver              Chipset
+-----------------------------------------------------------------------
+ 1. wlan2       phy2  ??????              non-mac80211 device? (report this!)
+ 2. wlan3       phy3  ??????              non-mac80211 device? (report this!)
+ [+] Select wireless interface (1-2): 1
+</code></pre>
+<p>Introducir <code>1</code> para seleccionar <code>wlan2</code> e premer Enter.</p>
+<blockquote>
+<p>💡 O aviso <code>non-mac80211 device?</code> é normal con interfaces virtuais. Non impide o funcionamento.</p>
+</blockquote>
+<pre><code> [+] Enabling monitor mode on wlan2... enabled!
+</code></pre>
+<h4>Paso 5: Escaneo e selección do AP obxectivo</h4>
+<p>Wifite escaneará en modo monitor. Cando apareza <code>EMPRESA-XYZ</code> premer <code>Ctrl+C</code>:</p>
+<pre><code>   NUM                      ESSID   CH  ENCR    PWR    WPS  CLIENT
+   ---  -------------------------  ---  -----   ----   ---  ------
+     1               EMPRESA-XYZ     6  WPA-P   72db    no
+</code></pre>
+<pre><code> [+] Select target(s) (1-1) separated by commas, dashes or all: 1
+</code></pre>
+<p>Introducir <code>1</code> e premer Enter.</p>
+<h4>Paso 6: Ataque PMKID (primeiro intento automático — fallará)</h4>
+<p>Wifite pode tentar capturar primeiro un PMKID. Neste escenario a súa obtención non está garantida; consulta a <a href="1.4-ATAQUE_WPA2_PSK_PMKID.html">práctica 1.4 — WPA2-PSK PMKID</a> para entender as condicións necesarias. Se non aparece, preme <code>Ctrl+C</code> para interromper o intento e despois <code>c</code> para continuar co seguinte método.</p>
+<p><strong>Exemplo da saída de Wifite durante este paso:</strong></p>
+<pre><code> [+] (1/1) Starting attacks against 06:FE:D8:7D:4F:43 (EMPRESA-XYZ)
+ [+] EMPRESA-XYZ (72db) PMKID CAPTURE: Waiting for PMKID (4m47s) ^C
+ [!] Interrupted
+ [+] 1 attack(s) remain
+ [+] Do you want to continue attacking, or exit (c, e)? c
+</code></pre>
+<h4>Paso 7: Intento de forzar un handshake mediante DeAuth — resultado esperado con PMF</h4>
+<p>Wifite pasa ao ataque de handshake e intenta desautenticar o cliente.</p>
+<p>Abrir un Terminal 4 para análise de tramas con tshark (mentres Wifite intenta o handshake):</p>
+<pre><code class="language-bash">sudo su -
+
+# Capturar tráfico con wlan3 mentres Wifite usa wlan2mon
+airodump-ng wlan3 -c 6 -w /tmp/pmf-test
+# Esperar ~30 segundos e premer Ctrl+C
+
+# Analizar tramas de desautenticación capturadas
+tshark -r /tmp/pmf-test-01.cap -Y &quot;wlan.fc.type_subtype == 0x000c&quot;   -T fields -e frame.number -e wlan.fc.protected -e wlan.sa -e wlan.da
+</code></pre>
+<p><strong>Saída esperada:</strong></p>
+<pre><code># Tramas LEXÍTIMAS do cliente (cifradas con PMF):
+# frame  wlan.fc.protected  wlan.sa           wlan.da
+# 42     True               &lt;MAC_cliente&gt;     &lt;BSSID_AP&gt;
+
+# Tramas FALSAS do atacante (non cifradas → rexeitadas):
+# 43     False              &lt;MAC_atacante&gt;    &lt;BSSID_AP&gt;
+</code></pre>
+<p><strong>Interpretación:</strong></p>
+<ul>
+<li><code>wlan.fc.protected=True</code> → Trama cifrada con PMF ✔</li>
+<li><code>wlan.fc.protected=False</code> → Trama NON cifrada, rexeitada polo AP ✗</li>
+</ul>
+<p><strong>Exemplo posible de saída de Wifite se non se produce unha reconexión lexítima durante a captura:</strong></p>
+<pre><code> [+] EMPRESA-XYZ (72db) WPA Handshake capture: Discovered new client: 42:F9:95:B2:CB:34
+ [+] EMPRESA-XYZ (72db) WPA Handshake capture: Listening. (clients:1, deauth:7s, timeout:0s)
+ [!] WPA handshake capture FAILED: Timed out after 300 seconds
+ [+] Finished attacking 1 target(s), exiting
+ [!] Note: Leaving interface in Monitor Mode!
+ [!] To disable Monitor Mode when finished: airmon-ng stop wlan2mon
+</code></pre>
+<p><strong>A desautenticación falsificada non protexida non debería expulsar o cliente cunha asociación PMF establecida.</strong> Se Wifite non captura un handshake neste intento, iso non implica que PMF impida toda captura de handshakes.</p>
+<hr />
+<div class="notice warning"><strong>**CLAVE**</strong>
+<p>Nunha asociación con PMF negociado, as tramas de desautenticación e desasociación robustas deben estar protexidas. O receptor descarta as falsificadas que chegan sen a protección correspondente; o atacante non dispón das claves para xerar unha trama válida. Isto non significa que <em>todas</em> as tramas de xestión estean cifradas nin que PMF impida a captura pasiva de EAPOL.</p>
+</div>
+<hr />
+<h3>Terminal 1 — Verificacións finais</h3>
+<pre><code class="language-bash"># Verificar que o cliente permanece conectado tras o ataque
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+# Connected to &lt;BSSID_AP&gt; (on wlan1)
+# SSID: EMPRESA-XYZ
+
+# Comprobar se Wifite gardou unha captura; pode existir se houbo unha conexión lexítima
+sudo ls -lh /root/hs/
+# A presenza dun .cap non proba que fallase PMF: verificar como se produciu a asociación
+
+# Verificar que NON houbo ningunha desconexión no cliente
+grep CTRL-EVENT-DISCONNECTED /home/kali/wifiLab/run/psk_pmf/wpa_supplicant.log
+# Contrastar cos rexistros e co estado do cliente; unha saída baleira non proba por si soa continuidade
+</code></pre>
+<hr />
+<h2>5. Limitacións de Wifite e reflexión didáctica</h2>
+<p><strong>Limitación concreta:</strong> Wifite pode intentar provocar unha reconexión con <code>aireplay-ng --deauth</code>, pero esa técnica non debería desconectar un cliente que xa negociou PMF obrigatorio.</p>
+<ol>
+<li>PMF protexe as tramas robustas de desautenticación e desasociación unha vez establecida a asociación protexida.</li>
+<li>As tramas falsificadas non protexidas son descartadas polo receptor.</li>
+<li>Se o cliente se asocia lexitimamente durante unha captura, <strong>Wifite aínda pode observar o intercambio EAPOL</strong> e gardar un handshake.</li>
+</ol>
+<p><strong>Conclusión:</strong> PMF limita a desautenticación falsificada utilizada para <em>forzar</em> unha reconexión, pero <strong>non impide por si mesmo a captura pasiva dun handshake WPA2-PSK</strong>.</p>
+<p><strong>Reflexión:</strong></p>
+<ul>
+<li>PMF <strong>NON protexe o handshake</strong> en si (segue sendo auditable se se captura durante conexión inicial ou reinicio do AP)</li>
+<li>PMF protexe determinadas tramas robustas de xestión, incluídas desautenticación e desasociación, pero non resolve todos os ataques á rede Wi-Fi</li>
+<li>A mellor defensa é <strong>contrasinal forte</strong> + <strong>WPA3-SAE</strong> (que elimina os ataques offline ao handshake)</li>
+</ul>
+<hr />
+<h2>6. Preguntas de reflexión</h2>
+<ol>
+<li>
+<p><strong>Que diferenza hai entre <code>ieee80211w=0</code>, <code>ieee80211w=1</code> e <code>ieee80211w=2</code>?</strong></p>
+<ul>
+<li><code>0</code>: PMF desactivado — vulnerable a desautenticación</li>
+<li><code>1</code>: PMF opcional — clientes con e sen PMF poden conectarse</li>
+<li><code>2</code>: PMF obrigatorio — só clientes con PMF, todos protexidos</li>
+</ul>
+</li>
+<li>
+<p><strong>Por que pode fallar a obtención dun handshake mediante desautenticación forzada nesta práctica?</strong></p>
+<ul>
+<li>Wifite intenta provocar unha reconexión mediante tramas DeAuth falsificadas.</li>
+<li>Cunha asociación protexida por PMF, o cliente descarta as tramas non protexidas. Isto <strong>non impide</strong> observar un handshake se o cliente se conecta lexitimamente durante a captura.</li>
+</ul>
+</li>
+<li>
+<p><strong>PMF protexe o contrasinal WPA2?</strong></p>
+<ul>
+<li><strong>NON.</strong> PMF só protexe as tramas de xestión. O handshake capturado durante a conexión inicial segue sendo auditable con <code>aircrack-ng</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que tipo de ataques mitiga PMF?</strong></p>
+<ul>
+<li>Desautenticación e desasociación falsificadas dunha asociación protexida; dificulta técnicas de Evil Twin que dependen de forzar a desconexión</li>
+</ul>
+</li>
+<li>
+<p><strong>Que alternativas hai se se require seguridade total contra ataques offline ao handshake?</strong></p>
+<ul>
+<li><strong>WPA3-SAE</strong> (elimina ataques offline ao handshake), <strong>WPA2-EAP</strong> (autenticación centralizada con RADIUS)</li>
+</ul>
+</li>
+<li>
+<p><strong>É posible desactivar PMF nunha rede WPA3?</strong></p>
+<ul>
+<li><strong>NON.</strong> WPA3-SAE require <code>ieee80211w=2</code> por especificación.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>7. Limpeza do laboratorio</h2>
+<p><strong>Terminal 1:</strong></p>
+<pre><code class="language-bash"># Deter e eliminar o escenario completamente
+sudo wifilabctl reset
+
+# Verificar que non quedan namespaces
+ip netns list
+</code></pre>
+<p><strong>Terminal 3</strong> (se Wifite deixou a interface en modo monitor):</p>
+<pre><code class="language-bash">airmon-ng stop wlan2mon
+</code></pre>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

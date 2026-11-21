@@ -1,0 +1,181 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Práctica Wifite 3.1 — Intento de recuperación do contrasinal WPA3-SAE</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Práctica Wifite 3.1 — Intento de recuperación do contrasinal WPA3-SAE</h1>
+<div class="notice warning"><strong>Ámbito de execución autorizado</strong>
+<p>Esta práctica debe realizarse exclusivamente no laboratorio virtual <code>vuln-wifi.lab</code> ou sobre redes propias expresamente autorizadas. A auditoría consiste en tentar recuperar o contrasinal do AP simulado mediante Wifite e analizar o resultado.</p>
+</div>
+<hr />
+<h2>1. Obxectivos da práctica</h2>
+<p>O obxectivo principal é <strong>intentar obter o contrasinal dunha rede Wi-Fi WPA3-Personal (SAE) empregando Wifite</strong> e determinar, a partir da saída real da ferramenta, se a tentativa é viable.</p>
+<p>Ao rematar, o alumnado deberá ser capaz de:</p>
+<ol>
+<li>Preparar un punto de acceso <strong>WPA3-SAE</strong> e un cliente lexítimo nun escenario illado.</li>
+<li>Detectar e seleccionar o obxectivo <code>EMPRESA-XYZ</code> mediante <strong>Wifite</strong>.</li>
+<li>Executar os intentos automáticos de captura <strong>PMKID</strong> e <strong>WPA handshake</strong>, sen interromper os procesos.</li>
+<li>Determinar se Wifite consegue material utilizable para iniciar a recuperación do contrasinal.</li>
+<li>Explicar o resultado empregando os conceptos <strong>SAE Commit/Confirm</strong>, <strong>PMK</strong>, <strong>4-way handshake</strong> e <strong>PMF</strong>.</li>
+</ol>
+<p><strong>Referencia docente:</strong> <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-1.pdf">PDF «Auditar contrasinal Wi-Fi WPA3 (SAE)» — Práctica 3.1</a>{:target=&quot;_blank&quot;}. As páxinas <strong>2–4</strong> introducen WPA3-SAE; as <strong>5–8</strong> desenvolven a montaxe, a captura e a limitación dos ataques offline; as <strong>9–11</strong> tratan unha técnica de dicionario <em>online</em> distinta da captura automatizada. Nesta práctica aplicaremos <strong>Wifite</strong> ao mesmo tipo de rede e interpretaremos o comportamento observado.</p>
+<div class="notice info"><strong>Finalidade do intento</strong>
+<p>A tarefa é <strong>tentar recuperar o contrasinal con Wifite</strong>, non asumir anticipadamente que o obteremos. O resultado negativo dunha técnica tamén é un resultado de auditoría que debe xustificarse con evidencias.</p>
+</div>
+<hr />
+<h2>2. Material necesario e escenario</h2>
+<ul>
+<li>Máquina virtual <strong>Kali Linux</strong> de <code>vuln-wifi.lab</code>.</li>
+<li>Escenario automatizado <strong><code>wpa3_sae</code></strong> con catro radios simuladas mediante <code>mac80211_hwsim</code>.</li>
+<li>Ferramentas instaladas: <code>wifilabctl</code>, <code>iw</code>, <code>ip</code>, <code>wifite</code>.</li>
+<li>Dúas terminais abertas en Kali.</li>
+</ul>
+<h3>2.1. Distribución das interfaces</h3>
+<p>| Interface | Función | Namespace |
+|---|---|---|
+| <code>wlan0</code> | Punto de acceso WPA3-SAE | <code>phy0_wlan0</code> |
+| <code>wlan1</code> | Cliente lexítimo WPA3-SAE | <code>phy1_wlan1</code> |
+| <code>wlan2</code> | Radio adicional sen empregar | Global |
+| <code>wlan3</code> | Radio atacante empregada por Wifite | Global |</p>
+<p><strong>Parámetros de referencia do punto de acceso:</strong></p>
+<pre><code class="language-ini">ssid=EMPRESA-XYZ
+channel=6
+wpa=2
+wpa_key_mgmt=SAE
+rsn_pairwise=CCMP
+ieee80211w=2
+sae_require_mfp=1
+</code></pre>
+<ul>
+<li><code>wpa_key_mgmt=SAE</code> identifica a autenticación <strong>WPA3-Personal</strong>.</li>
+<li><code>wpa=2</code> activa <strong>RSN</strong>, non unha autenticación WPA2-PSK.</li>
+<li><code>ieee80211w=2</code> require <strong>PMF (Protected Management Frames)</strong>.</li>
+<li>O contrasinal está configurado no AP para que exista unha credencial de laboratorio, pero <strong>non se introduce en Wifite</strong>: preténdese tentar descubrilo desde a posición do atacante.</li>
+</ul>
+<p>O <strong>BSSID</strong> e os enderezos MAC dos participantes poden cambiar cada vez que se inicia o escenario. Non deben copiarse enderezos de exemplos como se fosen fixos.</p>
+<h3>2.2. Función das terminais</h3>
+<p>| Terminal | Función | Relación co PDF 3.1 |
+|---|---|---|
+| <strong>Terminal 1</strong> | Iniciar o AP, o cliente e comprobar as interfaces | Preparación do AP e do cliente (páxs. 5–7) |
+| <strong>Terminal 2</strong> | Detectar a rede e intentar recuperar a clave con Wifite | Rol de atacante e análise de captura (páx. 8) |</p>
+<p>Nesta práctica <strong>non é necesario crear manualmente os namespaces, iniciar outro <code>hostapd</code> nin executar <code>airmon-ng check kill</code></strong>: o escenario automatizado xa prepara os elementos necesarios.</p>
+<hr />
+<h2>3. Fundamento técnico: que intenta recuperar Wifite?</h2>
+<p>En <strong>WPA2-PSK</strong>, determinadas capturas do <em>4-way handshake</em> ou dun PMKID poden proporcionar material para probar candidatos de contrasinal <strong>offline</strong>, sen necesidade de comunicarse de novo co AP.</p>
+<p>En <strong>WPA3-SAE</strong>, a autenticación baséase en <strong>Simultaneous Authentication of Equals</strong>:</p>
+<ol>
+<li><strong>SAE Commit:</strong> AP e cliente intercambian valores públicos para establecer un segredo sen enviar o contrasinal.</li>
+<li><strong>SAE Confirm:</strong> os participantes verifican o resultado do acordo criptográfico.</li>
+<li><strong>4-way handshake EAPOL:</strong> a PMK obtida do acordo SAE emprégase para derivar e instalar as claves de tráfico.</li>
+</ol>
+<p>O <em>handshake</em> posterior <strong>existe</strong>, pero non ofrece o mesmo verificador para probar de maneira libre contrasinais offline que o intercambio clásico WPA2-PSK. Esa é a distinción central explicada no PDF 3.1 (páxs. 2–4 e 8).</p>
+<p><strong>PMKID</strong> identifica material de clave nun contexto de asociación ou reutilización de claves; a súa eventual presenza nunha conexión SAE <strong>non significa automaticamente</strong> que permita recuperar o contrasinal co ataque PMKID clásico de WPA2-PSK.</p>
+<p>Wifite automatiza procedementos de descubrimento e captura. Executaremos os seus intentos e <strong>verificaremos se consegue ou non chegar á fase de recuperación do contrasinal</strong>.</p>
+<hr />
+<h2>4. Procedemento de auditoría</h2>
+<h3>4.1. Terminal 1 — Iniciar WPA3-SAE</h3>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae
+sudo wifilabctl status
+</code></pre>
+<p>Comprobar o AP, o cliente e as radios globais:</p>
+<pre><code class="language-bash">sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+iw dev
+</code></pre>
+<p><strong>Comprobacións:</strong></p>
+<ul>
+<li>O AP anuncia o SSID <code>EMPRESA-XYZ</code> na canle 6.</li>
+<li>O cliente <code>wlan1</code> está conectado ao AP WPA3-SAE.</li>
+<li>A radio <code>wlan3</code> aparece no namespace global e está dispoñible.</li>
+</ul>
+<p>Non empregues unha shell interactiva con <code>ip netns exec ... bash</code>: os comandos anteriores regresan á mesma terminal cando rematan.</p>
+<h3>4.2. Terminal 2 — Comprobar Wifite</h3>
+<pre><code class="language-bash">command -v wifite
+dpkg-query -W -f='${Version}\n' wifite
+wifite --help | grep -i wpa3
+</code></pre>
+<p><strong>Exemplo de saída da VM utilizada:</strong></p>
+<pre><code class="language-text">/usr/sbin/wifite
+2.8.2-1
+--wpa3    Show only WPA3-encrypted networks (SAE/OWE)
+</code></pre>
+<p>A opción <code>--wpa3</code> permite <strong>filtrar</strong> redes anunciadas como WPA3; isto non garante que todos os ataques automatizados sexan aplicables a SAE.</p>
+<h3>4.3. Terminal 2 — Iniciar o intento de recuperación</h3>
+<pre><code class="language-bash">mkdir -p ~/wifite-wpa3
+cd ~/wifite-wpa3
+sudo wifite -i wlan3 --wpa3 --no-wps
+</code></pre>
+<p>Significado das opcións:</p>
+<ul>
+<li><code>-i wlan3</code>: radio do atacante.</li>
+<li><code>--wpa3</code>: seleccionar redes de protección WPA3 (SAE/OWE) no escaneo.</li>
+<li><code>--no-wps</code>: desactivar os métodos WPS, alleos ao obxectivo desta práctica.</li>
+</ul>
+<p>Non usar <code>--kill</code> nin <code>airmon-ng check kill</code>, pois poden interromper os procesos necesarios do laboratorio.</p>
+<p><strong>Selección do obxectivo:</strong></p>
+<ol>
+<li>Deixa que apareza <code>EMPRESA-XYZ</code> na listaxe.</li>
+<li>Preme <strong><code>Ctrl+C</code> exclusivamente para rematar o escaneo inicial</strong> e abrir a selección de obxectivos.</li>
+<li>Introduce o número correspondente a <code>EMPRESA-XYZ</code> (na saída de exemplo: <code>1</code>).</li>
+<li>Deixa que <strong>Wifite complete automaticamente todos os intentos de captura</strong>, sen interromper a fase PMKID nin a fase de <em>handshake</em>.</li>
+</ol>
+<p><strong>Exemplo real da selección:</strong></p>
+<pre><code class="language-text">NUM                      ESSID   CH  ENCR     PWR   WPS  CLIENT
+---  -------------------------  ---  -----    ----  ---  ------
+  1               EMPRESA-XYZ     6  WPA3-S    72db    no
+
+[+] Select target(s) (1-1) separated by commas, dashes or all: 1
+[+] (1/1) Starting attacks against DE:B4:2A:FB:BF:1E (EMPRESA-XYZ)
+</code></pre>
+<p>A clasificación <code>WPA3-S</code> indica que Wifite <strong>detecta unha rede con SAE</strong>. A detección non é unha recuperación do contrasinal.</p>
+<h3>4.4. Terminal 2 — Intento de captura PMKID</h3>
+<p>Wifite inicia primeiro o procedemento automático de procura dun PMKID. <strong>Non o interrompas</strong>: permite que a ferramenta conclúa.</p>
+<p><strong>Saída real obtida:</strong></p>
+<pre><code class="language-text">[+] EMPRESA-XYZ (72db) PMKID CAPTURE: Failed to capture PMKID
+</code></pre>
+<p><strong>Interpretación:</strong> Wifite non conseguiu capturar material PMKID aproveitable nesta execución. Polo tanto, <strong>non pode pasar deste intento a unha comprobación de contrasinais baseada nesa captura</strong>.</p>
+<p>Isto non permite concluír que SAE nunca empregue PMKID; significa que <strong>o intento concreto de Wifite fallou</strong>.</p>
+<h3>4.5. Terminal 2 — Intento de captura do <em>handshake</em></h3>
+<p>A continuación, Wifite busca unha captura de <em>handshake</em> WPA que considere válida para o seu procedemento automatizado. Deixa que finalice.</p>
+<p><strong>Saída real obtida:</strong></p>
+<pre><code class="language-text">[+] EMPRESA-XYZ (72db) WPA Handshake capture: Discovered new client: CA:E2:9E:19:BB:48
+[+] EMPRESA-XYZ (72db) WPA Handshake capture: Listening. (clients:1, deauth:14s, timeout:0s)
+[!] WPA handshake capture FAILED: Timed out after 300 seconds
+[+] Finished attacking 1 target(s), exiting
+</code></pre>
+<p>A ferramenta identifica un cliente, pero <strong>non consegue completar a captura que precisa</strong> e esgota o tempo establecido (300 segundos). A indicación <code>deauth:14s</code> non é, por si soa, unha proba de que unha desautenticación afectase ao cliente.</p>
+<p>Un AP e un cliente WPA3-SAE poden realizar correctamente o seu propio intercambio EAPOL aínda que <strong>Wifite non consiga unha captura aproveitable</strong> para o seu método de auditoría.</p>
+<h3>4.6. Terminal 2 — Comprobación do contrasinal recuperado</h3>
+<p>Ao rematar Wifite, comproba o seu resultado:</p>
+<ul>
+<li><strong>Se aparece un contrasinal recuperado</strong>, anótao e describe que procedemento permitiu obtelo.</li>
+<li><strong>Se non aparece ningún contrasinal</strong>, indica cal das fases de captura fallou e achega as mensaxes da ferramenta.</li>
+</ul>
+<p><strong>Resultado deste laboratorio:</strong> non se recuperou o contrasinal. Non se iniciou unha fase eficaz de ataque de dicionario porque os métodos de captura anteriores non proporcionaron o material necesario. Por ese motivo, <strong>non se require introducir <code>rockyou.txt</code> nesta execución</strong>: unha lista de palabras non resolve a ausencia dunha captura utilizable nin converte un intercambio SAE nun verificador offline de WPA2-PSK.</p>
+<hr />
+<h2>5. Rexistro dos resultados</h2>
+<p>| Proba | Evidencia observada | Resultado |
+|---|---|---|
+| Identificación do AP | <code>EMPRESA-XYZ</code>, canle 6 | Correcta |
+| Tipo de protección | <code>WPA3-S</code> | Correcta |
+| Selección do obxectivo | Wifite inicia ataques contra o BSSID | Correcta |
+| Captura PMKID | <code>Failed to capture PMKID</code> | <strong>Fallida</strong> |
+| Captura de <em>handshake</em> | <code>Timed out after 300 seconds</code> | <strong>Fallida</strong> |
+| Recuperación do contrasinal | Non se presenta unha clave obtida | <strong>Non conseguida</strong> |</p>
+<div class="notice success"><strong>Conclusión do intento</strong>
+<p><strong>Wifite permitiu identificar e seleccionar o AP WPA3-SAE, pero non conseguiu recuperar o contrasinal.</strong> A procura de PMKID rematou sen captura válida e a captura de <em>handshake</em> rematou por tempo esgotado. O resultado é coherente coa resistencia do intercambio SAE ordinario aos ataques de dicionario offline baseados no material típico de WPA2-PSK.</p>
+</div>
+<p>Esta conclusión refírese <strong>ao procedemento executado</strong>. Non debe interpretarse como demostración de que todas as implementacións WPA3-SAE sexan invulnerables ou de que non existan outros vectores de auditoría.</p>
+<hr />
+<h2>6. Interpretación e relación coa práctica 3.1 do PDF</h2>
+<h3>6.1. Por que non se recuperou a clave cunha captura convencional?</h3>
+<p>A autenticación SAE estabelece material criptográfico mediante un acordo entre o cliente e o AP. Un observador non pode empregar os valores públicos do intercambio ordinario como se fosen un <em>hash</em> WPA2-PSK para verificar candidatos arbitrarios offline.</p>
+<p>O <em>4-way handshake</em> EAPOL <strong>non desaparece en WPA3</strong>; prodúcese despois de SAE, cando xa existe unha PMK derivada do acordo autenticado. Confundir a existencia dese <em>handshake</em> coa posibilidade de recuperarlle o contrasinal levaría a unha conclusión incorrecta.</p>
+<h3>6.2. Cal é a función de PMF?</h3>
+<p>A configuración <code>ieee80211w=2</code> fai <strong>obrigatorias as tramas de xestión protexidas (PMF)</strong>. Isto protexe determinadas tramas robustas, incluídas desautenticación e desasociación, unha vez establecido o contexto de seguridade. Non significa que todas as tramas de xestión vaian cifradas nin exclúe todas as formas de denegación de servizo.</p>
+<h3>6.3. Significa isto que un contrasinal WPA3-SAE nunca se pode adiviñar?</h3>
+<p>Non. O PDF 3.1 (páxs. 9–11) distingue a <strong>captura para análise offline</strong> das <strong>tentativas online contra o AP</strong>, nas que cada candidato require interacción co protocolo SAE. O éxito dunha tentativa online depende, entre outros factores, da fortaleza do contrasinal e das defensas do AP.</p>
+<p><strong>A ferramenta empregada nesta práctica é Wifite.</strong> O propósito non é executar ese outro método, senón comprobar se o seu fluxo de captura e recuperación de contrasinais funciona contra o AP WPA3-SAE do laboratorio.</p>
+<hr />
+<h2>7. Finalización</h2>
+<p>Cando Wifite amose <code>Finished attacking 1 target(s), exiting</code>, a ferramenta rematou. Podes conservar o escenario activo para continuar coas actividades ou limpalo desde a terminal 1 mediante:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<p><strong>Referencia:</strong> PDF «Auditar contrasinal Wi-Fi WPA3 (SAE)», práctica 3.1 (páxs. 2–4: autenticación; 5–8: captura e limitación offline; 9–11: distinción coas tentativas online).</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

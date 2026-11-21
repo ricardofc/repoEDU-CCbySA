@@ -1,0 +1,220 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guía da práctica Wifite 2.1 — WPA2-Enterprise (EAP)</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Guía da práctica Wifite 2.1 — WPA2-Enterprise (EAP)</h1>
+<div class="notice warning"><strong>**LIMITACIÓN DE RESPONSABILIDADE**</strong>
+<p>O autor do presente documento declina calquera responsabilidade asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.<br />
+O uso de Wifite ou calquera outra ferramenta de auditoría en redes Wi-Fi sen autorización expresa é <strong>ILEGAL</strong>.</p>
+</div>
+<h2>1. Resumo</h2>
+<p>Esta práctica introduce <strong>WPA2-Enterprise (WPA2-EAP)</strong>, unha modalidade de autenticación Wi-Fi baseada en IEEE 802.1X, protocolos EAP e un servidor RADIUS. A diferenza de WPA2-PSK, o acceso non se basea nun único contrasinal compartido por todos os clientes.</p>
+<p>O obxectivo é comprobar <strong>o comportamento real de Wifite fronte a unha rede WPA2-Enterprise</strong>: a ferramenta detecta <code>EMPRESA-XYZ</code>, clasifícaa como <code>WPA2-E</code> e, cando se selecciona, <strong>descarta o obxectivo</strong> porque non incorpora o procedemento de ataque WPA-Enterprise que se estudará con outras ferramentas.</p>
+<p>Esta limitación <strong>é de Wifite</strong>, non unha demostración de que WPA2-Enterprise sexa invulnerable. Nas prácticas <a href="2.2-ATAQUE_WPA2_EAP_EVIL_TWIN.html">2.2 — Evil Twin</a> e <a href="2.3-ATAQUE_WPA2_EAP_MITM.html">2.3 — MITM</a> estúdanse outros modelos de auditoría EAP/RADIUS.</p>
+<p><strong>Obxectivos de aprendizaxe:</strong></p>
+<ul>
+<li>Identificar os compoñentes do laboratorio WPA2-Enterprise: AP, cliente e FreeRADIUS.</li>
+<li>Diferenciar a autenticación WPA2-PSK da autenticación IEEE 802.1X/EAP/PEAP.</li>
+<li>Recoñecer o identificador <code>WPA2-E</code> na saída de Wifite.</li>
+<li>Comprobar experimentalmente a mensaxe coa que Wifite descarta a rede.</li>
+<li>Comprender por que a captura do <em>4-way handshake</em> de WPA2-Enterprise non equivale a unha proba de dicionario WPA2-PSK.</li>
+</ul>
+<hr />
+<h2>2. Material necesario</h2>
+<p><strong>Hardware/Software:</strong></p>
+<ul>
+<li>Host alumnado · Máquina virtual GNU/Linux Kali amd64</li>
+<li>RAM ≥ 2048 MB · CPU ≥ 2 cores · PAE/NX habilitado</li>
+</ul>
+<p><strong>Ferramentas</strong> (xa instaladas en Kali):<br />
+<code>wifite</code>, <code>hostapd</code>, <code>freeradius</code>, <code>wpa_supplicant</code>, <code>mac80211_hwsim</code>, <code>aircrack-ng</code>, <code>tshark</code></p>
+<p><strong>Referencias:</strong></p>
+<ul>
+<li>[0] <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-1.pdf">2-Taller-HE-Practica-WiFi-1.pdf</a>{:target=&quot;_blank&quot;}</li>
+<li>[1] <a href="https://www.freeradius.org/documentation/freeradius-server/3.2.9/tutorials/eap-peap.html">FreeRADIUS documentation</a>{:target=&quot;_blank&quot;}</li>
+<li>[2] <a href="https://standards.ieee.org/ieee/802.1X/4389/">IEEE 802.1X-2010</a>{:target=&quot;_blank&quot;}</li>
+<li>[3] <a href="https://www.ietf.org/rfc/rfc4017.txt">RFC 4017 - EAP para WLANs</a>{:target=&quot;_blank&quot;}</li>
+</ul>
+<hr />
+<h2>3. Escenario e topoloxía</h2>
+<p>Para esta práctica empregamos o escenario <strong><code>eap_mitm</code></strong>, pero só a súa infraestrutura lexítima: AP corporativo, cliente e servidor RADIUS. <strong>Non arrincaremos MANA nin crearemos <code>br-mitm</code></strong>, porque o obxectivo aquí é examinar o comportamento de Wifite, non executar a práctica MITM.</p>
+<p>| Rol | Interface ou ponte | <em>Namespace</em> | Enderezo / estado |
+|---|---|---|---|
+| AP WPA2-Enterprise | <code>wlan0</code> e <code>br0</code> | <code>wifi_ap_wlan0</code> | <code>br0</code>: <code>192.168.50.10/24</code>; AP activo |
+| Servidor FreeRADIUS | <code>br-radius</code> | Principal | <code>192.168.50.1:1812</code> |
+| Cliente PEAP | <code>wlan1</code> | <code>wifi_cliente_wlan1</code> | IP por DHCP na rede <code>192.168.50.0/24</code> |
+| Elementos reservados para MITM | <code>wlan2</code>, <code>veth0</code> | <code>mitm_wlan2</code> | Preparados; MANA e <code>br-mitm</code> sen activar |
+| Wifite / monitorización | <code>wlan3</code> (pode pasar a <code>wlan3mon</code>) | Principal | Interface dispoñible para Wifite |</p>
+<p><strong>SSID:</strong> <code>EMPRESA-XYZ</code> · <strong>Canle:</strong> 6 · <strong>Autenticación:</strong> WPA2-Enterprise/PEAP · <strong>FreeRADIUS:</strong> <code>192.168.50.1:1812</code>.</p>
+<p>O cliente do escenario utiliza <strong>un certificado de CA configurado</strong> (<code>ca_cert</code>), como comprobamos no laboratorio:</p>
+<pre><code class="language-ini">ssid=&quot;EMPRESA-XYZ&quot;
+eap=PEAP
+ca_cert=&quot;/etc/freeradius/3.0/certs/ca.pem&quot;
+</code></pre>
+<p>Esquema simplificado da rede utilizada nesta práctica:</p>
+<pre><code class="language-text">                    REDE CORPORATIVA WPA2-ENTERPRISE
+
+  Cliente PEAP             AP lexítimo                  FreeRADIUS
+  wlan1  ~~~ ondas Wi-Fi ~~~  wlan0 -- br0 -- br-radius -- 192.168.50.1:1812
+  wifi_cliente_wlan1        wifi_ap_wlan0                namespace principal
+
+  Kali / Wifite: wlan3 (monitor) -- observación do SSID EMPRESA-XYZ
+  MANA / br-mitm: NON se poñen en marcha nesta práctica
+</code></pre>
+<p>O <strong>BSSID e a IP do cliente cambian entre execucións</strong>; os valores que aparecen nas saídas seguintes son exemplos reais dunha sesión validada, non datos para copiar literalmente.</p>
+<hr />
+<h2>4. Procedemento</h2>
+<p>Para realizar a práctica, abre <strong>dúas terminais na sesión gráfica de Kali</strong>. A terceira é opcional, para comprobar os rexistros de autenticación do AP.</p>
+<p>| Terminal | Función |
+|---|---|
+| <strong>Terminal 1</strong> | Iniciar o escenario e verificar a asociación do cliente. |
+| <strong>Terminal 2</strong> | Executar Wifite, seleccionar <code>EMPRESA-XYZ</code> e observar o descarte. |
+| <strong>Terminal 3 (opcional)</strong> | Consultar os rexistros EAP/RADIUS do laboratorio. |</p>
+<h3>Terminal 1 — Preparar a infraestrutura WPA2-Enterprise</h3>
+<p>Executa <strong>esta secuencia</strong>, empregando o mesmo inicio de escenario que na práctica 2.3:</p>
+<pre><code class="language-bash">sudo env WIFILAB_ENABLE_NAT=1 wifilabctl up eap_mitm
+sudo wifilabctl status
+sudo ip netns exec wifi_cliente_wlan1 iw dev wlan1 link
+</code></pre>
+<p>Exemplo real do estado despois de iniciar o escenario:</p>
+<pre><code class="language-text">NAMESPACE                 INTERFACE       IP                   ESTADO
+---------------------------------------------------------------------------
+wifi_cliente_wlan1        wlan1           192.168.50.81/24     UP
+mitm_wlan2                wlan2           -                    UP
+mitm_wlan2                veth0@if12      -                    UP
+wifi_ap_wlan0             br0             192.168.50.10/24     UP
+wifi_ap_wlan0             wlan0           -                    UP
+wifi_ap_wlan0             veth0@if10      -                    UP
+---------------------------------------------------------------------------
+Interfaces GLOBAIS / ATACANTE:
+(global)                  wlan3           (host/monitor)       LISTO
+</code></pre>
+<p>A asociación do cliente debe indicar <code>SSID: EMPRESA-XYZ</code>, na canle 6 (<code>2437 MHz</code>). Se aparece <code>Not connected</code>, agarda uns segundos e repite a comprobación.</p>
+<p>Para confirmar que FreeRADIUS está dispoñible e que o cliente valida unha CA:</p>
+<pre><code class="language-bash">sudo ss -lunp | grep ':1812'
+sudo grep -E 'ssid=|eap=|ca_cert=' \
+  /home/kali/wifiLab/run/eap_mitm/wpa_supplicant.conf
+</code></pre>
+<p><strong>Nesta práctica non executes</strong> <code>mana-start</code>, <code>bridge-mitm</code> nin <code>select-mitm</code>: son operacións da <a href="2.3-ATAQUE_WPA2_EAP_MITM.html">práctica 2.3</a>.</p>
+<h3>Terminal 2 — Wifite e descarte automático de WPA2-Enterprise</h3>
+<p>Abre unha segunda terminal gráfica. Antes de lanzar Wifite, comproba que Rockyou está dispoñible:</p>
+<pre><code class="language-bash">ls -lh /usr/share/wordlists/rockyou.txt*
+</code></pre>
+<p>Se só existe <code>rockyou.txt.gz</code>, podes descomprimilo:</p>
+<pre><code class="language-bash">sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
+</code></pre>
+<p>Aínda que <strong>Wifite non chegará a utilizar o dicionario contra esta rede Enterprise</strong>, empregamos o mesmo comando que nas prácticas WPA2-PSK para comparar o comportamento:</p>
+<pre><code class="language-bash">sudo wifite --no-wps --dict /usr/share/wordlists/rockyou.txt
+</code></pre>
+<h4>Paso 1 — Procesos en conflito</h4>
+<p>Wifite pode advertir da presenza de <code>NetworkManager</code>, <code>hostapd</code>, <code>wpa_supplicant</code> ou <code>dhclient</code>.</p>
+<div class="notice warning"><strong>Non deter os servizos do laboratorio</strong>
+<p>Non empregues <code>--kill</code> nin <code>airmon-ng check kill</code>: poderían deter o AP, o cliente ou os servizos necesarios para esta simulación. Continúa coa interface de monitorización dispoñible.</p>
+</div>
+<h4>Paso 2 — Interface de monitorización</h4>
+<p>Wifite debe utilizar a interface libre <code>wlan3</code>; pode habilitar o modo monitor e pasar a chamala <code>wlan3mon</code>. Se solicita unha selección, escolle a interface correspondente a <code>wlan3</code>.</p>
+<p>Non é necesario mover <code>wlan0</code> nin <code>wlan1</code> fóra dos seus <em>namespaces</em>.</p>
+<h4>Paso 3 — Recoñecer a rede WPA2-Enterprise</h4>
+<p>Agarda a que apareza <code>EMPRESA-XYZ</code> na canle 6 e preme <strong>Ctrl+C</strong> para terminar o escaneo e seleccionar a rede.</p>
+<p><strong>Saída real obtida na VM Kali:</strong></p>
+<pre><code class="language-text">NUM                      ESSID   CH  ENCR     PWR   WPS  CLIENT
+---  -------------------------  ---  -----    ----  ---  ------
+  1               EMPRESA-XYZ     6  WPA2-E    72db    no
+[+] Select target(s) (1-1) separated by commas, dashes or all: 1
+</code></pre>
+<p>O campo <code>WPA2-E</code> identifica <strong>WPA2-Enterprise</strong>, non WPA2-PSK. A intensidade do sinal e o BSSID poden variar.</p>
+<h4>Paso 4 — Comprobar que Wifite descarta o obxectivo</h4>
+<p>Tras introducir o número da rede, <strong>a saída real da sesión validada</strong> foi:</p>
+<pre><code class="language-text">[+] (1/1) Starting attacks against B6:EE:A1:E0:7A:D4 (EMPRESA-XYZ)
+
+[!]Skipping. Target is using WPA-Enterprise and can not be cracked.
+[+] Finished attacking 1 target(s), exiting
+</code></pre>
+<p>Esta é a <strong>evidencia principal da práctica</strong>: Wifite identifica WPA2-Enterprise e salta o obxectivo, sen iniciar unha proba de dicionario WPA2-PSK. O BSSID <code>B6:EE:A1:E0:7A:D4</code> pertence unicamente ao exemplo amosado.</p>
+<div class="notice success"><strong>Resultado esperado</strong>
+<p>O alumno debe identificar a rede como <code>WPA2-E</code> e obter a mensaxe <code>Skipping. Target is using WPA-Enterprise and can not be cracked.</code>. É o comportamento previsto desta versión de Wifite para este escenario.</p>
+</div>
+<h3>Terminal 3 (opcional) — Observar os rexistros EAP</h3>
+<p>Se queres relacionar a detección coa autenticación Enterprise que mantén operativo o laboratorio, podes consultar os rexistros sen interromper ningún servizo:</p>
+<pre><code class="language-bash">sudo grep -Ei 'EAP|AP-STA|authenticat' \
+  /home/kali/wifiLab/run/eap_mitm/hostapd_ok.log | tail -n 20
+</code></pre>
+<p>Estes rexistros corresponden á <strong>asociación lexítima do cliente</strong>, non a un ataque realizado por Wifite. Para información adicional de FreeRADIUS, consulta <code>/var/log/freeradius/radius.log</code> cando estea dispoñible.</p>
+<hr />
+<h2>5. Limitacións de Wifite con WPA2-EAP</h2>
+<p><strong>Resultado comprobado:</strong> Wifite detectou <code>EMPRESA-XYZ</code> como <code>WPA2-E</code>, permitiu seleccionala e respondeu:</p>
+<pre><code class="language-text">[!]Skipping. Target is using WPA-Enterprise and can not be cracked.
+</code></pre>
+<p>Isto significa que <strong>Wifite non aplica os ataques automatizados WPA2-PSK (handshake/PMKID e dicionario) a unha rede WPA2-Enterprise</strong>. A comprobación fíxose coa versión instalada na VM Kali deste laboratorio.</p>
+<p>Non debemos confundilo con que WPA2-Enterprise sexa intrinsecamente inatacable, nin con que a ferramenta sexa exclusivamente pasiva: <strong>Wifite tamén automatiza técnicas activas</strong> sobre protocolos compatibles, como a desautenticación en escenarios WPA2-PSK sen PMF.</p>
+<h3>Por que non serve o mesmo método que en WPA2-PSK?</h3>
+<p>En WPA2-PSK, o segredo compartido permite calcular candidatos á PMK e contrastalos cun <em>handshake</em> capturado. En WPA2-Enterprise, a PMK procede do proceso de autenticación EAP; capturar o intercambio EAPOL de catro mensaxes <strong>non proporciona unha PSK compartida contra a que aplicar Rockyou da mesma forma</strong>.</p>
+<p>A seguridade de WPA2-Enterprise tamén depende do método EAP empregado e da correcta validación dos certificados. Por exemplo:</p>
+<ul>
+<li>Un <strong>Evil Twin</strong> cun servidor EAP falso pode resultar perigoso para clientes que non validen adecuadamente a identidade do servidor. Estúdase na <a href="2.2-ATAQUE_WPA2_EAP_EVIL_TWIN.html">práctica 2.2</a>.</li>
+<li>Un AP intermediario pode <strong>reenviar a autenticación cara ao RADIUS lexítimo</strong> e permitir observar tráfico de aplicación non cifrado, tal como se comprobou na <a href="2.3-ATAQUE_WPA2_EAP_MITM.html">práctica 2.3</a>. Iso <strong>non implica romper TLS nin obter as credenciais PEAP</strong>.</li>
+</ul>
+<p>Na configuración actual de <code>eap_mitm</code>, o cliente <strong>si ten <code>ca_cert</code> configurado</strong>. A CA e a comprobación adecuada da identidade do servidor dificultan a suplantación dun servidor EAP, pero non cifran por si mesmas o tráfico HTTP de aplicación unha vez conectado o cliente.</p>
+<hr />
+<h2>6. Preguntas de reflexión</h2>
+<ol>
+<li>
+<p><strong>Que diferenzas ofrece WPA2-Enterprise respecto de WPA2-PSK?</strong></p>
+<ul>
+<li><strong>Autenticación individual:</strong> os usuarios poden ter credenciais propias.</li>
+<li><strong>Xestión centralizada:</strong> un servidor RADIUS pode controlar e rexistrar os accesos.</li>
+<li><strong>Revogación:</strong> pódese retirar o acceso a un usuario sen substituír unha PSK compartida.</li>
+<li><strong>A seguridade depende da configuración EAP:</strong> débense validar os certificados e empregar métodos axeitados.</li>
+</ul>
+</li>
+<li>
+<p><strong>Como se obtén a clave de sesión nos dous casos?</strong></p>
+<ul>
+<li><strong>WPA2-PSK:</strong> o contrasinal compartido intervén na derivación da PMK, polo que poden comprobarse candidatos offline a partir dun intercambio apto.</li>
+<li><strong>WPA2-Enterprise:</strong> o proceso EAP produce material de claves (MSK) a partir do cal se deriva a PMK. O <em>4-way handshake</em> tamén existe, pero non equivale a unha captura de PSK recuperable con Rockyou.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que observamos cando Wifite selecciona <code>EMPRESA-XYZ</code>?</strong></p>
+<ul>
+<li>O identificador <code>WPA2-E</code> durante o escaneo.</li>
+<li>A mensaxe <code>Skipping. Target is using WPA-Enterprise and can not be cracked.</code>.</li>
+<li>O descarte do obxectivo sen iniciar o ataque automatizado de dicionario WPA2-PSK.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que riscos de configuración poden afectar a WPA2-Enterprise?</strong></p>
+<ul>
+<li>Falta de validación correcta do certificado e da identidade do servidor EAP.</li>
+<li>Uso de métodos de autenticación inadecuados ou credenciais febles.</li>
+<li>Configuración incorrecta de clientes, AP ou servidores RADIUS.</li>
+<li>Tráfico de aplicación enviado sen protección, por exemplo mediante HTTP.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que medidas son recomendables?</strong></p>
+<ul>
+<li>Configurar e verificar a CA e a identidade do servidor de autenticación.</li>
+<li>Utilizar métodos robustos, como EAP-TLS cando corresponda.</li>
+<li>Aplicar boas políticas de credenciais e rexistro de accesos.</li>
+<li>Protexer tamén o tráfico das aplicacións con HTTPS/TLS.</li>
+</ul>
+</li>
+<li>
+<p><strong>Que demostra a práctica MITM 2.3 malia que o cliente valida a CA?</strong></p>
+<ul>
+<li>Que un AP intermediario pode retransmitir a autenticación cara ao servidor RADIUS lexítimo no laboratorio controlado.</li>
+<li>Que o cliente pode asociarse e autenticarse a través dese AP.</li>
+<li>Que se pode observar <strong>HTTP en claro</strong> na ponte do atacante; non se demostrou descifrado de PEAP nin recuperación de credenciais.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>7. Limpeza do laboratorio</h2>
+<p>Ao rematar, pecha Wifite na <strong>Terminal 2</strong>. Se deixou a interface en modo monitor, restáuraa <strong>antes de reiniciar o escenario</strong>:</p>
+<pre><code class="language-bash"># Executar só se a interface wlan3mon existe
+sudo airmon-ng stop wlan3mon
+</code></pre>
+<p>Desde a <strong>Terminal 1</strong>, para finalizar o laboratorio:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+ip netns list
+</code></pre>
+<p>O escenario non debe quedar con servizos de AP ou cliente activos cando se prepare outra práctica.</p>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

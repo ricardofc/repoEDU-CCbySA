@@ -1,0 +1,245 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Práctica 3.2 — WPA3-SAE: análise do *4-Way Handshake*, PMF e KRACK</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Práctica 3.2 — WPA3-SAE: análise do <em>4-Way Handshake</em>, PMF e KRACK</h1>
+<div class="notice warning"><strong>Uso autorizado</strong>
+<p>Procedemento exclusivamente docente para o laboratorio Wi-Fi virtual <code>vuln-wifi.lab</code>. Non se deben realizar capturas nin probas sobre redes alleas ou sen autorización.</p>
+</div>
+<div class="notice important"><strong>Documento de referencia</strong>
+<p>Esta práctica está relacionada co PDF <strong><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">3-Taller-HE-Practica-WiFi-2.pdf</a></strong>, en particular coas páxinas <strong>8 e 9</strong>, nas que se trata a captura da autenticación e o estudo de KRACK.</p>
+</div>
+<h2>1. Obxectivo e prerrequisitos</h2>
+<p>O obxectivo é <strong>observar unha conexión WPA3-SAE</strong>, capturar o intercambio de autenticación, identificar as mensaxes <strong>EAPOL-Key</strong> do <em>4-Way Handshake</em>, comprobar que <strong>PMF é obrigatorio</strong> e interpretar correctamente que probas permiten —e cales non permiten— valorar a exposición a <strong>KRACK (Key Reinstallation Attack)</strong>.</p>
+<p><strong>Non é necesario ter executado a práctica 3.1 nesta sesión nin conservar capturas anteriores.</strong> Este procedemento inicia o laboratorio e xera a súa propia captura. Para comprender a autenticación SAE recoméndase ler previamente a <a href="./3.1-ATAQUE_WPA3_SAE.html">práctica 3.1 — WPA3-SAE</a> ou o seu PDF de referencia.</p>
+<p>Material necesario:</p>
+<ul>
+<li>Máquina virtual Kali do laboratorio <code>vuln-wifi.lab</code>, con <code>wifilabctl</code> instalado.</li>
+<li>Ferramentas <code>ip</code>, <code>iw</code>, <code>wpa_cli</code>, <code>tshark</code>, <code>hostapd</code> e <code>wpa_supplicant</code>.</li>
+<li>Escenario <code>wpa3_sae</code>, con catro radios simuladas mediante <code>mac80211_hwsim</code>.</li>
+<li>Tres terminais de Kali (podes empregar unha cuarta para a análise, pero non é obrigatorio).</li>
+</ul>
+<div class="notice note"><strong>Alcance real da práctica</strong>
+<p>Esta é unha <strong>análise de tráfico, configuración e funcionamento</strong>. Non se executa un ataque KRACK real nin se comproba de maneira concluyente que unha implementación sexa inmune á reinstalación de claves. Esa validación require probas específicas de retransmisión e reinstalación de PTK.</p>
+</div>
+<h2>2. Fundamentos técnicos</h2>
+<h3>2.1. Autenticación WPA3-SAE e <em>4-Way Handshake</em></h3>
+<p>WPA3-Personal utiliza <strong>SAE (Simultaneous Authentication of Equals)</strong> para que AP e cliente demostren que coñecen o contrasinal sen transmitilo e establezan material criptográfico de sesión. SAE realiza o intercambio <strong>Commit/Confirm</strong> e a continuación execútase o <strong>4-Way Handshake</strong>, que deriva e instala as claves de tráfico.</p>
+<p>O <em>4-Way Handshake</em> transmite catro mensaxes <strong>EAPOL-Key</strong>:</p>
+<p>| Mensaxe | Dirección | Función simplificada |
+|---|---|---|
+| <strong>M1</strong> | AP → Cliente | Envío de <code>ANonce</code> |
+| <strong>M2</strong> | Cliente → AP | Envío de <code>SNonce</code> e comprobación criptográfica (<code>MIC</code>) |
+| <strong>M3</strong> | AP → Cliente | Envío de información de claves de grupo e confirmación; intervén na instalación das claves |
+| <strong>M4</strong> | Cliente → AP | Confirmación do intercambio |</p>
+<p><strong>SAE non substitúe EAPOL-Key</strong>: precede ao <em>4-Way Handshake</em>. Nunha captura adecuada poden identificarse tanto as tramas SAE como os paquetes EAPOL.</p>
+<h3>2.2. Que é KRACK?</h3>
+<p><strong>KRACK</strong> designa ataques de <em>reinstalación de claves</em>: unha implementación vulnerable pode instalar de novo unha clave que xa estaba en uso ao procesar retransmisións do intercambio. Nalgúns casos isto provoca a <strong>reutilización de nonces</strong> e pode comprometer a confidencialidade ou integridade do tráfico.</p>
+<p>O exemplo clásico analiza a retransmisión da mensaxe <strong>M3</strong> do <em>4-Way Handshake</em> cando o AP non recibe M4. <strong>A recepción de M3 repetidas non proba por si soa unha vulnerabilidade</strong>; o problema aparece se o cliente reinstala incorrectamente a clave e reutiliza parámetros criptográficos.</p>
+<h3>2.3. Que protexe PMF e que non protexe?</h3>
+<ul>
+<li><strong>PMF (<code>ieee80211w=2</code>)</strong> establece protección obrigatoria para determinadas <strong>tramas robustas de xestión</strong>, como desautenticacións e desasociacións unha vez establecida a protección correspondente.</li>
+<li><strong>EAPOL-Key non é unha trama de xestión protexida por PMF.</strong> Non é correcto atribuír a PMF a prevención de KRACK.</li>
+<li><strong>SAE</strong> proporciona propiedades de autenticación e segredo de sesión distintas da xestión correcta da reinstalación da PTK.</li>
+<li>A mitigación de <strong>KRACK</strong> depende de implementacións corrixidas en cliente/AP e do tratamento correcto das retransmisións e das claves.</li>
+</ul>
+<p>Fontes técnicas complementarias: <a href="https://cert.europa.eu/publications/security-advisories/2017-021/">CERT-EU — KRACK</a>, <a href="https://www.nsa.gov/portals/75/documents/what-we-do/cybersecurity/professional-resources/csa-mitigations-for-key-reinstallation-attacks-against-wifi-access-ii.pdf">NSA — Mitigations for Key Reinstallation Attacks</a>.</p>
+<h2>3. Organización do laboratorio</h2>
+<p>| Terminal Kali | Rol | Interface | Espazo de rede | PDF |
+|---|---|---|---|---|
+| <strong>Terminal 1</strong> | Preparación, AP e rexistros | <code>wlan0</code> | <code>phy0_wlan0</code> | Consola 1, pp. 5–7 |
+| <strong>Terminal 2</strong> | Cliente e reconexión SAE | <code>wlan1</code> | <code>phy1_wlan1</code> | Consola 2, pp. 7–8 |
+| <strong>Terminal 3</strong> | Captura de tráfico Wi-Fi | Preferentemente <code>hwsim0</code> | Global | Consola 3, p. 8 |
+| <strong>Terminal 4</strong> (ou 1) | Análise de EAPOL e PMF | — | Global | Consola 4, pp. 8–9 |</p>
+<p>A radio <code>wlan2</code> e a radio <code>wlan3</code> pertencen ao <em>namespace</em> global. Nesta práctica non son necesarias para atacar; cando <code>hwsim0</code> exista, empregaremos esa interface global de observación, que permite escoitar o tráfico entre radios simuladas sen depender de que outra radio monitor estea sintonizada na canle correcta.</p>
+<p><strong>Non executar <code>airmon-ng check kill</code></strong>, xa que podería deter procesos necesarios para o AP e o cliente.</p>
+<h2>4. Preparación desde cero</h2>
+<h3>4.1. Terminal 1 — Arrancar o escenario</h3>
+<p>Abre Kali e executa:</p>
+<pre><code class="language-bash">sudo wifilabctl up wpa3_sae
+sudo wifilabctl status
+</code></pre>
+<p>O controlador crea o AP, o cliente e os <em>namespaces</em> necesarios. Non é necesario executar <code>modprobe</code>, crear manualmente os <em>namespaces</em> nin iniciar <code>hostapd</code> de novo.</p>
+<p>Comproba as interfaces e o punto de acceso:</p>
+<pre><code class="language-bash">ip -br link
+sudo ip netns exec phy0_wlan0 iw dev wlan0 info
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p>O AP debe anunciar <code>EMPRESA-XYZ</code> na <strong>canle 6</strong>. O cliente debe mostrar <code>Connected to ...</code> e o mesmo SSID. Os BSSID e os enderezos MAC poden cambiar en cada arranque.</p>
+<h3>4.2. Terminal 1 — Verificar a configuración WPA3-SAE e PMF</h3>
+<pre><code class="language-bash">sudo grep -E '^(ssid|channel|wpa_key_mgmt|ieee80211w|rsn_pairwise|sae_require_mfp)=' \
+  /home/kali/wifiLab/run/wpa3_sae/hostapd.conf
+
+hostapd -v
+wpa_supplicant -v
+uname -r
+dpkg-query -W hostapd wpasupplicant
+</code></pre>
+<p>Parámetros relevantes:</p>
+<pre><code class="language-ini">ssid=EMPRESA-XYZ
+channel=6
+wpa_key_mgmt=SAE
+ieee80211w=2
+rsn_pairwise=CCMP
+sae_require_mfp=1
+</code></pre>
+<p><code>ieee80211w=2</code> significa <strong>PMF obrigatorio</strong>. O valor <code>CCMP</code> especifica o cifrado negociable neste escenario; <strong>non se debe supoñer que WPA3 sempre utiliza GCMP-256</strong>. As versións de programas permiten identificar o contorno, pero a numeración de versión <strong>non certifica por si soa a aplicación de todos os parches KRACK</strong>, que poden estar retroportados pola distribución.</p>
+<h3>4.3. Terminal 2 — Comprobar o cliente</h3>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+</code></pre>
+<p>Debemos observar unha asociación ao SSID <code>EMPRESA-XYZ</code> e, en <code>wpa_cli status</code>, un estado operativo como <code>wpa_state=COMPLETED</code> e <code>key_mgmt=SAE</code> (os campos exactos poden variar).</p>
+<h2>5. Captura da autenticación desde cero</h2>
+<h3>5.1. Terminal 3 — Elixir e comprobar a interface de captura</h3>
+<p>Nesta máquina virtual priorizamos <strong><code>hwsim0</code></strong>, a interface global de monitorización que pode crear <code>mac80211_hwsim</code>. Antes de capturar:</p>
+<pre><code class="language-bash">ip link show hwsim0
+sudo tshark -D
+</code></pre>
+<p>Se existe <code>hwsim0</code> e aparece entre as interfaces capturables, executa:</p>
+<pre><code class="language-bash">sudo ip link set hwsim0 up
+</code></pre>
+<div class="notice note"><strong>Só se non existe ou non se pode capturar con `hwsim0`</strong>
+<p>Emprega a radio libre <code>wlan3</code> en modo monitor. Primeiro confirma que non se está utilizando con Wacker nin con outra ferramenta:</p>
+<pre><code class="language-bash">sudo airmon-ng start wlan3 6
+iw dev
+</code></pre>
+<p>Se aparece <code>wlan3mon</code>, utiliza <code>wlan3mon</code> en lugar de <code>hwsim0</code> no comando de captura do seguinte apartado. Comproba que está na <strong>canle 6</strong>. Non utilices as dúas interfaces simultaneamente nesta práctica.</p>
+</div>
+<h3>5.2. Terminal 3 — Iniciar a captura</h3>
+<p>Usaremos <strong><code>/tmp/krack-wpa3.pcapng</code></strong>, unha ruta que permite gardar a captura no contorno probado. Executa o comando correspondente á interface que confirmaches no apartado anterior.</p>
+<p><strong>Captura preferente (<code>hwsim0</code>):</strong></p>
+<pre><code class="language-bash">sudo tshark -i hwsim0 \
+  -a duration:90 \
+  -w /tmp/krack-wpa3.pcapng
+</code></pre>
+<p><strong>Só se empregas <code>wlan3mon</code>:</strong></p>
+<pre><code class="language-bash">sudo tshark -i wlan3mon \
+  -a duration:90 \
+  -w /tmp/krack-wpa3.pcapng
+</code></pre>
+<p><strong>Deixa a terminal 3 capturando</strong>. A reconexión do seguinte apartado debe realizarse <strong>mentres a captura estea activa</strong>, non ao rematar os 90 segundos.</p>
+<div class="notice tip"><strong>Permisos de gravación</strong>
+<p>Se <code>tshark</code> non consegue abrir un ficheiro en <code>/home/kali</code>, non é necesario modificar os permisos do directorio persoal. Nesta práctica utilízase <code>/tmp/krack-wpa3.pcapng</code>. A mensaxe exacta de erro permitiría diagnosticar se se trata de permisos ou de <code>dumpcap</code>.</p>
+</div>
+<h3>5.3. Terminal 2 — Provocar unha nova autenticación</h3>
+<p>Mentres a terminal 3 captura, executa <strong>na terminal 2</strong>:</p>
+<pre><code class="language-bash">sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 disconnect
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 pmksa_flush
+sleep 2
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 reconnect
+sleep 8
+sudo ip netns exec phy1_wlan1 wpa_cli -i wlan1 status
+sudo ip netns exec phy1_wlan1 iw dev wlan1 link
+</code></pre>
+<p><code>disconnect</code> interrompe a asociación; <code>pmksa_flush</code> baleira as entradas da caché PMKSA; <code>reconnect</code> solicita unha nova conexión. <strong>Comproba que <code>wpa_cli</code> responde <code>OK</code></strong> nas operacións e que o cliente volve ao estado <code>COMPLETED</code>.</p>
+<p>Non é necesario iniciar outro <code>wpa_supplicant</code>, entrar nunha shell interactiva co <code>ip netns exec ... bash</code> nin pechala con <code>exit</code>.</p>
+<h3>5.4. Terminal 1 — Verificar que o AP observou a conexión</h3>
+<pre><code class="language-bash">sudo tail -n 70 /home/kali/wifiLab/run/wpa3_sae/hostapd.log
+</code></pre>
+<p>Busca eventos de asociación, autenticación SAE e finalización de claves, como <code>AP-STA-CONNECTED</code> ou <code>EAPOL-4WAY-HS-COMPLETED</code> (a redacción exacta depende da versión). <strong>Os logs confirman a conexión, non que a captura se realizase correctamente.</strong></p>
+<h2>6. Analizar a captura</h2>
+<p>Cando remate <code>tshark</code> na terminal 3, executa os seguintes comandos na <strong>terminal 4</strong> ou nunha terminal libre.</p>
+<h3>6.1. Comprobar que hai paquetes antes de filtrar</h3>
+<pre><code class="language-bash">ls -lh /tmp/krack-wpa3.pcapng
+sudo capinfos /tmp/krack-wpa3.pcapng
+sudo tshark -r /tmp/krack-wpa3.pcapng -c 12
+</code></pre>
+<p>Se <code>capinfos</code> informa de <strong>cero paquetes</strong>, a captura non é válida. Non continúes interpretando filtros baleiros: revisa a interface e repite o apartado 5.</p>
+<h3>6.2. Identificar tramas de autenticación e asociación Wi-Fi</h3>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng \
+  -Y 'wlan.fc.type_subtype == 0x000b || wlan.fc.type_subtype == 0x0000 || wlan.fc.type_subtype == 0x0001'
+</code></pre>
+<p>Estas tramas permiten observar se houbo intercambio de autenticación ou asociación. A autenticación <strong>SAE Commit/Confirm</strong> é independente dos paquetes EAPOL-Key posteriores.</p>
+<p>Se non aparece nada, revisa primeiro no apartado 6.1 que a captura conteña tráfico IEEE 802.11. Para o caso de <code>wlan3mon</code>, verifica tamén a súa canle e a correspondencia co AP.</p>
+<h3>6.3. Buscar EAPOL-Key do <em>4-Way Handshake</em></h3>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng -Y 'eapol'
+</code></pre>
+<p>Se existen, obtén o número de mensaxe e os contadores:</p>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng \
+  -Y 'eapol' \
+  -T fields \
+  -e frame.number \
+  -e _ws.col.Info \
+  -e eapol.keydes.replay_counter \
+  -e wlan_rsna_eapol.keydes.msgnr \
+  -e wlan.sa \
+  -e wlan.da
+</code></pre>
+<div class="notice tip"><strong>Por que o filtro é `eapol`?</strong>
+<p>O filtro de visualización <code>eapol</code> identifica os paquetes EAPOL da captura. <code>wlan_rsna_eapol.keydes.msgnr</code> emprégase aquí como <strong>campo de saída</strong> para indicar M1, M2, M3 e M4. Non substitúas o filtro <code>eapol</code> por <code>wlan_rsna_eapol</code> neste procedemento, porque pode producir unha saída baleira aínda que a captura conteña EAPOL-Key.</p>
+</div>
+<p>Saída orientativa dunha conexión correcta (os números de trama e as MAC cambian en cada execución):</p>
+<pre><code class="language-text">278  Key (Message 1 of 4)  1  1  e2:b5:52:03:37:4b  16:3a:b0:ef:99:38
+280  Key (Message 2 of 4)  1  2  16:3a:b0:ef:99:38  e2:b5:52:03:37:4b
+282  Key (Message 3 of 4)  2  3  e2:b5:52:03:37:4b  16:3a:b0:ef:99:38
+284  Key (Message 4 of 4)  2  4  16:3a:b0:ef:99:38  e2:b5:52:03:37:4b
+</code></pre>
+<p>| Mensaxe | Sentido | Replay Counter do exemplo | Interpretación |
+|---|---|---:|---|
+| M1 | AP → cliente | 1 | O AP inicia o intercambio de claves. |
+| M2 | Cliente → AP | 1 | O cliente responde á M1. |
+| M3 | AP → cliente | 2 | O AP envía a mensaxe que solicita instalar a clave. |
+| M4 | Cliente → AP | 2 | O cliente confirma a recepción da M3. |</p>
+<p>A secuencia <strong>1, 1, 2, 2</strong> é coherente cun <em>4-Way Handshake</em> normal; non constitúe un ataque nin unha reutilización de nonces criptográficos.</p>
+<p>Para examinar os indicadores da mensaxe M3, utiliza o número de trama que obteñas na túa captura (no exemplo, 282):</p>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng \
+  -Y 'frame.number == 282' -V
+</code></pre>
+<p>Busca os campos <code>Key Information</code>, <code>Install</code>, <code>Key ACK</code>, <code>Key MIC</code>, <code>Secure</code> e <code>Replay Counter</code>. No exemplo, M3 ten <strong><code>Install: Set</code></strong>, <strong><code>Key ACK: Set</code></strong>, <strong><code>Key MIC: Set</code></strong> e <strong><code>Replay Counter: 2</code></strong>. O indicador <code>Install: Set</code> é normal na M3: <strong>non significa que a clave fose reinstalada</strong>. KRACK require comprobar que unha implementación reinstala incorrectamente unha clave xa en uso ao procesar retransmisións; unha M3 normal non demostra esa vulnerabilidade. <a href="https://www.wireshark.org/docs/dfref/w/wlan_rsna_eapol.html">Referencia de campos Wireshark</a>.</p>
+<h3>6.4. Comprobar PMF en tramas de desautenticación</h3>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng \
+  -Y 'wlan.fc.type_subtype == 0x000c' \
+  -T fields \
+  -e frame.number \
+  -e wlan.fc.protected \
+  -e wlan.sa \
+  -e wlan.da
+</code></pre>
+<p>O campo <code>wlan.fc.protected=True</code>, <strong>se aparece nunha trama robusta de xestión capturada</strong>, indica que esa trama se transmite protexida. Se non hai tramas de desautenticación, a saída baleira é normal e <strong>non invalida</strong> a comprobación da configuración <code>ieee80211w=2</code>.</p>
+<p>Non é correcto afirmar que todas as desautenticacións deben aparecer protexidas: existen fases previas á asociación nas que aínda non está establecida a protección. Nunha captura de exemplo observouse unha trama de desautenticación co indicador <strong><code>Protected=True</code></strong>. Ese dato acredita a protección desa trama, pero <strong>non é unha evidencia de resistencia a KRACK nin permite atribuír esa desautenticación ao intercambio SAE observado posteriormente</strong>.</p>
+<h2>7. Que facer se o filtro <code>eapol</code> non devolve nada?</h2>
+<p>É unha situación posible e <strong>non significa que WPA3-SAE elimine EAPOL</strong>. Antes de sacar conclusións, verifica por esta orde:</p>
+<ol>
+<li><strong>Ficheiro correcto:</strong> <code>ls -lh /tmp/krack-wpa3.pcapng</code>; nesta práctica non se usa <code>capturas/cap-01.cap</code>.</li>
+<li><strong>Captura con paquetes:</strong> <code>sudo capinfos /tmp/krack-wpa3.pcapng</code> e <code>sudo tshark -r /tmp/krack-wpa3.pcapng -c 12</code>.</li>
+<li><strong>Interface de observación:</strong> se a captura se fixo con <code>wlan3mon</code>, comproba a canle; no laboratorio <code>hwsim0</code> é preferible cando está dispoñible porque observa todas as radios virtuais.</li>
+<li><strong>Orde temporal:</strong> inicia a captura <strong>antes</strong> de provocar a reconexión.</li>
+<li><strong>Reconexión real:</strong> comproba que os comandos <code>wpa_cli</code> responderon <code>OK</code> e que o cliente volveu a <code>wpa_state=COMPLETED</code>.</li>
+<li><strong>Logs do AP:</strong> busca novos eventos de asociación e finalización da autenticación en <code>hostapd.log</code>.</li>
+<li><strong>Filtros:</strong> examina primeiro a captura sen filtro; logo as tramas <code>wlan</code>, a autenticación SAE e finalmente <code>eapol</code>. Un filtro baleiro, por si só, non identifica a causa.</li>
+</ol>
+<p>Para unha inspección resumida do contido:</p>
+<pre><code class="language-bash">sudo tshark -r /tmp/krack-wpa3.pcapng \
+  -T fields -e frame.protocols | sort | uniq -c | sort -nr | head -20
+</code></pre>
+<p>Se aparecen tramas Wi-Fi de autenticación, pero <strong>ningún EAPOL</strong>, revisa se a reconexión xerou unha negociación completa e non unicamente unha reutilización de estado. Se non aparecen nin tramas de autenticación nin EAPOL, revisa primeiro a interface e o momento da captura.</p>
+<div class="notice warning"><strong>Non converter unha ausencia de paquetes nunha conclusión de seguridade</strong>
+<p>A ausencia de EAPOL nesta captura <strong>non proba</strong> que KRACK sexa imposible, nin que a rede non use un <em>4-Way Handshake</em>. Indica un problema ou unha limitación desta observación concreta, que cómpre diagnosticar.</p>
+</div>
+<h2>8. Interpretación dos resultados</h2>
+<p>| Evidencia | O que permite concluír | O que <strong>non</strong> permite concluír |
+|---|---|---|
+| <code>wpa_key_mgmt=SAE</code> | O AP está configurado para autenticación SAE | Que a implementación non teña defectos |
+| <code>ieee80211w=2</code> | PMF configurado como obrigatorio | Que EAPOL estea protexido por PMF ou que KRACK sexa imposible |
+| <code>hostapd -v</code>, <code>wpa_supplicant -v</code> | Versións instaladas | Que todos os parches estean presentes sen revisar a distribución |
+| SAE Commit/Confirm capturados | Observación da fase de autenticación SAE | Recuperación offline do contrasinal |
+| EAPOL M1–M4 capturados | Observación do <em>4-Way Handshake</em> | Ausencia de reinstalación de claves |
+| Deauth protexida | Protección desa trama de xestión | Protección do intercambio EAPOL |
+| Ningún EAPOL na captura | Non se observou EAPOL nese ficheiro | Inmunidade a KRACK |</p>
+<h3>8.1. Comprobación con Wifite</h3>
+<p>Wifite permite detectar a rede WPA3-SAE, pero a versión utilizada neste laboratorio <strong>non dispón dun procedemento específico para probar KRACK</strong>. Esta limitación compróbase paso a paso na <a href="./wifite-3.2-ATAQUE_WPA3_KRACK.html">práctica Wifite 3.2 — WPA3-SAE e KRACK</a>. A captura de PMKID ou do <em>handshake</em> para auditoría de contrasinais non constitúe unha proba de reinstalación de claves.</p>
+<p><strong>Conclusión técnica:</strong> WPA3-SAE proporciona autenticación mediante SAE e esixe PMF, pero <strong>a resistencia a KRACK debe atribuírse ao tratamento correcto da instalación e reinstalación de claves</strong>. Nunha captura completa de referencia obsérvanse SAE, asociación e as catro mensaxes EAPOL, cunha única M3 e sen indicios dunha retransmisión de M3 nesa secuencia. A presente práctica analiza a configuración e o tráfico observable; <strong>non executa unha proba de explotación nin unha validación formal de parches</strong>.</p>
+<h2>9. Finalización</h2>
+<p>Se queres conservar a captura tras un reinicio, cópiaa a un directorio persistente:</p>
+<pre><code class="language-bash">sudo cp /tmp/krack-wpa3.pcapng /home/kali/krack-wpa3.pcapng
+sudo chown kali:kali /home/kali/krack-wpa3.pcapng
+</code></pre>
+<p>Para desmontar o escenario ao rematar:</p>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<div class="notice note"><strong>Referencias</strong>
+<ul>
+<li><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">3-Taller-HE-Practica-WiFi-2.pdf</a> — documento docente, páxinas 8 e 9.</li>
+<li><a href="https://cert.europa.eu/publications/security-advisories/2017-021/">CERT-EU: KRACK — Key Reinstallation Attacks</a>.</li>
+<li><a href="https://chromium.googlesource.com/chromiumos/third_party/hostap/+/a218a713b8e0174c70871b14639108cd6c58631b/mac80211_hwsim/README">mac80211_hwsim: interface de monitorización global e radios virtuais</a>.</li>
+<li><a href="https://www.wireshark.org/docs/dfref/w/wlan_rsna_eapol.html">Wireshark: campos EAPOL-Key</a>.</li>
+</ul>
+</div>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

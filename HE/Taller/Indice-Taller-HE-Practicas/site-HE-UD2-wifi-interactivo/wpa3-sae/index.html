@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="gl" data-page="sae">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seguridade WPA3-SAE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html" class="active">WPA3-SAE</a>
+      <a href="../animacion/index.html">Animación</a>
+      <a href="../laboratorio/index.html">Laboratorio</a>
+      <a href="../ferramentas/index.html">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+  <div class="wrap head-in">
+    <nav class="nav" id="nav">
+      <a href="#protocolo" data-view="protocolo"><span class="mk"></span>SAE e KRACK</a>
+      <a href="#ataques" data-view="ataques"><span class="mk"></span>Wacker e Dragonblood</a>
+      <a href="#evidencias" data-view="evidencias"><span class="mk"></span>tshark e retos</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= VISTA 1: SAE + KRACK ======================= -->
+<div class="wrap" data-view="protocolo">
+  <div class="hero">
+    <h1>Mesmo contrasinal, <span class="q">sen crackeo offline posible</span>.</h1>
+    <p><b>WPA3-SAE</b> emprega o protocolo <b>Dragonfly</b> (Diffie-Hellman sobre curvas elípticas con escalares aleatorios por sesión). Un observador pasivo non pode probar contrasinais offline, e ademais inclúe <b>forward secrecy</b> e <b>PMF obrigatorio</b>.</p>
+    <div class="ks">
+      <span>Escenario lab: <b><code>wpa3_sae</code></b></span>
+      <span>PMF: <b><code>ieee80211w=2</code></b></span>
+      <span><code>aircrack-ng</code>: <b><code>May be WPA3 - not yet supported</code></b></span>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Por que cambia todo</div>
+    <h2 class="sec">Determinista (WPA2) fronte a Aleatorio por sesión (WPA3)</h2>
+    <div class="vs">
+      <div class="vscard bad"><div class="h">WPA2-PSK · determinista</div><div class="eq">PMK = PBKDF2(contrasinal, SSID)</div><p>Sempre produce a mesma PMK. Capturar M1–M4 ou PMKID permite probar millóns de palabras offline.</p></div>
+      <div class="vscard good"><div class="h">WPA3-SAE · Dragonfly PAKE</div><div class="eq">K = f(rand_C, Element_AP, PWE)</div><p>O COMMIT leva <b>scalar + Element</b>; K deriva do <b>Element</b> do par e do valor privado <b>rand</b> (non transmitido), co contrasinal embebido no <b>PWE</b>. Capturar COMMIT/CONFIRM non serve para probar dicionarios offline.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulación · Dragonfly + inventario vivo</div>
+    <h2 class="sec">O handshake SAE paso a paso</h2>
+    <div class="stage-card">
+      <div class="progress" id="progress">
+        <div class="pstep" data-p="commit"><span class="pl">FASE 1</span><span class="pv">Commit</span></div>
+        <div class="pstep" data-p="k"><span class="pl">CÁLCULO</span><span class="pv">Segredo K</span></div>
+        <div class="pstep" data-p="confirm"><span class="pl">FASE 2</span><span class="pv">Confirm</span></div>
+        <div class="pstep" data-p="pmk"><span class="pl">DERIVA</span><span class="pv">PMK ← K</span></div>
+        <div class="pstep" data-p="hs"><span class="pl">FASE 3</span><span class="pv">4-Way + PMF</span></div>
+      </div>
+      <div class="channel" id="channel" data-label="CANAL RADIO · WPA3-SAE"></div>
+      <div class="states">
+        <div class="state" id="saeStCli">
+          <h4><span class="dot sta"></span>Cliente (wlan1)</h4>
+          <div class="krow" data-k="pwe"><span class="n">PWE</span> punto na curva elíptica <span class="s no">○</span></div>
+          <div class="krow" data-k="sc"><span class="n">rand_C</span> valor privado aleatorio <span class="s no">○</span></div>
+          <div class="krow" data-k="k"><span class="n">K</span> segredo DH compartido <span class="s no">○</span></div>
+          <div class="krow" data-k="pmk"><span class="n">PMK</span> única por sesión (FS) <span class="s no">○</span></div>
+          <div class="krow" data-k="ptk"><span class="n">PTK+PMF</span> cifrado e 802.11w activo <span class="s no">○</span></div>
+        </div>
+        <div class="state" id="saeStAp">
+          <h4><span class="dot ap"></span>AP WPA3-SAE (wlan0)</h4>
+          <div class="krow" data-k="pwe"><span class="n">PWE</span> punto na curva elíptica <span class="s no">○</span></div>
+          <div class="krow" data-k="sa"><span class="n">rand_A</span> valor privado aleatorio <span class="s no">○</span></div>
+          <div class="krow" data-k="k"><span class="n">K</span> segredo DH compartido <span class="s no">○</span></div>
+          <div class="krow" data-k="pmk"><span class="n">PMK</span> única por sesión (FS) <span class="s no">○</span></div>
+          <div class="krow" data-k="ptk"><span class="n">PTK+PMF</span> cifrado e 802.11w activo <span class="s no">○</span></div>
+        </div>
+      </div>
+      <div class="explain"><h3 id="exTitle"></h3><p id="exBody"></p></div>
+      <div class="controls">
+        <span class="steplabel">Paso <b id="stepNum">0</b> / 5</span>
+        <div class="pills" id="pills"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="prevBtn" disabled>← Anterior</button>
+        <button class="btn primary" id="nextBtn">Seguinte →</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Práctica 3.2 · CVE-2017-13077</div>
+    <h2 class="sec">Simulador de KRACK e por que PMF non é a explicación</h2>
+    <p class="lead"><b>SAE non substitúe ao 4-Way Handshake:</b> prodúcese antes del. KRACK ataca a retransmisión da mensaxe <b>M3</b> cando un atacante bloquea <b>M4</b>. <b>Importante:</b> <code>EAPOL-Key</code> non é unha trama de xestión protexida por PMF; a resistencia a KRACK débese a <b>implementacións corrixidas</b> que non reinstalan unha PTK xa en uso.</p>
+    <div class="crack">
+      <div class="crack-top">
+        <div class="dotrow"><i></i><i></i><i></i></div>
+        <span class="title">simulador KRACK · retransmisión M3 (Práctica 3.2)</span>
+      </div>
+      <div class="inline-ctrls">
+        <label>Implementación do cliente:
+          <select id="krackMode">
+            <option value="vuln">Pila antiga sen parches (vulnerable a KRACK)</option>
+            <option value="patched">Pila actualizada / WPA3-SAE corrixido</option>
+          </select>
+        </label>
+      </div>
+      <div class="crack-body" id="krackBody"></div>
+      <div class="crack-ctrl">
+        <button class="btn danger" id="krackBtn">▶ Simular bloqueo de M4 + retransmisión M3</button>
+        <button class="btn" id="krackReset" disabled>Limpar</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 2: WACKER & DRAGONBLOOD ======================= -->
+<div class="wrap" data-view="ataques" hidden>
+  <div class="hero">
+    <h1>Non é invulnerable: <span class="d">cambia o vector de ataque</span>.</h1>
+    <p>En WPA3-SAE hai dúas ameazas principais segundo a configuración: <b>forza bruta online (<code>wacker</code>)</b> se o contrasinal é débil, e <b>downgrade Dragonblood (Práctica 3.3)</b> se o AP está en modo transición (<code>wpa=2+3</code>) ou con versións antigas.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Vector 1 · Práctica 3.1 (wacker)</div>
+    <h2 class="sec">Forza bruta online con <code>wacker</code></h2>
+    <p class="lead"><code>wacker</code> usa un <code>wpa_supplicant</code> parcheado coa interface en modo <b>managed</b> (non monitor) apuntando a <code>--bssid</code>, <code>--ssid</code> e <code>--freq 2437</code>. Proba palabras en tempo real (~80–150/s). Proba o efecto do <code>anti-clogging</code> e da lonxitude da clave:</p>
+    <div class="crack">
+      <div class="crack-top">
+        <div class="dotrow"><i></i><i></i><i></i></div>
+        <span class="title">wacker · forza bruta online WPA3-SAE</span>
+        <span class="target">AP: <b>EMPRESA-XYZ</b> (freq 2437 MHz)</span>
+      </div>
+      <div class="inline-ctrls">
+        <label>Contrasinal:
+          <select id="wckPass">
+            <option value="spongebob19">spongebob19 (en rockyou.txt)</option>
+            <option value="v7#Kp!2mNxQ8@wLjR4s">v7#Kp!2mNxQ8@wLjR4s (20+ chars aleatorios)</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="wckAnti" checked> <code>sae_anti_clogging_threshold=5</code></label>
+        <label><input type="checkbox" id="wckDual"> Paralelizar (<code>wlan2</code> + <code>wlan3</code> con <code>split</code>)</label>
+      </div>
+      <div class="crack-meta">
+        <span>Velocidade: <b id="wRate">~90/s</b></span>
+        <span>Intentos: <b id="wTries">0</b></span>
+        <span class="alert">Alertas IDS: <b id="wIds">0</b></span>
+      </div>
+      <div class="crack-body" id="wckBody"></div>
+      <div class="crack-ctrl">
+        <button class="btn danger" id="wckBtn">▶ Lanzar wacker</button>
+        <button class="btn" id="wckReset" disabled>Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Vector 2 · Práctica 3.3 (wpa3_sae_vulnerable)</div>
+    <h2 class="sec">Modo transición (<code>SAE WPA-PSK</code>) e Evil Twin WPA2-PSK</h2>
+    <p class="lead">Na Práctica 3.3 coexisten dous AP co SSID <code>EMPRESA-XYZ</code>: o lexítimo (modo transición, clave <code>spongebob19</code>) e un Evil Twin só-WPA2 coa clave falsa <code>calqueracousa</code>. Ao caer o AP real (simulado con <code>kill -TERM</code> ao PID de <code>hostapd</code> en <code>phy0_wlan0</code>, nunca <code>pkill</code>), o cliente intenta degradarse a WPA2.</p>
+    <div class="chain">
+      <div class="phase"><span class="ph-n">FASE 1</span><h3>Indispoñibilidade do AP SAE</h3><p>En redes reais úsase <code>dragondrain</code> (flood de Commits); en <code>mac80211_hwsim</code> simúlase detendo o <code>hostapd</code> lexítimo.</p></div>
+      <div class="phase"><span class="ph-n">FASE 2</span><h3>Intento de downgrade a WPA2</h3><p>O cliente con perfil <code>key_mgmt=SAE WPA-PSK</code> asóciase ao Evil Twin e envía material WPA2-PSK. Falla con <code>AP-STA-POSSIBLE-PSK-MISMATCH</code>.</p></div>
+      <div class="phase"><span class="ph-n">FASE 3</span><h3>Auditoría sen romper SAE</h3><p>Aínda sen completar conexión, a captura en <code>hwsim0</code> (<code>aircrack-ng</code>) ou o PMKID (<code>wifite</code>) recuperan <code>spongebob19</code>. <b>SAE non foi descifrado</b>.</p></div>
+    </div>
+    <div class="note cta"><span class="ic">🛡</span><p>Mitigación definitiva: <code>hostapd/wpa_supplicant ≥ 2.10</code>, <code>wpa=3</code> (WPA3 puro sen transición), <code>ieee80211w=2</code>, <code>sae_pwe=2</code>, <code>sae_groups=19</code> e contrasinais de ≥ 20 caracteres aleatorios.</p></div>
+  </section>
+</div>
+
+<!-- ======================= VISTA 3: TSHARK & RETOS ======================= -->
+<div class="wrap" data-view="evidencias" hidden>
+  <div class="hero">
+    <h1>Analizar tramas SAE/KRACK con <span class="q">rigor técnico</span>.</h1>
+    <p>Un <code>Install: Set</code> en M3 ou un <code>auth.alg=0</code> nunha reconexión non son probas de ataque nin de downgrade. Compróbao aquí cos filtros reais de <code>tshark</code>.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Capturas sobre hwsim0 · Práctica 3.2 e 3.3</div>
+    <h2 class="sec">Simulador de filtros <code>tshark</code></h2>
+    <div class="tshark-box" id="tsharkSae"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Comproba o aprendido · VALIDACION-LABORATORIO.md</div>
+    <h2 class="sec">Retos de interpretación forense en WPA3</h2>
+    <div id="quizSae"></div>
+  </section>
+</div>
+
+<footer class="wrap">
+  <p>Baseado en <b>HE-UD2 · Prácticas 3.1–3.3</b> de <a href="https://github.com/ricardofc/vuln-wifi.lab/" target="_blank" rel="noopener">vuln-wifi.lab</a>.</p>
+  <p>Fonte docente: <b>repoEDU-CCbySA</b> · Licenza <b>CC BY-SA 4.0</b></p>
+</footer>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+  WifiSite.initViewTabs("protocolo");
+
+  // --- Vista 1: SAE ---
+  var steps=[
+    {n:0,title:"Punto de partida",on:[],cli:{pwe:1},ap:{pwe:1},
+      body:"Ambos lados derivan do contrasinal un <b>Password Element (PWE)</b> sobre a curva elíptica. Preme Seguinte.",msgs:[]},
+    {n:1,title:"Fase 1 · SAE Commit (simultáneo)",on:["commit"],cli:{pwe:1,sc:1},ap:{pwe:1,sa:1},
+      body:"Cada extremo xera un valor privado aleatorio (<code>rand_C</code>, <code>rand_A</code>) e envía o seu <b>COMMIT</b> (<code>scalar + Element</code>). O <code>rand</code> privado nunca se transmite.",
+      msgs:[
+        {cls:"cli left",tag:"SAE Commit",dir:"Cliente → AP",body:"COMMIT_C (scalar + Element)",chips:["rand_C privado"]},
+        {cls:"ap right",tag:"SAE Commit",dir:"AP → Cliente",body:"COMMIT_A (scalar + Element)",chips:["rand_A privado"]}
+      ]},
+    {n:2,title:"Cálculo local · Segredo compartido K",on:["commit","k"],cli:{pwe:1,sc:1,k:1},ap:{pwe:1,sa:1,k:1},
+      body:"Cada un calcula localmente <code>K</code> a partir do <b>Element</b> do COMMIT do par e do seu <code>rand</code> privado (sobre o PWE). Sen ese valor privado, un atacante non pode calcular K.",
+      msgs:[{cls:"calc mid",tag:"Cálculo local",dir:"Cliente e AP",body:"K derivada do Element do par + rand propio",verify:{txt:"Mesmo segredo K sen envialo nin permitir crackeo offline."}}]},
+    {n:3,title:"Fase 2 · SAE Confirm",on:["commit","k","confirm"],cli:{pwe:1,sc:1,k:1},ap:{pwe:1,sa:1,k:1},
+      body:"Intercambian <code>CONFIRM = hash(K)</code>. A coincidencia demostra autenticidade mutua sen revelar o contrasinal.",
+      msgs:[
+        {cls:"cli left",tag:"SAE Confirm",dir:"Cliente → AP",body:"CONFIRM_C = hash(K)"},
+        {cls:"ap right",tag:"SAE Confirm",dir:"AP → Cliente",body:"CONFIRM_A = hash(K)",verify:{txt:"Autenticación mutua SAE completada."}}
+      ]},
+    {n:4,title:"Derivación · PMK ← K (Forward Secrecy)",on:["commit","k","confirm","pmk"],cli:{pwe:1,sc:1,k:1,pmk:1},ap:{pwe:1,sa:1,k:1,pmk:1},
+      body:"A PMK derívase de K. Como os escalares mudan en cada sesión, sesións pasadas non son descifrables aínda que se coñeza o contrasinal no futuro.",
+      msgs:[{cls:"calc mid",tag:"PMK única",dir:"Cliente e AP",body:"PMK ← K",chips:["Forward Secrecy"]}]},
+    {n:5,title:"Fase 3 · 4-Way Handshake + PMF obrigatorio",on:["commit","k","confirm","pmk","hs"],cli:{pwe:1,sc:1,k:1,pmk:1,ptk:1},ap:{pwe:1,sa:1,k:1,pmk:1,ptk:1},
+      body:"Co PMK derivado de SAE execútase o 4-Way Handshake EAPOL-Key (M1–M4) e actívase PMF obrigatorio (<code>ieee80211w=2</code>).",
+      msgs:[{cls:"ap left",tag:"4-Way Handshake",dir:"AP ↔ Cliente",body:"PTK/GTK instaladas + PMF",verify:{est:1,txt:"Conexión WPA3-SAE segura establecida (key_mgmt=SAE)."}}]}
+  ];
+  var idx=0, channel=document.getElementById("channel"), prog=document.getElementById("progress"), pills=document.getElementById("pills");
+  for(var i=0;i<6;i++){(function(k){
+    var b=document.createElement("button"); b.className="pill"; b.textContent=k;
+    b.addEventListener("click",function(){idx=k;render();}); pills.appendChild(b);
+  })(i);}
+  function setSt(el,obj){
+    el.querySelectorAll(".krow").forEach(function(r){
+      var on=!!(obj&&obj[r.getAttribute("data-k")]);
+      r.classList.toggle("has",on);
+      var s=r.querySelector(".s"); s.textContent=on?"●":"○"; s.className="s "+(on?"yes":"no");
+    });
+  }
+  function render(){
+    var st=steps[idx];
+    document.getElementById("stepNum").textContent=st.n;
+    document.getElementById("exTitle").textContent=st.title;
+    document.getElementById("exBody").innerHTML=st.body;
+    setSt(document.getElementById("saeStCli"),st.cli);
+    setSt(document.getElementById("saeStAp"),st.ap);
+    prog.querySelectorAll(".pstep").forEach(function(p){
+      var on=st.on.indexOf(p.getAttribute("data-p"))>=0;
+      p.classList.toggle("on",on);
+      var pv=p.querySelector(".pv"), had=pv.querySelector(".chk"); if(had) had.remove();
+      if(on){var c=document.createElement("span");c.className="chk";c.textContent="✓";pv.appendChild(c);}
+    });
+    channel.innerHTML="";
+    if(!st.msgs.length){
+      channel.innerHTML='<div style="position:absolute;inset:0;display:grid;place-items:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)">PWE derivado localmente · aínda sen tráfico SAE</div>';
+    }else{
+      st.msgs.forEach(function(m){
+        var el=document.createElement("div"); el.className="msg "+m.cls+" show";
+        var chips=(m.chips||[]).map(function(c){return '<span class="chip">'+c+'</span>';}).join("");
+        var vf=m.verify?'<div class="verify'+(m.verify.est?' est':'')+'"><span class="ic">'+(m.verify.est?'✦':'✓')+'</span><span>'+m.verify.txt+'</span></div>':"";
+        el.innerHTML='<div class="tag"><span class="pin"></span>'+m.tag+'<span class="dir">'+m.dir+'</span></div><div class="body">'+m.body+chips+'</div>'+vf;
+        channel.appendChild(el);
+      });
+    }
+    document.getElementById("prevBtn").disabled=idx===0;
+    var nb=document.getElementById("nextBtn");
+    nb.disabled=idx===5; nb.textContent=idx===5?"Completado ✓":"Seguinte →";
+    pills.querySelectorAll(".pill").forEach(function(p,k){p.classList.toggle("active",k===idx);});
+  }
+  document.getElementById("prevBtn").addEventListener("click",function(){if(idx>0){idx--;render();}});
+  document.getElementById("nextBtn").addEventListener("click",function(){if(idx<5){idx++;render();}});
+  render();
+
+  // --- Simulador KRACK ---
+  var krackBody=document.getElementById("krackBody"), krackBtn=document.getElementById("krackBtn"), krackReset=document.getElementById("krackReset"), krackMode=document.getElementById("krackMode");
+  var kTimer=null;
+  function addK(cls,html){ var d=document.createElement("div"); d.className="cl "+cls; d.innerHTML=html; krackBody.appendChild(d); krackBody.scrollTop=krackBody.scrollHeight; }
+  function resetK(){ if(kTimer){clearTimeout(kTimer);kTimer=null;} krackBody.innerHTML=""; krackBtn.disabled=false; krackReset.disabled=true; }
+  krackReset.addEventListener("click",resetK);
+  krackBtn.addEventListener("click",function(){
+    resetK(); krackBtn.disabled=true; krackReset.disabled=false;
+    var vuln=krackMode.value==="vuln";
+    var seq=[
+      [250,function(){addK("log","1. SAE Commit/Confirm completado (ou WPA2 4-way iniciado).");}],
+      [420,function(){addK("log","2. M1 (replay=1) e M2 (replay=1) intercambiados.");}],
+      [450,function(){addK("hot","3. AP → Cliente: M3 (replay=2, Install: Set)  [Nota: Install: Set é NORMAL en M3]");}],
+      [450,function(){addK("warn","4. Atacante MITM bloquea M4 para que non chegue ao AP (PMF non protexe EAPOL-Key!).");}],
+      [500,function(){addK("warn","5. AP non recibiu M4 → retransmite M3 (replay=3).");}],
+      [550,function(){
+        if(vuln){
+          addK("fail",'<span class="idx">VULN</span><span>Cliente sen parches REINSTALA a mesma PTK e resetea o nonce a 0!</span><span class="res">NONCE REUSE</span>');
+        }else{
+          addK("hit",'<span class="idx">SAFE</span><span>Pila corrixida detecta PTK xa instalada e NON resetea o nonce.</span><span class="res">KRACK MITIGADO</span>');
+        }
+      }],
+      [400,function(){
+        addK("log", vuln?"Consecuencia: reutilización de keystream → descifrado e inxección de paquetes.":"Lembra: na Práctica 3.2 observamos M1–M4 e Install: Set, pero non executamos explotación KRACK.");
+        krackBtn.disabled=false;
+      }]
+    ];
+    var i=0;
+    function run(){ if(i<seq.length){ var s=seq[i++]; kTimer=setTimeout(function(){s[1]();run();},s[0]); } }
+    run();
+  });
+
+  // --- Vista 2: Wacker ---
+  var wckBody=document.getElementById("wckBody"), wckBtn=document.getElementById("wckBtn"), wckReset=document.getElementById("wckReset");
+  var wckPass=document.getElementById("wckPass"), wckAnti=document.getElementById("wckAnti"), wckDual=document.getElementById("wckDual");
+  var wRate=document.getElementById("wRate"), wTries=document.getElementById("wTries"), wIds=document.getElementById("wIds");
+  var wTimer=null;
+  function addW(cls,html){ var d=document.createElement("div"); d.className="cl "+cls; d.innerHTML=html; wckBody.appendChild(d); wckBody.scrollTop=wckBody.scrollHeight; }
+  function resetW(){
+    if(wTimer){clearTimeout(wTimer);wTimer=null;}
+    wckBody.innerHTML=""; wTries.textContent="0"; wIds.textContent="0";
+    wRate.textContent=wckDual.checked?"~160/s":"~90/s";
+    wckBtn.disabled=false; wckReset.disabled=true;
+  }
+  wckReset.addEventListener("click",resetW);
+  wckDual.addEventListener("change",function(){ wRate.textContent=wckDual.checked?"~160/s":"~90/s"; });
+  wckBtn.addEventListener("click",function(){
+    resetW(); wckBtn.disabled=true; wckReset.disabled=false;
+    var pwd=wckPass.value, anti=wckAnti.checked, dual=wckDual.checked;
+    addW("log", dual?"$ wacker --interface wlan2 (parte-0) & wlan3 (parte-1) --freq 2437 [managed]":"$ python3 wacker.py --wordlist rockyou.txt --interface wlan2 --bssid BSSID_AP --ssid EMPRESA-XYZ --freq 2437");
+    var words=["123456","password","admin123","qwerty","empresa2024","wifi1234","spongebob19"];
+    var i=0;
+    function step(){
+      if(i>=words.length){
+        addW("warn","Dicionario probado sen éxito. Cun contrasinal aleatorio de 20+ chars o ataque online levaría séculos e xeraría milleiros de alertas SAE.");
+        wckBtn.disabled=false; return;
+      }
+      var w=words[i];
+      wTries.textContent=(i+1); wIds.textContent=(i+1);
+      if(anti && i===4){
+        wRate.textContent="~35/s";
+        addW("sys","AP: sae_anti_clogging_threshold superado → esixe token anti-clogging extra (maior latencia)");
+      }
+      if(w===pwd){
+        addW("hit",'<span class="idx">#'+(i+1)+'</span><span>SAE Commit/Confirm "'+w+'" → AP responde OK</span><span class="res">Found the password!</span>');
+        wckBtn.disabled=false; return;
+      }
+      addW("fail",'<span class="idx">#'+(i+1)+'</span><span>SAE "'+w+'" → Reject / Confirm FAIL</span><span class="res">✗</span>');
+      wTimer=setTimeout(function(){ i++; step(); }, anti && i>=4 ? 650 : (dual?290:430));
+    }
+    wTimer=setTimeout(step,350);
+  });
+
+  // --- Vista 3: tshark & Quiz ---
+  WifiSite.renderTshark(document.getElementById("tsharkSae"),[
+    {
+      label:"EAPOL M1–M4 + Replay Counter (3.2)",
+      cmd:"tshark -r /tmp/krack-wpa3.pcapng -Y 'eapol' -T fields -e frame.number -e _ws.col.Info -e eapol.keydes.replay_counter -e wlan_rsna_eapol.keydes.msgnr",
+      cols:["frame","Info","replay_counter","msgnr"],
+      rows:[
+        {hl:true,cells:["278","Key (Message 1 of 4)","1","1"]},
+        {hl:true,cells:["280","Key (Message 2 of 4)","1","2"]},
+        {hl:true,cells:["282","Key (Message 3 of 4)","2 (Install: Set normal)","3"]},
+        {hl:true,cells:["284","Key (Message 4 of 4)","2","4"]}
+      ],
+      note:"A secuencia 1, 1, 2, 2 e Install: Set en M3 corresponden a un 4-Way Handshake normal. Usa sempre -Y 'eapol' (non 'wlan_rsna_eapol')."
+    },
+    {
+      label:"SAE vs caché PMKSA (3.1/3.2)",
+      cmd:"tshark -r /tmp/krack-wpa3.pcapng -Y 'wlan.fc.type_subtype == 0x000b' -T fields -e frame.number -e wlan.fixed.auth.alg -e wlan.sa -e wlan.da",
+      cols:["frame","auth.alg","significado","nota"],
+      rows:[
+        {hl:true,cells:["120","3","Simultaneous Authentication of Equals (SAE)","Autenticación inicial tras pmksa_flush"]},
+        {cells:["310","0","Open System","Reconexión usando caché PMKSA; NON é downgrade a WPA2 (confirmar en wpa_cli status)"]}
+      ],
+      note:"Se non executas 'wpa_cli pmksa_flush', unha reconexión pode mostrar auth.alg=0 sen abandonar key_mgmt=SAE."
+    },
+    {
+      label:"Downgrade Evil Twin (3.3)",
+      cmd:"tshark -r /tmp/wpa3-3.3-transicion.pcapng -Y 'eapol && wlan.bssid == EVIL_BSSID'",
+      cols:["frame","Info","bssid","evento"],
+      rows:[
+        {hl:true,cells:["510","Authentication (Open) + Association","EVIL_BSSID (WPA2-P)","Cliente en modo transición tenta WPA2-PSK"]},
+        {hl:true,cells:["514","Key (M1/M2)","EVIL_BSSID","AP-STA-POSSIBLE-PSK-MISMATCH (clave falsa 'calqueracousa'), pero suficiente para aircrack-ng → spongebob19"]}
+      ],
+      note:"O Evil Twin non chega a completar a asociación, pero o material WPA2-PSK capturado xa permite verificar spongebob19 offline."
+    }
+  ]);
+
+  WifiSite.renderQuiz(document.getElementById("quizSae"),[
+    {
+      q:"Na Práctica 3.2, tshark mostra `Install: Set` na mensaxe M3 (trama 282). Significa iso que o cliente é vulnerable a KRACK?",
+      opts:[
+        "Non: Install: Set é o indicador normal dunha M3 estándar. KRACK require comprobar se unha pila vulnerable reinstala unha clave xa en uso ao recibir retransmisións.",
+        "Si: sempre que aparece Install: Set houbo reinstalación de clave."
+      ],
+      ans:0,
+      exp:"Exacto! A análise de configuración e tramas da Práctica 3.2 non executa explotación KRACK nin certifica parches retroportados."
+    },
+    {
+      q:"Unha rede WPA3-SAE ten `ieee80211w=2` (PMF obrigatorio). É correcto afirmar que é inmune a KRACK grazas a PMF?",
+      opts:[
+        "Si, PMF cifra os paquetes EAPOL-Key.",
+        "Non: EAPOL-Key non é unha trama protexida por PMF. A prevención de KRACK depende do tratamento correcto da instalación de claves nas pilas de software."
+      ],
+      ans:1,
+      exp:"Moi ben! Este é un matiz crítico destacado explicitamente na Práctica 3.2."
+    },
+    {
+      q:"Na Práctica 3.3, o cliente nunca chega a `wpa_state=COMPLETED` contra o Evil Twin porque este ten o contrasinal `calqueracousa`. Pode recuperarse `spongebob19` igualmente?",
+      opts:[
+        "Non, sen conexión completada non hai ningún dato útil.",
+        "Si: durante o intento WPA2-PSK intercambian EAPOL / PMKID suficiente para que aircrack-ng ou wifite verifiquen spongebob19 offline."
+      ],
+      ans:1,
+      exp:"Correcto! E iso faise sobre o intento WPA2-PSK do modo transición, sen descifrar SAE."
+    }
+  ]);
+})();
+</script>
+</body>
+</html>

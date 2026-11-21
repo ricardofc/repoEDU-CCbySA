@@ -1,0 +1,605 @@
+<!doctype html><html lang="gl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laboratorio Vulnerable Wi-Fi (vuln-wifi.lab) con Vagrant e mac80211_hwsim</title><style>
+:root{color-scheme:light dark}body{font:16px/1.58 system-ui,Arial;margin:0;background:#f7f9fb;color:#1c2e3d}.wrap{max-width:940px;margin:0 auto;padding:22px 28px 70px}a{color:#1460a0}header{position:sticky;top:0;background:#12334d;color:#fff;padding:12px 26px}header a{color:#fff}article{background:white;border-radius:16px;padding:25px 36px;box-shadow:0 4px 20px #18364f11}h1{font-size:1.7rem;line-height:1.25}h2{font-size:1.35rem;margin-top:2rem;border-bottom:1px solid #d7e0e7;padding-bottom:.4rem}h3{font-size:1.1rem}pre{padding:14px 18px;background:#11283a;color:#e4f5ff;overflow:auto;border-radius:9px;white-space:pre}pre code{font:13px/1.5 ui-monospace,Consolas,monospace}p code,li code{background:#e8eff5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;display:block;overflow:auto}td,th{border:1px solid #d4e0ea;padding:8px;text-align:left}img{max-width:100%;height:auto}blockquote{border-left:4px solid #14a3b8;padding:2px 12px;background:#eff7f9}.notice{padding:10px 15px;border-left:4px solid #16a5bd;background:#eff9fc;border-radius:6px}.notice.warning{border-color:#db7e26;background:#fff7eb}.notice strong{display:block} @media(max-width:640px){.wrap{padding:12px}article{padding:15px}} </style><header><a href="../index.html">← Volver ao laboratorio interactivo</a> · Guía docente validada</header><main class="wrap"><article><h1>Laboratorio Vulnerable Wi-Fi (vuln-wifi.lab) con Vagrant e mac80211_hwsim</h1>
+<div class="notice important"><strong>Despregamento do laboratorio</strong>
+<p>No anfitrión, executa <code>vagrant up</code> e despois <code>vagrant reload</code>. O reinicio activa o acceso gráfico automático como usuario <code>kali</code> e a eliminación controlada de <code>vagrant</code>. Para traballar, abre a consola de VirtualBox como <code>kali</code> e utiliza <code>sudo wifilabctl</code>. <strong>Non empregues <code>make ssh</code> nin <code>vagrant ssh</code> unha vez finalizada a VM.</strong> Os comandos de conexión SSH mediante Vagrant só son aplicables antes da finalización da VM.</p>
+</div>
+<div class="notice important"><strong>[![Licenza](https://img.shields.io/badge/Licenza-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/){target=&#x27;_blank&#x27;} [![Kali Linux](https://img.shields.io/badge/Kali-Rolling-557C94.svg)](https://www.kali.org/){target=&#x27;_blank&#x27;} [![VirtualBox](https://img.shields.io/badge/VirtualBox-7.0%2B-blue.svg)](https://www.virtualbox.org/){target=&#x27;_blank&#x27;} [![Vagrant](https://img.shields.io/badge/Vagrant-2.3%2B-1868F2.svg)](https://www.vagrantup.com/){target=&#x27;_blank&#x27;}</strong>
+<p><strong>Laboratorio automatizado para prácticas de Hacking Ético Wi-Fi baseado en Vagrant, VirtualBox e mac80211_hwsim</strong></p>
+<p>Este laboratorio está estruturado para coincidir cos manuais PDF do repositorio <a href="https://github.com/ricardofc/repoEDU-CCbySA/tree/main/HE/Taller/Wi-Fi/">repoEDU-CCbySA - HE - Wi-Fi</a>{target=&quot;_blank&quot;}</p>
+</div>
+<h2>Aviso Legal</h2>
+<div class="notice warning"><strong>**IMPORTANTE:** Este laboratorio é **EXCLUSIVAMENTE** para fins educativos.</strong>
+<p>O autor do presente documento <strong>declina calquera responsabilidade</strong> asociada ao uso incorrecto e/ou malicioso que puidese realizarse coa información exposta no mesmo. Por tanto, non se fai responsable en ningún caso, nin pode ser considerado legalmente responsable en ningún caso, das consecuencias que poidan derivarse da información contida nel, incluíndo os posibles erros e información incorrecta existentes, información difamatoria, así como das consecuencias que se poidan derivar sobre a súa aplicación en sistemas de información reais e/ou virtuais. Este documento foi xerado para uso didáctico e debe ser empregado en contornas privadas e virtuais controladas co permiso correspondente do administrador desas contornas.</p>
+<p><strong>NON EXPOÑAS ESTA MÁQUINA A INTERNET.</strong></p>
+<p>Usos permitidos e non permitidos:</p>
+<ul>
+<li>
+<p>✅ Permitido: uso en contornas virtuais controladas con permiso do administrador</p>
+</li>
+<li>
+<p>✅ Permitido: aprendizaxe e formación en ciberseguridade</p>
+</li>
+<li>
+<p>❌ PROHIBIDO: uso contra redes reais sen autorización explícita e por escrito</p>
+</li>
+<li>
+<p>❌ PROHIBIDO: distribución de ferramentas ou técnicas con fins maliciosos</p>
+</li>
+</ul>
+</div>
+<hr />
+<h2>Táboa de Contidos</h2>
+<ul>
+<li>
+<p><a href="#caracteristicas-principais">Características Principais</a></p>
+</li>
+<li>
+<p><a href="#requisitos-previos">Requisitos Previos</a></p>
+</li>
+<li>
+<p><a href="#instalacion-rapida">Instalación Rápida</a></p>
+</li>
+<li>
+<p><a href="#indice-de-practicas">Índice de Prácticas</a></p>
+</li>
+<li>
+<p><a href="#uso-basico">Uso Básico</a></p>
+</li>
+<li>
+<p><a href="#comandos-de-wifilabctl">Comandos de wifilabctl</a></p>
+</li>
+<li>
+<p><a href="#makefile">Makefile</a></p>
+</li>
+<li>
+<p><a href="#comparacion-de-practicas">Comparación de Prácticas</a></p>
+</li>
+<li>
+<p><a href="#estrutura-do-laboratorio">Estrutura do Laboratorio</a></p>
+</li>
+<li>
+<p><a href="#resolucion-de-problemas">Resolución de Problemas</a></p>
+</li>
+<li>
+<p><a href="#aviso-legal">Aviso Legal</a></p>
+</li>
+<li>
+<p><a href="#referencias">Referencias</a></p>
+</li>
+</ul>
+<hr />
+<h2>Características Principais</h2>
+<ul>
+<li>
+<p>Automatización completa mediante <code>vagrant up</code></p>
+</li>
+<li>
+<p>6 escenarios preconfigurados listos para usar</p>
+</li>
+<li>
+<p>Simulación realista con <code>mac80211_hwsim</code> (sen hardware físico)</p>
+</li>
+<li>
+<p>Namespaces de rede para illamento total</p>
+</li>
+<li>
+<p>Ferramentas preinstaladas: <code>aircrack-ng</code>, <code>hostapd</code>, <code>hostapd-wpe</code>, <code>hostapd-mana</code>, <code>FreeRADIUS</code>, <code>dragondrain</code>, <code>hcxdumptool</code></p>
+</li>
+<li>
+<p>Dúas modalidades de guías por práctica: manual detallada e versión automatizada con <code>wifite</code></p>
+</li>
+<li>
+<p>Compatible con PDFs oficiais do repositorio HE</p>
+</li>
+</ul>
+<hr />
+<h2>Comprobación de Hashcat e OpenCL</h2>
+<p>O laboratorio incorpora <code>hashcat</code>, <code>pocl-opencl-icd</code> e <code>clinfo</code>. En VirtualBox,
+<strong>PoCL utiliza a CPU da máquina virtual para executar OpenCL</strong>; non se precisa unha GPU.
+É un requisito para as comprobacións de contrasinais que Wifite executa mediante Hashcat.</p>
+<pre><code class="language-bash">clinfo -l
+hashcat -I
+</code></pre>
+<p>Se aparece <code>CL_PLATFORM_NOT_FOUND_KHR</code> ou non se detecta unha plataforma de cálculo:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y pocl-opencl-icd clinfo
+</code></pre>
+<p>Comproba de novo <code>hashcat -I</code>. Sen dispositivo de cálculo, a captura WPA2 pode ser válida aínda que Wifite indique <code>key unknown</code>.</p>
+<hr />
+<h2>Requisitos Previos</h2>
+<h3>Software Necesario</h3>
+<p>| Software | Versión Mínima | Enlace de Descarga |
+|----------|----------------|-------------------|
+| <strong>VirtualBox</strong> | 7.0+ | <a href="https://www.virtualbox.org/wiki/Downloads">virtualbox.org</a>{target=&quot;_blank&quot;} |
+| <strong>Vagrant</strong> | 2.3+ | <a href="https://www.vagrantup.com/downloads">vagrantup.com</a>{target=&quot;_blank&quot;} |
+| <strong>Git</strong> | 2.0+ | <a href="https://git-scm.com/downloads">git-scm.com</a>{target=&quot;_blank&quot;} |</p>
+<h3>Hardware Recomendado</h3>
+<ul>
+<li>
+<p>RAM: 8 GB (mínimo 6 GB libres para a VM)</p>
+</li>
+<li>
+<p>CPU: 4 cores (2 cores para a VM)</p>
+</li>
+<li>
+<p>Disco: 20 GB libres</p>
+</li>
+<li>
+<p>OS: Windows 10/11, macOS 11+, GNU/Linux (Debian 12+)</p>
+</li>
+</ul>
+<hr />
+<h2>Instalación Rápida</h2>
+<h3>1. Clonar o Repositorio</h3>
+<pre><code class="language-bash">git clone https://github.com/ricardofc/vuln-wifi.lab.git
+cd vuln-wifi.lab
+</code></pre>
+<h3>2. Iniciar a Máquina Virtual</h3>
+<pre><code class="language-bash">make up
+</code></pre>
+<p>Tempo estimado: 15-20 minutos (primeira execución).</p>
+<h3>3. Acceder á VM</h3>
+<pre><code class="language-bash"># Abrir a consola gráfica de VirtualBox (autologin de kali)
+</code></pre>
+<h3>4. Primeira Execución</h3>
+<pre><code class="language-bash"># Verificar instalación
+sudo wifilabctl doctor
+
+# Listar escenarios dispoñibles
+sudo wifilabctl list
+</code></pre>
+<p>Saída esperada:</p>
+<pre><code>ID                   Descrición
+------------------------------------------------------------
+psk                  WPA2-PSK: Ataque de dicionario offline
+psk_pmf              WPA2-PSK con PMF: Protección básica contra deauth
+eap_evil_twin        WPA2-EAP: Evil Twin sen validación de certificados
+eap_mitm             WPA2-EAP: Man-in-the-Middle con hostapd-mana
+wpa3_sae             WPA3-SAE: Auditoría de contrasinal (resistente a ataques offline)
+wpa3_sae_vulnerable  WPA3-SAE vulnerable (hostapd 2.7) + Evil Twin WPA2-PSK + Dragondrain DoS
+</code></pre>
+<hr />
+<h2>Índice de Prácticas</h2>
+<h3>Correspondencia entre Manuais PDF e Escenarios</h3>
+<p>Cada práctica dispón de <strong>dúas guías complementarias</strong>: a guía manual detallada (paso a paso, como o PDF) e a guía con <code>wifite</code> (ferramenta automatizada). Ambas traballan co mesmo escenario <code>wifilabctl</code>.</p>
+<h4>Bloque 1: WPA2-PSK</h4>
+<blockquote>
+<p>4 PDFs → 3 guías manuais + 3 guías Wifite. Os PDFs 1.3 e 1.4 comparten guía manual (<code>1.3</code>) porque cobren o mesmo ataque PMKID: o PDF-1.3 usa o escenario <code>psk</code> (sen PMF) e o PDF-1.4 usa <code>psk_pmf</code> (con <code>ieee80211w=2</code>), demostrando que PMF <strong>non protexe</strong> contra PMKID.</p>
+</blockquote>
+<p>| Manual PDF | Escenario | Guía Manual | Guía Wifite | Descrición |
+|---|---|---|---|---|
+| <strong>1-Taller-HE-Practica-WiFi-1.pdf</strong> | <code>psk</code> | <code>1.1-ATAQUE_WPA2_PSK.md</code> | <code>wifite-1.1-ATAQUE_WPA2_PSK.md</code> | Captura de handshake 4-Way + cracking offline con <code>aircrack-ng</code> |
+| <strong>1-Taller-HE-Practica-WiFi-2.pdf</strong> | <code>psk_pmf</code> | <code>1.3-ATAQUE_WPA2_PSK_PMF.md</code> | <code>wifite-1.3-ATAQUE_WPA2_PSK_PMF.md</code> | PMF (<code>ieee80211w=2</code>): as tramas de deauth van cifradas, o ataque falla |
+| <strong>1-Taller-HE-Practica-WiFi-3.pdf</strong> | <code>psk</code> | <code>1.4-ATAQUE_WPA2_PSK_PMKID.md</code> | <code>wifite-1.4-ATAQUE_WPA2_PSK_PMKID.md</code> | PMKID silencioso con <code>hcxdumptool</code> + <code>hashcat -m 22000</code> (AP sen PMF) |
+| <strong>1-Taller-HE-Practica-WiFi-4.pdf</strong> | <code>psk_pmf</code> | <code>1.4-ATAQUE_WPA2_PSK_PMKID.md</code> | <code>wifite-1.4-ATAQUE_WPA2_PSK_PMKID.md</code> | PMKID con <code>ieee80211w=2</code> activo: PMF <strong>non</strong> protexe contra PMKID |</p>
+<p>As catro prácticas do Bloque 1 diferéncianse polo método de captura e o escenario:</p>
+<ul>
+<li>
+<p><strong>PDF 1.1</strong> (<code>psk</code>): deautenticación con <code>aireplay-ng</code> → captura do handshake 4-Way → cracking offline con <code>aircrack-ng</code></p>
+</li>
+<li>
+<p><strong>PDF 1.2</strong> (<code>psk_pmf</code>): o AP ten <code>ieee80211w=2</code> → as tramas de deauth van <strong>cifradas</strong> e son descartadas polo cliente; o ataque falla; verifícase con <code>tshark</code> e logs de <code>wpa_supplicant</code></p>
+</li>
+<li>
+<p><strong>PDF 1.3</strong> (<code>psk</code>): <code>hcxdumptool</code> envía Association Requests e captura o PMKID en 15-30 s → cracking offline con <code>hashcat -m 22000</code>; non require deautenticar ao cliente; AP <strong>sen</strong> PMF</p>
+</li>
+<li>
+<p><strong>PDF 1.4</strong> (<code>psk_pmf</code>): mesmo ataque PMKID co AP e cliente en <code>ieee80211w=2</code> → demostra que <strong>PMF non protexe contra PMKID</strong>; <code>hcxdumptool</code> captura o PMKID igualmente</p>
+</li>
+</ul>
+<h4>Bloque 2: WPA2-Enterprise (EAP)</h4>
+<blockquote>
+<p>3 PDFs → 2 guías manuais + 1 guía Wifite (a práctica 2.1 é demostración de limitacións de Wifite). O PDF 2.1 (setup e funcionamento de FreeRADIUS) só ten guía Wifite, que demostra que Wifite descarta automaticamente obxectivos <code>WPA-E</code> sen realizar ningún ataque.</p>
+</blockquote>
+<p>| Manual PDF | Escenario | Guía Manual | Guía Wifite | Descrición |
+|---|---|---|---|---|
+| <strong>2-Taller-HE-Practica-WiFi-1.pdf</strong> | <code>eap_mitm</code> | — | <code>wifite-2.1-ATAQUE_WPA2_EAP.md</code> | Setup FreeRADIUS + AP WPA2-EAP + cliente; Wifite detecta <code>WPA-E</code> e descarta o obxectivo automaticamente |
+| <strong>2-Taller-HE-Practica-WiFi-2.pdf</strong> | <code>eap_evil_twin</code> | <code>2.2-ATAQUE_WPA2_EAP_EVIL_TWIN.md</code> | <code>—</code> | Evil Twin con <code>hostapd-wpe</code>: captura hash MSCHAPv2 + cracking con <code>hashcat -m 5500</code> |
+| <strong>2-Taller-HE-Practica-WiFi-3.pdf</strong> | <code>eap_mitm</code> | <code>2.3-ATAQUE_WPA2_EAP_MITM.md</code> | <code>—</code> | MITM con <code>hostapd-mana</code>: relay RADIUS + captura de tráfico con <code>mitmproxy</code> |</p>
+<h4>Bloque 3: WPA3-SAE</h4>
+<blockquote>
+<p>3 PDFs → 3 guías manuais + 2 guías Wifite. A limitación de Wifite fronte a KRACK explícase na práctica 3.2, sen unha guía independente.</p>
+</blockquote>
+<p>| Manual PDF | Escenario | Guía Manual | Guía Wifite | Descrición |
+|---|---|---|---|---|
+| <strong>3-Taller-HE-Practica-WiFi-1.pdf</strong> | <code>wpa3_sae</code> | <code>3.1-ATAQUE_WPA3_SAE.md</code> | <code>wifite-3.1-ATAQUE_WPA3-SAE.md</code> | SAE resistente a cracking offline; Dragonblood (timing); forza bruta online con <code>wacker</code> |
+| <strong>3-Taller-HE-Practica-WiFi-2.pdf</strong> | <code>wpa3_sae</code> | <code>3.2-ATAQUE_WPA3_KRACK.md</code> | Integrado na guía manual | Análise do 4-Way Handshake e límites da comprobación de KRACK con <code>tshark</code>; PMF non demostra inmunidade |
+| <strong>3-Taller-HE-Practica-WiFi-3.pdf</strong> | <code>wpa3_sae_vulnerable</code> | <code>3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md</code> | <code>wifite-3.3-ATAQUE_WPA3_DoS_WPA2_EVIL_TWIN.md</code> | Dragondrain DoS + downgrade WPA2-PSK/EAP; Wifite é inútil para este ataque multi-etapa |</p>
+<hr />
+<h2>Uso Básico</h2>
+<h3>Como Comezar unha Práctica</h3>
+<h4>Método 1: Seguindo o Manual PDF</h4>
+<ol>
+<li>
+<p>Abre o manual PDF correspondente (<a href="#manuais-pdf-do-taller">ver sección Manuais PDF do Taller</a>)</p>
+</li>
+<li>
+<p>Consulta a táboa de correspondencia anterior para identificar o escenario</p>
+</li>
+<li>
+<p>Inicia o escenario dende dentro da VM:</p>
+</li>
+</ol>
+<pre><code class="language-bash"># Exemplo para Práctica 1.1 (WPA2-PSK básico)
+sudo wifilabctl up psk
+</code></pre>
+<ol start="4">
+<li>
+<p>Consulta a guía de ataque proporcionada polo profesorado (sección <code>Ataques específicos</code>)</p>
+</li>
+<li>
+<p>Segue os pasos do PDF e da guía markdown en paralelo</p>
+</li>
+</ol>
+<h4>Método 2: Exploración Libre</h4>
+<pre><code class="language-bash"># Ver todos os escenarios dispoñibles
+sudo wifilabctl list
+
+# Iniciar un escenario
+sudo wifilabctl up &lt;nome_escenario&gt;
+
+# Ver estado actual
+sudo wifilabctl status
+
+# Ver logs en tempo real
+sudo wifilabctl logs &lt;nome_escenario&gt;
+
+# Deter e limpar
+sudo wifilabctl reset
+</code></pre>
+<hr />
+<h2>Comandos de wifilabctl</h2>
+<h3>Listar Escenarios</h3>
+<pre><code class="language-bash">sudo wifilabctl list
+</code></pre>
+<h3>Iniciar un Escenario</h3>
+<pre><code class="language-bash">sudo wifilabctl up &lt;escenario&gt;
+</code></pre>
+<p>Exemplos:</p>
+<pre><code class="language-bash"># Prácticas 1.1 e 1.3 (WPA2-PSK handshake e PMKID)
+sudo wifilabctl up psk
+
+# Práctica 1.3 (PMF / ieee80211w)
+sudo wifilabctl up psk_pmf
+
+# Prácticas 2.1 e 2.2 (WPA2-EAP Evil Twin)
+sudo wifilabctl up eap_evil_twin
+
+# Práctica 2.3 (WPA2-EAP MITM)
+sudo wifilabctl up eap_mitm
+
+# Prácticas 3.1 e 3.2 (WPA3-SAE + wacker + KRACK)
+sudo wifilabctl up wpa3_sae
+
+# Práctica 3.3 (Dragondrain DoS + Downgrade WPA2-PSK/EAP)
+sudo wifilabctl up wpa3_sae_vulnerable
+</code></pre>
+<h3>Ver Estado do Laboratorio</h3>
+<pre><code class="language-bash">sudo wifilabctl status
+</code></pre>
+<p>Saída esperada:</p>
+<pre><code>[*] Informe de Estado do Laboratorio
+============================================================
+Namespaces activos:
+  wifi_ap_wlan0
+  wifi_cliente_wlan1
+
+Interfaces por namespace:
+  wifi_ap_wlan0:
+    wlan0: UP (AP)
+  wifi_cliente_wlan1:
+    wlan1: UP (Cliente)
+</code></pre>
+<h3>Ver Logs en Tempo Real</h3>
+<pre><code class="language-bash">sudo wifilabctl logs &lt;escenario&gt;
+# Ctrl+C para saír
+</code></pre>
+<h3>Deter e Limpar</h3>
+<pre><code class="language-bash">sudo wifilabctl reset
+</code></pre>
+<h3>Diagnosticar Problemas</h3>
+<pre><code class="language-bash">sudo wifilabctl doctor
+</code></pre>
+<hr />
+<h2>Makefile</h2>
+<p>O <code>Makefile</code> proporciona atallos para as operacións máis comúns dende o host, sen necesidade de entrar na VM manualmente.</p>
+<h3>Comandos Dispoñibles</h3>
+<pre><code class="language-bash"># Levantar e aprovisionar a VM
+make up
+
+# Conectar á VM por SSH
+# Abrir a consola gráfica de VirtualBox (autologin de kali)
+
+# Suspender a VM
+make halt
+
+# Destruír a VM completamente
+make destroy
+
+# Destruír e limpar (alias de destroy)
+make clean
+</code></pre>
+<h3>Exemplo de Fluxo Completo</h3>
+<pre><code class="language-bash"># 1. Levantar a VM
+make up
+
+# 2. Conectar e traballar
+# Abrir a consola gráfica de VirtualBox (autologin de kali)
+
+# 3. Dentro da VM: iniciar o escenario desexado
+sudo wifilabctl up eap_evil_twin
+
+# 4. Ao rematar: suspender ou destruír
+make halt      # Suspender (conserva o estado)
+make destroy   # Destruír completamente
+</code></pre>
+<hr />
+<h2>Comparación de Prácticas</h2>
+<h3>Táboa Comparativa de Vulnerabilidades</h3>
+<p>| Práctica | Escenario | Tecnoloxía | Tipo de Ataque | Vulnerable? | Tempo Estimado |
+|----------|-----------|------------|----------------|-------------|----------------|
+| PDF 1.1 | <code>psk</code> | WPA2-PSK | Deauth + handshake 4-Way + dicionario offline (<code>aircrack-ng</code>) | SI | 30 min |
+| PDF 1.2 | <code>psk_pmf</code> | WPA2-PSK + PMF | Intento deauth — bloqueado por <code>ieee80211w=2</code> | NON (deauth) | 20 min |
+| PDF 1.3 | <code>psk</code> | WPA2-PSK | PMKID con <code>hcxdumptool</code> + <code>hashcat -m 22000</code>, AP sen PMF | SI | 20 min |
+| PDF 1.4 | <code>psk_pmf</code> | WPA2-PSK + PMF | PMKID con <code>ieee80211w=2</code> activo — PMF <strong>non</strong> protexe contra PMKID | SI | 25 min |
+| PDF 2.1 | <code>eap_mitm</code> | WPA2-EAP | Setup FreeRADIUS + cliente; Wifite descarta <code>WPA-E</code> | Referencia | 30 min |
+| PDF 2.2 | <code>eap_evil_twin</code> | WPA2-EAP | Evil Twin (<code>hostapd-wpe</code>) + <code>hashcat -m 5500</code> | SI | 45 min |
+| PDF 2.3 | <code>eap_mitm</code> | WPA2-EAP | MITM (<code>hostapd-mana</code>) + relay RADIUS + <code>mitmproxy</code> | SI | 60 min |
+| PDF 3.1 | <code>wpa3_sae</code> | WPA3-SAE | Dragonblood timing; forza bruta online con <code>wacker</code> | NON offline / SI online | 45 min |
+| PDF 3.2 | <code>wpa3_sae</code> | WPA3-SAE + PMF | Verificación inmunidade KRACK con <code>tshark</code> | NON | 30 min |
+| PDF 3.3 | <code>wpa3_sae_vulnerable</code> | WPA3-SAE (≤2.7) | Dragondrain DoS + downgrade WPA2-PSK ou WPA2-EAP | SI (modo transición) | 60 min |</p>
+<h3>Resumo por Tecnoloxía</h3>
+<h4>WPA2-PSK</h4>
+<p>| Protección | Estado | Observacións |
+|------------|--------|--------------|
+| Handshake Capture | Vulnerable | Require cliente conectado; cracking offline con <code>aircrack-ng</code> (PDF 1.1) |
+| PMKID Attack | Vulnerable | Require cliente lexítimo con sesión activa; AP cachea PMK tras 1º handshake (PDF 1.3 e 1.4) |
+| PMF (<code>ieee80211w=2</code>) | <strong>Protexe só contra deauth</strong> | Bloquea frames de deauth non cifrados (PDF 1.2) pero <strong>non protexe contra PMKID</strong> (PDF 1.4) |
+| Dicionario Offline | Vulnerable | Afecta tanto a handshake como a PMKID; contrasinais longos e aleatorios resisten |</p>
+<h4>WPA2-EAP</h4>
+<p>| Protección | Estado | Observacións |
+|------------|--------|--------------|
+| Evil Twin | Vulnerable | Se o cliente non valida o certificado do servidor RADIUS |
+| MITM | Vulnerable | <code>hostapd-mana</code> captura credenciais MSCHAPv2 |
+| Validación Certificado | Protexe | Se <code>ca_cert</code> está correctamente configurado en <code>wpa_supplicant</code> |</p>
+<h4>WPA3-SAE</h4>
+<p>| Protección | Estado | Observacións |
+|------------|--------|--------------|
+| Dicionario Offline | Protexido | SAE non expón hash crackeable; <code>aircrack-ng</code> non é aplicable |
+| Forza Bruta Online (<code>wacker</code>) | Parcialmente vulnerable | Posible se o contrasinal é débil; limitado pola velocidade de resposta do AP |
+| KRACK | Protexido | PMF obrigatorio + implementación correcta |
+| Dragonblood DoS | Vulnerable | En hostapd &lt; 2.10 |
+| Downgrade a WPA2 | Vulnerable | Se o modo transición está activo |</p>
+<hr />
+<h2>Estrutura do Laboratorio</h2>
+<h3>Dentro da VM (<code>/home/kali/wifiLab/</code>)</h3>
+<p>O <code>bootstrap.sh</code> copia unicamente o mínimo necesario para o funcionamento do laboratorio.</p>
+<pre><code>/home/kali/wifiLab/
+├── scenarios/                     # Definicións YAML dos escenarios
+│   ├── eap_evil_twin.yaml
+│   ├── eap_mitm.yaml
+│   ├── psk.yaml
+│   ├── psk_pmf.yaml
+│   ├── wpa3_sae.yaml
+│   └── wpa3_sae_vulnerable.yaml
+├── scripts/
+│   └── wifilabctl                 # Xestor de escenarios (tamén en /usr/local/bin/)
+└── run/                           # Creado por wifilabctl ao iniciar un escenario
+    └── &lt;escenario&gt;/
+        ├── hostapd.log            # Logs do AP lexítimo
+        ├── wpa_supplicant.log     # Logs do cliente simulado
+        ├── freeradius.log         # Logs de RADIUS (só escenarios EAP)
+        ├── hostapd_wpe.log        # Logs do AP falso (só eap_evil_twin)
+        └── *.cap                  # Ficheiros de captura de tráfico
+</code></pre>
+<hr />
+<h2>Resolución de Problemas</h2>
+<h3>Problemas Comúns</h3>
+<h4>1. &quot;Non hai namespaces wifi activos&quot;</h4>
+<p>Causa: O escenario non está iniciado ou fallou ao cargar o módulo <code>mac80211_hwsim</code>.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Verificar módulo
+lsmod | grep mac80211_hwsim
+
+# Se non está cargado
+sudo modprobe mac80211_hwsim radios=4
+
+# Reiniciar escenario
+sudo wifilabctl reset
+sudo wifilabctl up psk
+</code></pre>
+<h4>2. &quot;RADIUS server not responding&quot;</h4>
+<p>Causa: FreeRADIUS non está en execución ou problema de certificados.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Verificar FreeRADIUS
+sudo systemctl status freeradius
+
+# Comprobar certificados
+ls -la /etc/freeradius/3.0/certs/
+
+# Rexenerar certificados
+cd /etc/freeradius/3.0/certs/
+sudo make
+
+# Reiniciar RADIUS
+sudo systemctl restart freeradius
+</code></pre>
+<h4>3. &quot;hostapd-mana: not found&quot;</h4>
+<p>Causa: <code>hostapd-mana</code> non está compilado.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Compilar hostapd-mana
+cd /opt/hostapd-mana
+make -C hostapd
+
+# Verificar binario
+ls -la /opt/hostapd-mana/hostapd/hostapd
+
+# Crear enlace simbólico
+sudo ln -sf /opt/hostapd-mana/hostapd/hostapd /usr/local/bin/hostapd-mana
+</code></pre>
+<h4>4. &quot;airodump-ng: interface wlan2mon not found&quot;</h4>
+<p>Causa: A interface non está en modo monitor.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Matar procesos que interfiren
+sudo airmon-ng check kill
+
+# Poñer en modo monitor
+sudo airmon-ng start wlan2
+
+# Verificar
+iwconfig
+</code></pre>
+<h4>5. &quot;Vagrant SSH not working&quot;</h4>
+<p>Causa: SSH non está escoitando.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Dende o host
+make destroy
+make up
+
+# Ou dende a VM (consola GUI)
+sudo systemctl restart ssh
+sudo systemctl status ssh
+</code></pre>
+<h3>Comandos de Diagnóstico</h3>
+<pre><code class="language-bash"># Verificar estado completo
+sudo wifilabctl doctor
+
+# Comprobar interfaces de rede
+ip link show
+
+# Comprobar namespaces
+ip netns list
+
+# Comprobar módulo mac80211_hwsim
+lsmod | grep mac80211
+
+# Ver procesos relacionados
+ps aux | grep -E 'hostapd|wpa_supplicant|freeradius'
+
+# Verificar logs do sistema
+journalctl -xeu freeradius
+journalctl -xeu ssh
+</code></pre>
+<h3>Reinicio Completo</h3>
+<p>Se todo falla, reinicia completamente:</p>
+<pre><code class="language-bash"># Dende o host (fóra da VM)
+make destroy
+make up
+</code></pre>
+<hr />
+<h2>Actualización e Mantemento</h2>
+<h3>Actualizar o Laboratorio</h3>
+<pre><code class="language-bash"># No host, actualizar o repositorio
+git pull origin main
+
+# Destruír e recrear a VM
+make destroy
+make up
+</code></pre>
+<h3>Desinstalación Completa</h3>
+<pre><code class="language-bash">make destroy
+cd ..
+rm -rf vuln-wifi.lab
+</code></pre>
+<hr />
+<h2>Referencias</h2>
+<h3>Documentación Oficial</h3>
+<ul>
+<li>
+<p><a href="https://standards.ieee.org/standard/802_11i-2004.html">WPA2 Specification - IEEE 802.11i</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://www.wi-fi.org/discover-wi-fi/security">WPA3 Specification - Wi-Fi Alliance</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://standards.ieee.org/standard/802_11w-2009.html">IEEE 802.11w - Protected Management Frames</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://tools.ietf.org/html/rfc7664">RFC 7664 - Dragonfly Key Exchange</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://w1.fi/hostapd/">hostapd documentation</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://w1.fi/wpa_supplicant/">wpa_supplicant documentation</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://freeradius.org/documentation/">FreeRADIUS documentation</a>{target=&quot;_blank&quot;}</p>
+</li>
+</ul>
+<h3>Investigación e Vulnerabilidades</h3>
+<ul>
+<li>
+<p><a href="https://www.krackattacks.com/">KRACK Attack Website</a>{target=&quot;_blank&quot;} (2017)</p>
+</li>
+<li>
+<p><a href="https://wpa3.mathyvanhoef.com/">Dragonblood Website</a>{target=&quot;_blank&quot;} (2019)</p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2017-13077">CVE-2017-13077 (KRACK)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-9494">CVE-2019-9494 (Dragonblood)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-13377">CVE-2019-13377 (Dragonblood SAE)</a>{target=&quot;_blank&quot;}</p>
+</li>
+</ul>
+<h3>Ferramentas</h3>
+<ul>
+<li>
+<p><a href="https://www.aircrack-ng.org/">aircrack-ng</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/derv82/wifite2">wifite2</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/OpenSecurityResearch/hostapd-wpe">hostapd-wpe (OpenSecurityResearch)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/sensepost/hostapd-mana">hostapd-mana (SensePost)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/vanhoefm/dragondrain-and-time">dragondrain (vanhoefm)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/ZerBea/hcxtools">hcxtools (ZerBea)</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://github.com/ZerBea/hcxdumptool">hcxdumptool (ZerBea)</a>{target=&quot;_blank&quot;}</p>
+</li>
+</ul>
+<h3>Manuais PDF do Taller</h3>
+<ul>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-1.pdf">1-Taller-HE-Practica-WiFi-1.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-2.pdf">1-Taller-HE-Practica-WiFi-2.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-3.pdf">1-Taller-HE-Practica-WiFi-3.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/1-Taller-HE-Practica-WiFi-4.pdf">1-Taller-HE-Practica-WiFi-4.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-1.pdf">2-Taller-HE-Practica-WiFi-1.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-2.pdf">2-Taller-HE-Practica-WiFi-2.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/2-Taller-HE-Practica-WiFi-3.pdf">2-Taller-HE-Practica-WiFi-3.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-1.pdf">3-Taller-HE-Practica-WiFi-1.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-2.pdf">3-Taller-HE-Practica-WiFi-2.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/ricardofc/repoEDU-CCbySA/main/HE/Taller/Wi-Fi/3-Taller-HE-Practica-WiFi-3.pdf">3-Taller-HE-Practica-WiFi-3.pdf</a>{target=&quot;_blank&quot;}</p>
+</li>
+</ul>
+</article><p>Fonte: Markdown orixinal de <code>20261121_docs.he-ud2.zip</code>. O procedemento debe executarse exclusivamente no laboratorio docente autorizado.</p></main></html>

@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="gl" data-page="psk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seguridade WPA2-PSK</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <div class="wrap sitebar">
+    <nav class="sitenav">
+      <a href="../index.html">Inicio</a>
+      <a href="../wpa2-psk/index.html" class="active">WPA2-PSK</a>
+      <a href="../wpa2-eap/index.html">WPA2-EAP</a>
+      <a href="../wpa3-sae/index.html">WPA3-SAE</a>
+      <a href="../animacion/index.html">Animación</a>
+      <a href="../laboratorio/index.html">Laboratorio</a>
+      <a href="../ferramentas/index.html">Ferramentas</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">◐</button>
+  </div>
+  <div class="wrap head-in">
+    <nav class="nav" id="nav">
+      <a href="#handshake" data-view="handshake"><span class="mk"></span>O handshake</a>
+      <a href="#ataques" data-view="ataques"><span class="mk"></span>Por que cae a clave</a>
+      <a href="#evidencias" data-view="evidencias"><span class="mk"></span>Hashes, tshark e retos</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= VISTA 1: HANDSHAKE ======================= -->
+<div class="wrap" data-view="handshake">
+  <div class="hero">
+    <h1>Conéctaste sen <span class="q">enviar nunca</span> a clave.</h1>
+    <p>Escribes o contrasinal da Wi-Fi para conectarte… pero ese contrasinal <b>nunca viaxa</b> polo aire. Así é como o cliente demostra ao punto de acceso que o coñece mediante o <b>4-way handshake</b>.</p>
+    <div class="ks">
+      <span>Non se transmite: <b>o contrasinal (PSK)</b></span>
+      <span>Si viaxan: <b>nonces + MIC (tramas EAPOL-Key)</b></span>
+      <span>Resultado: <b>claves de sesión (PTK / GTK)</b></span>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Antes de falar · cálculo local</div>
+    <h2 class="sec">A idea central: cada lado calcula o mesmo segredo</h2>
+    <p class="lead">O contrasinal que escribes úsase localmente para derivar a <b>PMK</b> mediante 4.096 iteracións de PBKDF2 co nome da rede (SSID) como sal. Se cliente e AP teñen o mesmo contrasinal, obteñen a mesma PMK sen enviala.</p>
+    <div class="derive">
+      <div class="flow">
+        <div class="node">
+          <span class="k">PSK + SSID</span>
+          <small>Contrasinal compartido + nome da rede.</small>
+          <span class="v">"spongebob19" + "EMPRESA-XYZ"</span>
+        </div>
+        <div class="arrow">→<span class="op">PBKDF2<br>4096×</span></div>
+        <div class="node">
+          <span class="k">PMK (256 bits)</span>
+          <small>Pairwise Master Key. Idéntica nos dous extremos; estática mentres non cambie a clave.</small>
+          <span class="v">PBKDF2(PSK, SSID, 4096)</span>
+        </div>
+        <div class="arrow">→<span class="op">PRF cos<br>nonces</span></div>
+        <div class="node">
+          <span class="k">PTK + GTK</span>
+          <small>Claves reais de cifrado por sesión (unicast e broadcast/multicast).</small>
+          <span class="v">PRF(PMK, ANonce, SNonce, MACs)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulación · intercambio EAPOL</div>
+    <h2 class="sec">O 4-Way Handshake, paso a paso</h2>
+    <p class="lead">Avanza polos catro intercambios. Observa que viaxa polo canal radio e como cada lado vai completando o seu inventario de claves.</p>
+
+    <div class="stage-card">
+      <div class="stage">
+        <div class="lanes">
+          <div class="lane-h ap"><span class="dot ap"></span>AP · Punto de acceso <span class="sub">wlan0 · EMPRESA-XYZ</span></div>
+          <div class="lane-h sta"><span class="dot sta"></span>STA · Cliente <span class="sub">wlan1</span></div>
+        </div>
+        <div class="channel" id="channel" data-label="CANAL RADIO · 802.11"></div>
+        <div class="states">
+          <div class="state" id="stateAP">
+            <h4><span class="dot ap"></span>Que sabe o AP</h4>
+            <div class="krow" data-k="pmk"><span class="n">PMK</span> calculada do PSK <span class="s no">○</span></div>
+            <div class="krow" data-k="anonce"><span class="n">ANonce</span> xerado por el <span class="s no">○</span></div>
+            <div class="krow" data-k="snonce"><span class="n">SNonce</span> recibido da STA <span class="s no">○</span></div>
+            <div class="krow" data-k="ptk"><span class="n">PTK</span> clave de sesión <span class="s no">○</span></div>
+            <div class="krow" data-k="verify"><span class="n">MIC✓</span> cliente verificado <span class="s no">○</span></div>
+          </div>
+          <div class="state" id="stateSTA">
+            <h4><span class="dot sta"></span>Que sabe o cliente</h4>
+            <div class="krow" data-k="pmk"><span class="n">PMK</span> calculada do PSK <span class="s no">○</span></div>
+            <div class="krow" data-k="anonce"><span class="n">ANonce</span> recibido do AP <span class="s no">○</span></div>
+            <div class="krow" data-k="snonce"><span class="n">SNonce</span> xerado por el <span class="s no">○</span></div>
+            <div class="krow" data-k="ptk"><span class="n">PTK</span> clave de sesión <span class="s no">○</span></div>
+            <div class="krow" data-k="verify"><span class="n">MIC✓</span> AP verificado <span class="s no">○</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="explain">
+        <h3 id="exTitle">Punto de partida</h3>
+        <p id="exBody"></p>
+      </div>
+      <div class="controls">
+        <span class="steplabel">Paso <b id="stepNum">0</b> / 4</span>
+        <div class="pills" id="pills"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="prevBtn" disabled>← Anterior</button>
+        <button class="btn primary" id="nextBtn">Seguinte →</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">A resposta á pregunta</div>
+    <h2 class="sec">Por que escribo a clave se non se envía?</h2>
+    <div class="answer">
+      <h3>Escríbela para que o <em>teu dispositivo</em> poida calcular a PMK localmente, non para mandala polo aire.</h3>
+      <p>O <strong>MIC</strong> funciona coma unha proba criptográfica: só coincide se calculaches exactamente a mesma PTK, e iso só pasa se tes o mesmo contrasinal. O problema é que esa mesma relación determinista <code>PBKDF2(PSK, SSID) → PMK</code> permite que calquera observador que capture o handshake poida probar millóns de candidatos na súa casa.</p>
+      <div class="note cta">
+        <span class="ic">→</span>
+        <p>Mira como se captura e se crackea fóra de liña, ou analiza capturas reais na aba de evidencias: <a href="#ataques" data-jump="ataques">Por que cae a clave →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Referencia rápida</div>
+    <h2 class="sec">Glosario esencial</h2>
+    <dl class="glos">
+      <div class="term"><dt>4-way handshake</dt><dd>Procedemento de 4 mensaxes (M1–M4) que proba coñecemento da PMK e deriva PTK/GTK sen enviar a clave.</dd></div>
+      <div class="term"><dt>EAPOL-Key</dt><dd>Tipo de trama ("sobre") que transporta polo aire cada mensaxe M1–M4 do handshake.</dd></div>
+      <div class="term"><dt>ANonce / SNonce</dt><dd>Números aleatorios dun só uso xerados polo AP e polo cliente para que a PTK sexa única en cada conexión.</dd></div>
+      <div class="term"><dt>MIC</dt><dd>Message Integrity Code. Firma calculada coa PTK que valida integridade e posesión da clave.</dd></div>
+      <div class="term"><dt>PMKID</dt><dd><code>HMAC-SHA1-128(PMK, "PMK Name" || MAC_AP || MAC_STA)</code>. Pode vir no M1 e crackéase offline igual ca un handshake.</dd></div>
+      <div class="term"><dt>PMF (802.11w)</dt><dd>Protected Management Frames: asina e protexe tramas de xestión robustas (Deauth, Disassoc), pero non o handshake nin o PMKID.</dd></div>
+    </dl>
+  </section>
+</div>
+
+<!-- ======================= VISTA 2: ATAQUES ======================= -->
+<div class="wrap" data-view="ataques" hidden>
+  <div class="hero">
+    <h1>O protocolo non filtra a clave. <span class="d">Convértese nun oráculo offline.</span></h1>
+    <p>Unha vez capturado o intercambio <b>4-way handshake</b> (Práctica 1.1/1.2) ou o <b>PMKID</b> (Práctica 1.4), o atacante non necesita volver falar co punto de acceso.</p>
+    <div class="ks">
+      <span>Escenarios lab: <b><code>psk</code> e <code>psk_pmf</code></b></span>
+      <span>Modo Hashcat: <b><code>-m 22000</code></b></span>
+      <span>Ferramenta auto: <b><code>wifite</code></b></span>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">A cadea do ataque</div>
+    <h2 class="sec">Dúas vías de captura e un mesmo crackeo offline</h2>
+    <div class="chain">
+      <div class="phase">
+        <span class="ph-n">VÍA A · HANDSHAKE (1.1 / 1.2)</span>
+        <h3>Escoitar e provocar M1–M4</h3>
+        <p>En modo monitor (<code>wlan3</code>), <code>airodump-ng</code> grava M1–M4. Con <code>aireplay-ng --deauth</code> bótao se non hai PMF para forzar a reconexión.</p>
+        <div class="tools"><code>airodump-ng</code><code>aireplay-ng</code></div>
+      </div>
+      <div class="phase">
+        <span class="ph-n">VÍA B · PMKID (1.4)</span>
+        <h3>Captura silenciosa de M1</h3>
+        <p><code>hcxdumptool -c 6a</code> asóciase activamente e capta o PMKID de 16 bytes no EAPOL M1, sen deautenticar clientes. Con <code>hcxpcapngtool</code> convértese a <code>22000</code>.</p>
+        <div class="tools"><code>hcxdumptool</code><code>hcxpcapngtool</code></div>
+      </div>
+      <div class="phase">
+        <span class="ph-n">FASE FINAL · OFFLINE</span>
+        <h3>Verificar dicionario sen límite</h3>
+        <p><code>aircrack-ng</code> ou <code>hashcat -m 22000</code> (usando GPU ou CPU con PoCL/OpenCL na VM) proban candidatos contra o MIC ou o PMKID capturado.</p>
+        <div class="tools"><code>aircrack-ng</code><code>hashcat -m 22000</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulador interactivo · oráculo offline</div>
+    <h2 class="sec">Proba o crackeo cun contrasinal e un método á túa escolla</h2>
+    <p class="lead">Escolle un contrasinal da rede (ou escribe o teu), selecciona o vector de captura e se o AP ten PMF activo (`ieee80211w=2`), e lanza o ataque.</p>
+
+    <div class="crack">
+      <div class="crack-top">
+        <div class="dotrow"><i></i><i></i><i></i></div>
+        <span class="title">simulador · aircrack-ng / hashcat -m 22000</span>
+        <span class="target">ESSID: <b>EMPRESA-XYZ</b></span>
+      </div>
+      <div class="inline-ctrls">
+        <label>Clave do AP:
+          <select id="pskPassSel">
+            <option value="spongebob19">spongebob19 (lab rockyou)</option>
+            <option value="primavera2024">primavera2024 (dicionario común)</option>
+            <option value="v7#Kp!2mNxQ8@wLjR4s">v7#Kp!2mNxQ8@wLjR4s (20 chars aleatorios)</option>
+            <option value="__custom">Escribir propia…</option>
+          </select>
+        </label>
+        <input type="text" id="pskCustomPass" value="wifi2026" hidden placeholder="Clave do AP" aria-label="Clave personalizada">
+        <label>Vector:
+          <select id="pskVecSel">
+            <option value="deauth">Deauth + Handshake (1.1/1.2)</option>
+            <option value="pmkid">PMKID hcxdumptool (1.4)</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="pskPmfChk"> PMF activo (<code>ieee80211w=2</code>)</label>
+      </div>
+      <div class="crack-meta">
+        <span>Modo: <b id="pskMetaMode">WPA*02 (EAPOL)</b></span>
+        <span>OpenCL: <b>PoCL CPU (~4.500 H/s)</b></span>
+        <span>Probas: <b id="crackCount">0</b></span>
+      </div>
+      <div class="crack-body" id="crackBody"></div>
+      <div class="crack-ctrl">
+        <button class="btn danger" id="crackBtn">▶ Executar ataque</button>
+        <button class="btn" id="crackReset" disabled>Limpar</button>
+        <span class="speed">Demostración de que PMF bloquea Deauth pero non PMKID</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Defensas · que protexe que</div>
+    <h2 class="sec">Tramas protexidas por PMF e mitigacións</h2>
+    <div class="cmpwrap">
+      <table class="cmp">
+        <thead><tr><th>Medida</th><th>Fronte a Deauth</th><th>Fronte a PMKID</th><th>Fronte a Dicionario Offline</th></tr></thead>
+        <tbody>
+          <tr><td>PMF (<code>ieee80211w=2</code>)</td><td class="yes">✓ Protexe (Deauth/Disassoc asinadas)</td><td class="no">✗ Non protexe (PDF 1.4)</td><td class="no">✗ Non protexe se capturas EAPOL</td></tr>
+          <tr><td>Contrasinal ≥ 20 chars aleatorios</td><td class="part">—</td><td class="yes">✓ Fai inviable o crackeo</td><td class="yes">✓ Fai inviable o crackeo</td></tr>
+          <tr><td>Migrar a WPA2-EAP / WPA3-SAE</td><td class="yes">✓ (obrigatorio en WPA3)</td><td class="yes">✓ Non expón PSK</td><td class="yes">✓ Elimina crackeo offline da PMK</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lead" style="font-size:13px;margin-top:10px"><b>Lembra:</b> mesmo con PMF obrigatorio, tramas previas á asociación como <code>Beacon</code>, <code>Probe Request/Response</code> e <code>Authentication Open</code> nunca van cifradas.</p>
+  </section>
+</div>
+
+<!-- ======================= VISTA 3: EVIDENCIAS & HASHES ======================= -->
+<div class="wrap" data-view="evidencias" hidden>
+  <div class="hero">
+    <h1>Ler a evidencia sen <span class="q">falsos positivos</span>.</h1>
+    <p>No laboratorio <code>vuln-wifi.lab</code> non abonda con lanzar comandos: cómpre distinguir <code>WPA*01</code> de <code>WPA*02</code>, verificar as tramas en <code>tshark</code> e interpretar ben os resultados de <code>aireplay-ng</code> e <code>wifite</code>.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Anatomía do formato · modo-22000.md</div>
+    <h2 class="sec">Disector interactivo de <code>WPA*01</code> e <code>WPA*02</code></h2>
+    <p class="lead">Preme en cada campo do hash para ver que contén e usa o conversor para comprobar como se codifica o ESSID en hexadecimal.</p>
+    <div class="dissector" id="dis22000"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Análise de capturas · prácticas 1.1, 1.2 e 1.3</div>
+    <h2 class="sec">Simulador de filtros <code>tshark</code></h2>
+    <p class="lead">Cambia de filtro para ver que tramas demostran unha desautenticación con ou sen PMF e un intercambio EAPOL válido.</p>
+    <div class="tshark-box" id="tsharkPsk"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Comproba o aprendido · VALIDACION-LABORATORIO.md</div>
+    <h2 class="sec">Retos de interpretación forense</h2>
+    <div id="quizPsk"></div>
+  </section>
+</div>
+
+<footer class="wrap">
+  <p>Baseado en <b>HE-UD2 · Prácticas 1.1–1.4</b> e <code>modo-22000.md</code> de <a href="https://github.com/ricardofc/vuln-wifi.lab/" target="_blank" rel="noopener">vuln-wifi.lab</a>.</p>
+  <p>Fonte docente: <b>repoEDU-CCbySA</b> · Licenza <b>CC BY-SA 4.0</b></p>
+</footer>
+
+<script src="../assets/core.js"></script>
+<script>
+(function(){
+  "use strict";
+  WifiSite.initTheme();
+  WifiSite.initViewTabs("handshake");
+
+  // --- Vista 1: Handshake ---
+  var channel=document.getElementById("channel");
+  var steps=[
+    {n:0,title:"Punto de partida",
+      body:'Antes de intercambiar nada, <span class="focus">os dous lados calculan a PMK</span> localmente a partir de PSK + SSID. Preme <b>Seguinte</b> para iniciar o intercambio EAPOL.',
+      ap:{pmk:1},sta:{pmk:1}},
+    {n:1,title:"Message 1/4 · O AP envía o ANonce",
+      body:'O AP xera o número aleatorio <span class="focus">ANonce</span> e envíao en claro (pode incluír tamén o <b>PMKID</b> se está habilitado).',
+      ap:{pmk:1,anonce:1},sta:{pmk:1,anonce:1},
+      msg:{cls:"m1 from-ap",tag:"Message 1/4",dir:"AP → STA",body:"ANonce (+ posible PMKID)",chips:["ANonce = 209c3ccc…"]}},
+    {n:2,title:"Message 2/4 · A STA envía SNonce + MIC",
+      body:'A STA calcula a <span class="focus">PTK</span> e xera o seu <span class="focus">MIC</span>. Ao recibilo, o AP calcula a mesma PTK e verifica o MIC: se coincide, a STA coñece o PSK.',
+      ap:{pmk:1,anonce:1,snonce:1,ptk:1,verify:1},sta:{pmk:1,anonce:1,snonce:1,ptk:1},
+      msg:{cls:"m2 from-sta",tag:"Message 2/4",dir:"STA → AP",body:"SNonce + MIC",chips:["SNonce = f7b8949a…","MIC = HMAC(PTK, msg)"],
+        verify:{txt:"O AP recalcula a PTK e valida o MIC → coincide. Cliente autenticado sen transmitir o PSK."}}},
+    {n:3,title:"Message 3/4 · O AP confirma e entrega a GTK",
+      body:'O AP envía o seu propio MIC e a <span class="focus">GTK</span> cifrada (para tráfico broadcast/multicast). O cliente verifica o MIC do AP.',
+      ap:{pmk:1,anonce:1,snonce:1,ptk:1,verify:1},sta:{pmk:1,anonce:1,snonce:1,ptk:1,verify:1},
+      msg:{cls:"m3 from-ap",tag:"Message 3/4",dir:"AP → STA",body:"MIC + GTK cifrada coa PTK",chips:["GTK (cifrada)","MIC do AP"],
+        verify:{txt:"O cliente verifica o MIC do AP → coincide. Confianza mutua completada."}}},
+    {n:4,title:"Message 4/4 · ACK e cifrado activo",
+      body:'A STA confirma co seu ACK. A partir de aquí todo o tráfico vai cifrado coa PTK/GTK.',
+      ap:{pmk:1,anonce:1,snonce:1,ptk:1,verify:1},sta:{pmk:1,anonce:1,snonce:1,ptk:1,verify:1},
+      msg:{cls:"m4 from-sta",tag:"Message 4/4",dir:"STA → AP",body:"ACK + MIC",chips:["Claves instaladas ✓"],
+        verify:{est:1,txt:"Conexión establecida. Tráfico cifrado con PTK/GTK."}}}
+  ];
+  var idx=0, pills=document.getElementById("pills");
+  for(var i=0;i<5;i++){(function(k){
+    var b=document.createElement("button");
+    b.className="pill"; b.textContent=k; b.setAttribute("aria-label","Ir ao paso "+k);
+    b.addEventListener("click",function(){ idx=k; render(); });
+    pills.appendChild(b);
+  })(i);}
+  function setState(el,obj){
+    el.querySelectorAll(".krow").forEach(function(r){
+      var on=!!(obj&&obj[r.getAttribute("data-k")]);
+      r.classList.toggle("has",on);
+      var s=r.querySelector(".s"); s.textContent=on?"●":"○"; s.className="s "+(on?"yes":"no");
+    });
+  }
+  function render(){
+    var st=steps[idx];
+    document.getElementById("stepNum").textContent=st.n;
+    document.getElementById("exTitle").textContent=st.title;
+    document.getElementById("exBody").innerHTML=st.body;
+    setState(document.getElementById("stateAP"),st.ap);
+    setState(document.getElementById("stateSTA"),st.sta);
+    channel.innerHTML="";
+    if(idx===0){
+      channel.innerHTML='<div style="position:absolute;inset:0;display:grid;place-items:center;color:var(--faint);font-size:12.5px;font-family:var(--mono);text-align:center">Canal en silencio · aínda sen mensaxes EAPOL</div>';
+    }else{
+      for(var s=1;s<=idx;s++){
+        var mdata=steps[s].msg, m=document.createElement("div");
+        m.className="msg "+mdata.cls+" show";
+        var chips=(mdata.chips||[]).map(function(c){return '<span class="chip">'+c+'</span>';}).join("");
+        var vf=(mdata.verify&&s===idx)?'<div class="verify'+(mdata.verify.est?' establish':'')+'"><span class="ic">'+(mdata.verify.est?'✦':'✓')+'</span><span>'+mdata.verify.txt+'</span></div>':"";
+        m.innerHTML='<div class="tag"><span class="pin"></span>'+mdata.tag+'<span class="dir">'+mdata.dir+'</span></div><div class="body">'+mdata.body+chips+'</div>'+vf;
+        channel.appendChild(m);
+      }
+    }
+    document.getElementById("prevBtn").disabled=idx===0;
+    var nb=document.getElementById("nextBtn");
+    nb.disabled=idx===4; nb.textContent=idx===4?"Completado ✓":"Seguinte →";
+    pills.querySelectorAll(".pill").forEach(function(p,k){p.classList.toggle("active",k===idx);});
+  }
+  document.getElementById("prevBtn").addEventListener("click",function(){if(idx>0){idx--;render();}});
+  document.getElementById("nextBtn").addEventListener("click",function(){if(idx<4){idx++;render();}});
+  render();
+
+  // --- Vista 2: Simulador interactivo de ataques ---
+  var passSel=document.getElementById("pskPassSel"), customPass=document.getElementById("pskCustomPass");
+  var vecSel=document.getElementById("pskVecSel"), pmfChk=document.getElementById("pskPmfChk");
+  var crackBtn=document.getElementById("crackBtn"), crackReset=document.getElementById("crackReset");
+  var crackBody=document.getElementById("crackBody"), crackCount=document.getElementById("crackCount");
+  var pskMetaMode=document.getElementById("pskMetaMode");
+  var timer=null;
+
+  function syncMeta(){
+    customPass.hidden = passSel.value!=="__custom";
+    pskMetaMode.textContent = vecSel.value==="pmkid" ? "WPA*01 (PMKID)" : "WPA*02 (EAPOL)";
+  }
+  passSel.addEventListener("change",syncMeta);
+  vecSel.addEventListener("change",syncMeta);
+
+  function addLog(cls,html){
+    var d=document.createElement("div"); d.className="cl "+cls; d.innerHTML=html;
+    crackBody.appendChild(d); crackBody.scrollTop=crackBody.scrollHeight;
+  }
+  function clearT(){ if(timer){clearTimeout(timer);timer=null;} }
+  function resetSim(){
+    clearT(); crackBody.innerHTML=""; crackCount.textContent="0";
+    crackBtn.disabled=false; crackReset.disabled=true;
+  }
+  crackReset.addEventListener("click",resetSim);
+
+  crackBtn.addEventListener("click",function(){
+    resetSim();
+    crackBtn.disabled=true; crackReset.disabled=false;
+    var pwd = passSel.value==="__custom" ? (customPass.value||"wifi2026") : passSel.value;
+    var vec = vecSel.value, pmf = pmfChk.checked;
+    var queue=[];
+    if(vec==="deauth"){
+      queue.push([250,function(){addLog("log","$ sudo airodump-ng -c 6 --bssid BSSID_AP -w captura_psk wlan3");}]);
+      queue.push([450,function(){addLog("log","$ sudo aireplay-ng --deauth 1 -a BSSID_AP -c MAC_CLIENTE wlan2");}]);
+      if(pmf){
+        queue.push([550,function(){addLog("warn","wlan1 (ieee80211w=2): Deauth recibida sen sinatura PTK (wlan.fc.protected=False) → REXEITADA!");}]);
+        queue.push([500,function(){addLog("fail",'<span>Resultado: 0 handshakes capturados · cliente segue conectado</span><span class="res">BLOQUEADO POR PMF</span>');}]);
+        queue.push([400,function(){addLog("hot","Consello: proba cambiar o vector a PMKID (1.4) para comprobar por que PMF non protexe contra PMKID.");}]);
+        runQueue(queue,function(){ crackBtn.disabled=false; });
+        return;
+      }
+      queue.push([500,function(){addLog("warn","wlan1: CTRL-EVENT-DISCONNECTED reason=7 → reconectando…");}]);
+      queue.push([550,function(){addLog("hot","[+] WPA handshake: capturados M1–M4 en captura_psk-01.cap (WPA*02)");}]);
+    }else{
+      queue.push([250,function(){addLog("log","$ sudo hcxdumptool -i wlan2mon -w captura_pmkid.pcapng -c 6a --rds=1");}]);
+      if(pmf){
+        queue.push([450,function(){addLog("warn","AP ten PMF obrigatorio (ieee80211w=2), pero Association Request + EAPOL M1 non están protexidos por PMF.");}]);
+      }
+      queue.push([550,function(){addLog("hot","CHA 6 | ep+++ | EMPRESA-XYZ → PMKID capturado sen deautenticar ao cliente!");}]);
+      queue.push([450,function(){addLog("log","$ hcxpcapngtool -o captura_pmkid.hc22000 captura_pmkid.pcapng (1 rexistro WPA*01*)");}]);
+    }
+    queue.push([450,function(){addLog("log","$ hashcat -m 22000 captura.hc22000 rockyou.txt");}]);
+    var dict=["123456","password","qwerty123","admin1234","primavera2024","spongebob19"];
+    if(passSel.value==="__custom" && dict.indexOf(pwd)<0 && pwd.length<=12) dict.push(pwd);
+    var found = dict.indexOf(pwd)>=0;
+    runQueue(queue,function(){ testDict(dict,pwd,found,0); });
+  });
+
+  function runQueue(q,done){
+    var i=0;
+    function step(){
+      if(i>=q.length){ done(); return; }
+      var item=q[i++];
+      timer=setTimeout(function(){ item[1](); step(); }, item[0]);
+    }
+    step();
+  }
+  function testDict(dict,pwd,found,i){
+    if(i>=dict.length){
+      if(!found){
+        addLog("warn","Dicionario esgotado (Status: Exhausted). Unha clave longa e aleatoria ("+pwd.length+" chars) fai o ataque offline inviable en tempo real.");
+      }
+      crackBtn.disabled=false; return;
+    }
+    var c=dict[i]; crackCount.textContent=(i+1);
+    if(c===pwd){
+      addLog("hit",'<span class="idx">#'+(i+1)+'</span><span class="cand">PBKDF2("'+c+'") → coincide!</span><span class="res">KEY FOUND! ['+c+']</span>');
+      crackBtn.disabled=false; return;
+    }
+    addLog("miss",'<span class="idx">#'+(i+1)+'</span><span class="cand">PBKDF2("'+c+'") → non coincide</span><span class="res">✗</span>');
+    timer=setTimeout(function(){ testDict(dict,pwd,found,i+1); },320);
+  }
+
+  // --- Vista 3: Disector 22000, tshark & Quiz ---
+  WifiSite.renderDissector22000(document.getElementById("dis22000"));
+  WifiSite.renderTshark(document.getElementById("tsharkPsk"),[
+    {
+      label:"EAPOL M1–M4 (1.1/1.2)",
+      cmd:"tshark -r captura_psk-01.cap -Y eapol -T fields -e frame.number -e wlan.sa -e wlan.da -e wlan_rsna_eapol.keydes.msgnr",
+      cols:["frame","wlan.sa","wlan.da","msgnr"],
+      rows:[
+        {hl:true,cells:["142","02:aa:bb:11:22:00 (AP)","2e:2e:65:ae:f8:ed (STA)","1 (M1 · ANonce)"]},
+        {hl:true,cells:["144","2e:2e:65:ae:f8:ed (STA)","02:aa:bb:11:22:00 (AP)","2 (M2 · SNonce + MIC)"]},
+        {hl:true,cells:["146","02:aa:bb:11:22:00 (AP)","2e:2e:65:ae:f8:ed (STA)","3 (M3 · GTK + MIC)"]},
+        {hl:true,cells:["148","2e:2e:65:ae:f8:ed (STA)","02:aa:bb:11:22:00 (AP)","4 (M4 · ACK)"]}
+      ],
+      note:"A secuencia M1–M4 confirma que o PCAP contén un 4-way handshake usable por aircrack-ng ou hashcat -m 22000."
+    },
+    {
+      label:"DeAuth sen PMF (1.2)",
+      cmd:"tshark -r captura_deauth-01.cap -Y 'wlan.fc.type_subtype == 0x0c' -T fields -e frame.number -e wlan.sa -e wlan.da -e wlan.fc.protected -e wlan.fixed.reason_code",
+      cols:["frame","wlan.sa","wlan.da","protected","reason_code"],
+      rows:[
+        {hl:true,cells:["98","02:aa:bb:11:22:00 (falsificado)","2e:2e:65:ae:f8:ed","False","7"]}
+      ],
+      note:"protected=False demostra que a trama de desautenticación non vai protexida. Cómpre correlacionala coa desconexión do cliente (iw dev wlan1 link / log reason=7)."
+    },
+    {
+      label:"DeAuth con PMF (1.3)",
+      cmd:"tshark -r /tmp/pmf-test-01.cap -Y 'wlan.fc.type_subtype == 0x0c' -T fields -e frame.number -e wlan.fc.protected -e wlan.sa -e wlan.da",
+      cols:["frame","protected","wlan.sa","wlan.da"],
+      rows:[
+        {cells:["42","True (lexítima con PMF)","2e:2e:65:ae:f8:ed","02:aa:bb:11:22:00"]},
+        {hl:true,cells:["43","False (falsa do atacante → DESCARTADA)","02:aa:bb:11:22:00","2e:2e:65:ae:f8:ed"]}
+      ],
+      note:"Con ieee80211w=2 o receptor descarta calquera DeAuth con protected=False unha vez establecida a asociación segura."
+    }
+  ]);
+
+  WifiSite.renderQuiz(document.getElementById("quizPsk"),[
+    {
+      q:"Executaches aireplay-ng --deauth e devolveu 0 ACKs (ou 10 ACKs). Podes afirmar só con iso se o ataque funcionou ou fallou?",
+      opts:[
+        "Si: 0 ACKs demostra que non se transmitiu nada e 10 ACKs demostra que a vítima caeu.",
+        "Non: os ACKs 802.11 por si sós non demostran desconexión nin fracaso; hai que comprobar iw dev wlan1 link, os logs e o PCAP."
+      ],
+      ans:1,
+      exp:"Exacto (Práctica 1.2). A evidencia válida require correlacionar a trama DeAuth non protexida cunha desconexión ou reasociación real."
+    },
+    {
+      q:"Na Práctica 1.4, hcxpcapngtool xerou captura.hc22000 con 1 liña WPA*02*... e grep -c '^WPA\\*01\\*' devolve 0. Demostraches a captura dun PMKID?",
+      opts:[
+        "Si, porque o modo 22000 serve para todo.",
+        "Non: WPA*02 representa material EAPOL, mentres que un PMKID exportado usa o prefixo WPA*01."
+      ],
+      ans:1,
+      exp:"Moi ben! Aínda que hashcat -m 22000 poida crackear WPA*02, iso é material EAPOL e non acredita a captura específica dun PMKID."
+    },
+    {
+      q:"Wifite remata amosando KEY UNKNOWN tras capturar un handshake do laboratorio. Demostra iso que o contrasinal non está en rockyou.txt?",
+      opts:[
+        "Non necesariamente: pode faltar un dispositivo OpenCL/PoCL para Hashcat (comprobar clinfo -l e hashcat -I) ou fallar a validez da captura.",
+        "Si: KEY UNKNOWN significa sempre que o dicionario esgotouse sen éxito."
+      ],
+      ans:0,
+      exp:"Correcto. En VirtualBox cómpre ter pocl-opencl-icd instalado e verificar hashcat -I antes de descartar un dicionario."
+    },
+    {
+      q:"Se activas PMF obrigatorio (ieee80211w=2) nunha rede WPA2-PSK, queda protexida contra ataques PMKID?",
+      opts:[
+        "Si, PMF cifra toda a comunicación incluído o PMKID.",
+        "Non: como demostra a Práctica 1.4 (PDF 1-4 sobre psk_pmf), PMF bloquea Deauth pero NON protexe contra a obtención do PMKID nin contra o crackeo offline."
+      ],
+      ans:1,
+      exp:"Exacto. PMF só protexe tramas robustas de xestión (Deauth/Disassoc), non o PMKID nin un handshake capturado lexitimamente."
+    }
+  ]);
+})();
+</script>
+</body>
+</html>
